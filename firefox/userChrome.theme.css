@@ -1,0 +1,168 @@
+/* Retro Gruvbox theme overrides generated via Home Manager */
+@-moz-document url(chrome://browser/content/browser.xhtml),
+               url(chrome://browser/content/browser.xul) {
+  :root {
+    --uc-bg: @@base00@@;
+    --uc-bg-alt: @@base01@@;
+    --uc-bg-hi: @@base02@@;
+    --uc-border: @@base03@@;
+    --uc-muted: @@base04@@;
+    --uc-fg: @@base05@@;
+    --uc-accent: @@base0B@@;
+    --uc-accent-2: @@base0D@@;
+    --uc-warn: @@base0A@@;
+    --uc-danger: @@base08@@;
+
+    --toolbarbutton-border-radius: 0px !important;
+    --urlbar-icon-border-radius: 0px !important;
+    --arrowpanel-border-radius: 0px !important;
+    --tab-border-radius: 0px !important;
+    --tab-min-height: 30px !important;
+    --uc-shadow: 0 0 0 1px var(--uc-border);
+
+    color: var(--uc-fg) !important;
+  }
+
+  #navigator-toolbox,
+  #TabsToolbar,
+  #nav-bar,
+  #PersonalToolbar {
+    background-color: var(--uc-bg) !important;
+    color: var(--uc-fg) !important;
+  }
+
+  #navigator-toolbox {
+    border-bottom: 1px solid var(--uc-border) !important;
+  }
+
+  #TabsToolbar {
+    padding: 0px !important;
+    border-bottom: 1px solid var(--uc-border) !important;
+  }
+
+  #tabbrowser-tabs .tabbrowser-tab {
+    padding-inline: 0px !important;
+    border-right: 1px solid var(--uc-border) !important;
+  }
+
+  #tabbrowser-tabs .tabbrowser-tab:last-of-type {
+    border-right: none !important;
+  }
+
+  #tabbrowser-tabs .tab-background {
+    margin: 0px !important;
+    border-radius: 0px !important;
+    border: 1px solid transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  #tabbrowser-tabs .tabbrowser-tab:not([selected]):not([multiselected]):hover .tab-background {
+    background-color: var(--uc-bg-alt) !important;
+    border-color: var(--uc-border) !important;
+  }
+
+  #tabbrowser-tabs .tabbrowser-tab[selected] .tab-background,
+  #tabbrowser-tabs .tabbrowser-tab[multiselected] .tab-background {
+    background-color: var(--uc-bg-alt) !important;
+    border-color: var(--uc-accent) !important;
+  }
+
+  #urlbar,
+  #searchbar {
+    background-color: var(--uc-bg-alt) !important;
+    color: var(--uc-fg) !important;
+    border: 1px solid var(--uc-border) !important;
+    border-radius: 0px !important;
+    box-shadow: none !important;
+  }
+
+  #urlbar[focused="true"],
+  #searchbar:focus-within {
+    border-color: var(--uc-accent-2) !important;
+  }
+
+  #urlbar-background {
+    border-radius: 0px !important;
+    background-color: transparent !important;
+  }
+
+  toolbarbutton {
+    border-radius: 0px !important;
+  }
+
+  toolbarbutton:hover {
+    background-color: var(--uc-bg-alt) !important;
+  }
+
+  toolbarbutton:active {
+    background-color: var(--uc-bg-hi) !important;
+  }
+
+  toolbarbutton[open="true"] {
+    box-shadow: var(--uc-shadow) !important;
+  }
+
+  panel,
+  panelview,
+  .panel-subview-body,
+  menupopup {
+    background-color: var(--uc-bg) !important;
+    color: var(--uc-fg) !important;
+    border: 1px solid var(--uc-border) !important;
+    border-radius: 0px !important;
+    box-shadow: none !important;
+  }
+
+  menuitem:hover,
+  .subviewbutton:hover {
+    background-color: var(--uc-bg-alt) !important;
+  }
+
+  toolbarseparator,
+  menuseparator {
+    border-color: var(--uc-border) !important;
+  }
+
+  #sidebar-box {
+    background-color: var(--uc-bg) !important;
+    border-right: 1px solid var(--uc-border) !important;
+  }
+
+  #sidebar-header {
+    background-color: var(--uc-bg-alt) !important;
+    color: var(--uc-fg) !important;
+    border-bottom: 1px solid var(--uc-border) !important;
+  }
+
+  #sidebar-switcher-target,
+  #sidebar-close,
+  #PlacesToolbar .bookmark-item {
+    border-radius: 0px !important;
+  }
+
+  findbar {
+    background-color: var(--uc-bg) !important;
+    color: var(--uc-fg) !important;
+    border-block: 1px solid var(--uc-border) !important;
+  }
+
+  #statuspanel {
+    background-color: var(--uc-bg-alt) !important;
+    color: var(--uc-fg) !important;
+    border: 1px solid var(--uc-border) !important;
+  }
+
+  scrollbar {
+    background-color: var(--uc-bg) !important;
+  }
+
+  scrollbar thumb {
+    background-color: var(--uc-bg-alt) !important;
+    border: 1px solid var(--uc-border) !important;
+  }
+
+  scrollbar thumb:hover {
+    background-color: var(--uc-bg-hi) !important;
+  }
+}

@@ -1,0 +1,84 @@
+/* /etc/nixos/firefox/userChrome.css */
+
+/* Only Firefox UI (chrome) */
+@-moz-document url(chrome://browser/content/browser.xul),
+               url(chrome://browser/content/browser.xhtml) {
+
+  :root {
+    /* Your installed families (from fc-list) */
+    --uc-font: "JetBrainsMono Nerd Font",
+               "JetBrainsMonoNL Nerd Font",
+               "JetBrains Mono",
+               monospace;
+
+    --uc-font-size: 12px;
+  }
+
+  /* Global top UI (tabs + toolbars) */
+  #navigator-toolbox,
+  #toolbar-menubar,
+  #TabsToolbar,
+  #nav-bar,
+  #PersonalToolbar {
+    font-family: var(--uc-font) !important;
+    font-size: var(--uc-font-size) !important;
+  }
+
+  /* Tab titles */
+  #TabsToolbar .tab-label {
+    font-family: var(--uc-font) !important;
+    font-size: var(--uc-font-size) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+  }
+
+  /* URL bar text */
+  #urlbar-input,
+  #urlbar-input::placeholder {
+    font-family: var(--uc-font) !important;
+    font-size: var(--uc-font-size) !important;
+    font-weight: 500 !important;
+  }
+
+  /* URL bar dropdown results */
+  .urlbarView,
+  .urlbarView-row,
+  .urlbarView-title,
+  .urlbarView-url,
+  .urlbarView-secondary,
+  .urlbarView-action {
+    font-family: var(--uc-font) !important;
+    font-size: var(--uc-font-size) !important;
+  }
+
+  /* Bookmarks toolbar items */
+  #PersonalToolbar toolbarbutton,
+  #PersonalToolbar .toolbarbutton-text {
+    font-family: var(--uc-font) !important;
+    font-size: var(--uc-font-size) !important;
+  }
+
+  /* Menus + context menus + panels */
+  menupopup,
+  menu,
+  menuitem,
+  panel,
+  panelview,
+  .panel-arrowcontent,
+  .panel-subview-body,
+  .subviewbutton,
+  .menu-text,
+  .menu-iconic-text {
+    font-family: var(--uc-font) !important;
+    font-size: var(--uc-font-size) !important;
+  }
+
+  /* Sidebar tree items */
+  #sidebar-box treechildren::-moz-tree-row,
+  #sidebar-box treechildren::-moz-tree-cell-text {
+    font-family: var(--uc-font) !important;
+    font-size: var(--uc-font-size) !important;
+  }
+}
+

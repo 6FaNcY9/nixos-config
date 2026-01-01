@@ -1,0 +1,4 @@
+nixFilesOld/
+.direnv/
+result
+result-*
