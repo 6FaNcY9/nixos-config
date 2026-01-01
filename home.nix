@@ -197,12 +197,14 @@ in
       v = "nvim";
       zj = "zellij";
 
-      nixos-git="git --git-dir=$HOME/.nixos-config.git --work-tree=/etc/nixos/";
+      # nixos-git="git --git-dir=$HOME/.nixos-config.git --work-tree=/etc/nixos/";
     };
 
     plugins = with pkgs.fishPlugins; [
-      { name = "fzf-fish"; src = fzf-fish.src; }
-      { name = "fifc";     src = fifc.src; }
+      { name = "plugin-git";  src = plugin-git.src; }
+      { name = "fzf-fish";    src = fzf-fish.src; }
+      { name = "sponge";      src = sponge.src; }
+      { name = "fifc";        src = fifc.src; } 
     #{ name = "autopair"; src = autopair.src; }
     #{ name = "done";     src = done.src; }
     #{ name = "pisces";   src = pisces.src; }
