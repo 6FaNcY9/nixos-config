@@ -13,7 +13,6 @@
 # -----------------------------
 /nixFilesOld/
 /.codex/
-/firefox/
 
 # -----------------------------
 # Secrets / keys (never commit)
@@ -85,4 +84,3 @@ obj/
 *.jar
 *.war
 *.ear
-

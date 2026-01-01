@@ -365,7 +365,8 @@ in
   # Session services
   # ------------------------------------------------------------
   services = {
-    network-manager-applet.enable = true;
+    # Launch nm-applet on demand via i3blocks click (see net block below)
+    network-manager-applet.enable = false;
     dunst.enable = true;
     picom.enable = true;
   };
@@ -386,6 +387,13 @@ in
       '';
 
       netBlock = mkBlockScript "net" ''
+        # Left-click: open the NetworkManager connection editor (no resident tray applet)
+        if test "${BLOCK_BUTTON:-0}" -eq 1; then
+          if ! ${pkgs.procps}/bin/pgrep -x nm-connection-editor >/dev/null; then
+            ${pkgs.util-linux}/bin/setsid ${pkgs.networkmanagerapplet}/bin/nm-connection-editor >/dev/null 2>&1 </dev/null &
+          fi
+        fi
+
         info="$(${pkgs.networkmanager}/bin/nmcli -t -f TYPE,STATE,CONNECTION dev status | ${pkgs.gawk}/bin/awk -F: '$2=="connected"{print $1":"$3; exit}')"
         color="${palette.danger}"
         text=" 󰖪 offline"
