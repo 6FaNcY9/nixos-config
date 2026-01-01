@@ -163,7 +163,11 @@ in
       set -gx SUDO_EDITOR nvim
       set -gx EDITOR nvim
       set -gx VISUAL nvim
-
+        
+      set -gx GPG_TTY (tty)
+      set -gx SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket) 
+      set -e SSH_AGENT_PID
+  
       set -g fzf_fd_opts --hidden --follow --exclude .git
       set -g fzf_preview_dir_cmd 'eza --all --color=always --group-directories-first'
       set -g fzf_preview_file_cmd 'bat --style=numbers --color=always'
@@ -257,7 +261,20 @@ in
 
   programs.git = {
     enable = true;
+
     settings = {
+      user = {
+        # Identity
+        name = "6FaNcY9";
+        email = "29282675+6FaNcY9@users.noreply.github.com";
+      
+        # gpgsign Key
+        signingkey = "FC8B68693AF4E0D9DC84A4D3B872E229ADE55151";
+      };
+      
+      # sign keys automatically
+      commit.gpgsign = true;
+
       init.defaultBranch = "main";
       pull.ff = "only";
       push.autoSetupRemote = true;

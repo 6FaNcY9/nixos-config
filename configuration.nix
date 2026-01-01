@@ -132,6 +132,7 @@ in
     };
   };
 
+  # services.ssh-agent.enable = false;
   services.openssh = {
     enable = lib.mkDefault false;
     settings = {
@@ -140,6 +141,7 @@ in
       KbdInteractiveAuthentication = false;
     };
   };
+  services.trezord.enable = true;
 
   services.journald.extraConfig = ''
     SystemMaxUse=500M
@@ -200,7 +202,16 @@ in
     functions.enable = true;
     config.enable = false; # fzf.fish provides bindings; avoids vendor fzf_key_bindings noise
   };
-
+  
+  programs.gnupg.agent = {
+    enable = true;
+    
+    #pintentryPackage = pkgs.pinentry-gtk2;
+    pinentryPackage = pkgs.pinentry-curses;  
+    # terminal pinentry
+    enableSSHSupport = true;
+  };
+    
   # User
   users.users.${username} = {
     isNormalUser = true;

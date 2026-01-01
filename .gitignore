@@ -1,4 +1,5 @@
 nixFilesOld/
 .direnv/
+.codex/
 result
 result-*
