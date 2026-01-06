@@ -44,6 +44,7 @@ let
     vim
     wget
     gnupg
+    gcc
   ];
 
   fontMain = "JetBrainsMono Nerd Font";
@@ -120,17 +121,17 @@ in
   networking.networkmanager.enable = true;
   networking.firewall.enable = true;
 
-  services.fail2ban = {
-    enable = true;
-    bantime = "1h";
-    maxretry = 5;
-    jails = {
-      sshd = ''
-        enabled = true
-        mode = aggressive
-      '';
-    };
-  };
+  # services.fail2ban = {
+  #   enable = true;
+  #   bantime = "1h";
+  #   maxretry = 5;
+  #   jails = {
+  #     sshd = ''
+  #       enabled = true
+  #       mode = aggressive
+  #     '';
+  #   };
+  # };
 
   # services.ssh-agent.enable = false;
   services.openssh = {
@@ -160,6 +161,11 @@ in
     xkb.layout = "at";
 
     displayManager.lightdm.enable = true;
+    displayManager.lightdm.greeters.gtk.enable = true;
+    displayManager.lightdm.greeters.gtk.indicators = [ 
+      "~session" "~power" "~language" "~layout" "~a11y" "~clock" "~host"
+    ];
+
     desktopManager = {
       xfce.enable = true;
       xterm.enable = false;
@@ -237,7 +243,7 @@ in
       NUMBER_LIMIT = "50";
     };
   };
-  #services.snapper.cleanupOnBoot = false;
+  #services.snapper.cleanupOnBoot = true;
 
   services.btrfs.autoScrub = {
     enable = true;

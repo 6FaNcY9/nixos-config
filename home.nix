@@ -29,6 +29,8 @@ let
     danger = c.base08;
     muted = c.base03;
   };
+
+  wallpaper = "${inputs.gruvbox-wallpapers}/wallpapers/brands/gruvbox-rainbow-nix.png";
 in
 {
   home.username = username;
@@ -61,6 +63,7 @@ in
     autoEnable = false;
 
     targets = {
+      qt.enable = true;
       gtk = {
         enable = true;
         flatpakSupport.enable = true;
@@ -144,7 +147,7 @@ in
       networkmanagerapplet curl wget
       hmCli chafa hexyl procs
       man-pages man-pages-posix
-      nodejs rustfmt clippy rustc cargo
+      clang gnumake pkg-config nodejs rustfmt clippy rustc cargo
       p7zip unzip zip
       brightnessctl dunst flameshot picom playerctl polkit_gnome pulseaudio
       vscode devenv feh fontconfig killall xclip
@@ -160,6 +163,9 @@ in
     shellInit = "";
 
     interactiveShellInit = ''
+      set -g fish_greeting
+      fish_default_key_bindings
+
       set -gx SUDO_EDITOR nvim
       set -gx EDITOR nvim
       set -gx VISUAL nvim
@@ -178,13 +184,13 @@ in
       set -g fzf_history_time_format "%Y-%m-%d %H:%M"
       set -g fzf_history_opts "--no-sort --exact"
       
-      set -Ux fifce_editor nvim
+      set -Ux fifc_editor nvim
       fzf_configure_bindings --directory=\ct --git_log=\cg --git_status=\cs --history=\cr --processes=\cp --variables=\cv
     '';
 
     shellAbbrs = {
-      rebuild = "sudo nixos-rebuild switch --flake /etc/nixos#bandit";
-      hms = "home-manager switch --flake /etc/nixos#vino";
+      rebuild = "sudo nixos-rebuild switch --flake ~/src/nixos-config#bandit";
+      hms = "home-manager switch --flake ~/src/nixos-config#vino";
       
       ll = "eza -lah";
       
@@ -197,7 +203,7 @@ in
       v = "nvim";
       zj = "zellij";
 
-      # nixos-git="git --git-dir=$HOME/.nixos-config.git --work-tree=/etc/nixos/";
+      nixos-git = "git -C ~/src/nixos-config";
     };
 
     plugins = with pkgs.fishPlugins; [
@@ -350,7 +356,24 @@ in
         dynamic_padding = true;
         decorations = "none";
       };
+      
       scrolling.history = 10000;
+
+      keyboard.bindings = [
+        # Enter/leave Vi mods (selection /search)
+        { key = "Space"; mods = "Control|Shift"; action = "ToggleViMode"; }
+        
+        # search prompts (works vi mode)
+        { key = "F"; mods = "Control|Shift"; action = "SearchForward"; }
+        { key = "B"; mods = "Control|Shift"; action = "SearchBackward"; }
+
+        # Copy/Paste helpers
+        { key = "C"; mods = "Control|Shift"; action = "Copy"; }
+        { key = "V"; mods = "Control|Shift"; action = "Paste"; }
+        
+        # optional: clear init_selection
+        { key = "Escape"; action = "ClearSelection"; }
+      ];
     };
   };
 
@@ -371,6 +394,29 @@ in
     network-manager-applet.enable = true;
     dunst.enable = true;
     picom.enable = true;
+
+    # Flameshot configuration
+    flameshot = {
+      enable = true;
+      package = pkgs.flameshot;
+      settings = {
+        General = {
+          # Theme-ish bits
+          uiColor = c.base01;        # panel background
+          #contrastColor = c.base05;  # text/icons
+          drawColor = c.base0B;      # pen color
+          #fillColor = c.base02;      # fills for shapes
+          showSidePanelButton = true;
+          showDesktopNotification = false;
+          disabledTrayIcon = false;  # set true if you don’t want a tray icon
+          #checkForUpdates = false;
+        };
+        Shortcuts = {
+          TYPE_COPY = "Return";
+          TYPE_SAVE = "Ctrl+S";
+        };
+      };
+    };
   };
 
   # ------------------------------------------------------------
@@ -378,6 +424,42 @@ in
   # ------------------------------------------------------------
   programs.i3blocks =
     let
+      /** 
+      # Helper for net-popup ip informantin terminal gui
+      netPopus = pkgs.writeShellScriptBin "net-popup" ''
+        #!/usr/bin env bash
+        set -euo pipefail
+
+        I3MSG = "${i3Pkg}/bin/i3-msg"
+        JQ = "${pkgs.jq}/bin/jq"
+        XDOTOOL = "${pkgs.xdotool}/bin/xdotool"
+        TERM = "${pkgs.alacritty}/bin/alacritty"
+        NMTUI = "${pkgs.networkmanager}/bin/nmtui"
+
+        CLASS = "NetPopup"
+        TITLE = "netpopup"
+      
+        WIDTH_PX = "560"
+        HEIGHT_PX = "330"
+        COLS = 70
+        LINES = 20
+        MARGIN = 8
+
+        # Toggle existing popup
+        if "$I3MSG" -t get_tree | "$JQ" -e \
+          '.. | objects | select(.window_properties? and .window_properties.class? = "'"$CLASS"'") ' \
+          >/dev/null 2>&1; then
+          "$I3MSG" '[class="'"$CLASS"'"] kill' >/dev/null
+          exit 0
+        fi
+
+        # Mouse location + determine output under Mouse
+        eval"$("$XDOTOOL" getmouselocstion --shell)" #gives X, Y, SCREEN, window_properties
+
+             
+      ''; 
+      **/  
+      # Generic wrapper for block
       mkBlockScript = name: body: pkgs.writeShellScriptBin "i3blocks-${name}" ''
         #!/usr/bin/env bash
         set -euo pipefail
@@ -631,6 +713,7 @@ in
           startup = [
             { command = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"; notification = false; }
             { command = "${pkgs.xss-lock}/bin/xss-lock --transfer-sleep-lock --ignore-sleep ${pkgs.i3lock}/bin/i3lock"; notification = false; }
+            { command = "${pkgs.feh}/bin/feh --bg-fill /home/vino/Pictures/gruvbox-rainbow-nix.png"; notification = false; }
           ];
 
           assigns = {
@@ -837,12 +920,18 @@ in
       undofile = true;
       swapfile = false;
     };
+    
+    # extraPackages = with pkgs; [
+    #   clang
+    #   gcc
+    # ];
 
     extraPlugins = with pkgs.vimPlugins; [
       vim-matchup
       rainbow-delimiters-nvim
+      cmp-cmdline
     ];
-
+    
     extraConfigLua = ''
       -- Softer indent guides and scope lines
       vim.api.nvim_set_hl(0, "IblIndent", { fg = "${c.base01}", nocombine = true })
@@ -865,6 +954,23 @@ in
 
       vim.g.rainbow_delimiters = vim.g.rainbow_delimiters or {}
       vim.g.matchup_matchparen_offscreen = { method = "popup" }
+      
+      -- Cmdline completion (protect if cmp-cmdline isn’t available yet)
+      local has_cmp, cmp = pcall(require, "cmp")
+      if has_cmp then
+        cmp.setup.cmdline(":", {
+          mapping = cmp.mapping.preset.cmdline(),
+          sources = cmp.config.sources(
+            { { name = "path" } },
+            { { name = "cmdline" } }
+          ),
+        })
+
+        cmp.setup.cmdline("/", {
+          mapping = cmp.mapping.preset.cmdline(),
+          sources = { { name = "buffer" } },
+        })
+      end
     '';
 
     plugins = {
@@ -886,6 +992,39 @@ in
       treesitter = {
         enable = true;
         nixGrammars = true;
+
+        settings = {
+          highlight.enable = true;
+          indent.enable = true;
+
+          ensure_installed = [
+            "nix"
+            "bash"
+            "fish"
+            "lua"
+            "vim"
+            "vimdoc"
+            "regex"
+            "json"
+            "yaml"
+            "toml"
+            "markdown"
+            "markdown_inline"
+            "diff"
+            "gitcommit"
+            "git_config"
+          ];
+
+          incremental_selection = {
+            enable = true;
+            keymaps = {
+              init_selection = "<CR>";
+              node_incremental = "<CR>";
+              node_decremental = "<BS>";
+              scope_incremental = "<TAB>";
+            };
+          };
+        };
       };
 
       web-devicons.enable = true;

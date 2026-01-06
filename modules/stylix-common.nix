@@ -5,6 +5,9 @@
   # Docs: https://nix-community.github.io/stylix/
   stylix = {
     enable = true;
+    
+    # Wallpaper
+    image = "/home/vino/Pictures/gruvbox-rainbow-nix.png";
 
     polarity = lib.mkDefault "dark";
     base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/gruvbox-dark-pale.yaml";
@@ -14,8 +17,8 @@
     # - Install Symbols Nerd Font (symbols-only) separately (configuration.nix) so icons come via fallback.
     fonts = {
       sizes = {
-        applications = 12;
-        terminal = 12;
+        applications = 10;
+        terminal = 10;
         desktop = 10;
         popups = 10;
       };

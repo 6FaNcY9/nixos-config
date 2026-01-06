@@ -27,6 +27,9 @@
       url = "github:nix-community/stylix/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Wallpaper
+    gruvbox-wallpaper.url = "github:AngelJumbo/gruvbox-wallpapers";
   };
 
   outputs =

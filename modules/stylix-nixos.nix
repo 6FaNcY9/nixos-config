@@ -6,7 +6,9 @@
   # - HM integration (auto-import + follow system theme)
   stylix = {
     targets.grub.enable = lib.mkDefault true;
-
+    
+    targets.lightdm.enable = true;
+      
     homeManagerIntegration = {
       autoImport = lib.mkForce false;
       followSystem = lib.mkDefault true;
