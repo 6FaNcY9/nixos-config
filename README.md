@@ -10,6 +10,7 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 - `hosts/README.md` – quick guide for adding hosts.
 - `home.nix` – Home Manager profile: Stylix targets (gtk, i3, xfce, rofi, starship, nixvim, firefox), Firefox userChrome override, package set (CLIs, dev tools, desktop utilities), fish setup with abbreviations, Atuin/Zoxide/direnv/fzf, i3 config, XFCE session XML, and detailed nixvim plugin stack (LSP, Telescope, gitsigns, neo-tree, toggleterm, indent guides, etc.).
 - `modules/stylix-common.nix` – shared Stylix palette/fonts (JetBrains Mono + Nerd Font fallback, Gruvbox dark).
+- `lib/` – small helper functions shared across modules.
 - `modules/stylix-nixos.nix` – NixOS-only Stylix tweaks (GRUB theming, HM integration knobs).
 - `modules/workspaces.nix` – shared i3 workspace name/icon list.
 - `profiles/base.nix` – base system profile imported by host entrypoints.

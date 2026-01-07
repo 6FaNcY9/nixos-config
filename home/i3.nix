@@ -15,27 +15,22 @@
       package = i3Pkg;
 
       config = let
+        cfgLib = import ../lib { inherit lib; };
         mod = "Mod4";
         workspaceNames = map (workspace: workspace.name) workspaces;
-        workspaceIndices = lib.range 1 (builtins.length workspaceNames);
 
-        workspaceSwitch = builtins.listToAttrs (
-          lib.lists.zipListsWith (wsName: idx: {
-            name = "${mod}+${builtins.toString idx}";
-            value = "workspace ${wsName}";
-          })
-          workspaceNames
-          workspaceIndices
-        );
+        workspaceSwitch = cfgLib.mkWorkspaceBindings {
+          inherit mod;
+          workspaces = workspaceNames;
+          commandPrefix = "workspace";
+        };
 
-        workspaceMove = builtins.listToAttrs (
-          lib.lists.zipListsWith (wsName: idx: {
-            name = "${mod}+Shift+${builtins.toString idx}";
-            value = "move container to workspace ${wsName}";
-          })
-          workspaceNames
-          workspaceIndices
-        );
+        workspaceMove = cfgLib.mkWorkspaceBindings {
+          inherit mod;
+          workspaces = workspaceNames;
+          commandPrefix = "move container to workspace";
+          shift = true;
+        };
       in {
         modifier = mod;
         terminal = "alacritty";
