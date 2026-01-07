@@ -1,20 +1,42 @@
-{ lib, pkgs, config, inputs, username ? "vino", hostname ? "bandit", ... }:
-
-let
+{
+  lib,
+  pkgs,
+  config,
+  inputs,
+  username ? "vino",
+  hostname ? "bandit",
+  ...
+}: let
   # Safe: Stylix palette is exposed under config.lib.stylix.colors (when Stylix is loaded)
-  c = lib.attrByPath [ "lib" "stylix" "colors" "withHashtag" ] {
-    # fallback (only used if Stylix isn’t loaded)
-    base00 = "#262626"; base01 = "#3a3a3a"; base02 = "#4e4e4e"; base03 = "#8a8a8a";
-    base04 = "#949494"; base05 = "#dab997"; base06 = "#d5c4a1"; base07 = "#ebdbb2";
-    base08 = "#d75f5f"; base09 = "#ff8700"; base0A = "#ffaf00"; base0B = "#afaf00";
-    base0C = "#85ad85"; base0D = "#83a598"; base0E = "#d3869b"; base0F = "#af5f5f";
-  } config;
+  c =
+    lib.attrByPath ["lib" "stylix" "colors" "withHashtag"] {
+      # fallback (only used if Stylix isn’t loaded)
+      base00 = "#262626";
+      base01 = "#3a3a3a";
+      base02 = "#4e4e4e";
+      base03 = "#8a8a8a";
+      base04 = "#949494";
+      base05 = "#dab997";
+      base06 = "#d5c4a1";
+      base07 = "#ebdbb2";
+      base08 = "#d75f5f";
+      base09 = "#ff8700";
+      base0A = "#ffaf00";
+      base0B = "#afaf00";
+      base0C = "#85ad85";
+      base0D = "#83a598";
+      base0E = "#d3869b";
+      base0F = "#af5f5f";
+    }
+    config;
 
   # Safe: Stylix fonts are under config.stylix.fonts (when Stylix is loaded)
-  stylixFonts = lib.attrByPath [ "stylix" "fonts" ] {
-    sansSerif = { name = "Sans"; };
-    monospace = { name = "Monospace"; };
-  } config;
+  stylixFonts =
+    lib.attrByPath ["stylix" "fonts"] {
+      sansSerif = {name = "Sans";};
+      monospace = {name = "Monospace";};
+    }
+    config;
 
   hasCodex = lib.hasAttr "codex" pkgs;
   i3Pkg = pkgs.i3;
@@ -30,9 +52,7 @@ let
     danger = c.base08;
     muted = c.base03;
   };
-
-in
-{
+in {
   imports = [
     ./home/firefox.nix
     ./home/i3blocks.nix
@@ -106,7 +126,7 @@ in
 
       firefox = {
         enable = lib.mkDefault true;
-        profileNames = [ username ];
+        profileNames = [username];
       };
 
       #polybar.enable = true;
@@ -118,23 +138,66 @@ in
   # ------------------------------------------------------------
   home.packages =
     (with pkgs; [
-      yq-go delta git lazygit
-      broot eza tree xfce.thunar
-      ripgrep fzf fd jq gdu bat
-      zoxide tmux zellij python3
-      neofetch btop 
-      networkmanagerapplet blueman curl wget
-      hmCli chafa hexyl procs
-      man-pages man-pages-posix
-      clang gnumake pkg-config nodejs rustfmt clippy rustc cargo
-      p7zip unzip zip
-      brightnessctl dunst flameshot picom playerctl polkit_gnome pulseaudio
-      vscode devenv feh fontconfig killall xclip uv 
+      yq-go
+      delta
+      git
+      lazygit
+      broot
+      eza
+      tree
+      xfce.thunar
+      ripgrep
+      fzf
+      fd
+      jq
+      gdu
+      bat
+      zoxide
+      tmux
+      zellij
+      python3
+      neofetch
+      btop
+      networkmanagerapplet
+      blueman
+      curl
+      wget
+      hmCli
+      chafa
+      hexyl
+      procs
+      man-pages
+      man-pages-posix
+      clang
+      gnumake
+      pkg-config
+      nodejs
+      rustfmt
+      clippy
+      rustc
+      cargo
+      p7zip
+      unzip
+      zip
+      brightnessctl
+      dunst
+      flameshot
+      picom
+      playerctl
+      polkit_gnome
+      pulseaudio
+      vscode
+      devenv
+      feh
+      fontconfig
+      killall
+      xclip
+      uv
       font-awesome
       nerd-fonts.jetbrains-mono
       gsimplecal
     ])
-    ++ lib.optionals hasCodex [ pkgs.codex ];
+    ++ lib.optionals hasCodex [pkgs.codex];
 
   # ------------------------------------------------------------
   # Fish + plugins
@@ -151,25 +214,25 @@ in
       set -gx SUDO_EDITOR nvim
       set -gx EDITOR nvim
       set -gx VISUAL nvim
-        
+
       set -gx GPG_TTY (tty)
-      set -gx SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket) 
+      set -gx SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
       set -e SSH_AGENT_PID
-  
+
       set -g fzf_fd_opts --hidden --follow --exclude .git
       set -g fzf_preview_dir_cmd 'eza --all --color=always --group-directories-first'
       set -g fzf_preview_file_cmd 'bat --style=numbers --color=always'
-      
+
       set -g fzf_diff_highlighter 'delta --paging=never --width=120'
       set -g fzf_git_log_format "%C(auto)%h%d %s %C(blue)%cr %C(green)%an"
-      
+
       set -g fzf_history_time_format "%Y-%m-%d %H:%M"
       set -g fzf_history_opts "--no-sort --exact"
 
       # Make autosuggestions visible and ensure they stay enabled
       # set -g fish_autosuggestion_enabled 1
       # set -g fish_color_autosuggestion '#8a8a8a'
-      
+
       set -Ux fifc_editor nvim
       fzf_configure_bindings --directory=\ct --git_log=\cg --git_status=\cs --history=\cr --processes=\cp --variables=\cv
     '';
@@ -177,10 +240,10 @@ in
     shellAbbrs = {
       rebuild = "sudo nixos-rebuild switch --flake ~/src/nixos-config#bandit";
       #hms = "home-manager switch --flake ~/src/nixos-config#vino";
-      
+
       ll = "eza -lah -G";
       ls = "eza -ah";
-      
+
       #gs = "git status";
       #gl = "git log --oneline --decorate --graph --all";
       lg = "lazygit";
@@ -190,18 +253,30 @@ in
       v = "nvim";
       zj = "zellij";
 
-      nixhome = "cd /home/vino/src/nixos-config/"; 
+      nixhome = "cd /home/vino/src/nixos-config/";
     };
 
     plugins = with pkgs.fishPlugins; [
-      { name = "plugin-git";  src = plugin-git.src; }
-      { name = "fzf-fish";    src = fzf-fish.src; }
-      { name = "sponge";      src = sponge.src; }
-      { name = "fifc";        src = fifc.src; } 
-    #{ name = "autopair"; src = autopair.src; }
-    #{ name = "done";     src = done.src; }
-    #{ name = "pisces";   src = pisces.src; }
-   ];
+      {
+        name = "plugin-git";
+        src = plugin-git.src;
+      }
+      {
+        name = "fzf-fish";
+        src = fzf-fish.src;
+      }
+      {
+        name = "sponge";
+        src = sponge.src;
+      }
+      {
+        name = "fifc";
+        src = fifc.src;
+      }
+      #{ name = "autopair"; src = autopair.src; }
+      #{ name = "done";     src = done.src; }
+      #{ name = "pisces";   src = pisces.src; }
+    ];
   };
 
   programs.atuin = {
@@ -230,7 +305,7 @@ in
   programs.zoxide = {
     enable = true;
     enableFishIntegration = true;
-    options = [ "--cmd" "z" ];
+    options = ["--cmd" "z"];
   };
 
   programs.rofi = {
@@ -262,11 +337,11 @@ in
         # Identity
         name = "6FaNcY9";
         email = "29282675+6FaNcY9@users.noreply.github.com";
-      
+
         # gpgsign Key
         signingkey = "FC8B68693AF4E0D9DC84A4D3B872E229ADE55151";
       };
-      
+
       # sign keys automatically
       commit.gpgsign = true;
 
@@ -343,20 +418,40 @@ in
         dynamic_padding = true;
         decorations = "none";
       };
-      
+
       scrolling.history = 10000;
 
       keyboard.bindings = [
         # Enter/leave Vi mods (selection /search)
-        { key = "Space"; mods = "Control|Shift"; action = "ToggleViMode"; }
-        
+        {
+          key = "Space";
+          mods = "Control|Shift";
+          action = "ToggleViMode";
+        }
+
         # search prompts (works vi mode)
-        { key = "F"; mods = "Control|Shift"; action = "SearchForward"; }
-        { key = "B"; mods = "Control|Shift"; action = "SearchBackward"; }
+        {
+          key = "F";
+          mods = "Control|Shift";
+          action = "SearchForward";
+        }
+        {
+          key = "B";
+          mods = "Control|Shift";
+          action = "SearchBackward";
+        }
 
         # Copy/Paste helpers
-        { key = "C"; mods = "Control|Shift"; action = "Copy"; }
-        { key = "V"; mods = "Control|Shift"; action = "Paste"; }
+        {
+          key = "C";
+          mods = "Control|Shift";
+          action = "Copy";
+        }
+        {
+          key = "V";
+          mods = "Control|Shift";
+          action = "Paste";
+        }
       ];
     };
   };
@@ -386,13 +481,13 @@ in
       settings = {
         General = {
           # Theme-ish bits
-          uiColor = c.base01;        # panel background
+          uiColor = c.base01; # panel background
           #contrastColor = c.base05;  # text/icons
-          drawColor = c.base0B;      # pen color
+          drawColor = c.base0B; # pen color
           #fillColor = c.base02;      # fills for shapes
           showSidePanelButton = true;
           showDesktopNotification = false;
-          disabledTrayIcon = false;  # set true if you don’t want a tray icon
+          disabledTrayIcon = false; # set true if you don’t want a tray icon
           #checkForUpdates = false;
         };
         Shortcuts = {

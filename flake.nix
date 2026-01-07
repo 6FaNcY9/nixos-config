@@ -32,8 +32,7 @@
     gruvbox-wallpaper.url = "github:AngelJumbo/gruvbox-wallpapers";
   };
 
-  outputs =
-  {
+  outputs = {
     self,
     nixpkgs,
     nixos-hardware,
@@ -41,36 +40,36 @@
     nixvim,
     stylix,
     ...
-  }@inputs:
-  let
+  } @ inputs: let
     system = "x86_64-linux";
     hostname = "bandit";
     username = "vino";
-    commonSpecialArgs = { inherit inputs username hostname; };
+    commonSpecialArgs = {inherit inputs username hostname;};
     # Shared HM modules used inside the NixOS system build (Stylix is on the NixOS side)
     hmSharedModules = [
       inputs.nixvim.homeModules.nixvim
     ];
 
     # Standalone Home Manager output includes Stylix modules
-    hmSharedModulesHM = hmSharedModules ++ [
-      inputs.stylix.homeModules.stylix
-      ./modules/stylix-common.nix
-    ];
+    hmSharedModulesHM =
+      hmSharedModules
+      ++ [
+        inputs.stylix.homeModules.stylix
+        ./modules/stylix-common.nix
+      ];
 
-    hmUserModules = hmSharedModules ++ [ ./home.nix ];
+    hmUserModules = hmSharedModules ++ [./home.nix];
 
-  # IMPORTANT:
-  # - This pkgs is used by 'homeConfigurations' and 'devShells'.
-  # - Your home.nix includes 'pkgs.vscode'(unfree) so allowUnfree must be enabled here.
+    # IMPORTANT:
+    # - This pkgs is used by 'homeConfigurations' and 'devShells'.
+    # - Your home.nix includes 'pkgs.vscode'(unfree) so allowUnfree must be enabled here.
     pkgs = import nixpkgs {
       inherit system;
       config = {
         allowUnfree = true;
       };
     };
-  in
-  {
+  in {
     nixosConfigurations.${hostname} = nixpkgs.lib.nixosSystem {
       inherit system;
 
@@ -78,7 +77,7 @@
       specialArgs = commonSpecialArgs;
 
       modules = [
-        { nixpkgs.config.allowUnfree = true; }
+        {nixpkgs.config.allowUnfree = true;}
 
         # Framework hardware module (adjust if you switch models)
         nixos-hardware.nixosModules.framework-13-7040-amd
@@ -116,7 +115,7 @@
 
       extraSpecialArgs = commonSpecialArgs;
 
-      modules = hmSharedModulesHM ++ [ ./home.nix ];
+      modules = hmSharedModulesHM ++ [./home.nix];
     };
 
     # Optional: `nix fmt`
@@ -147,7 +146,7 @@
           python3Packages.flask
           python3Packages.virtualenv
         ];
-      }; 
+      };
 
       pentest = pkgs.mkShell rec {
         stickyKeysSlayer = pkgs.stdenvNoCC.mkDerivation {
@@ -159,7 +158,7 @@
             rev = "0b431ac9909a3f7f47a31c02d8602a52d3a7006d";
             sha256 = "sha256-rzdZArHwv8gAEvOGE4RdPnRXQ6hDGggG6eryM+if2cE=";
           };
-          buildInputs = [ pkgs.makeWrapper ];
+          buildInputs = [pkgs.makeWrapper];
           installPhase = ''
             mkdir -p $out/bin
             install -m755 stickyKeysSlayer.sh $out/bin/sticky-keys-slayer
@@ -171,27 +170,62 @@
                 pkgs.bc
                 pkgs.rdesktop
               ]
-            }   
-          ''; 
-        }; 
-        packages = (with pkgs; [
-          # Recon / scanning
-          nmap masscan rustscan amass subfinder httpx feroxbuster gobuster whatweb nikto
-          # Web app / exploit
-          sqlmap commix metasploit exploitdb zap ffuf wfuzz wpscan
-          # Creds / crypto
-          hashcat john hydra medusa hashcat-utils hashpump
-          # Network tooling
-          mitmproxy tcpdump wireshark socat netcat-openbsd
-          # Reversing / binaries
-          radare2 cutter gdb binwalk capstone ghidra
-          # Wireless
-          aircrack-ng kismet hcxdumptool hcxtools
-          # Wordlists
-          seclists
-        ]) ++ [ stickyKeysSlayer ];
-        
-        #shell prompt 
+            }
+          '';
+        };
+        packages =
+          (with pkgs; [
+            # Recon / scanning
+            nmap
+            masscan
+            rustscan
+            amass
+            subfinder
+            httpx
+            feroxbuster
+            gobuster
+            whatweb
+            nikto
+            # Web app / exploit
+            sqlmap
+            commix
+            metasploit
+            exploitdb
+            zap
+            ffuf
+            wfuzz
+            wpscan
+            # Creds / crypto
+            hashcat
+            john
+            hydra
+            medusa
+            hashcat-utils
+            hashpump
+            # Network tooling
+            mitmproxy
+            tcpdump
+            wireshark
+            socat
+            netcat-openbsd
+            # Reversing / binaries
+            radare2
+            cutter
+            gdb
+            binwalk
+            capstone
+            ghidra
+            # Wireless
+            aircrack-ng
+            kismet
+            hcxdumptool
+            hcxtools
+            # Wordlists
+            seclists
+          ])
+          ++ [stickyKeysSlayer];
+
+        #shell prompt
         # shellHook = ''
         #   export STARSHIP_CONFIG="${TMPDIR:-/tmp}/starship-pentest.toml"
         #   mkdir -p "$(dirname "$STARSHIP_CONFIG")"

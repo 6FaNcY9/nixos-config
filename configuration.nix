@@ -6,11 +6,9 @@
   username ? "vino",
   hostname ? "bandit",
   ...
-}:
-
-let
+}: let
   swapFile = "/swap/swapfile";
-  btrfsFileSystems = [ "/" "/home" ];
+  btrfsFileSystems = ["/" "/home"];
 
   # Keep these in sync with the actual swap device/offset so hibernate works.
   resume = {
@@ -18,7 +16,7 @@ let
     offset = 1959063;
   };
 
-  snapperUsers = [ username ];
+  snapperUsers = [username];
   snapperTimeline = {
     FSTYPE = "btrfs";
     TIMELINE_CREATE = true;
@@ -32,7 +30,7 @@ let
     ALLOW_USERS = snapperUsers;
   };
 
-  userGroups = [ "wheel" "networkmanager" "audio" "video" "docker" ];
+  userGroups = ["wheel" "networkmanager" "audio" "video" "docker"];
 
   systemPackages = with pkgs; [
     btrfs-progs
@@ -50,8 +48,7 @@ let
   fontMain = "JetBrains Mono";
   fontMono = "JetBrainsMono Nerd Font Mono";
   fontEmoji = "Noto Color Emoji";
-in
-{
+in {
   # ------------------------------------------------------------
   # Host + locale
   # ------------------------------------------------------------
@@ -65,7 +62,7 @@ in
   # ------------------------------------------------------------
   nix = {
     settings = {
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = ["nix-command" "flakes"];
       auto-optimise-store = true;
       warn-dirty = false;
     };
@@ -78,7 +75,7 @@ in
 
     optimise = {
       automatic = true;
-      dates = [ "weekly" ];
+      dates = ["weekly"];
     };
   };
 
@@ -105,11 +102,11 @@ in
 
     # For hibernation (kept near swap settings above)
     resumeDevice = resume.device;
-    kernelParams = [ "resume_offset=${toString resume.offset}" ];
+    kernelParams = ["resume_offset=${toString resume.offset}"];
   };
 
   # SwapFile
-  swapDevices = [ { device = swapFile; } ];
+  swapDevices = [{device = swapFile;}];
 
   # SSD maintenance
   services.fstrim.enable = true;
@@ -162,8 +159,14 @@ in
 
     displayManager.lightdm.enable = true;
     displayManager.lightdm.greeters.gtk.enable = true;
-    displayManager.lightdm.greeters.gtk.indicators = [ 
-      "~session" "~power" "~language" "~layout" "~a11y" "~clock" "~host"
+    displayManager.lightdm.greeters.gtk.indicators = [
+      "~session"
+      "~power"
+      "~language"
+      "~layout"
+      "~a11y"
+      "~clock"
+      "~host"
     ];
 
     desktopManager = {
@@ -181,9 +184,9 @@ in
 
   programs.dconf.enable = true;
   security.polkit.enable = true;
-  
+
   programs.i3lock.enable = true;
-  security.pam.services.i3lock.enable = true; 
+  security.pam.services.i3lock.enable = true;
 
   # ------------------------------------------------------------
   # Audio
@@ -211,16 +214,16 @@ in
     functions.enable = true;
     config.enable = false; # fzf.fish provides bindings; avoids vendor fzf_key_bindings noise
   };
-  
+
   programs.gnupg.agent = {
     enable = true;
-    
+
     #pintentryPackage = pkgs.pinentry-gtk2;
-    pinentryPackage = pkgs.pinentry-curses;  
+    pinentryPackage = pkgs.pinentry-curses;
     # terminal pinentry
     enableSSHSupport = true;
   };
-    
+
   # User
   users.users.${username} = {
     isNormalUser = true;
@@ -240,11 +243,13 @@ in
   # ------------------------------------------------------------
   # Services you had around Snapper/Btrfs (keep as-is)
   services.snapper.configs = {
-    root = snapperTimeline // { SUBVOLUME = "/"; };
-    home = snapperTimeline // {
-      SUBVOLUME = "/home";
-      NUMBER_LIMIT = "50";
-    };
+    root = snapperTimeline // {SUBVOLUME = "/";};
+    home =
+      snapperTimeline
+      // {
+        SUBVOLUME = "/home";
+        NUMBER_LIMIT = "50";
+      };
   };
   #services.snapper.cleanupOnBoot = true;
 
@@ -268,7 +273,7 @@ in
   fonts.fontconfig.useEmbeddedBitmaps = true;
 
   # fonts.packages = with pkgs; [
-  #   nerd-fonts.symbols-only 
+  #   nerd-fonts.symbols-only
   #   font-awesome
   # ];
   # fonts = {

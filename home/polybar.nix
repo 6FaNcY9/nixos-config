@@ -1,11 +1,18 @@
-{ config, pkgs, lib, palette, hostname, workspaces, ... }:
-
-let
+{
+  config,
+  pkgs,
+  lib,
+  palette,
+  hostname,
+  workspaces,
+  ...
+}: let
   wsIconAttrs = lib.listToAttrs (
     lib.imap0 (index: workspace: {
       name = "ws-icon-${toString index}";
       value = "${workspace.name};${workspace.icon}";
-    }) workspaces
+    })
+    workspaces
   );
 in {
   # Enable polybar via Home Manager
@@ -56,31 +63,33 @@ in {
         wm-restack = "i3";
       };
 
-      "module/i3" = {
-        type = "internal/i3";
-        format = "<label-state>";
-        index-sort = true;
-        pin-workspaces = true;
-        strip-wsnumbers = false;
-        ws-icon-default = "";
-        label-separator = " ";
-        label-focused = "%icon%";
-        label-focused-foreground = "\${colors.background}";
-        label-focused-background = "\${colors.accent2}";
-        label-focused-padding = 1;
-        label-unfocused = "%icon%";
-        label-unfocused-foreground = "\${colors.foreground}";
-        label-unfocused-background = "\${colors.background-alt}";
-        label-unfocused-padding = 1;
-        label-visible = "%icon%";
-        label-visible-foreground = "\${colors.foreground}";
-        label-visible-background = "\${colors.background-alt}";
-        label-visible-padding = 1;
-        label-urgent = "%icon%";
-        label-urgent-foreground = "\${colors.background}";
-        label-urgent-background = "\${colors.danger}";
-        label-urgent-padding = 1;
-      } // wsIconAttrs;
+      "module/i3" =
+        {
+          type = "internal/i3";
+          format = "<label-state>";
+          index-sort = true;
+          pin-workspaces = true;
+          strip-wsnumbers = false;
+          ws-icon-default = "";
+          label-separator = " ";
+          label-focused = "%icon%";
+          label-focused-foreground = "\${colors.background}";
+          label-focused-background = "\${colors.accent2}";
+          label-focused-padding = 1;
+          label-unfocused = "%icon%";
+          label-unfocused-foreground = "\${colors.foreground}";
+          label-unfocused-background = "\${colors.background-alt}";
+          label-unfocused-padding = 1;
+          label-visible = "%icon%";
+          label-visible-foreground = "\${colors.foreground}";
+          label-visible-background = "\${colors.background-alt}";
+          label-visible-padding = 1;
+          label-urgent = "%icon%";
+          label-urgent-foreground = "\${colors.background}";
+          label-urgent-background = "\${colors.danger}";
+          label-urgent-padding = 1;
+        }
+        // wsIconAttrs;
 
       "module/host" = {
         type = "custom/text";
@@ -96,7 +105,6 @@ in {
         label-background = "\${colors.background-alt}";
         label-padding = 1;
       };
-
 
       "module/pulseaudio" = {
         type = "internal/pulseaudio";

@@ -1,11 +1,14 @@
-{ pkgs, lib, inputs, ... }:
-
 {
+  pkgs,
+  lib,
+  inputs,
+  ...
+}: {
   # Shared Stylix settings (safe to import in BOTH NixOS + Home Manager).
   # Docs: https://nix-community.github.io/stylix/
   stylix = {
     enable = true;
-    
+
     # Wallpaper
     #image = "/home/vino/Pictures/gruvbox-rainbow-nix.png";
     image = "${inputs.gruvbox-wallpaper}/wallpapers/brands/gruvbox-rainbow-nix.png";

@@ -1,5 +1,8 @@
-{ pkgs, c, ... }:
 {
+  pkgs,
+  c,
+  ...
+}: {
   programs.nixvim = {
     enable = true;
     defaultEditor = true;
@@ -50,7 +53,7 @@
       vim-matchup
       rainbow-delimiters-nvim
     ];
-    
+
     extraConfigLua = ''
       vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
@@ -75,7 +78,7 @@
 
       vim.g.rainbow_delimiters = vim.g.rainbow_delimiters or {}
       vim.g.matchup_matchparen_offscreen = { method = "popup" }
-       
+
       -- Cmdline completion (protect if cmp-cmdline isn’t available yet)
       local has_cmp, cmp = pcall(require, "cmp")
       if has_cmp then
@@ -94,14 +97,14 @@
           sorting_strategy = "ascending";
           layout_config = {
             prompt_position = "top";
-            horizontal = { preview_width = 0.55; };
-            vertical = { mirror = true; };
+            horizontal = {preview_width = 0.55;};
+            vertical = {mirror = true;};
           };
         };
       };
-      
+
       lualine.enable = true;
-      
+
       treesitter = {
         enable = true;
         nixGrammars = true;
@@ -145,7 +148,7 @@
         enable = true;
         settings = {
           signcolumn = false; # keep numbers at the edge
-          numhl = true;       # tint line numbers instead of using signs
+          numhl = true; # tint line numbers instead of using signs
         };
       };
 
@@ -184,7 +187,7 @@
             enabled = true;
             show_start = false; # avoid heavy horizontal lines on braces
             show_end = false;
-            highlight = [ "IblScope" ];
+            highlight = ["IblScope"];
           };
         };
       };
@@ -206,7 +209,7 @@
       cmp = {
         enable = true;
         autoEnableSources = true;
-        
+
         settings = {
           snippet.expand.__raw = ''
             function(args)
@@ -222,10 +225,10 @@
           };
 
           sources = [
-            { name = "nvim_lsp"; }
-            { name = "path"; }
-            { name = "buffer"; }
-            { name = "luasnip"; }
+            {name = "nvim_lsp";}
+            {name = "path";}
+            {name = "buffer";}
+            {name = "luasnip";}
           ];
         };
       };
@@ -263,13 +266,57 @@
     };
 
     keymaps = [
-      { mode = "n"; key = "<leader>ff"; action = "<cmd>Telescope find_files<cr>"; options = { silent = true; }; }
-      { mode = "n"; key = "<leader>fg"; action = "<cmd>Telescope live_grep<cr>"; options = { silent = true; }; }
-      { mode = "n"; key = "<leader>fb"; action = "<cmd>Telescope buffers<cr>"; options = { silent = true; }; }
-      { mode = "n"; key = "<leader>fh"; action = "<cmd>Telescope help_tags<cr>"; options = { silent = true; }; }
-      { mode = "n"; key = "<leader>fe"; action = "<cmd>Neotree toggle<cr>"; options = { silent = true; desc = "Toggle tree"; }; }
-      { mode = "n"; key = "<leader>tt"; action = "<cmd>ToggleTerm<cr>"; options = { silent = true; desc = "Floating terminal"; }; }
-      { mode = "n"; key = "<leader>fm"; action = "<cmd>lua vim.lsp.buf.format({ async = true })<cr>"; options = { silent = true; desc = "Format"; }; }
-    ]; 
+      {
+        mode = "n";
+        key = "<leader>ff";
+        action = "<cmd>Telescope find_files<cr>";
+        options = {silent = true;};
+      }
+      {
+        mode = "n";
+        key = "<leader>fg";
+        action = "<cmd>Telescope live_grep<cr>";
+        options = {silent = true;};
+      }
+      {
+        mode = "n";
+        key = "<leader>fb";
+        action = "<cmd>Telescope buffers<cr>";
+        options = {silent = true;};
+      }
+      {
+        mode = "n";
+        key = "<leader>fh";
+        action = "<cmd>Telescope help_tags<cr>";
+        options = {silent = true;};
+      }
+      {
+        mode = "n";
+        key = "<leader>fe";
+        action = "<cmd>Neotree toggle<cr>";
+        options = {
+          silent = true;
+          desc = "Toggle tree";
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>tt";
+        action = "<cmd>ToggleTerm<cr>";
+        options = {
+          silent = true;
+          desc = "Floating terminal";
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>fm";
+        action = "<cmd>lua vim.lsp.buf.format({ async = true })<cr>";
+        options = {
+          silent = true;
+          desc = "Format";
+        };
+      }
+    ];
   };
 }
