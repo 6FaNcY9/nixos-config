@@ -19,6 +19,7 @@ let
   hasCodex = lib.hasAttr "codex" pkgs;
   i3Pkg = pkgs.i3;
   hmCli = inputs.home-manager.packages.${pkgs.stdenv.hostPlatform.system}.home-manager;
+  workspaceDefs = import ./modules/workspaces.nix;
   palette = {
     bg = c.base00;
     bgAlt = c.base01;
@@ -637,9 +638,7 @@ in
       config =
         let
           mod = "Mod4";
-          workspaceNames = [
-            "1: " "2: " "3: " "4: " "5: " "6: " "7: " "8: " "9: "
-          ];
+          workspaceNames = map (workspace: workspace.name) workspaceDefs;
           workspaceIndices = lib.range 1 (builtins.length workspaceNames);
 
           workspaceSwitch =
