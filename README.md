@@ -25,7 +25,7 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 - List flake outputs: `nix flake show .`
 
 ## Maintenance
-- Enter maintenance shell: `nix develop .#maintenance`
+- Enter maintenance shell: `nix develop` (default) or `nix develop .#maintenance`
 - Lint: `statix check .`
 - Dead code scan: `deadnix -f .`
 - Flake checks: `nix flake check`

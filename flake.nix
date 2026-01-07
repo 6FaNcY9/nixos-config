@@ -73,6 +73,15 @@
         allowUnfree = true;
       };
     };
+
+    maintenanceShell = pkgs.mkShell {
+      packages = with pkgs; [
+        alejandra
+        deadnix
+        statix
+        nix
+      ];
+    };
   in {
     nixosConfigurations.${hostname} = nixpkgs.lib.nixosSystem {
       inherit system;
@@ -86,8 +95,7 @@
         # Framework hardware module (adjust if you switch models)
         nixos-hardware.nixosModules.framework-13-7040-amd
         # nixos-hardware.nixosModules.framework-amd-ai-300-series
-        ./hardware-configuration.nix
-        ./configuration.nix
+        ./hosts/${hostname}
 
         stylix.nixosModules.stylix
 
@@ -133,16 +141,11 @@
 
     # nix eval fix (wrap outPath as a derivation)
     packages.${system}.gruvboxWallpaperOutPath = pkgs.writeText "gruvbox-wallpaper-outPath" inputs.gruvbox-wallpaper.outPath;
+
     # Optional: Flask dev shell (use later with: nix develop .#flask)
     devShells.${system} = {
-      maintenance = pkgs.mkShell {
-        packages = with pkgs; [
-          alejandra
-          deadnix
-          statix
-          nix
-        ];
-      };
+      maintenance = maintenanceShell;
+      default = maintenanceShell;
 
       flask = pkgs.mkShell {
         packages = with pkgs; [
