@@ -114,13 +114,30 @@
     # Optional: `nix fmt`
     formatter.${system} = pkgs.alejandra;
 
+    # Maintenance: static checks + eval targets
+    checks.${system} = {
+      nixos-bandit = self.nixosConfigurations.${hostname}.config.system.build.toplevel;
+      home-vino = self.homeConfigurations.${username}.activationPackage;
+    };
+
     # Optional: Flask dev shell (use later with: nix develop .#flask)
-    devShells.${system}.flask = pkgs.mkShell {
-      packages = with pkgs; [
-        python3
-        python3Packages.flask
-        python3Packages.virtualenv
-      ];
+    devShells.${system} = {
+      maintenance = pkgs.mkShell {
+        packages = with pkgs; [
+          alejandra
+          deadnix
+          statix
+          nix
+        ];
+      };
+
+      flask = pkgs.mkShell {
+        packages = with pkgs; [
+          python3
+          python3Packages.flask
+          python3Packages.virtualenv
+        ];
+      };
     };
   };
 }
