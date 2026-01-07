@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, inputs, ... }:
 
 {
   # Shared Stylix settings (safe to import in BOTH NixOS + Home Manager).
@@ -7,7 +7,8 @@
     enable = true;
     
     # Wallpaper
-    image = "/home/vino/Pictures/gruvbox-rainbow-nix.png";
+    #image = "/home/vino/Pictures/gruvbox-rainbow-nix.png";
+    image = "${inputs.gruvbox-wallpaper}/wallpapers/brands/gruvbox-rainbow-nix.png";
 
     polarity = lib.mkDefault "dark";
     base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/gruvbox-dark-pale.yaml";
@@ -18,24 +19,24 @@
     fonts = {
       sizes = {
         applications = 10;
-        terminal = 10;
+        terminal = 8;
         desktop = 10;
         popups = 10;
       };
 
       monospace = {
-        package = pkgs.jetbrains-mono;
-        name = "JetBrains Mono";
+        package = pkgs.nerd-fonts.jetbrains-mono;
+        name = "JetBrainsMono Nerd Font";
       };
 
       sansSerif = {
-        package = pkgs.jetbrains-mono;
-        name = "JetBrains Mono";
+        package = pkgs.nerd-fonts.jetbrains-mono;
+        name = "JetBrainsMono Nerd Font";
       };
 
       serif = {
-        package = pkgs.jetbrains-mono;
-        name = "JetBrains Mono";
+        package = pkgs.nerd-fonts.jetbrains-mono;
+        name = "JetBrainsMono Nerd Font";
       };
 
       emoji = {
@@ -45,4 +46,3 @@
     };
   };
 }
-

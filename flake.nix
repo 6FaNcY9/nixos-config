@@ -47,11 +47,17 @@
     hostname = "bandit";
     username = "vino";
     commonSpecialArgs = { inherit inputs username hostname; };
+    # Shared HM modules used inside the NixOS system build (Stylix is on the NixOS side)
     hmSharedModules = [
       inputs.nixvim.homeModules.nixvim
+    ];
+
+    # Standalone Home Manager output includes Stylix modules
+    hmSharedModulesHM = hmSharedModules ++ [
       inputs.stylix.homeModules.stylix
       ./modules/stylix-common.nix
     ];
+
     hmUserModules = hmSharedModules ++ [ ./home.nix ];
 
   # IMPORTANT:
@@ -72,6 +78,8 @@
       specialArgs = commonSpecialArgs;
 
       modules = [
+        { nixpkgs.config.allowUnfree = true; }
+
         # Framework hardware module (adjust if you switch models)
         nixos-hardware.nixosModules.framework-13-7040-amd
         # nixos-hardware.nixosModules.framework-amd-ai-300-series
@@ -108,7 +116,7 @@
 
       extraSpecialArgs = commonSpecialArgs;
 
-      modules = hmUserModules;
+      modules = hmSharedModulesHM ++ [ ./home.nix ];
     };
 
     # Optional: `nix fmt`
@@ -120,6 +128,8 @@
       home-vino = self.homeConfigurations.${username}.activationPackage;
     };
 
+    # nix eval fix (wrap outPath as a derivation)
+    packages.${system}.gruvboxWallpaperOutPath = pkgs.writeText "gruvbox-wallpaper-outPath" inputs.gruvbox-wallpaper.outPath;
     # Optional: Flask dev shell (use later with: nix develop .#flask)
     devShells.${system} = {
       maintenance = pkgs.mkShell {
@@ -137,6 +147,92 @@
           python3Packages.flask
           python3Packages.virtualenv
         ];
+      }; 
+
+      pentest = pkgs.mkShell rec {
+        stickyKeysSlayer = pkgs.stdenvNoCC.mkDerivation {
+          pname = "sticky-keys-slayer";
+          version = "git-2025-01-06";
+          src = pkgs.fetchFromGitHub {
+            owner = "linuz";
+            repo = "Sticky-Keys-Slayer";
+            rev = "0b431ac9909a3f7f47a31c02d8602a52d3a7006d";
+            sha256 = "sha256-rzdZArHwv8gAEvOGE4RdPnRXQ6hDGggG6eryM+if2cE=";
+          };
+          buildInputs = [ pkgs.makeWrapper ];
+          installPhase = ''
+            mkdir -p $out/bin
+            install -m755 stickyKeysSlayer.sh $out/bin/sticky-keys-slayer
+            wrapProgram $out/bin/sticky-keys-slayer --prefix PATH : ${
+              pkgs.lib.makeBinPath [
+                pkgs.imagemagick
+                pkgs.xdotool
+                pkgs.parallel
+                pkgs.bc
+                pkgs.rdesktop
+              ]
+            }   
+          ''; 
+        }; 
+        packages = (with pkgs; [
+          # Recon / scanning
+          nmap masscan rustscan amass subfinder httpx feroxbuster gobuster whatweb nikto
+          # Web app / exploit
+          sqlmap commix metasploit exploitdb zap ffuf wfuzz wpscan
+          # Creds / crypto
+          hashcat john hydra medusa hashcat-utils hashpump
+          # Network tooling
+          mitmproxy tcpdump wireshark socat netcat-openbsd
+          # Reversing / binaries
+          radare2 cutter gdb binwalk capstone ghidra
+          # Wireless
+          aircrack-ng kismet hcxdumptool hcxtools
+          # Wordlists
+          seclists
+        ]) ++ [ stickyKeysSlayer ];
+        
+        #shell prompt 
+        # shellHook = ''
+        #   export STARSHIP_CONFIG="${TMPDIR:-/tmp}/starship-pentest.toml"
+        #   mkdir -p "$(dirname "$STARSHIP_CONFIG")"
+        #   cat >"$STARSHIP_CONFIG" <<'EOF'
+        #   format = """$username$hostname$directory$git_branch$git_status$custom_ip$nix_shell$cmd_duration$character"""
+        #
+        #   [username]
+        #   format = "[$user](bold green)@"
+        #   show_always = true
+        #
+        #   [hostname]
+        #   ssh_only = false
+        #   format = "[$hostname](bold red) "
+        #
+        #   [directory]
+        #   style = "bold cyan"
+        #   truncation_length = 3
+        #
+        #   [git_branch]
+        #   format = " $branch "
+        #   style = "bold purple"
+        #
+        #   [git_status]
+        #   format = "[$all_status$ahead_behind]($style) "
+        #   style = "yellow"
+        #
+        #   [nix_shell]
+        #   format = "[$state](bold blue) "
+        #   disabled = false
+        #
+        #   [cmd_duration]
+        #   min_time = 500
+        #   format = "[⏱ $duration](bold yellow) "
+        #
+        #   [custom.ip]
+        #   command = "ip -4 -o addr show scope global | awk '{split($4,a,\"/\"); print a[1]; exit}'"
+        #   when = "ip -4 -o addr show scope global >/dev/null 2>&1"
+        #   style = "bold yellow"
+        #   format = "[$output](bold yellow) "
+        #   EOF
+        # '';
       };
     };
   };

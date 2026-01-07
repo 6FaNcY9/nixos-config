@@ -10,7 +10,7 @@
     targets.lightdm.enable = true;
       
     homeManagerIntegration = {
-      autoImport = lib.mkForce false;
+      autoImport = lib.mkDefault true;
       followSystem = lib.mkDefault true;
     };
   };

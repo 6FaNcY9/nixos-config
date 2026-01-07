@@ -47,7 +47,7 @@ let
     gcc
   ];
 
-  fontMain = "JetBrainsMono Nerd Font";
+  fontMain = "JetBrains Mono";
   fontMono = "JetBrainsMono Nerd Font Mono";
   fontEmoji = "Noto Color Emoji";
 in
@@ -181,6 +181,9 @@ in
 
   programs.dconf.enable = true;
   security.polkit.enable = true;
+  
+  programs.i3lock.enable = true;
+  security.pam.services.i3lock.enable = true; 
 
   # ------------------------------------------------------------
   # Audio
@@ -262,30 +265,36 @@ in
   # Fonts
   # ------------------------------------------------------------
   # Fonts / Fontconfig (so `fc-match monospace` prefers JetBrainsMono Nerd Font)
-  fonts = {
-    packages = with pkgs; [
-      nerd-fonts.jetbrains-mono
-      nerd-fonts.symbols-only
-      font-awesome
-      noto-fonts
-      noto-fonts-color-emoji
-    ];
+  fonts.fontconfig.useEmbeddedBitmaps = true;
 
-    fontconfig = {
-      enable = true;
-      defaultFonts = {
-        # Keep JetBrainsMono for text, and add a Symbols Nerd Font fallback for icon glyphs.
-        monospace = lib.mkForce [
-          fontMain
-          fontMono
-          "Symbols Nerd Font Mono"
-        ];
-        sansSerif = lib.mkForce [ fontMain ];
-        serif     = lib.mkForce [ fontMain ];
-        emoji     = lib.mkForce [ fontEmoji ];
-      };
-    };
-  };
+  # fonts.packages = with pkgs; [
+  #   nerd-fonts.symbols-only 
+  #   font-awesome
+  # ];
+  # fonts = {
+  #   packages = with pkgs; [
+  #     nerd-fonts.jetbrains-mono
+  #     nerd-fonts.symbols-only
+  #     font-awesome
+  #     noto-fonts
+  #     noto-fonts-color-emoji
+  #   ];
+  #
+  #   fontconfig = {
+  #     enable = true;
+  #     defaultFonts = {
+  #       # Keep JetBrainsMono for text, and add a Symbols Nerd Font fallback for icon glyphs.
+  #       monospace = lib.mkForce [
+  #         fontMain
+  #         fontMono
+  #         "Symbols Nerd Font Mono"
+  #       ];
+  #       sansSerif = lib.mkForce [ fontMain ];
+  #       serif     = lib.mkForce [ fontMain ];
+  #       emoji     = lib.mkForce [ fontEmoji ];
+  #     };
+  #   };
+  # };
 
   system.stateVersion = "25.11";
 }

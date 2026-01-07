@@ -28,5 +28,5 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 Notes
 - `allowUnfree = true` is enabled for packages like VS Code.
 - Stylix auto-enables Gruvbox; Home Manager targets follow system theme (see `modules/stylix-nixos.nix`).
-- `programs.i3blocks` is currently disabled in `home.nix`.
+- `programs.i3blocks` is currently disabled in `home/i3blocks.nix`.
 - Hibernate/suspend rely on the swap device/offset in `configuration.nix`—keep in sync if storage changes.
