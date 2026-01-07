@@ -25,6 +25,10 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 - Dead code scan: `deadnix -f .`
 - Flake checks: `nix flake check`
 
+## Updates (Optional)
+- Update all inputs: `nix flake update`
+- Update one input: `nix flake lock --update-input nixpkgs`
+
 Notes
 - `allowUnfree = true` is enabled for packages like VS Code.
 - Stylix auto-enables Gruvbox; Home Manager targets follow system theme (see `modules/stylix-nixos.nix`).
