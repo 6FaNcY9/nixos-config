@@ -133,6 +133,20 @@
     # Optional: `nix fmt`
     formatter.${system} = pkgs.alejandra;
 
+    nixosModules = {
+      stylix-common = ./modules/stylix-common.nix;
+      stylix-nixos = ./modules/stylix-nixos.nix;
+      profiles-base = ./profiles/base.nix;
+    };
+
+    homeManagerModules = {
+      firefox = ./home/firefox.nix;
+      i3 = ./home/i3.nix;
+      i3blocks = ./home/i3blocks.nix;
+      nixvim = ./home/nixvim.nix;
+      polybar = ./home/polybar.nix;
+    };
+
     # Maintenance: static checks + eval targets
     checks.${system} = {
       nixos-bandit = self.nixosConfigurations.${hostname}.config.system.build.toplevel;

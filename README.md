@@ -24,6 +24,7 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 
 ## Outputs
 - List flake outputs: `nix flake show .`
+- Reusable module exports: `nixosModules`, `homeManagerModules`
 
 ## Maintenance
 - Enter maintenance shell: `nix develop` (default) or `nix develop .#maintenance`
