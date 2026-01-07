@@ -19,6 +19,9 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 - Formatter: `nix fmt` (uses `alejandra`).
 - Optional dev shell: `nix develop .#flask`
 
+## Outputs
+- List flake outputs: `nix flake show .`
+
 ## Maintenance
 - Enter maintenance shell: `nix develop .#maintenance`
 - Lint: `statix check .`

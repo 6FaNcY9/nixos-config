@@ -2,6 +2,10 @@
 {
   description = "Framework 13 AMD: NixOS 25.11 + i3 + XFCE services + Home Manager + Stylix Gruvbox";
 
+  nixConfig = {
+    extra-experimental-features = "nix-command flakes";
+  };
+
   inputs = {
     # Stable 25.11
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
