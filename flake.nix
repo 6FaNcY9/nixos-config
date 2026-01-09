@@ -10,6 +10,12 @@
     # Stable 25.11
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
 
+    # Unstable (for newer packages like codex)
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    # Codex (always up-to-date flake)
+    codex-cli-nix.url = "github:sadjow/codex-cli-nix";
+
     # Hardware quirks for Framework
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware";
@@ -32,6 +38,18 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Secrets management (sops)
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Pre-commit tooling
+    pre-commit-hooks = {
+      url = "github:cachix/pre-commit-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Wallpaper
     gruvbox-wallpaper.url = "github:AngelJumbo/gruvbox-wallpapers";
   };
@@ -41,17 +59,32 @@
     nixpkgs,
     nixos-hardware,
     home-manager,
-    nixvim,
     stylix,
+    sops-nix,
     ...
   } @ inputs: let
     system = "x86_64-linux";
     hostname = "bandit";
     username = "vino";
     commonSpecialArgs = {inherit inputs username hostname;};
+
+    overlays = import ./overlays {inherit inputs;};
+
+    # IMPORTANT:
+    # - This pkgs is used by 'homeConfigurations' and 'devShells'.
+    # - Your home.nix includes 'pkgs.vscode'(unfree) so allowUnfree must be enabled here.
+    pkgs = import nixpkgs {
+      inherit system;
+      overlays = [overlays.default];
+      config = {
+        allowUnfree = true;
+      };
+    };
+
     # Shared HM modules used inside the NixOS system build (Stylix is on the NixOS side)
     hmSharedModules = [
       inputs.nixvim.homeModules.nixvim
+      inputs.sops-nix.homeManagerModules.sops
     ];
 
     # Standalone Home Manager output includes Stylix modules
@@ -59,18 +92,20 @@
       hmSharedModules
       ++ [
         inputs.stylix.homeModules.stylix
-        ./modules/stylix-common.nix
+        ./modules/shared/stylix-common.nix
       ];
 
-    hmUserModules = hmSharedModules ++ [./home.nix];
+    customPackages = import ./pkgs {};
 
-    # IMPORTANT:
-    # - This pkgs is used by 'homeConfigurations' and 'devShells'.
-    # - Your home.nix includes 'pkgs.vscode'(unfree) so allowUnfree must be enabled here.
-    pkgs = import nixpkgs {
-      inherit system;
-      config = {
-        allowUnfree = true;
+    preCommit = inputs.pre-commit-hooks.lib.${system}.run {
+      src = ./.;
+      hooks = {
+        treefmt = {
+          enable = true;
+          settings.formatters = [pkgs.alejandra];
+        };
+        statix.enable = true;
+        deadnix.enable = true;
       };
     };
 
@@ -79,8 +114,19 @@
         alejandra
         deadnix
         statix
+        treefmt
+        pre-commit
         nix
       ];
+      inherit (preCommit) shellHook;
+    };
+
+    repoRootCmd = ''repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"'';
+
+    mkApp = name: runtimeInputs: description: text: {
+      type = "app";
+      program = "${pkgs.writeShellApplication {inherit name runtimeInputs text;}}/bin/${name}";
+      meta = {inherit description;};
     };
   in {
     nixosConfigurations.${hostname} = nixpkgs.lib.nixosSystem {
@@ -90,71 +136,127 @@
       specialArgs = commonSpecialArgs;
 
       modules = [
-        {nixpkgs.config.allowUnfree = true;}
+        {
+          nixpkgs = {
+            config.allowUnfree = true;
+            overlays = [overlays.default];
+          };
+        }
 
         # Framework hardware module (adjust if you switch models)
         nixos-hardware.nixosModules.framework-13-7040-amd
         # nixos-hardware.nixosModules.framework-amd-ai-300-series
-        ./hosts/${hostname}
+        ./nixos/hosts/${hostname}
 
         stylix.nixosModules.stylix
+        sops-nix.nixosModules.sops
 
-        # Centralized Stylix config:
-        ./modules/stylix-common.nix
-        ./modules/stylix-nixos.nix
+        # Centralized Stylix config (imported via nixos/configuration.nix)
 
         home-manager.nixosModules.home-manager
         {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            backupFileExtension = "hm-bak";
 
-          home-manager.backupFileExtension = "hm-bak";
+            # Pass the same extra args into Home Manager modules.
+            extraSpecialArgs = commonSpecialArgs;
 
-          # Pass the same extra args into Home Manager modules.
-          home-manager.extraSpecialArgs = commonSpecialArgs;
+            # Provide nixvim's Home Manager module to all HM users.
+            sharedModules = hmSharedModules;
 
-          # Provide nixvim's Home Manager module to all HM users.
-          home-manager.sharedModules = hmSharedModules;
-
-          home-manager.users.${username} = import ./home.nix;
+            users.${username} = import ./home-manager/home.nix;
+          };
         }
       ];
     };
 
-    # Useful: run `home-manager switch --flake /etc/nixos#vino` without rebuilding the whole OS
-    homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
+    # Useful: run `home-manager switch --flake .#vino@bandit` without rebuilding the whole OS
+    homeConfigurations."${username}@${hostname}" = home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
 
       extraSpecialArgs = commonSpecialArgs;
 
-      modules = hmSharedModulesHM ++ [./home.nix];
+      modules = hmSharedModulesHM ++ [./home-manager/home.nix];
     };
 
     # Optional: `nix fmt`
     formatter.${system} = pkgs.alejandra;
 
     nixosModules = {
-      stylix-common = ./modules/stylix-common.nix;
-      stylix-nixos = ./modules/stylix-nixos.nix;
-      profiles-base = ./profiles/base.nix;
+      stylix-common = ./modules/shared/stylix-common.nix;
+      stylix-nixos = ./modules/nixos/stylix-nixos.nix;
     };
 
     homeManagerModules = {
-      firefox = ./home/firefox.nix;
-      i3 = ./home/i3.nix;
-      i3blocks = ./home/i3blocks.nix;
-      nixvim = ./home/nixvim.nix;
-      polybar = ./home/polybar.nix;
+      firefox = ./modules/home-manager/firefox.nix;
+      i3 = ./modules/home-manager/i3.nix;
+      i3blocks = ./modules/home-manager/i3blocks.nix;
+      lnav = ./modules/home-manager/lnav.nix;
+      nixvim = ./modules/home-manager/nixvim.nix;
+      polybar = ./modules/home-manager/polybar.nix;
     };
+
+    inherit overlays;
 
     # Maintenance: static checks + eval targets
     checks.${system} = {
+      pre-commit = preCommit;
       nixos-bandit = self.nixosConfigurations.${hostname}.config.system.build.toplevel;
-      home-vino = self.homeConfigurations.${username}.activationPackage;
+      home-vino = self.homeConfigurations."${username}@${hostname}".activationPackage;
     };
 
     # nix eval fix (wrap outPath as a derivation)
-    packages.${system}.gruvboxWallpaperOutPath = pkgs.writeText "gruvbox-wallpaper-outPath" inputs.gruvbox-wallpaper.outPath;
+    packages.${system} =
+      customPackages
+      // {
+        gruvboxWallpaperOutPath = pkgs.writeText "gruvbox-wallpaper-outPath" inputs.gruvbox-wallpaper.outPath;
+      };
+
+    apps.${system} = {
+      rebuild = mkApp "rebuild" [pkgs.coreutils pkgs.git pkgs.nix pkgs.sudo] "Rebuild and switch NixOS for bandit" ''
+        set -euo pipefail
+        ${repoRootCmd}
+        cd "$repo_root"
+        /run/current-system/sw/bin/nixos-rebuild switch --flake "$repo_root#${hostname}"
+      '';
+
+      home = mkApp "home" [pkgs.coreutils pkgs.git pkgs.nix] "Switch Home Manager for vino@bandit" ''
+        set -euo pipefail
+        ${repoRootCmd}
+        cd "$repo_root"
+        ${inputs.home-manager.packages.${system}.home-manager}/bin/home-manager switch --flake "$repo_root#${username}@${hostname}"
+      '';
+
+      update = mkApp "update" [pkgs.coreutils pkgs.git pkgs.nix] "Update flake inputs" ''
+        set -euo pipefail
+        ${repoRootCmd}
+        cd "$repo_root"
+        nix flake update
+      '';
+
+      fmt = mkApp "fmt" [pkgs.coreutils pkgs.git pkgs.treefmt] "Format repo with treefmt" ''
+        set -euo pipefail
+        ${repoRootCmd}
+        cd "$repo_root"
+        treefmt
+      '';
+
+      check = mkApp "check" [pkgs.coreutils pkgs.git pkgs.nix] "Run flake checks" ''
+        set -euo pipefail
+        ${repoRootCmd}
+        cd "$repo_root"
+        nix flake check
+      '';
+
+      clean = mkApp "clean" [pkgs.coreutils pkgs.git] "Remove result symlinks and pre-commit artifacts" ''
+        set -euo pipefail
+        ${repoRootCmd}
+        cd "$repo_root"
+        rm -f result result-* .pre-commit-config.yaml
+      '';
+    };
 
     # Optional: Flask dev shell (use later with: nix develop .#flask)
     devShells.${system} = {
@@ -245,49 +347,6 @@
             seclists
           ])
           ++ [stickyKeysSlayer];
-
-        #shell prompt
-        # shellHook = ''
-        #   export STARSHIP_CONFIG="${TMPDIR:-/tmp}/starship-pentest.toml"
-        #   mkdir -p "$(dirname "$STARSHIP_CONFIG")"
-        #   cat >"$STARSHIP_CONFIG" <<'EOF'
-        #   format = """$username$hostname$directory$git_branch$git_status$custom_ip$nix_shell$cmd_duration$character"""
-        #
-        #   [username]
-        #   format = "[$user](bold green)@"
-        #   show_always = true
-        #
-        #   [hostname]
-        #   ssh_only = false
-        #   format = "[$hostname](bold red) "
-        #
-        #   [directory]
-        #   style = "bold cyan"
-        #   truncation_length = 3
-        #
-        #   [git_branch]
-        #   format = " $branch "
-        #   style = "bold purple"
-        #
-        #   [git_status]
-        #   format = "[$all_status$ahead_behind]($style) "
-        #   style = "yellow"
-        #
-        #   [nix_shell]
-        #   format = "[$state](bold blue) "
-        #   disabled = false
-        #
-        #   [cmd_duration]
-        #   min_time = 500
-        #   format = "[⏱ $duration](bold yellow) "
-        #
-        #   [custom.ip]
-        #   command = "ip -4 -o addr show scope global | awk '{split($4,a,\"/\"); print a[1]; exit}'"
-        #   when = "ip -4 -o addr show scope global >/dev/null 2>&1"
-        #   style = "bold yellow"
-        #   format = "[$output](bold yellow) "
-        #   EOF
-        # '';
       };
     };
   };

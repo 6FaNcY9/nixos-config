@@ -1,0 +1,11 @@
+# Replace the age recipient below with your real public key.
+# Example: age1... (from: age-keygen -o ~/.config/sops/age/keys.txt)
+keys:
+  - &user  age134u5vtdts98pnept0k9v0uy4m6guthggfguw0ycvzn0evjeqgemsgl0krt
+  - &host age1r6cncetmt3xx9mv2hedvwm8dwc2nhy9rmekhah747kxeguzygplq6a875l
+creation_rules:
+  - path_regex: secrets/.*\.ya?ml
+    key_groups:
+      - age:
+          - *user
+          - *host 

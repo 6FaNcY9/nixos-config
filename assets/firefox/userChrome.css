@@ -1,4 +1,4 @@
-/* /etc/nixos/firefox/userChrome.css */
+/* assets/firefox/userChrome.css */
 
 /* Only Firefox UI (chrome) */
 @-moz-document url(chrome://browser/content/browser.xul),

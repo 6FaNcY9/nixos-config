@@ -52,6 +52,7 @@
       cmp-cmdline
       vim-matchup
       rainbow-delimiters-nvim
+      cheatsheet-nvim
     ];
 
     extraConfigLua = ''
@@ -86,6 +87,26 @@
           mapping = cmp.mapping.preset.cmdline(),
           sources = { { name = "buffer" } },
         })
+      end
+
+      -- Cheatsheet: searchable quick help for keymaps/commands
+      local has_cheatsheet, cheatsheet = pcall(require, "cheatsheet")
+      if has_cheatsheet then
+        cheatsheet.setup({
+          bundled_cheatsheets = true,
+          bundled_plugin_cheatsheets = true,
+          include_only_installed_plugins = true,
+        })
+
+        -- Avoid Telescope "open in new tab" errors inside Cheatsheet picker
+        vim.api.nvim_create_user_command("Cheatsheet", function()
+          cheatsheet.show_cheatsheet(nil, {
+            mappings = {
+              n = { t = false },
+              i = { ["<C-t>"] = false },
+            },
+          })
+        end, { force = true })
       end
     '';
 
@@ -168,7 +189,21 @@
         };
       };
 
-      which-key.enable = true;
+      which-key = {
+        enable = true;
+        settings = {
+          delay = 300;
+        };
+        luaConfig.post = ''
+          local wk = require("which-key")
+          wk.add({
+            { "<leader>f", group = "Find" },
+            { "<leader>t", group = "Terminal" },
+            { "<leader>c", group = "Code" },
+          })
+        '';
+      };
+
       comment.enable = true;
 
       toggleterm = {
@@ -270,25 +305,64 @@
         mode = "n";
         key = "<leader>ff";
         action = "<cmd>Telescope find_files<cr>";
-        options = {silent = true;};
+        options = {
+          silent = true;
+          desc = "Find files";
+        };
       }
       {
         mode = "n";
         key = "<leader>fg";
         action = "<cmd>Telescope live_grep<cr>";
-        options = {silent = true;};
+        options = {
+          silent = true;
+          desc = "Live grep";
+        };
       }
       {
         mode = "n";
         key = "<leader>fb";
         action = "<cmd>Telescope buffers<cr>";
-        options = {silent = true;};
+        options = {
+          silent = true;
+          desc = "Buffers";
+        };
       }
       {
         mode = "n";
         key = "<leader>fh";
         action = "<cmd>Telescope help_tags<cr>";
-        options = {silent = true;};
+        options = {
+          silent = true;
+          desc = "Help tags";
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>ft";
+        action = "<cmd>Tutor<cr>";
+        options = {
+          silent = true;
+          desc = "Tutor";
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>?";
+        action = "<cmd>Cheatsheet<cr>";
+        options = {
+          silent = true;
+          desc = "Cheatsheet";
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>fk";
+        action = "<cmd>Telescope keymaps<cr>";
+        options = {
+          silent = true;
+          desc = "Keymaps";
+        };
       }
       {
         mode = "n";
@@ -315,6 +389,15 @@
         options = {
           silent = true;
           desc = "Format";
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>fc";
+        action = "<cmd>Telescope commands<cr>";
+        options = {
+          silent = true;
+          desc = "Commands";
         };
       }
     ];

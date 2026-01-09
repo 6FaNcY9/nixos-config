@@ -1,0 +1,3 @@
+ignore = [
+  "nixos/hosts/**/hardware-configuration.nix",
+]

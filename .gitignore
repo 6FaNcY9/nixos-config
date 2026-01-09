@@ -11,8 +11,10 @@
 # -----------------------------
 # Project-specific
 # -----------------------------
-/nixFilesOld/
 /.codex/
+/AGENTS.md
+/agent.md
+/.pre-commit-config.yaml
 
 # -----------------------------
 # Secrets / keys (never commit)
@@ -26,11 +28,6 @@
 *.pfx
 *.kdbx
 *.age-key
-*.sops.yaml
-/secrets/
-/secret/
-/secrets.yaml
-/secrets.yml
 /keys/
 /.gnupg/
 /.ssh/
