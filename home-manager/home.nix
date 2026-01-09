@@ -87,6 +87,10 @@ in {
     homeDirectory = "/home/${username}";
     stateVersion = "25.11";
   };
+  home.sessionVariables = {
+    NH_FLAKE = repoRoot;
+    NH_NOM = "1";
+  };
   news.display = "silent";
 
   # home.activation.installPackages = lib.mkForce (lib.hm.dag.entryAfter [ "linkGeneration" ] ''
@@ -185,6 +189,9 @@ in {
 
       # Home Manager CLI
       hmCli
+      nh
+      nix-output-monitor
+      nvd
 
       # Dev tooling
       python3
@@ -269,11 +276,12 @@ in {
       '';
 
       shellAbbrs = {
-        rebuild = "sudo nixos-rebuild switch --flake ${repoRoot}#${hostname}";
-        #hms = "home-manager switch --flake ~/src/nixos-config#vino";
+        rebuild = "nh os switch ${repoRoot} -H ${hostname}";
+        hms = "nh home switch ${repoRoot} -c ${username}@${hostname}";
 
         qa = "nix run ${repoRoot}#qa";
         gcommit = "nix run ${repoRoot}#commit";
+        diffsys = "nvd diff /run/booted-system /run/current-system";
 
         ll = "eza -lah";
         ls = "eza -ah";

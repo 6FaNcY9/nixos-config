@@ -55,6 +55,9 @@ Tooling:
 - `statix` lints Nix files (see `statix.toml`).
 - `deadnix` finds unused bindings.
 - Pre-commit hooks run via `nix flake check`.
+- `nh` provides a higher-level CLI for `nixos-rebuild` and Home Manager operations.
+- `nix-output-monitor` (`nom`) prettifies build output for long Nix operations.
+- `nvd` compares system closures after rebuilds.
 
 ## Secrets (sops-nix)
 - Config lives in `modules/nixos/secrets.nix` and `modules/home-manager/secrets.nix`.
@@ -63,8 +66,10 @@ Tooling:
 - See `secrets/README.md` for the exact workflow.
 
 ## Usage
-- System switch: `sudo nixos-rebuild switch --flake .#bandit`
-- Home-only switch: `home-manager switch --flake .#vino@bandit`
+- System switch (classic): `sudo nixos-rebuild switch --flake .#bandit`
+- System switch (nh): `nh os switch . -H bandit`
+- Home-only switch (classic): `home-manager switch --flake .#vino@bandit`
+- Home-only switch (nh): `nh home switch . -c vino@bandit`
 - Convenience apps: `nix run .#rebuild`, `nix run .#home`, `nix run .#update`, `nix run .#fmt`, `nix run .#check`, `nix run .#clean`, `nix run .#qa`, `nix run .#commit`
 - Formatter: `nix fmt` (uses `alejandra`).
 - Dev shells: `nix develop` (maintenance), `nix develop .#flask`, `nix develop .#pentest`
@@ -98,7 +103,10 @@ Notes
 - System rebuild: `sudo nixos-rebuild switch --flake .#bandit`
 - Test rebuild: `sudo nixos-rebuild test --flake .#bandit`
 - Home switch: `home-manager switch --flake .#vino@bandit`
+- NH rebuild: `nh os switch . -H bandit`
+- NH home: `nh home switch . -c vino@bandit`
 - Flake check: `nix flake check`
 - Format: `treefmt` or `nix run .#fmt`
 - Update inputs: `nix flake update`
 - Clean artifacts: `nix run .#clean`
+- Diff current vs booted system: `nvd diff /run/booted-system /run/current-system`

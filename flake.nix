@@ -151,18 +151,18 @@
           };
 
         apps = {
-          rebuild = mkApp "rebuild" [pkgs.coreutils pkgs.git pkgs.nix pkgs.sudo] "Rebuild and switch NixOS for bandit" ''
+          rebuild = mkApp "rebuild" [pkgs.coreutils pkgs.git pkgs.nh pkgs.nix-output-monitor pkgs.nvd pkgs.sudo] "Rebuild and switch NixOS for bandit" ''
             set -euo pipefail
             ${repoRootCmd}
             cd "$repo_root"
-            /run/current-system/sw/bin/nixos-rebuild switch --flake "$repo_root#${hostname}"
+            nh os switch "$repo_root" -H ${hostname}
           '';
 
-          home = mkApp "home" [pkgs.coreutils pkgs.git pkgs.nix] "Switch Home Manager for vino@bandit" ''
+          home = mkApp "home" [pkgs.coreutils pkgs.git pkgs.nh pkgs.nix-output-monitor pkgs.nvd] "Switch Home Manager for vino@bandit" ''
             set -euo pipefail
             ${repoRootCmd}
             cd "$repo_root"
-            ${inputs.home-manager.packages.${system}.home-manager}/bin/home-manager switch --flake "$repo_root#${username}@${hostname}"
+            nh home switch "$repo_root" -c ${username}@${hostname}
           '';
 
           update = mkApp "update" [pkgs.coreutils pkgs.git pkgs.nix] "Update flake inputs" ''
@@ -206,10 +206,10 @@
               set -euo pipefail
               ${repoRootCmd}
               cd "$repo_root"
-              treefmt
+              treefmt --no-cache
               statix check .
               deadnix -f .
-              nix flake check
+              nix flake check --option warn-dirty false
             '';
 
           commit =
@@ -225,10 +225,10 @@
               set -euo pipefail
               ${repoRootCmd}
               cd "$repo_root"
-              treefmt
+              treefmt --no-cache
               statix check .
               deadnix -f .
-              nix flake check
+              nix flake check --option warn-dirty false
 
               git add -A
 
