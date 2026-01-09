@@ -6,12 +6,6 @@
   swapFile = "/swap/swapfile";
   btrfsFileSystems = ["/" "/home"];
 
-  # Keep these in sync with the actual swap device/offset so hibernate works.
-  resume = {
-    device = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
-    offset = 1959063;
-  };
-
   snapperUsers = [username];
   snapperTimeline = {
     FSTYPE = "btrfs";
@@ -40,10 +34,6 @@ in {
     # This config can stay true i think it didnt was the case for boot/efi storage overflow
     loader.efi.canTouchEfiVariables = true;
     kernelPackages = pkgs.linuxPackages_latest;
-
-    # For hibernation (kept near swap settings above)
-    resumeDevice = resume.device;
-    kernelParams = ["resume_offset=${toString resume.offset}"];
   };
 
   # SwapFile

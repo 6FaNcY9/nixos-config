@@ -43,7 +43,7 @@ in {
     settings = {
       experimental-features = ["nix-command" "flakes"];
       auto-optimise-store = true;
-      warn-dirty = false;
+      warn-dirty = true;
     };
 
     gc = {

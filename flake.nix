@@ -66,7 +66,10 @@
     system = "x86_64-linux";
     hostname = "bandit";
     username = "vino";
-    commonSpecialArgs = {inherit inputs username hostname;};
+    commonSpecialArgs = {
+      inherit inputs username hostname;
+      repoRoot = "/home/${username}/src/nixos-config";
+    };
 
     overlays = import ./overlays {inherit inputs;};
 

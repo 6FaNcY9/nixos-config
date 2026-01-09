@@ -1,4 +1,8 @@
-{lib, ...}: {
+{
+  lib,
+  username ? "vino",
+  ...
+}: {
   # sops-nix system defaults (safe even without secrets defined)
   sops = {
     age = {
@@ -9,9 +13,9 @@
 
     secrets."github_ssh_key" = {
       sopsFile = ../../secrets/github.yaml;
-      owner = "vino";
+      owner = username;
       mode = "0600";
-      path = "/home/vino/.ssh/github";
+      path = "/home/${username}/.ssh/github";
     };
   };
 

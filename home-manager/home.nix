@@ -5,6 +5,7 @@
   inputs,
   username ? "vino",
   hostname ? "bandit",
+  repoRoot ? "/home/${username}/src/nixos-config",
   ...
 }: let
   inherit (pkgs.stdenv.hostPlatform) system;
@@ -61,7 +62,6 @@
   i3Pkg = pkgs.i3;
   hmCli = inputs.home-manager.packages.${system}.home-manager;
   workspaceDefs = import ../modules/shared/workspaces.nix;
-  repoRoot = "/home/${username}/src/nixos-config";
   palette = {
     bg = c.base00;
     bgAlt = c.base01;
@@ -269,7 +269,7 @@ in {
       '';
 
       shellAbbrs = {
-        rebuild = "sudo nixos-rebuild switch --flake ~/src/nixos-config#bandit";
+        rebuild = "sudo nixos-rebuild switch --flake ${repoRoot}#${hostname}";
         #hms = "home-manager switch --flake ~/src/nixos-config#vino";
 
         ll = "eza -lah";

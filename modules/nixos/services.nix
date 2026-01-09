@@ -4,10 +4,9 @@
   config,
   username ? "vino",
   hostname ? "bandit",
+  repoRoot ? "/home/${username}/src/nixos-config",
   ...
-}: let
-  repoRoot = "/home/${username}/src/nixos-config";
-in {
+}: {
   # ------------------------------------------------------------
   # Automated updates (flake inputs + rebuild)
   # ------------------------------------------------------------
