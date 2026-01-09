@@ -88,7 +88,6 @@ in {
     stateVersion = "25.11";
   };
   home.sessionVariables = {
-    NH_FLAKE = repoRoot;
     NH_NOM = "1";
   };
   news.display = "silent";
@@ -276,11 +275,11 @@ in {
       '';
 
       shellAbbrs = {
-        rebuild = "nh os switch ${repoRoot} -H ${hostname}";
-        hms = "nh home switch ${repoRoot} -c ${username}@${hostname}";
+        rebuild = "nh os switch -H ${hostname}";
+        hms = "nh home switch -c ${username}@${hostname}";
 
-        qa = "nix run ${repoRoot}#qa";
-        gcommit = "nix run ${repoRoot}#commit";
+        qa = "nix --option warn-dirty false run ${repoRoot}#qa";
+        gcommit = "nix --option warn-dirty false run ${repoRoot}#commit";
         diffsys = "nvd diff /run/booted-system /run/current-system";
 
         ll = "eza -lah";

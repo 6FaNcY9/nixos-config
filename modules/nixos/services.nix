@@ -1,7 +1,6 @@
 {
   lib,
   pkgs,
-  config,
   username ? "vino",
   hostname ? "bandit",
   repoRoot ? "/home/${username}/src/nixos-config",
@@ -15,12 +14,15 @@
     serviceConfig = {
       Type = "oneshot";
       WorkingDirectory = repoRoot;
-      Environment = ["HOME=/home/${username}"];
+      Environment = [
+        "HOME=/home/${username}"
+        "NH_OS_FLAKE=${repoRoot}"
+      ];
     };
-    path = [pkgs.nix pkgs.git pkgs.util-linux];
+    path = [pkgs.nh pkgs.nix pkgs.git pkgs.util-linux];
     script = ''
       ${pkgs.util-linux}/bin/runuser -u ${username} -- nix flake update
-      ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch --flake ${repoRoot}#${hostname}
+      ${pkgs.util-linux}/bin/runuser -u ${username} -- nh os switch -H ${hostname}
     '';
   };
 

@@ -3,6 +3,7 @@
   inputs,
   username ? "vino",
   hostname ? "bandit",
+  repoRoot ? "/home/${username}/src/nixos-config",
   ...
 }: let
   userGroups = ["wheel" "networkmanager" "audio" "video" "docker"];
@@ -86,6 +87,11 @@ in {
       pinentryPackage = pkgs.pinentry-curses;
       # terminal pinentry
       enableSSHSupport = true;
+    };
+
+    nh = {
+      enable = true;
+      flake = repoRoot;
     };
   };
 

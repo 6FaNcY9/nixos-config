@@ -58,6 +58,8 @@ Tooling:
 - `nh` provides a higher-level CLI for `nixos-rebuild` and Home Manager operations.
 - `nix-output-monitor` (`nom`) prettifies build output for long Nix operations.
 - `nvd` compares system closures after rebuilds.
+- `qa`/`commit` run pre-commit using the generated config from the Nix store (no local `.pre-commit-config.yaml` file needed).
+- If you previously installed git hooks, use `nix run .#commit` (it runs pre-commit manually and commits with `--no-verify`). If you prefer plain `git commit`, reinstall hooks or run `pre-commit uninstall`.
 
 ## Secrets (sops-nix)
 - Config lives in `modules/nixos/secrets.nix` and `modules/home-manager/secrets.nix`.
@@ -67,17 +69,17 @@ Tooling:
 
 ## Usage
 - System switch (classic): `sudo nixos-rebuild switch --flake .#bandit`
-- System switch (nh): `nh os switch . -H bandit`
+- System switch (nh): `nh os switch -H bandit`
 - Home-only switch (classic): `home-manager switch --flake .#vino@bandit`
-- Home-only switch (nh): `nh home switch . -c vino@bandit`
-- Convenience apps: `nix run .#rebuild`, `nix run .#home`, `nix run .#update`, `nix run .#fmt`, `nix run .#check`, `nix run .#clean`, `nix run .#qa`, `nix run .#commit`
+- Home-only switch (nh): `nh home switch -c vino@bandit`
+- Convenience apps: `nix run .#update`, `nix run .#clean`, `nix run .#qa`, `nix run .#commit`
 - Formatter: `nix fmt` (uses `alejandra`).
 - Dev shells: `nix develop` (maintenance), `nix develop .#flask`, `nix develop .#pentest`
 
 ## Outputs
 - List flake outputs: `nix flake show .`
 - Reusable module exports: `nixosModules`, `homeModules`
-- Apps: `rebuild`, `home`, `update`, `fmt`, `check`, `clean`, `qa`, `commit`
+- Apps: `update`, `clean`, `qa`, `commit`
 
 ## Maintenance
 - Enter maintenance shell: `nix develop` (default) or `nix develop .#maintenance`
@@ -98,15 +100,16 @@ Notes
 - Stylix auto-enables Gruvbox; Home Manager targets follow system theme (see `modules/nixos/stylix-nixos.nix`).
 - `programs.i3blocks` is currently disabled in `modules/home-manager/i3blocks.nix`.
 - Hibernate/suspend rely on the swap device/offset in `nixos/configuration.nix`—keep in sync if storage changes.
+- If you want to suppress the dirty-tree warning for QA/commit, use the fish abbreviations `qa` / `gcommit` (they pass `--option warn-dirty false`).
 
 ## Cheatsheet
 - System rebuild: `sudo nixos-rebuild switch --flake .#bandit`
 - Test rebuild: `sudo nixos-rebuild test --flake .#bandit`
 - Home switch: `home-manager switch --flake .#vino@bandit`
-- NH rebuild: `nh os switch . -H bandit`
-- NH home: `nh home switch . -c vino@bandit`
+- NH rebuild: `nh os switch -H bandit`
+- NH home: `nh home switch -c vino@bandit`
 - Flake check: `nix flake check`
-- Format: `treefmt` or `nix run .#fmt`
+- Format: `treefmt`
 - Update inputs: `nix flake update`
 - Clean artifacts: `nix run .#clean`
 - Diff current vs booted system: `nvd diff /run/booted-system /run/current-system`

@@ -46,7 +46,7 @@
 
     # Pre-commit tooling
     pre-commit-hooks = {
-      url = "github:cachix/pre-commit-hooks.nix";
+      url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -103,34 +103,19 @@
 
       imports = [
         inputs.home-manager.flakeModules.home-manager
+        inputs.pre-commit-hooks.flakeModule
       ];
 
-      perSystem = {system, ...}: let
+      perSystem = {
+        system,
+        config,
+        ...
+      }: let
         pkgs = pkgsFor system;
         customPackages = import ./pkgs {};
 
-        preCommit = inputs.pre-commit-hooks.lib.${system}.run {
-          src = ./.;
-          hooks = {
-            treefmt = {
-              enable = true;
-              settings.formatters = [pkgs.alejandra];
-            };
-            statix.enable = true;
-            deadnix.enable = true;
-          };
-        };
-
         maintenanceShell = pkgs.mkShell {
-          packages = with pkgs; [
-            alejandra
-            deadnix
-            statix
-            treefmt
-            pre-commit
-            nix
-          ];
-          inherit (preCommit) shellHook;
+          packages = [pkgs.pre-commit pkgs.nix] ++ config.pre-commit.settings.enabledPackages;
         };
 
         repoRootCmd = ''repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"'';
@@ -150,21 +135,19 @@
             gruvboxWallpaperOutPath = pkgs.writeText "gruvbox-wallpaper-outPath" inputs.gruvbox-wallpaper.outPath;
           };
 
+        pre-commit = {
+          check.enable = true;
+          settings.hooks = {
+            treefmt = {
+              enable = true;
+              settings.formatters = [pkgs.alejandra];
+            };
+            statix.enable = true;
+            deadnix.enable = true;
+          };
+        };
+
         apps = {
-          rebuild = mkApp "rebuild" [pkgs.coreutils pkgs.git pkgs.nh pkgs.nix-output-monitor pkgs.nvd pkgs.sudo] "Rebuild and switch NixOS for bandit" ''
-            set -euo pipefail
-            ${repoRootCmd}
-            cd "$repo_root"
-            nh os switch "$repo_root" -H ${hostname}
-          '';
-
-          home = mkApp "home" [pkgs.coreutils pkgs.git pkgs.nh pkgs.nix-output-monitor pkgs.nvd] "Switch Home Manager for vino@bandit" ''
-            set -euo pipefail
-            ${repoRootCmd}
-            cd "$repo_root"
-            nh home switch "$repo_root" -c ${username}@${hostname}
-          '';
-
           update = mkApp "update" [pkgs.coreutils pkgs.git pkgs.nix] "Update flake inputs" ''
             set -euo pipefail
             ${repoRootCmd}
@@ -172,25 +155,11 @@
             nix flake update
           '';
 
-          fmt = mkApp "fmt" [pkgs.coreutils pkgs.git pkgs.treefmt] "Format repo with treefmt" ''
+          clean = mkApp "clean" [pkgs.coreutils pkgs.git] "Remove result symlinks" ''
             set -euo pipefail
             ${repoRootCmd}
             cd "$repo_root"
-            treefmt
-          '';
-
-          check = mkApp "check" [pkgs.coreutils pkgs.git pkgs.nix] "Run flake checks" ''
-            set -euo pipefail
-            ${repoRootCmd}
-            cd "$repo_root"
-            nix flake check
-          '';
-
-          clean = mkApp "clean" [pkgs.coreutils pkgs.git] "Remove result symlinks and pre-commit artifacts" ''
-            set -euo pipefail
-            ${repoRootCmd}
-            cd "$repo_root"
-            rm -f result result-* .pre-commit-config.yaml
+            rm -f result result-*
           '';
 
           qa =
@@ -200,6 +169,7 @@
               pkgs.deadnix
               pkgs.git
               pkgs.nix
+              pkgs.pre-commit
               pkgs.statix
               pkgs.treefmt
             ] "Format, lint, and run flake checks" ''
@@ -209,6 +179,7 @@
               treefmt --no-cache
               statix check .
               deadnix -f .
+              pre-commit run --all-files --config ${config.pre-commit.settings.configFile}
               nix flake check --option warn-dirty false
             '';
 
@@ -219,6 +190,7 @@
               pkgs.deadnix
               pkgs.git
               pkgs.nix
+              pkgs.pre-commit
               pkgs.statix
               pkgs.treefmt
             ] "Run QA, stage, and commit with a prompt" ''
@@ -228,6 +200,7 @@
               treefmt --no-cache
               statix check .
               deadnix -f .
+              pre-commit run --all-files --config ${config.pre-commit.settings.configFile}
               nix flake check --option warn-dirty false
 
               git add -A
@@ -238,13 +211,13 @@
                 echo "Commit message required." >&2
                 exit 1
               fi
-              git commit -m "$msg"
+              git commit --no-verify -m "$msg"
+              rm -f result result-*
             '';
         };
 
         # Maintenance: static checks + eval targets
         checks = {
-          pre-commit = preCommit;
           nixos-bandit = self.nixosConfigurations.${hostname}.config.system.build.toplevel;
           home-vino = self.homeConfigurations."${username}@${hostname}".activationPackage;
         };
