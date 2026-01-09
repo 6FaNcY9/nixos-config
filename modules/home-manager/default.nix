@@ -6,6 +6,7 @@
     ./lnav.nix
     ./nixvim.nix
     ./polybar.nix
+    ./profiles.nix
     ./secrets.nix
   ];
 }

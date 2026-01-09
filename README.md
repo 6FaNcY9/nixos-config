@@ -31,6 +31,7 @@ Where to add new config:
 - Boot/storage/swap: `modules/nixos/storage.nix`
 - Theme (system): `modules/nixos/stylix-nixos.nix` + `modules/shared/stylix-common.nix`
 - User packages: `home-manager/home.nix` → `home.packages`
+- Package groups: `modules/home-manager/profiles.nix` (toggle with `profiles.*` flags)
 - User programs: `home-manager/home.nix` → `programs = { ... }`
 - User modules: `modules/home-manager/<name>.nix` (add to `modules/home-manager/default.nix`)
 - Shared helpers: `lib/default.nix`
@@ -45,6 +46,7 @@ How imports work:
 
 Home Manager shared args:
 - `home-manager/home.nix` injects `_module.args`: `c`, `palette`, `stylixFonts`, `i3Pkg`, `workspaces`.
+- Package groups are defined in `modules/home-manager/profiles.nix` and controlled via `profiles` booleans (see below).
 - Use these in HM modules for consistent theming.
 
 Fish plugin src shorthand:
@@ -75,6 +77,14 @@ Tooling:
 - Convenience apps: `nix run .#update`, `nix run .#clean`, `nix run .#qa`, `nix run .#commit`
 - Formatter: `nix fmt` (uses `alejandra`).
 - Dev shells: `nix develop` (maintenance), `nix develop .#flask`, `nix develop .#pentest`
+
+## Package Profiles
+Toggle package groups in `home-manager/home.nix` (or a host-specific HM override) by setting:
+- `profiles.core` (CLI baseline)
+- `profiles.dev` (compilers, language toolchains)
+- `profiles.desktop` (GUI apps + desktop utilities)
+- `profiles.extras` (nice-to-have tools like `neofetch`/`chafa`)
+- `profiles.ai` (Codex CLI when available)
 
 ## Outputs
 - List flake outputs: `nix flake show .`

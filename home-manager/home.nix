@@ -78,7 +78,7 @@ in {
   ];
 
   _module.args = {
-    inherit c stylixFonts palette i3Pkg hostname;
+    inherit c stylixFonts palette i3Pkg hostname hmCli codexPkg;
     workspaces = workspaceDefs;
   };
 
@@ -86,6 +86,13 @@ in {
     inherit username;
     homeDirectory = "/home/${username}";
     stateVersion = "25.11";
+  };
+  profiles = {
+    core = true;
+    dev = true;
+    desktop = true;
+    extras = true;
+    ai = true;
   };
   home.sessionVariables = {
     NH_NOM = "1";
@@ -153,85 +160,7 @@ in {
     };
   };
 
-  # ------------------------------------------------------------
-  # Packages
-  # ------------------------------------------------------------
-  home.packages =
-    (with pkgs; [
-      # Core CLI
-      git
-      delta
-      lazygit
-      eza
-      tree
-      ripgrep
-      fd
-      fzf
-      jq
-      bat
-      broot
-      gdu
-      zoxide
-      tmux
-      zellij
-      procs
-      hexyl
-      chafa
-      yq-go
-      curl
-      wget
-      p7zip
-      unzip
-      zip
-      man-pages
-      man-pages-posix
-
-      # Home Manager CLI
-      hmCli
-      nh
-      nix-output-monitor
-      nvd
-
-      # Dev tooling
-      python3
-      clang
-      gnumake
-      pkg-config
-      nodejs
-      rustc
-      cargo
-      rustfmt
-      clippy
-      uv
-
-      # Desktop + apps
-      alacritty
-      rofi
-      xfce.thunar
-      networkmanagerapplet
-      blueman
-      btop
-      neofetch
-      brightnessctl
-      dunst
-      flameshot
-      picom
-      playerctl
-      polkit_gnome
-      pulseaudio
-      vscode
-      devenv
-      feh
-      fontconfig
-      killall
-      xclip
-      gsimplecal
-
-      # Fonts/icons
-      font-awesome
-      nerd-fonts.jetbrains-mono
-    ])
-    ++ lib.optionals (codexPkg != null) [codexPkg];
+  # Packages are grouped in modules/home-manager/profiles.nix
 
   programs = {
     home-manager.enable = true;
