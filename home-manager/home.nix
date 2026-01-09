@@ -272,6 +272,9 @@ in {
         rebuild = "sudo nixos-rebuild switch --flake ${repoRoot}#${hostname}";
         #hms = "home-manager switch --flake ~/src/nixos-config#vino";
 
+        qa = "nix run ${repoRoot}#qa";
+        gcommit = "nix run ${repoRoot}#commit";
+
         ll = "eza -lah";
         ls = "eza -ah";
 
@@ -344,6 +347,7 @@ in {
       terminal = "${pkgs.alacritty}/bin/alacritty";
       extraConfig = {
         show-icons = true;
+        icon-theme = "Papirus-Dark";
         modi = "drun,run,window";
         drun-display-format = "{name}";
         font = "${stylixFonts.sansSerif.name} 12";

@@ -192,6 +192,54 @@
             cd "$repo_root"
             rm -f result result-* .pre-commit-config.yaml
           '';
+
+          qa =
+            mkApp "qa" [
+              pkgs.alejandra
+              pkgs.coreutils
+              pkgs.deadnix
+              pkgs.git
+              pkgs.nix
+              pkgs.statix
+              pkgs.treefmt
+            ] "Format, lint, and run flake checks" ''
+              set -euo pipefail
+              ${repoRootCmd}
+              cd "$repo_root"
+              treefmt
+              statix check .
+              deadnix -f .
+              nix flake check
+            '';
+
+          commit =
+            mkApp "commit" [
+              pkgs.alejandra
+              pkgs.coreutils
+              pkgs.deadnix
+              pkgs.git
+              pkgs.nix
+              pkgs.statix
+              pkgs.treefmt
+            ] "Run QA, stage, and commit with a prompt" ''
+              set -euo pipefail
+              ${repoRootCmd}
+              cd "$repo_root"
+              treefmt
+              statix check .
+              deadnix -f .
+              nix flake check
+
+              git add -A
+
+              printf "Commit message: "
+              read -r msg
+              if [ -z "$msg" ]; then
+                echo "Commit message required." >&2
+                exit 1
+              fi
+              git commit -m "$msg"
+            '';
         };
 
         # Maintenance: static checks + eval targets

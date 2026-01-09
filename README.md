@@ -65,14 +65,14 @@ Tooling:
 ## Usage
 - System switch: `sudo nixos-rebuild switch --flake .#bandit`
 - Home-only switch: `home-manager switch --flake .#vino@bandit`
-- Convenience apps: `nix run .#rebuild`, `nix run .#home`, `nix run .#update`, `nix run .#fmt`, `nix run .#check`, `nix run .#clean`
+- Convenience apps: `nix run .#rebuild`, `nix run .#home`, `nix run .#update`, `nix run .#fmt`, `nix run .#check`, `nix run .#clean`, `nix run .#qa`, `nix run .#commit`
 - Formatter: `nix fmt` (uses `alejandra`).
 - Dev shells: `nix develop` (maintenance), `nix develop .#flask`, `nix develop .#pentest`
 
 ## Outputs
 - List flake outputs: `nix flake show .`
 - Reusable module exports: `nixosModules`, `homeModules`
-- Apps: `rebuild`, `home`, `update`, `fmt`, `check`, `clean`
+- Apps: `rebuild`, `home`, `update`, `fmt`, `check`, `clean`, `qa`, `commit`
 
 ## Maintenance
 - Enter maintenance shell: `nix develop` (default) or `nix develop .#maintenance`

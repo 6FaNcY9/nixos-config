@@ -16,6 +16,13 @@
     polarity = lib.mkDefault "dark";
     base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/gruvbox-dark-pale.yaml";
 
+    iconTheme = {
+      enable = true;
+      package = pkgs.papirus-icon-theme;
+      dark = "Papirus-Dark";
+      light = "Papirus-Light";
+    };
+
     # Fonts strategy:
     # - Use regular JetBrains Mono (better glyph metrics).
     # - Install Symbols Nerd Font (symbols-only) separately (nixos/configuration.nix) so icons come via fallback.
