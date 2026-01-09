@@ -71,7 +71,7 @@ Tooling:
 
 ## Outputs
 - List flake outputs: `nix flake show .`
-- Reusable module exports: `nixosModules`, `homeManagerModules`
+- Reusable module exports: `nixosModules`, `homeModules`
 - Apps: `rebuild`, `home`, `update`, `fmt`, `check`, `clean`
 
 ## Maintenance
