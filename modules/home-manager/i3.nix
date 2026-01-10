@@ -204,7 +204,7 @@
               "${mod}+Shift+z" = "exec systemctl suspend";
               "${mod}+Shift+b" = "exec systemctl reboot";
               "${mod}+Shift+p" = "exec systemctl poweroff";
-              "${mod}+Shift+e" = "exec i3-nagbar -t warning -m 'Exit i3?' -b 'Yes' 'i3-msg exit'";
+              "${mod}+Shift+e" = "exec i3-nagbar -t warning -m 'Exit session?' -b 'Yes' 'xfce4-session-logout'";
               "${mod}+r" = "mode \"resize\"";
 
               "Print" = "exec ${pkgs.flameshot}/bin/flameshot gui";

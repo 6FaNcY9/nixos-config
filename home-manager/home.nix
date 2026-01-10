@@ -87,13 +87,6 @@ in {
     homeDirectory = "/home/${username}";
     stateVersion = "25.11";
   };
-  profiles = {
-    core = true;
-    dev = true;
-    desktop = true;
-    extras = true;
-    ai = true;
-  };
   home.sessionVariables = {
     NH_NOM = "1";
   };

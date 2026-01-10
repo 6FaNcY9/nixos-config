@@ -48,7 +48,7 @@ in {
     };
 
     gc = {
-      automatic = true;
+      automatic = false;
       dates = "weekly";
       options = "--delete-older-than 14d";
     };
@@ -92,6 +92,10 @@ in {
     nh = {
       enable = true;
       flake = repoRoot;
+      clean = {
+        enable = true;
+        extraArgs = "--keep-since 4d --keep 3";
+      };
     };
   };
 

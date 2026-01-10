@@ -91,10 +91,10 @@
 in {
   options.profiles = {
     core = mkProfile "core CLI tools" true;
-    dev = mkProfile "development tools" true;
-    desktop = mkProfile "desktop apps" true;
-    extras = mkProfile "nice-to-have extras" true;
-    ai = mkProfile "AI tools" true;
+    dev = mkProfile "development tools" false;
+    desktop = mkProfile "desktop apps" false;
+    extras = mkProfile "nice-to-have extras" false;
+    ai = mkProfile "AI tools" false;
   };
 
   config.home.packages = lib.concatLists [

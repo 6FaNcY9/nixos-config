@@ -8,8 +8,9 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 - `nixos/hosts/bandit/` – host entrypoint and hardware profile (`hardware-configuration.nix`).
 - `nixos/hosts/README.md` – quick guide for adding hosts.
 - `home-manager/home.nix` – Home Manager profile: Stylix targets (gtk, i3, xfce, rofi, starship, nixvim, firefox), Firefox userChrome override, package set (CLIs, dev tools, desktop utilities), fish setup with abbreviations, Atuin/Zoxide/direnv/fzf, i3 config, XFCE session XML, and detailed nixvim plugin stack.
+- `home-manager/hosts/<name>.nix` – host-specific Home Manager overrides (profiles, device names, etc.).
 - `modules/shared/` – shared stylix palette/fonts + i3 workspace list.
-- `modules/nixos/` – NixOS modules: `core.nix`, `storage.nix`, `services.nix`, `desktop.nix`, `stylix-nixos.nix`.
+- `modules/nixos/` – NixOS modules: `core.nix`, `storage.nix`, `services.nix`, `roles.nix`, `roles-laptop.nix`, `roles-server.nix`, `desktop.nix`, `stylix-nixos.nix`.
 - `modules/home-manager/` – Home Manager modules (i3, polybar, nixvim, firefox, etc.).
 - `overlays/` – overlays (includes `pkgs.unstable`).
 - `pkgs/` – custom packages (exposed via `nix build .#pkgname`).
@@ -23,15 +24,26 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 - Avoid editing `hardware-configuration.nix` unless re-generated.
 - Run `nix fmt` (alejandra) after changes.
 
+## Host Matrix (intent)
+| Host | Roles | Desktop Variant | Notes |
+| --- | --- | --- | --- |
+| bandit | desktop, laptop | i3-xfce | Framework 13 AMD laptop |
+| server-<name> | server | (none) | Headless/server host example |
+| droid-<name> | (nix-on-droid) | (none) | Termux/nix-on-droid host example |
+
 ## Editing Guide
 Where to add new config:
 - System packages: `modules/nixos/core.nix` → `environment.systemPackages`
 - System services: `modules/nixos/services.nix`
 - Desktop/X11/i3/XFCE: `modules/nixos/desktop.nix`
+- Roles are opt-in per host (`roles.desktop`, `roles.laptop`, `roles.server`).
+- Desktop toggle: `roles.desktop = true;` (enable GUI per host).
+- Desktop variant: `desktop.variant = "i3-xfce";` (per host)
 - Boot/storage/swap: `modules/nixos/storage.nix`
 - Theme (system): `modules/nixos/stylix-nixos.nix` + `modules/shared/stylix-common.nix`
 - User packages: `home-manager/home.nix` → `home.packages`
 - Package groups: `modules/home-manager/profiles.nix` (toggle with `profiles.*` flags)
+- Device names: `modules/home-manager/devices.nix` (override via `devices.*` in host HM module)
 - User programs: `home-manager/home.nix` → `programs = { ... }`
 - User modules: `modules/home-manager/<name>.nix` (add to `modules/home-manager/default.nix`)
 - Shared helpers: `lib/default.nix`
@@ -99,7 +111,7 @@ Toggle package groups in `home-manager/home.nix` (or a host-specific HM override
 - Flake checks: `nix flake check` (includes pre-commit hooks)
 
 ## Automation
-- Daily systemd timer `nixos-config-update` runs `nix flake update` and `nixos-rebuild switch` for `bandit`.
+- Weekly systemd timer `nixos-config-update` runs `nix flake update` and `nixos-rebuild switch` for `bandit` (AC power only).
 
 ## Updates (Optional)
 - Update all inputs: `nix flake update`
@@ -111,6 +123,10 @@ Notes
 - `programs.i3blocks` is currently disabled in `modules/home-manager/i3blocks.nix`.
 - Hibernate/suspend rely on the swap device/offset in `nixos/configuration.nix`—keep in sync if storage changes.
 - If you want to suppress the dirty-tree warning for QA/commit, use the fish abbreviations `qa` / `gcommit` (they pass `--option warn-dirty false`).
+- Bluetooth is only enabled when `roles.laptop = true` (defaults to off on new hosts).
+- XFCE is used as a session manager only (`noDesktop = true`, `enableXfwm = false`); i3 handles window management.
+- Roles are opt-in per host; enable `roles.desktop`/`roles.laptop` only where needed.
+- Polybar hides battery/backlight/power modules when no device is configured and shows IP instead.
 
 ## Cheatsheet
 - System rebuild: `sudo nixos-rebuild switch --flake .#bandit`

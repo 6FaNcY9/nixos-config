@@ -97,6 +97,12 @@
         inputs.stylix.homeModules.stylix
         ./modules/shared/stylix-common.nix
       ];
+
+    hmHostPath = ./home-manager/hosts/${hostname}.nix;
+    hmHostModules =
+      if builtins.pathExists hmHostPath
+      then [hmHostPath]
+      else [];
   in
     flake-parts.lib.mkFlake {inherit inputs;} ({self, ...}: {
       systems = [system];
@@ -353,7 +359,9 @@
                 # Provide nixvim's Home Manager module to all HM users.
                 sharedModules = hmSharedModules;
 
-                users.${username} = import ./home-manager/home.nix;
+                users.${username} = {
+                  imports = hmHostModules ++ [./home-manager/home.nix];
+                };
               };
             }
           ];
@@ -365,7 +373,7 @@
 
           extraSpecialArgs = commonSpecialArgs;
 
-          modules = hmSharedModulesHM ++ [./home-manager/home.nix];
+          modules = hmSharedModulesHM ++ hmHostModules ++ [./home-manager/home.nix];
         };
 
         nixosModules = {

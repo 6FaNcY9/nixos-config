@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  config,
   username ? "vino",
   hostname ? "bandit",
   repoRoot ? "/home/${username}/src/nixos-config",
@@ -11,33 +12,33 @@
   # ------------------------------------------------------------
   systemd.services.nixos-config-update = {
     description = "Update nixos-config flake inputs and rebuild";
+    unitConfig = {
+      ConditionACPower = true;
+    };
     serviceConfig = {
       Type = "oneshot";
       WorkingDirectory = repoRoot;
-      Environment = [
-        "HOME=/home/${username}"
-        "NH_OS_FLAKE=${repoRoot}"
-      ];
+      Environment = ["HOME=/home/${username}"];
     };
-    path = [pkgs.nh pkgs.nix pkgs.git pkgs.util-linux];
+    path = [pkgs.nix pkgs.git pkgs.util-linux];
     script = ''
       ${pkgs.util-linux}/bin/runuser -u ${username} -- nix flake update
-      ${pkgs.util-linux}/bin/runuser -u ${username} -- nh os switch -H ${hostname}
+      ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch --flake ${repoRoot}#${hostname}
     '';
   };
 
   systemd.timers.nixos-config-update = {
     wantedBy = ["timers.target"];
     timerConfig = {
-      OnCalendar = "daily";
-      RandomizedDelaySec = "1h";
+      OnCalendar = "weekly";
+      RandomizedDelaySec = "2h";
       Persistent = true;
     };
   };
 
   services = {
     openssh = {
-      enable = lib.mkDefault false;
+      enable = lib.mkDefault config.roles.server;
       settings = {
         PasswordAuthentication = false;
         PermitRootLogin = "no";
