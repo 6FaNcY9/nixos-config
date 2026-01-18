@@ -5,6 +5,7 @@
     ./profiles.nix
     ./roles-laptop.nix
     ./roles-server.nix
+    ./server-base.nix
     ./secrets.nix
     ./storage.nix
     ./services.nix

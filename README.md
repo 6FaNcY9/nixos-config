@@ -10,7 +10,7 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 - `home-manager/home.nix` – Home Manager profile: Stylix targets (gtk, i3, xfce, rofi, starship, nixvim, firefox), Firefox userChrome override, package set (CLIs, dev tools, desktop utilities), fish setup with abbreviations, Atuin/Zoxide/direnv/fzf, i3 config, XFCE session XML, and detailed nixvim plugin stack.
 - `home-manager/hosts/<name>.nix` – host-specific Home Manager overrides (profiles, device names, etc.).
 - `modules/shared/` – shared stylix palette/fonts + i3 workspace list.
-- `modules/nixos/` – NixOS modules: `core.nix`, `storage.nix`, `services.nix`, `roles.nix`, `roles-laptop.nix`, `roles-server.nix`, `desktop.nix`, `stylix-nixos.nix`.
+- `modules/nixos/` – NixOS modules: `core.nix`, `storage.nix`, `services.nix`, `roles.nix`, `roles-laptop.nix`, `roles-server.nix`, `server-base.nix`, `desktop.nix`, `stylix-nixos.nix`.
 - `modules/home-manager/` – Home Manager modules (i3, polybar, nixvim, firefox, etc.).
 - `overlays/` – overlays (includes `pkgs.unstable`).
 - `pkgs/` – custom packages (exposed via `nix build .#pkgname`).
@@ -35,6 +35,7 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 Where to add new config:
 - System packages: `modules/nixos/core.nix` → `environment.systemPackages`
 - System services: `modules/nixos/services.nix`
+- Server base: `modules/nixos/server-base.nix` (`server.base.enable`, `server.ssh.allowUsers`, `server.fail2ban.ignoreIP`)
 - Desktop/X11/i3/XFCE: `modules/nixos/desktop.nix`
 - Roles are opt-in per host (`roles.desktop`, `roles.laptop`, `roles.server`).
 - Desktop toggle: `roles.desktop = true;` (enable GUI per host).
