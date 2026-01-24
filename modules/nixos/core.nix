@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   inputs,
   username ? "vino",
@@ -47,11 +48,8 @@ in {
       warn-dirty = true;
     };
 
-    gc = {
-      automatic = false;
-      dates = "weekly";
-      options = "--delete-older-than 14d";
-    };
+    # Use nh's cleaner to avoid double GC scheduling.
+    gc.automatic = lib.mkDefault false;
 
     optimise = {
       automatic = true;
@@ -106,7 +104,6 @@ in {
       isNormalUser = true;
       description = username;
       extraGroups = userGroups;
-      shell = pkgs.fish;
     };
   };
 

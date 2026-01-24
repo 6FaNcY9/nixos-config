@@ -76,12 +76,10 @@
     pulseaudio
     vscode
     feh
-    fontconfig
     killall
     xclip
     gsimplecal
     font-awesome
-    nerd-fonts.jetbrains-mono
   ];
 
   extrasPkgs = with pkgs; [

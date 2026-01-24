@@ -433,7 +433,7 @@ in {
   # ------------------------------------------------------------
   # Session services
   # ------------------------------------------------------------
-  services = {
+  services = lib.mkIf config.profiles.desktop {
     # Launch nm-applet on demand via i3blocks click (see net block below)
     network-manager-applet.enable = true;
     dunst.enable = true;

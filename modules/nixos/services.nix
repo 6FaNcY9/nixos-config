@@ -59,7 +59,7 @@
     #   };
     # };
 
-    trezord.enable = true;
+    trezord.enable = lib.mkDefault config.roles.desktop;
 
     journald.extraConfig = ''
       SystemMaxUse=500M
