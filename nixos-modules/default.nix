@@ -5,7 +5,6 @@
     ../shared-modules/stylix-common.nix
     ./core.nix
     ./roles.nix
-    ./profiles.nix
     ./roles-laptop.nix
     ./roles-server.nix
     ./server-base.nix

@@ -62,6 +62,7 @@
 
   desktopPkgs = with pkgs; [
     alacritty
+    firefox
     rofi
     xfce.thunar
     networkmanagerapplet

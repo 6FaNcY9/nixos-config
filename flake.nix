@@ -106,7 +106,10 @@
         ...
       }: let
         pkgs = pkgsFor system;
-        customPackages = import ./pkgs {};
+        customPackages =
+          if builtins.pathExists ./pkgs/default.nix
+          then import ./pkgs {}
+          else {};
         missionControlWrapper = config.mission-control.wrapper;
         maintenancePackages = [pkgs.pre-commit pkgs.nix missionControlWrapper] ++ config.pre-commit.settings.enabledPackages;
 

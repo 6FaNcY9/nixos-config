@@ -4,7 +4,6 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 
 ## Layout
 - `flake.nix` – uses flake-parts + ez-configs to wire inputs and exports `nixosConfigurations.bandit`, `homeConfigurations."vino@bandit"`, formatter, and optional dev shells (maintenance, flask, pentest).
-- `nixos/configuration.nix` – legacy entrypoint (kept for manual imports; ez-configs uses `nixos-configurations/*`).
 - `nixos-configurations/bandit/` – host entrypoint and hardware profile (`hardware-configuration.nix`).
 - `nixos-configurations/README.md` – quick guide for adding hosts.
 - `home-configurations/vino/default.nix` – Home Manager profile: Stylix targets (gtk, i3, xfce, rofi, starship, nixvim, firefox), Firefox userChrome override, package set (CLIs, dev tools, desktop utilities), fish setup with abbreviations, Atuin/Zoxide/direnv/fzf, i3 config, XFCE session XML, and detailed nixvim plugin stack.
@@ -13,7 +12,7 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 - `nixos-modules/` – NixOS modules: `core.nix`, `storage.nix`, `services.nix`, `roles.nix`, `roles-laptop.nix`, `roles-server.nix`, `server-base.nix`, `desktop.nix`, `stylix-nixos.nix`.
 - `home-modules/` – Home Manager modules (i3, polybar, nixvim, firefox, etc.).
 - `overlays/` – overlays (includes `pkgs.unstable`).
-- `pkgs/` – custom packages (exposed via `nix build .#pkgname`).
+- `pkgs/` – optional custom packages (create `pkgs/default.nix` when needed; exposed via `nix build .#pkgname`).
 - `assets/firefox/` – userChrome.css + theme template.
 - `lib/` – helper functions shared across modules.
 
@@ -50,14 +49,13 @@ Where to add new config:
 - Shared helpers: `lib/default.nix`
 - Workspaces list: `shared-modules/workspaces.nix`
 - Overlays: `overlays/default.nix`
-- Custom packages: `pkgs/default.nix`
+- Custom packages: create `pkgs/default.nix` (optional)
 
 How imports work (ez-configs):
 - `nixos-modules/default.nix` and `home-modules/default.nix` are module aggregators that set `imports = [ ... ]`.
 - ez-configs auto-imports `nixos-modules/default.nix` for every host (unless `importDefault = false`).
 - ez-configs auto-imports `home-modules/default.nix` for every user (unless `importDefault = false`).
 - `homeConfigurations` are generated per host when a user is listed under `ezConfigs.nixos.hosts.<host>.userHomeModules`.
-- `nixos/configuration.nix` is legacy/optional and not used by default.
 
 Home Manager shared args:
 - `home-configurations/vino/default.nix` injects `_module.args`: `c`, `palette`, `stylixFonts`, `i3Pkg`, `workspaces`.

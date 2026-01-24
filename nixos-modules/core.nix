@@ -12,7 +12,6 @@
     btrfs-progs
     curl
     efibootmgr
-    firefox
     git
     snapper
     vim
