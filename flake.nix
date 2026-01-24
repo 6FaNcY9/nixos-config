@@ -89,6 +89,7 @@
         inputs.mission-control.flakeModule
         inputs.devshell.flakeModule
         inputs.flake-root.flakeModule
+        inputs.flake-parts.flakeModules.modules
       ];
 
       ezConfigs = {
@@ -351,6 +352,10 @@
 
       flake = {
         inherit overlays;
+        modules = {
+          nixos.default = ./nixos-modules;
+          home.default = ./home-modules;
+        };
       };
     });
 }
