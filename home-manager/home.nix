@@ -178,6 +178,10 @@ in {
         set -gx SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
         set -e SSH_AGENT_PID
 
+        if test -r ${config.sops.secrets.github_mcp_pat.path}
+          set -x GITHUB_MCP_PAT (cat ${config.sops.secrets.github_mcp_pat.path})
+        end
+
         set -g fzf_fd_opts --hidden --follow --exclude .git
         set -g fzf_preview_dir_cmd 'eza --all --color=always --group-directories-first'
         set -g fzf_preview_file_cmd 'bat --style=numbers --color=always'
