@@ -1,5 +1,9 @@
-{...}: {
+{inputs, ...}: {
   imports = [
+    inputs.nixvim.homeModules.nixvim
+    inputs.sops-nix.homeManagerModules.sops
+    inputs.stylix.homeModules.stylix
+    ../shared-modules/stylix-common.nix
     ./devices.nix
     ./firefox.nix
     ./i3.nix

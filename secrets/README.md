@@ -12,9 +12,9 @@ This repo uses sops-nix for encrypted secrets. The flow is:
    - sops secrets/example.yaml
 
 4) Reference secrets in NixOS or Home Manager:
-   - NixOS: sops.secrets.<name>.sopsFile = ./secrets/example.yaml;
-   - HM:    sops.secrets.<name>.sopsFile = ./secrets/example.yaml;
+   - NixOS: sops.secrets.<name>.sopsFile = "${inputs.self}/secrets/example.yaml";
+   - HM:    sops.secrets.<name>.sopsFile = "${inputs.self}/secrets/example.yaml";
 
 Notes:
 - Do not commit unencrypted secrets.
-- The sops key file location is set in modules/nixos/secrets.nix and modules/home-manager/secrets.nix.
+- The sops key file location is set in nixos-modules/secrets.nix and home-modules/secrets.nix.

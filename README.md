@@ -3,24 +3,24 @@
 Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager (`vino`). The system layers i3 on top of XFCE services, themed via Stylix (Gruvbox dark), and ships a Nixvim-based editor setup.
 
 ## Layout
-- `flake.nix` – pins NixOS 25.11, Home Manager, Stylix, nixvim; exports `nixosConfigurations.bandit`, `homeConfigurations."vino@bandit"`, formatter, and optional dev shells (maintenance, flask, pentest).
-- `nixos/configuration.nix` – lightweight entrypoint that imports system modules.
-- `nixos/hosts/bandit/` – host entrypoint and hardware profile (`hardware-configuration.nix`).
-- `nixos/hosts/README.md` – quick guide for adding hosts.
-- `home-manager/home.nix` – Home Manager profile: Stylix targets (gtk, i3, xfce, rofi, starship, nixvim, firefox), Firefox userChrome override, package set (CLIs, dev tools, desktop utilities), fish setup with abbreviations, Atuin/Zoxide/direnv/fzf, i3 config, XFCE session XML, and detailed nixvim plugin stack.
-- `home-manager/hosts/<name>.nix` – host-specific Home Manager overrides (profiles, device names, etc.).
-- `modules/shared/` – shared stylix palette/fonts + i3 workspace list.
-- `modules/nixos/` – NixOS modules: `core.nix`, `storage.nix`, `services.nix`, `roles.nix`, `roles-laptop.nix`, `roles-server.nix`, `server-base.nix`, `desktop.nix`, `stylix-nixos.nix`.
-- `modules/home-manager/` – Home Manager modules (i3, polybar, nixvim, firefox, etc.).
+- `flake.nix` – uses flake-parts + ez-configs to wire inputs and exports `nixosConfigurations.bandit`, `homeConfigurations."vino@bandit"`, formatter, and optional dev shells (maintenance, flask, pentest).
+- `nixos/configuration.nix` – legacy entrypoint (kept for manual imports; ez-configs uses `nixos-configurations/*`).
+- `nixos-configurations/bandit/` – host entrypoint and hardware profile (`hardware-configuration.nix`).
+- `nixos-configurations/README.md` – quick guide for adding hosts.
+- `home-configurations/vino/default.nix` – Home Manager profile: Stylix targets (gtk, i3, xfce, rofi, starship, nixvim, firefox), Firefox userChrome override, package set (CLIs, dev tools, desktop utilities), fish setup with abbreviations, Atuin/Zoxide/direnv/fzf, i3 config, XFCE session XML, and detailed nixvim plugin stack.
+- `home-configurations/vino/hosts/<name>.nix` – host-specific Home Manager overrides (profiles, device names, etc.).
+- `shared-modules/` – shared stylix palette/fonts + i3 workspace list.
+- `nixos-modules/` – NixOS modules: `core.nix`, `storage.nix`, `services.nix`, `roles.nix`, `roles-laptop.nix`, `roles-server.nix`, `server-base.nix`, `desktop.nix`, `stylix-nixos.nix`.
+- `home-modules/` – Home Manager modules (i3, polybar, nixvim, firefox, etc.).
 - `overlays/` – overlays (includes `pkgs.unstable`).
 - `pkgs/` – custom packages (exposed via `nix build .#pkgname`).
 - `assets/firefox/` – userChrome.css + theme template.
 - `lib/` – helper functions shared across modules.
 
 ## Conventions
-- Host entrypoints live under `nixos/hosts/<name>/default.nix` and import `../../configuration.nix` + hardware config.
-- Shared NixOS tweaks go in `modules/nixos/` or `modules/shared/`; Home Manager modules live under `modules/home-manager/`.
-- Home Manager modules should use `_module.args` from `home-manager/home.nix` for colors/fonts (`c`, `palette`, `stylixFonts`).
+- Host entrypoints live under `nixos-configurations/<name>/default.nix` and import only hardware config + host overrides (ez-configs auto-imports `nixos-modules/default.nix`).
+- Shared NixOS tweaks go in `nixos-modules/` or `shared-modules/`; Home Manager modules live under `home-modules/`.
+- Home Manager modules should use `_module.args` from `home-configurations/vino/default.nix` for colors/fonts (`c`, `palette`, `stylixFonts`).
 - Avoid editing `hardware-configuration.nix` unless re-generated.
 - Run `nix fmt` (alejandra) after changes.
 
@@ -33,40 +33,42 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 
 ## Editing Guide
 Where to add new config:
-- System packages: `modules/nixos/core.nix` → `environment.systemPackages`
-- System services: `modules/nixos/services.nix`
-- Server base: `modules/nixos/server-base.nix` (`server.base.enable`, `server.ssh.allowUsers`, `server.fail2ban.ignoreIP`)
-- Desktop/X11/i3/XFCE: `modules/nixos/desktop.nix`
+- System packages: `nixos-modules/core.nix` → `environment.systemPackages`
+- System services: `nixos-modules/services.nix`
+- Server base: `nixos-modules/server-base.nix` (`server.base.enable`, `server.ssh.allowUsers`, `server.fail2ban.ignoreIP`)
+- Desktop/X11/i3/XFCE: `nixos-modules/desktop.nix`
 - Roles are opt-in per host (`roles.desktop`, `roles.laptop`, `roles.server`).
 - Desktop toggle: `roles.desktop = true;` (enable GUI per host).
 - Desktop variant: `desktop.variant = "i3-xfce";` (per host)
-- Boot/storage/swap: `modules/nixos/storage.nix`
-- Theme (system): `modules/nixos/stylix-nixos.nix` + `modules/shared/stylix-common.nix`
-- User packages: `home-manager/home.nix` → `home.packages`
-- Package groups: `modules/home-manager/profiles.nix` (toggle with `profiles.*` flags)
-- Device names: `modules/home-manager/devices.nix` (override via `devices.*` in host HM module)
-- User programs: `home-manager/home.nix` → `programs = { ... }`
-- User modules: `modules/home-manager/<name>.nix` (add to `modules/home-manager/default.nix`)
+- Boot/storage/swap: `nixos-modules/storage.nix`
+- Theme (system): `nixos-modules/stylix-nixos.nix` + `shared-modules/stylix-common.nix`
+- User packages: `home-configurations/vino/default.nix` → `home.packages`
+- Package groups: `home-modules/profiles.nix` (toggle with `profiles.*` flags)
+- Device names: `home-modules/devices.nix` (override via `devices.*` in host HM module)
+- User programs: `home-configurations/vino/default.nix` → `programs = { ... }`
+- User modules: `home-modules/<name>.nix` (add to `home-modules/default.nix`)
 - Shared helpers: `lib/default.nix`
-- Workspaces list: `modules/shared/workspaces.nix`
+- Workspaces list: `shared-modules/workspaces.nix`
 - Overlays: `overlays/default.nix`
 - Custom packages: `pkgs/default.nix`
 
-How imports work:
-- `modules/nixos/default.nix` and `modules/home-manager/default.nix` are module aggregators that set `imports = [ ... ]`.
-- `home-manager/home.nix` imports `modules/home-manager/default.nix`.
-- `nixos/configuration.nix` imports `modules/nixos/default.nix` + shared Stylix.
+How imports work (ez-configs):
+- `nixos-modules/default.nix` and `home-modules/default.nix` are module aggregators that set `imports = [ ... ]`.
+- ez-configs auto-imports `nixos-modules/default.nix` for every host (unless `importDefault = false`).
+- ez-configs auto-imports `home-modules/default.nix` for every user (unless `importDefault = false`).
+- `homeConfigurations` are generated per host when a user is listed under `ezConfigs.nixos.hosts.<host>.userHomeModules`.
+- `nixos/configuration.nix` is legacy/optional and not used by default.
 
 Home Manager shared args:
-- `home-manager/home.nix` injects `_module.args`: `c`, `palette`, `stylixFonts`, `i3Pkg`, `workspaces`.
-- Package groups are defined in `modules/home-manager/profiles.nix` and controlled via `profiles` booleans (see below).
+- `home-configurations/vino/default.nix` injects `_module.args`: `c`, `palette`, `stylixFonts`, `i3Pkg`, `workspaces`.
+- Package groups are defined in `home-modules/profiles.nix` and controlled via `profiles` booleans (see below).
 - Use these in HM modules for consistent theming.
 
 Fish plugin src shorthand:
 - `inherit (fifc) src` == `src = fifc.src` (pulls the plugin source from `pkgs.fishPlugins.fifc`).
 
 Tooling:
-- `treefmt` runs Alejandra for Nix formatting (see `.treefmt.toml`).
+- `treefmt` runs Alejandra for Nix formatting (configured via treefmt-nix in `flake.nix`).
 - `statix` lints Nix files (see `statix.toml`).
 - `deadnix` finds unused bindings.
 - Pre-commit hooks run via `nix flake check`.
@@ -77,7 +79,7 @@ Tooling:
 - If you previously installed git hooks, use `nix run .#commit` (it runs pre-commit manually and commits with `--no-verify`). If you prefer plain `git commit`, reinstall hooks or run `pre-commit uninstall`.
 
 ## Secrets (sops-nix)
-- Config lives in `modules/nixos/secrets.nix` and `modules/home-manager/secrets.nix`.
+- Config lives in `nixos-modules/secrets.nix` and `home-modules/secrets.nix`.
 - Template config: `.sops.yaml` (replace the placeholder age key).
 - Secrets live under `secrets/` and should be encrypted with `sops`.
 - See `secrets/README.md` for the exact workflow.
@@ -92,7 +94,7 @@ Tooling:
 - Dev shells: `nix develop` (maintenance), `nix develop .#flask`, `nix develop .#pentest`
 
 ## Package Profiles
-Toggle package groups in `home-manager/home.nix` (or a host-specific HM override) by setting:
+Toggle package groups in `home-configurations/vino/default.nix` (or a host-specific HM override) by setting:
 - `profiles.core` (CLI baseline)
 - `profiles.dev` (compilers, language toolchains)
 - `profiles.desktop` (GUI apps + desktop utilities)
@@ -120,9 +122,9 @@ Toggle package groups in `home-manager/home.nix` (or a host-specific HM override
 
 Notes
 - `allowUnfree = true` is enabled for packages like VS Code.
-- Stylix auto-enables Gruvbox; Home Manager targets follow system theme (see `modules/nixos/stylix-nixos.nix`).
-- `programs.i3blocks` is currently disabled in `modules/home-manager/i3blocks.nix`.
-- Hibernate/suspend rely on the swap device/offset in `nixos/configuration.nix`—keep in sync if storage changes.
+- Stylix auto-enables Gruvbox; Home Manager targets follow system theme (see `nixos-modules/stylix-nixos.nix`).
+- `programs.i3blocks` is currently disabled in `home-modules/i3blocks.nix`.
+- Hibernate/suspend rely on the swap device/offset in `nixos-configurations/<host>/default.nix`—keep in sync if storage changes.
 - If you want to suppress the dirty-tree warning for QA/commit, use the fish abbreviations `qa` / `gcommit` (they pass `--option warn-dirty false`).
 - Bluetooth is only enabled when `roles.laptop = true` (defaults to off on new hosts).
 - XFCE is used as a session manager only (`noDesktop = true`, `enableXfwm = false`); i3 handles window management.

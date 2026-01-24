@@ -25,7 +25,7 @@
 
     # Fonts strategy:
     # - Use regular JetBrains Mono (better glyph metrics).
-    # - Install Symbols Nerd Font (symbols-only) separately (nixos/configuration.nix) so icons come via fallback.
+    # - Install Symbols Nerd Font (symbols-only) separately (nixos-modules/core.nix) so icons come via fallback.
     fonts = {
       sizes = {
         applications = 10;

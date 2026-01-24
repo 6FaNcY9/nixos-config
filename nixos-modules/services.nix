@@ -3,8 +3,7 @@
   pkgs,
   config,
   username ? "vino",
-  hostname ? "bandit",
-  repoRoot ? "/home/${username}/src/nixos-config",
+  repoRoot ? "/home/${username}/src/nixos-config-ez",
   ...
 }: {
   # ------------------------------------------------------------
@@ -23,7 +22,7 @@
     path = [pkgs.nix pkgs.git pkgs.util-linux];
     script = ''
       ${pkgs.util-linux}/bin/runuser -u ${username} -- nix flake update
-      ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch --flake ${repoRoot}#${hostname}
+      ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch --flake ${repoRoot}#${config.networking.hostName}
     '';
   };
 

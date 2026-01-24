@@ -1,5 +1,6 @@
 {
   lib,
+  inputs,
   username ? "vino",
   ...
 }: {
@@ -12,7 +13,7 @@
     };
 
     secrets."github_ssh_key" = {
-      sopsFile = ../../secrets/github.yaml;
+      sopsFile = "${inputs.self}/secrets/github.yaml";
       owner = username;
       mode = "0600";
       path = "/home/${username}/.ssh/github";

@@ -16,7 +16,7 @@
         package = i3Pkg;
 
         config = let
-          cfgLib = import ../../lib {inherit lib;};
+          cfgLib = import ../lib {inherit lib;};
           mod = "Mod4";
           workspaceNames = map (workspace: workspace.name) workspaces;
 

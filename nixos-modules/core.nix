@@ -3,8 +3,7 @@
   pkgs,
   inputs,
   username ? "vino",
-  hostname ? "bandit",
-  repoRoot ? "/home/${username}/src/nixos-config",
+  repoRoot ? "/home/${username}/src/nixos-config-ez",
   ...
 }: let
   userGroups = ["wheel" "networkmanager" "audio" "video" "docker"];
@@ -29,7 +28,6 @@ in {
   # Host + locale
   # ------------------------------------------------------------
   networking = {
-    hostName = hostname;
     networkmanager.enable = true;
     firewall.enable = true;
   };
@@ -60,8 +58,11 @@ in {
   # Pin nixpkgs for legacy commands and for `nix run nixpkgs#...`
   nix.registry.nixpkgs.flake = inputs.nixpkgs;
 
-  # Allow unfree (redundant with flake import allowUnfree, but keeps modules safe)
-  nixpkgs.config.allowUnfree = true;
+  # Allow unfree and wire overlays (keeps pkgs.unstable available everywhere).
+  nixpkgs = {
+    config.allowUnfree = true;
+    overlays = [(import ../overlays {inherit inputs;}).default];
+  };
 
   # ------------------------------------------------------------
   # Shell + users + containers + gnupg

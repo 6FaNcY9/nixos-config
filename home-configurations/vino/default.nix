@@ -3,12 +3,19 @@
   pkgs,
   config,
   inputs,
+  osConfig ? null,
   username ? "vino",
   hostname ? "bandit",
-  repoRoot ? "/home/${username}/src/nixos-config",
+  repoRoot ? "/home/${username}/src/nixos-config-ez",
   ...
 }: let
   inherit (pkgs.stdenv.hostPlatform) system;
+  hostName =
+    if osConfig != null && osConfig ? networking && osConfig.networking ? hostName
+    then osConfig.networking.hostName
+    else hostname;
+  hostModulePath = ./hosts/${hostName}.nix;
+  hostModules = lib.optionals (builtins.pathExists hostModulePath) [hostModulePath];
 
   # Safe: Stylix palette is exposed under config.lib.stylix.colors (when Stylix is loaded)
   c =
@@ -61,7 +68,7 @@
     else null;
   i3Pkg = pkgs.i3;
   hmCli = inputs.home-manager.packages.${system}.home-manager;
-  workspaceDefs = import ../modules/shared/workspaces.nix;
+  workspaceDefs = import ../../shared-modules/workspaces.nix;
   palette = {
     bg = c.base00;
     bgAlt = c.base01;
@@ -73,12 +80,11 @@
     muted = c.base03;
   };
 in {
-  imports = [
-    ../modules/home-manager
-  ];
+  imports = [../../home-modules/default.nix] ++ hostModules;
 
   _module.args = {
-    inherit c stylixFonts palette i3Pkg hostname hmCli codexPkg;
+    inherit c stylixFonts palette i3Pkg hmCli codexPkg;
+    hostname = hostName;
     workspaces = workspaceDefs;
   };
 
@@ -153,7 +159,7 @@ in {
     };
   };
 
-  # Packages are grouped in modules/home-manager/profiles.nix
+  # Packages are grouped in home-modules/profiles.nix
 
   programs = {
     home-manager.enable = true;

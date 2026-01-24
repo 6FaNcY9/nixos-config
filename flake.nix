@@ -52,65 +52,53 @@
 
     # Flake composition
     flake-parts.url = "github:hercules-ci/flake-parts";
+    ez-configs.url = "github:ehllie/ez-configs";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
+    mission-control.url = "github:Platonic-Systems/mission-control";
+    devshell.url = "github:numtide/devshell";
+    flake-root.url = "github:srid/flake-root";
 
     # Wallpaper
     gruvbox-wallpaper.url = "github:AngelJumbo/gruvbox-wallpapers";
   };
 
-  outputs = inputs @ {
-    flake-parts,
-    nixpkgs,
-    nixos-hardware,
-    home-manager,
-    stylix,
-    sops-nix,
-    ...
-  }: let
+  outputs = inputs @ {flake-parts, ...}: let
     system = "x86_64-linux";
-    hostname = "bandit";
+    primaryHost = "bandit";
     username = "vino";
-
-    commonSpecialArgs = {
-      inherit inputs username hostname;
-      repoRoot = "/home/${username}/src/nixos-config";
-    };
+    repoRoot = "/home/${username}/src/nixos-config-ez";
 
     overlays = import ./overlays {inherit inputs;};
 
     pkgsFor = system:
-      import nixpkgs {
+      import inputs.nixpkgs {
         inherit system;
         overlays = [overlays.default];
         config.allowUnfree = true;
       };
-
-    # Shared HM modules used inside the NixOS system build (Stylix is on the NixOS side)
-    hmSharedModules = [
-      inputs.nixvim.homeModules.nixvim
-      inputs.sops-nix.homeManagerModules.sops
-    ];
-
-    # Standalone Home Manager output includes Stylix modules
-    hmSharedModulesHM =
-      hmSharedModules
-      ++ [
-        inputs.stylix.homeModules.stylix
-        ./modules/shared/stylix-common.nix
-      ];
-
-    hmHostPath = ./home-manager/hosts/${hostname}.nix;
-    hmHostModules =
-      if builtins.pathExists hmHostPath
-      then [hmHostPath]
-      else [];
   in
     flake-parts.lib.mkFlake {inherit inputs;} ({self, ...}: {
       systems = [system];
 
+      debug = true;
+
       imports = [
-        inputs.home-manager.flakeModules.home-manager
+        inputs.ez-configs.flakeModule
         inputs.pre-commit-hooks.flakeModule
+        inputs.treefmt-nix.flakeModule
+        inputs.mission-control.flakeModule
+        inputs.devshell.flakeModule
+        inputs.flake-root.flakeModule
       ];
+
+      ezConfigs = {
+        root = ./.;
+        globalArgs = {
+          inherit inputs username repoRoot;
+        };
+
+        nixos.hosts.${primaryHost}.userHomeModules = ["vino"];
+      };
 
       perSystem = {
         system,
@@ -119,9 +107,32 @@
       }: let
         pkgs = pkgsFor system;
         customPackages = import ./pkgs {};
+        missionControlWrapper = config.mission-control.wrapper;
+        maintenancePackages = [pkgs.pre-commit pkgs.nix missionControlWrapper] ++ config.pre-commit.settings.enabledPackages;
 
-        maintenanceShell = pkgs.mkShell {
-          packages = [pkgs.pre-commit pkgs.nix] ++ config.pre-commit.settings.enabledPackages;
+        stickyKeysSlayer = pkgs.stdenvNoCC.mkDerivation {
+          pname = "sticky-keys-slayer";
+          version = "git-2025-01-06";
+          src = pkgs.fetchFromGitHub {
+            owner = "linuz";
+            repo = "Sticky-Keys-Slayer";
+            rev = "0b431ac9909a3f7f47a31c02d8602a52d3a7006d";
+            sha256 = "sha256-rzdZArHwv8gAEvOGE4RdPnRXQ6hDGggG6eryM+if2cE=";
+          };
+          buildInputs = [pkgs.makeWrapper];
+          installPhase = ''
+            mkdir -p $out/bin
+            install -m755 stickyKeysSlayer.sh $out/bin/sticky-keys-slayer
+            wrapProgram $out/bin/sticky-keys-slayer --prefix PATH : ${
+              pkgs.lib.makeBinPath [
+                pkgs.imagemagick
+                pkgs.xdotool
+                pkgs.parallel
+                pkgs.bc
+                pkgs.rdesktop
+              ]
+            }
+          '';
         };
 
         repoRootCmd = ''repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"'';
@@ -132,7 +143,38 @@
           meta = {inherit description;};
         };
       in {
-        formatter = pkgs.alejandra;
+        treefmt = {
+          projectRootFile = "flake.nix";
+          programs.alejandra.enable = true;
+          flakeCheck = true;
+        };
+
+        formatter = config.treefmt.build.wrapper;
+
+        mission-control = {
+          scripts = {
+            fmt = {
+              description = "Format Nix files";
+              exec = config.treefmt.build.wrapper;
+              category = "Dev Tools";
+            };
+            qa = {
+              description = "Format, lint, and flake check";
+              exec = "nix run .#qa";
+              category = "Dev Tools";
+            };
+            update = {
+              description = "Update flake inputs";
+              exec = "nix run .#update";
+              category = "Dev Tools";
+            };
+            clean = {
+              description = "Remove result symlinks";
+              exec = "nix run .#clean";
+              category = "Dev Tools";
+            };
+          };
+        };
 
         # nix eval fix (wrap outPath as a derivation)
         packages =
@@ -146,7 +188,7 @@
           settings.hooks = {
             treefmt = {
               enable = true;
-              settings.formatters = [pkgs.alejandra];
+              package = config.treefmt.build.wrapper;
             };
             statix.enable = true;
             deadnix.enable = true;
@@ -177,7 +219,7 @@
               pkgs.nix
               pkgs.pre-commit
               pkgs.statix
-              pkgs.treefmt
+              config.treefmt.build.wrapper
             ] "Format, lint, and run flake checks" ''
               set -euo pipefail
               ${repoRootCmd}
@@ -198,7 +240,7 @@
               pkgs.nix
               pkgs.pre-commit
               pkgs.statix
-              pkgs.treefmt
+              config.treefmt.build.wrapper
             ] "Run QA, stage, and commit with a prompt" ''
               set -euo pipefail
               ${repoRootCmd}
@@ -224,50 +266,32 @@
 
         # Maintenance: static checks + eval targets
         checks = {
-          nixos-bandit = self.nixosConfigurations.${hostname}.config.system.build.toplevel;
-          home-vino = self.homeConfigurations."${username}@${hostname}".activationPackage;
+          nixos-bandit = self.nixosConfigurations.${primaryHost}.config.system.build.toplevel;
+          home-vino = self.homeConfigurations."${username}@${primaryHost}".activationPackage;
         };
 
-        # Optional: Flask dev shell (use later with: nix develop .#flask)
-        devShells = {
-          maintenance = maintenanceShell;
-          default = maintenanceShell;
-
-          flask = pkgs.mkShell {
+        devshells = {
+          maintenance = {
+            packages = maintenancePackages;
+            devshell.motd = "{202}🔨 Welcome to devshell{reset}\nRun ',' for mission-control commands.";
+          };
+          default = {
+            packages = maintenancePackages;
+            devshell.motd = "{202}🔨 Welcome to devshell{reset}\nRun ',' for mission-control commands.";
+          };
+          flask = {
             packages = with pkgs; [
+              missionControlWrapper
               python3
               python3Packages.flask
               python3Packages.virtualenv
             ];
+            devshell.motd = "{202}🔨 Welcome to devshell{reset}\nRun ',' for mission-control commands.";
           };
-
-          pentest = pkgs.mkShell rec {
-            stickyKeysSlayer = pkgs.stdenvNoCC.mkDerivation {
-              pname = "sticky-keys-slayer";
-              version = "git-2025-01-06";
-              src = pkgs.fetchFromGitHub {
-                owner = "linuz";
-                repo = "Sticky-Keys-Slayer";
-                rev = "0b431ac9909a3f7f47a31c02d8602a52d3a7006d";
-                sha256 = "sha256-rzdZArHwv8gAEvOGE4RdPnRXQ6hDGggG6eryM+if2cE=";
-              };
-              buildInputs = [pkgs.makeWrapper];
-              installPhase = ''
-                mkdir -p $out/bin
-                install -m755 stickyKeysSlayer.sh $out/bin/sticky-keys-slayer
-                wrapProgram $out/bin/sticky-keys-slayer --prefix PATH : ${
-                  pkgs.lib.makeBinPath [
-                    pkgs.imagemagick
-                    pkgs.xdotool
-                    pkgs.parallel
-                    pkgs.bc
-                    pkgs.rdesktop
-                  ]
-                }
-              '';
-            };
+          pentest = {
             packages =
               (with pkgs; [
+                missionControlWrapper
                 # Recon / scanning
                 nmap
                 masscan
@@ -317,79 +341,12 @@
                 seclists
               ])
               ++ [stickyKeysSlayer];
+            devshell.motd = "{202}🔨 Welcome to devshell{reset}\nRun ',' for mission-control commands.";
           };
         };
       };
 
       flake = {
-        nixosConfigurations.${hostname} = nixpkgs.lib.nixosSystem {
-          inherit system;
-
-          # Make `inputs`, `username`, `hostname` available to modules that want them.
-          specialArgs = commonSpecialArgs;
-
-          modules = [
-            {
-              nixpkgs = {
-                config.allowUnfree = true;
-                overlays = [overlays.default];
-              };
-            }
-
-            # Framework hardware module (adjust if you switch models)
-            nixos-hardware.nixosModules.framework-13-7040-amd
-            # nixos-hardware.nixosModules.framework-amd-ai-300-series
-            ./nixos/hosts/${hostname}
-
-            stylix.nixosModules.stylix
-            sops-nix.nixosModules.sops
-
-            # Centralized Stylix config (imported via nixos/configuration.nix)
-
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "hm-bak";
-
-                # Pass the same extra args into Home Manager modules.
-                extraSpecialArgs = commonSpecialArgs;
-
-                # Provide nixvim's Home Manager module to all HM users.
-                sharedModules = hmSharedModules;
-
-                users.${username} = {
-                  imports = hmHostModules ++ [./home-manager/home.nix];
-                };
-              };
-            }
-          ];
-        };
-
-        # Useful: run `home-manager switch --flake .#vino@bandit` without rebuilding the whole OS
-        homeConfigurations."${username}@${hostname}" = home-manager.lib.homeManagerConfiguration {
-          pkgs = pkgsFor system;
-
-          extraSpecialArgs = commonSpecialArgs;
-
-          modules = hmSharedModulesHM ++ hmHostModules ++ [./home-manager/home.nix];
-        };
-
-        nixosModules = {
-          stylix-common = ./modules/shared/stylix-common.nix;
-          stylix-nixos = ./modules/nixos/stylix-nixos.nix;
-        };
-
-        homeModules = {
-          firefox = ./modules/home-manager/firefox.nix;
-          i3 = ./modules/home-manager/i3.nix;
-          i3blocks = ./modules/home-manager/i3blocks.nix;
-          lnav = ./modules/home-manager/lnav.nix;
-          nixvim = ./modules/home-manager/nixvim.nix;
-          polybar = ./modules/home-manager/polybar.nix;
-        };
-
         inherit overlays;
       };
     });

@@ -83,9 +83,17 @@
       -- Cmdline completion (protect if cmp-cmdline isn’t available yet)
       local has_cmp, cmp = pcall(require, "cmp")
       if has_cmp then
-        cmp.setup.cmdline("/", {
+        cmp.setup.cmdline({ "/", "?" }, {
           mapping = cmp.mapping.preset.cmdline(),
           sources = { { name = "buffer" } },
+        })
+
+        cmp.setup.cmdline(":", {
+          mapping = cmp.mapping.preset.cmdline(),
+          sources = cmp.config.sources(
+            { { name = "path" } },
+            { { name = "cmdline" } }
+          ),
         })
       end
 
