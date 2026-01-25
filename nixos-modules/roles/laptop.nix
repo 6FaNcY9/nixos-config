@@ -1,3 +1,4 @@
+# Laptop role - bluetooth, power management
 {
   lib,
   config,
@@ -11,7 +12,7 @@
       powerOnBoot = lib.mkDefault false;
     };
 
-    # GUI manager for Bluetooth (only meaningful on desktop role).
+    # GUI manager for Bluetooth (only meaningful on desktop role)
     services.blueman.enable = lib.mkDefault config.roles.desktop;
   };
 }

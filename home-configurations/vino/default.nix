@@ -1,3 +1,7 @@
+# Home Manager configuration for user: vino
+# Most configuration is in home-modules/*. This file contains:
+# - User-specific settings (git identity, stylix targets)
+# - Module arguments injection
 {
   lib,
   pkgs,
@@ -14,30 +18,7 @@
   hostModulePath = ./hosts/${hostName}.nix;
   hostModules = lib.optionals (builtins.pathExists hostModulePath) [hostModulePath];
 
-  # Safe: Stylix palette is exposed under config.lib.stylix.colors (when Stylix is loaded)
-  c =
-    lib.attrByPath ["lib" "stylix" "colors" "withHashtag"] {
-      # fallback (only used if Stylix isn’t loaded)
-      base00 = "#262626";
-      base01 = "#3a3a3a";
-      base02 = "#4e4e4e";
-      base03 = "#8a8a8a";
-      base04 = "#949494";
-      base05 = "#dab997";
-      base06 = "#d5c4a1";
-      base07 = "#ebdbb2";
-      base08 = "#d75f5f";
-      base09 = "#ff8700";
-      base0A = "#ffaf00";
-      base0B = "#afaf00";
-      base0C = "#85ad85";
-      base0D = "#83a598";
-      base0E = "#d3869b";
-      base0F = "#af5f5f";
-    }
-    config;
-
-  # Safe: Stylix fonts are under config.stylix.fonts (when Stylix is loaded)
+  # Stylix fonts (with fallback)
   stylixFonts =
     lib.attrByPath ["stylix" "fonts"] {
       sansSerif = {name = "Sans";};
@@ -47,34 +28,32 @@
 
   codexPkg = inputs.codex-cli-nix.packages.${system}.default;
   i3Pkg = pkgs.i3;
-  workspaceDefs = import ../../shared-modules/workspaces.nix;
-  palette = {
-    bg = c.base00;
-    bgAlt = c.base01;
-    text = c.base05;
-    accent = c.base0B;
-    accent2 = c.base0D;
-    warn = c.base0A;
-    danger = c.base08;
-    muted = c.base03;
-  };
 in {
   imports = [../../home-modules/default.nix] ++ hostModules;
 
+  # Inject shared arguments to all home-modules
+  # Colors and palette come from shared-modules/palette.nix
   _module.args = {
-    inherit c stylixFonts palette i3Pkg codexPkg;
+    c = config.theme.colors;
+    palette = config.theme.palette;
+    inherit stylixFonts i3Pkg codexPkg;
     hostname = hostName;
-    workspaces = workspaceDefs;
+    workspaces = config.workspaces;
   };
 
+  # ============================================================
+  # Home settings
+  # ============================================================
   home = {
     inherit username;
     homeDirectory = "/home/${username}";
     stateVersion = "25.11";
   };
+
   home.sessionVariables = {
     NH_NOM = "1";
   };
+
   news.display = "silent";
 
   xdg = {
@@ -85,9 +64,9 @@ in {
     };
   };
 
-  # ------------------------------------------------------------
+  # ============================================================
   # Stylix targets
-  # ------------------------------------------------------------
+  # ============================================================
   stylix = {
     enable = true;
     autoEnable = false;
@@ -127,119 +106,21 @@ in {
     };
   };
 
-  # Packages are grouped in home-modules/profiles.nix
-
+  # ============================================================
+  # User-specific program settings
+  # ============================================================
   programs = {
     home-manager.enable = true;
 
-    # ------------------------------------------------------------
-    # Fish + plugins
-    # ------------------------------------------------------------
-    fish = {
-      enable = true;
-
-      shellInit = "";
-
-      interactiveShellInit = ''
-        set -g fish_greeting
-        fish_default_key_bindings
-
-        set -gx SUDO_EDITOR nvim
-        set -gx EDITOR nvim
-        set -gx VISUAL nvim
-
-        set -gx GPG_TTY (tty)
-        set -gx SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
-        set -e SSH_AGENT_PID
-
-        if test -r ${config.sops.secrets.github_mcp_pat.path}
-          set -x GITHUB_MCP_PAT (cat ${config.sops.secrets.github_mcp_pat.path})
-        end
-
-        set -g fzf_fd_opts --hidden --follow --exclude .git
-        set -g fzf_preview_dir_cmd 'eza --all --color=always --group-directories-first'
-        set -g fzf_preview_file_cmd 'bat --style=numbers --color=always'
-
-        set -g fzf_diff_highlighter 'delta --paging=never --width=120'
-        set -g fzf_git_log_format "%C(auto)%h%d %s %C(blue)%cr %C(green)%an"
-
-        set -g fzf_history_time_format "%Y-%m-%d %H:%M"
-        set -g fzf_history_opts "--no-sort --exact"
-
-        set -Ux fifc_editor nvim
-        fzf_configure_bindings --directory=\ct --git_log=\cg --git_status=\cs --history=\cr --processes=\cp --variables=\cv
-      '';
-
-      shellAbbrs = {
-        rebuild = "nh os switch -H ${hostname}";
-        hms = "nh home switch -c ${username}@${hostname}";
-
-        qa = "nix --option warn-dirty false run ${repoRoot}#qa";
-        gcommit = "nix --option warn-dirty false run ${repoRoot}#commit";
-        diffsys = "nvd diff /run/booted-system /run/current-system";
-
-        ll = "eza -lah";
-        ls = "eza -ah";
-
-        lg = "lazygit";
-
-        se = "sudoedit";
-
-        v = "nvim";
-        zj = "zellij";
-
-        nixhome = "cd ${repoRoot}/";
-      };
-
-      plugins = with pkgs.fishPlugins; [
-        {
-          name = "plugin-git";
-          inherit (plugin-git) src;
-        }
-        {
-          name = "fzf-fish";
-          inherit (fzf-fish) src;
-        }
-        {
-          name = "sponge";
-          inherit (sponge) src;
-        }
-        {
-          name = "fifc";
-          inherit (fifc) src;
-        }
-      ];
+    # Git identity (user-specific)
+    git.settings.user = {
+      name = "6FaNcY9";
+      email = "29282675+6FaNcY9@users.noreply.github.com";
+      signingkey = "FC8B68693AF4E0D9DC84A4D3B872E229ADE55151";
     };
+    git.settings.commit.gpgsign = true;
 
-    atuin = {
-      enable = true;
-      enableFishIntegration = true;
-      settings = {
-        auto_sync = true;
-        keymap_mode = "vim-insert";
-        search_mode = "fuzzy";
-        style = "compact";
-      };
-    };
-
-    fzf = {
-      enable = true;
-      enableFishIntegration = false;
-    };
-
-    direnv = {
-      enable = true;
-      nix-direnv = {
-        enable = true;
-      };
-    };
-
-    zoxide = {
-      enable = true;
-      enableFishIntegration = true;
-      options = ["--cmd" "z"];
-    };
-
+    # Rofi (user-specific icon theme)
     rofi = {
       enable = true;
       terminal = "${pkgs.alacritty}/bin/alacritty";
@@ -252,143 +133,7 @@ in {
       };
     };
 
-    delta = {
-      enable = true;
-      enableGitIntegration = true;
-      options = {
-        navigate = true;
-        light = false;
-        line-numbers = true;
-      };
-    };
-
-    git = {
-      enable = true;
-
-      settings = {
-        user = {
-          # Identity
-          name = "6FaNcY9";
-          email = "29282675+6FaNcY9@users.noreply.github.com";
-
-          # gpgsign Key
-          signingkey = "FC8B68693AF4E0D9DC84A4D3B872E229ADE55151";
-        };
-
-        # sign keys automatically
-        commit.gpgsign = true;
-
-        init.defaultBranch = "main";
-        pull.ff = "only";
-        push.autoSetupRemote = true;
-
-        core.editor = "nvim";
-        diff.colorMoved = "default";
-        merge.conflictstyle = "zdiff3";
-        fetch.prune = true;
-        rebase.autoStash = true;
-      };
-    };
-
-    starship = {
-      enable = true;
-      enableFishIntegration = true;
-
-      settings = {
-        add_newline = false;
-
-        format = ''
-          $directory$git_branch$git_status$nix_shell$direnv$cmd_duration
-          $character
-        '';
-
-        directory = {
-          format = "[   $path ]($style)";
-          style = "fg:${c.base05} bg:${c.base01}";
-          truncation_length = 4;
-          truncation_symbol = "…/";
-        };
-
-        git_branch = {
-          format = "[  $branch ]($style)";
-          style = "fg:${c.base0B} bg:${c.base01}";
-        };
-
-        git_status = {
-          format = "[ $all_status$ahead_behind ]($style)";
-          style = "fg:${c.base0A} bg:${c.base01}";
-        };
-
-        nix_shell = {
-          format = "[  $state ]($style)";
-          style = "fg:${c.base0D} bg:${c.base01}";
-        };
-
-        direnv = {
-          disabled = false;
-          format = "[ direnv ]($style)";
-          style = "fg:${c.base08} bg:${c.base01}";
-        };
-
-        cmd_duration = {
-          format = "[  $duration ]($style)";
-          style = "fg:${c.base0E} bg:${c.base01}";
-          min_time = 500;
-        };
-
-        character = {
-          success_symbol = " [](fg:${c.base0B})";
-          error_symbol = " [](fg:${c.base08})";
-          vimcmd_symbol = " [](fg:${c.base0A})";
-        };
-      };
-    };
-
-    alacritty = {
-      enable = true;
-      settings = {
-        window = {
-          dynamic_padding = true;
-          decorations = "none";
-        };
-
-        scrolling.history = 10000;
-
-        keyboard.bindings = [
-          # Enter/leave Vi mods (selection /search)
-          {
-            key = "Space";
-            mods = "Control|Shift";
-            action = "ToggleViMode";
-          }
-
-          # search prompts (works vi mode)
-          {
-            key = "F";
-            mods = "Control|Shift";
-            action = "SearchForward";
-          }
-          {
-            key = "B";
-            mods = "Control|Shift";
-            action = "SearchBackward";
-          }
-
-          # Copy/Paste helpers
-          {
-            key = "C";
-            mods = "Control|Shift";
-            action = "Copy";
-          }
-          {
-            key = "V";
-            mods = "Control|Shift";
-            action = "Paste";
-          }
-        ];
-      };
-    };
-
+    # btop (small config)
     btop = {
       enable = true;
       settings = {
@@ -397,68 +142,5 @@ in {
         proc_sorting = "cpu lazy";
       };
     };
-  };
-
-  # ------------------------------------------------------------
-  # Session services
-  # ------------------------------------------------------------
-  services = lib.mkIf config.profiles.desktop {
-    # Launch nm-applet on demand via i3blocks click (see net block below)
-    network-manager-applet.enable = true;
-    dunst.enable = true;
-    picom.enable = true;
-
-    # Flameshot configuration
-    flameshot = {
-      enable = true;
-      package = pkgs.flameshot;
-      settings = {
-        General = {
-          # Theme-ish bits
-          uiColor = c.base01; # panel background
-          #contrastColor = c.base05;  # text/icons
-          drawColor = c.base0B; # pen color
-          #fillColor = c.base02;      # fills for shapes
-          showSidePanelButton = true;
-          showDesktopNotification = false;
-          disabledTrayIcon = false; # set true if you don’t want a tray icon
-          #checkForUpdates = false;
-        };
-        Shortcuts = {
-          TYPE_COPY = "Return";
-          TYPE_SAVE = "Ctrl+S";
-        };
-      };
-    };
-  };
-
-  # ------------------------------------------------------------
-  # XFCE session xml (unchanged)
-  # ------------------------------------------------------------
-  xdg.configFile."xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml" = {
-    text = ''
-      <?xml version="1.0" encoding="UTF-8"?>
-      <channel name="xfce4-session" version="1.0">
-        <property name="sessions" type="empty">
-          <property name="Failsafe" type="empty">
-            <property name="Client0_Command" type="array">
-              <value type="string" value="xfsettingsd"/>
-            </property>
-            <property name="Client1_Command" type="array">
-              <value type="string" value="i3"/>
-            </property>
-            <property name="Client2_Command" type="array">
-              <value type="string" value="xfce4-panel"/>
-            </property>
-            <property name="Client3_Command" type="array">
-              <value type="string" value="xfce4-power-manager"/>
-            </property>
-            <property name="Client4_Command" type="array">
-              <value type="string" value="thunar --daemon"/>
-            </property>
-          </property>
-        </property>
-      </channel>
-    '';
   };
 }
