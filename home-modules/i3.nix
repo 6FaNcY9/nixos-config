@@ -98,8 +98,6 @@
               command = "${pkgs.blueman}/bin/blueman-applet";
               notification = false;
             }
-            #{ command = "${pkgs.polybar}/bin/polybar --reload top"; notification = false; }
-            #{ command = "${pkgs.feh}/bin/feh "; notification = false; }
           ];
 
           assigns = {
@@ -109,50 +107,6 @@
             "${builtins.elemAt workspaceNames 3}" = [{class = "Thunar";}];
           };
 
-          # bars = [
-          #   ({
-          #     position = "top";
-          #     statusCommand = "${pkgs.i3blocks}/bin/i3blocks -c ${config.xdg.configHome}/i3blocks/top";
-          #
-          #     colors = {
-          #       background = c.base00;
-          #       statusline = c.base05;
-          #       separator = c.base03;
-          #
-          #       focusedWorkspace = {
-          #         border = c.base0A;
-          #         background = c.base01;
-          #         text = c.base07;
-          #       };
-          #
-          #       activeWorkspace = {
-          #         border = c.base03;
-          #         background = c.base00;
-          #         text = c.base05;
-          #       };
-          #
-          #       inactiveWorkspace = {
-          #         border = c.base02;
-          #         background = c.base00;
-          #         text = c.base04;
-          #       };
-          #
-          #       urgentWorkspace = {
-          #         border = c.base08;
-          #         background = c.base00;
-          #         text = c.base07;
-          #       };
-          #
-          #       bindingMode = {
-          #         border = c.base09;
-          #         background = c.base00;
-          #         text = c.base07;
-          #       };
-          #     };
-          #   } // config.stylix.targets.i3.exportedBarConfig)
-          #];
-
-          # Polybar is started by Home Manager (programs.polybar); no i3 bar needed here.
           bars = lib.mkForce [];
 
           keybindings = lib.mkOptionDefault (

@@ -1,7 +1,7 @@
 {
   lib,
   inputs,
-  username ? "vino",
+  username,
   ...
 }: {
   # sops-nix system defaults (safe even without secrets defined)

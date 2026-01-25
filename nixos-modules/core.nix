@@ -2,8 +2,8 @@
   lib,
   pkgs,
   inputs,
-  username ? "vino",
-  repoRoot ? "/home/${username}/src/nixos-config-ez",
+  username,
+  repoRoot,
   ...
 }: let
   userGroups = ["wheel" "networkmanager" "audio" "video" "docker"];
@@ -80,10 +80,7 @@ in {
 
     gnupg.agent = {
       enable = true;
-
-      #pintentryPackage = pkgs.pinentry-gtk2;
       pinentryPackage = pkgs.pinentry-curses;
-      # terminal pinentry
       enableSSHSupport = true;
     };
 

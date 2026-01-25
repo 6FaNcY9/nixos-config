@@ -2,7 +2,6 @@
   lib,
   pkgs,
   config,
-  hmCli ? null,
   codexPkg ? null,
   ...
 }: let
@@ -97,7 +96,7 @@ in {
   };
 
   config.home.packages = lib.concatLists [
-    (lib.optionals cfg.core (corePkgs ++ lib.optionals (hmCli != null) [hmCli]))
+    (lib.optionals cfg.core corePkgs)
     (lib.optionals cfg.dev devPkgs)
     (lib.optionals cfg.desktop desktopPkgs)
     (lib.optionals cfg.extras extrasPkgs)

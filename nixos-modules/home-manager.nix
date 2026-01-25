@@ -1,7 +1,7 @@
 {
   inputs,
-  username ? "vino",
-  repoRoot ? "/home/${username}/src/nixos-config-ez",
+  username,
+  repoRoot,
   ...
 }: {
   home-manager = {

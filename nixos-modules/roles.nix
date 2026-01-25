@@ -1,9 +1,4 @@
 {lib, ...}: {
-  imports = [
-    # Backward-compat: allow profiles.desktop to continue working.
-    (lib.mkAliasOptionModule ["profiles" "desktop"] ["roles" "desktop"])
-  ];
-
   options = {
     roles = {
       desktop = lib.mkOption {

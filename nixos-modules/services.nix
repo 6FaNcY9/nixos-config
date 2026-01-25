@@ -2,8 +2,8 @@
   lib,
   pkgs,
   config,
-  username ? "vino",
-  repoRoot ? "/home/${username}/src/nixos-config-ez",
+  username,
+  repoRoot,
   ...
 }: {
   # ------------------------------------------------------------
@@ -44,19 +44,6 @@
         KbdInteractiveAuthentication = false;
       };
     };
-
-    # fail2ban (optional)
-    # fail2ban = {
-    #   enable = true;
-    #   bantime = "1h";
-    #   maxretry = 5;
-    #   jails = {
-    #     sshd = ''
-    #       enabled = true
-    #       mode = aggressive
-    #     '';
-    #   };
-    # };
 
     trezord.enable = lib.mkDefault config.roles.desktop;
 

@@ -4,16 +4,13 @@
   config,
   inputs,
   osConfig ? null,
-  username ? "vino",
-  hostname ? "bandit",
-  repoRoot ? "/home/${username}/src/nixos-config-ez",
+  username,
+  hostname,
+  repoRoot,
   ...
 }: let
   inherit (pkgs.stdenv.hostPlatform) system;
-  hostName =
-    if osConfig != null && osConfig ? networking && osConfig.networking ? hostName
-    then osConfig.networking.hostName
-    else hostname;
+  hostName = osConfig.networking.hostName or hostname;
   hostModulePath = ./hosts/${hostName}.nix;
   hostModules = lib.optionals (builtins.pathExists hostModulePath) [hostModulePath];
 
@@ -48,26 +45,8 @@
     }
     config;
 
-  unstablePkgs =
-    pkgs.unstable or (import inputs.nixpkgs-unstable {
-      inherit system;
-      config = {
-        allowUnfree = true;
-      };
-    });
-
-  codexInput = inputs."codex-cli-nix" or null;
-
-  codexPkg =
-    if codexInput != null
-    then codexInput.packages.${system}.default
-    else if lib.hasAttr "codex" unstablePkgs
-    then unstablePkgs.codex
-    else if lib.hasAttr "codex" pkgs
-    then pkgs.codex
-    else null;
+  codexPkg = inputs.codex-cli-nix.packages.${system}.default;
   i3Pkg = pkgs.i3;
-  hmCli = inputs.home-manager.packages.${system}.home-manager;
   workspaceDefs = import ../../shared-modules/workspaces.nix;
   palette = {
     bg = c.base00;
@@ -83,7 +62,7 @@ in {
   imports = [../../home-modules/default.nix] ++ hostModules;
 
   _module.args = {
-    inherit c stylixFonts palette i3Pkg hmCli codexPkg;
+    inherit c stylixFonts palette i3Pkg codexPkg;
     hostname = hostName;
     workspaces = workspaceDefs;
   };
@@ -97,14 +76,6 @@ in {
     NH_NOM = "1";
   };
   news.display = "silent";
-
-  # home.activation.installPackages = lib.mkForce (lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-  #   profile="${config.xdg.stateHome or "${config.home.homeDirectory}/.local/state"}/nix/profiles/home-manager"
-  #   mkdir -p "$(dirname "$profile")"
-  #   nix profile wipe-history --profile "$profile" >/dev/null 2>&1 || true
-  #   nix profile remove --profile "$profile" home-manager-path >/dev/null 2>&1 || true
-  #   nix profile add --profile "$profile" ${config.home.path}
-  # '');
 
   xdg = {
     enable = true;
@@ -131,7 +102,6 @@ in {
       alacritty.enable = true;
       btop.enable = true;
       fzf.enable = true;
-      #i3.enable = true;
       dunst.enable = true;
       xfce.enable = true;
       rofi.enable = true;
@@ -154,8 +124,6 @@ in {
         enable = lib.mkDefault true;
         profileNames = [username];
       };
-
-      #polybar.enable = true;
     };
   };
 
@@ -198,10 +166,6 @@ in {
         set -g fzf_history_time_format "%Y-%m-%d %H:%M"
         set -g fzf_history_opts "--no-sort --exact"
 
-        # Make autosuggestions visible and ensure they stay enabled
-        # set -g fish_autosuggestion_enabled 1
-        # set -g fish_color_autosuggestion '#8a8a8a'
-
         set -Ux fifc_editor nvim
         fzf_configure_bindings --directory=\ct --git_log=\cg --git_status=\cs --history=\cr --processes=\cp --variables=\cv
       '';
@@ -217,8 +181,6 @@ in {
         ll = "eza -lah";
         ls = "eza -ah";
 
-        #gs = "git status";
-        #gl = "git log --oneline --decorate --graph --all";
         lg = "lazygit";
 
         se = "sudoedit";
@@ -246,9 +208,6 @@ in {
           name = "fifc";
           inherit (fifc) src;
         }
-        #{ name = "autopair"; src = autopair.src; }
-        #{ name = "done";     src = done.src; }
-        #{ name = "pisces";   src = pisces.src; }
       ];
     };
 
