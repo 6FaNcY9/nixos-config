@@ -27,6 +27,7 @@
     ./firefox.nix
     ./desktop-services.nix
     ./xfce-session.nix
+    ./clipboard.nix
 
     # Optional/disabled
     ./i3blocks.nix

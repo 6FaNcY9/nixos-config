@@ -1,17 +1,24 @@
 {
   pkgs,
   lib,
+  config,
   inputs,
   ...
 }: {
+  # Wallpaper option - can be overridden per-host
+  options.theme.wallpaper = lib.mkOption {
+    type = lib.types.path;
+    default = "${inputs.gruvbox-wallpaper}/wallpapers/brands/gruvbox-rainbow-nix.png";
+    description = "Path to wallpaper image for Stylix.";
+  };
+
   # Shared Stylix settings (safe to import in BOTH NixOS + Home Manager).
   # Docs: https://nix-community.github.io/stylix/
-  stylix = {
+  config.stylix = {
     enable = true;
 
-    # Wallpaper
-    #image = "/home/vino/Pictures/gruvbox-rainbow-nix.png";
-    image = "${inputs.gruvbox-wallpaper}/wallpapers/brands/gruvbox-rainbow-nix.png";
+    # Use configurable wallpaper
+    image = config.theme.wallpaper;
 
     polarity = lib.mkDefault "dark";
     base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/gruvbox-dark-pale.yaml";

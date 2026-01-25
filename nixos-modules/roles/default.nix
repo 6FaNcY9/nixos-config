@@ -1,9 +1,10 @@
 # Role system - defines opt-in roles for different host types
-# Roles: desktop, laptop, server
+# Roles: desktop, laptop, server, development
 {lib, ...}: {
   imports = [
     ./laptop.nix
     ./server.nix
+    ./development.nix
   ];
 
   options = {
@@ -24,6 +25,12 @@
         type = lib.types.bool;
         default = false;
         description = "Enable server-oriented defaults for this host.";
+      };
+
+      development = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Enable development tools (docker, direnv, build tools).";
       };
     };
 

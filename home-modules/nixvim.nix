@@ -143,18 +143,40 @@
           indent.enable = true;
 
           ensure_installed = [
+            # Shell & config
             "nix"
             "bash"
             "fish"
             "lua"
             "vim"
             "vimdoc"
-            "regex"
+
+            # Data formats
             "json"
             "yaml"
             "toml"
+            "regex"
+
+            # Systems programming
+            "rust"
+            "c"
+            "cpp"
+            "go"
+            "gomod"
+            "gosum"
+
+            # Web development
+            "javascript"
+            "typescript"
+            "tsx"
+            "html"
+            "css"
+
+            # Documentation
             "markdown"
             "markdown_inline"
+
+            # Git
             "diff"
             "gitcommit"
             "git_config"
@@ -280,12 +302,30 @@
         enable = true;
 
         servers = {
+          # Scripting & config
           pyright.enable = true;
           lua_ls.enable = true;
           nixd.enable = true;
           bashls.enable = true;
+
+          # Data formats
           jsonls.enable = true;
           yamlls.enable = true;
+
+          # Systems programming
+          rust_analyzer = {
+            enable = true;
+            installCargo = true;
+            installRustc = true;
+          };
+          clangd.enable = true; # C/C++
+          gopls.enable = true; # Go
+
+          # Web development
+          ts_ls.enable = true; # TypeScript/JavaScript
+
+          # Documentation
+          marksman.enable = true; # Markdown
         };
 
         keymaps = {
