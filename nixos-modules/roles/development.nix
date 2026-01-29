@@ -6,10 +6,10 @@
   ...
 }: {
   config = lib.mkIf config.roles.development {
-    # Virtualization
+    # Virtualization (opt-in, disabled by default to save resources)
     virtualisation = {
       docker = {
-        enable = lib.mkDefault true;
+        enable = lib.mkDefault false;
         autoPrune = {
           enable = true;
           dates = "weekly";

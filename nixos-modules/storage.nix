@@ -54,13 +54,11 @@ in {
           NUMBER_LIMIT = "50";
         };
     };
-    #snapper.cleanupOnBoot = true;
 
     btrfs.autoScrub = {
       enable = true;
       fileSystems = btrfsFileSystems;
       interval = "monthly";
-      #randomizedDelaySec = "8h";
     };
   };
 }

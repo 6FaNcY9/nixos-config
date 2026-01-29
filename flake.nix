@@ -58,6 +58,10 @@
     devshell.url = "github:numtide/devshell";
     flake-root.url = "github:srid/flake-root";
 
+    # Development services (replaces docker-compose)
+    process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
+    services-flake.url = "github:juspay/services-flake";
+
     # Wallpaper
     gruvbox-wallpaper.url = "github:AngelJumbo/gruvbox-wallpapers";
   };
@@ -90,6 +94,7 @@
         inputs.devshell.flakeModule
         inputs.flake-root.flakeModule
         inputs.flake-parts.flakeModules.modules
+        inputs.process-compose-flake.flakeModule
       ];
 
       ezConfigs = {
@@ -114,30 +119,26 @@
         missionControlWrapper = config.mission-control.wrapper;
         maintenancePackages = [pkgs.pre-commit pkgs.nix missionControlWrapper] ++ config.pre-commit.settings.enabledPackages;
 
-        stickyKeysSlayer = pkgs.stdenvNoCC.mkDerivation {
-          pname = "sticky-keys-slayer";
-          version = "git-2025-01-06";
-          src = pkgs.fetchFromGitHub {
-            owner = "linuz";
-            repo = "Sticky-Keys-Slayer";
-            rev = "0b431ac9909a3f7f47a31c02d8602a52d3a7006d";
-            sha256 = "sha256-rzdZArHwv8gAEvOGE4RdPnRXQ6hDGggG6eryM+if2cE=";
-          };
-          buildInputs = [pkgs.makeWrapper];
-          installPhase = ''
-            mkdir -p $out/bin
-            install -m755 stickyKeysSlayer.sh $out/bin/sticky-keys-slayer
-            wrapProgram $out/bin/sticky-keys-slayer --prefix PATH : ${
-              pkgs.lib.makeBinPath [
-                pkgs.imagemagick
-                pkgs.xdotool
-                pkgs.parallel
-                pkgs.bc
-                pkgs.rdesktop
-              ]
-            }
-          '';
-        };
+        # Common utilities for project devShells (CLI tools only, no flake management)
+        commonDevPackages = with pkgs; [
+          git
+          gh # GitHub CLI
+          jq
+          yq-go
+          curl
+          wget
+          htop
+          btop
+          ripgrep
+          fd
+          fzf
+          eza
+          bat
+          tree
+        ];
+
+        # Maintenance packages include mission-control for flake management
+        maintenanceDevPackages = maintenancePackages ++ commonDevPackages;
 
         repoRootCmd = ''repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"'';
 
@@ -176,6 +177,26 @@
               description = "Remove result symlinks";
               exec = "nix run .#clean";
               category = "Dev Tools";
+            };
+            services = {
+              description = "Start local services (postgres, redis)";
+              exec = "nix run .#services";
+              category = "Services";
+            };
+            tree = {
+              description = "Visualize nix dependencies";
+              exec = "nix-tree";
+              category = "Analysis";
+            };
+            web = {
+              description = "Enter web development shell";
+              exec = "nix develop .#web";
+              category = "Dev Shells";
+            };
+            rust = {
+              description = "Enter Rust development shell";
+              exec = "nix develop .#rust";
+              category = "Dev Shells";
             };
           };
         };
@@ -274,78 +295,96 @@
           home-vino = self.homeConfigurations."${username}@${primaryHost}".activationPackage;
         };
 
+        # Process-compose services for local development
+        process-compose."services" = {
+          imports = [inputs.services-flake.processComposeModules.default];
+
+          services.postgres."pg1" = {
+            enable = false; # Enable manually when needed
+            initialDatabases = [{name = "dev";}];
+            port = 5432;
+          };
+
+          services.redis."redis1" = {
+            enable = false; # Enable manually when needed
+            port = 6379;
+          };
+
+          settings.processes = {
+            # Example custom process
+            # my-app.command = "echo 'Add your app command here'";
+          };
+        };
+
         devshells = {
           maintenance = {
-            packages = maintenancePackages;
-            devshell.motd = "{202}🔨 Welcome to devshell{reset}\nRun ',' for mission-control commands.";
+            packages = maintenanceDevPackages;
+            devshell.motd = ''
+              {202}🔨 Maintenance Shell{reset}
+              Run ',' for mission-control commands
+              Available: fmt, qa, update, clean
+            '';
           };
+
           default = {
-            packages = maintenancePackages;
-            devshell.motd = "{202}🔨 Welcome to devshell{reset}\nRun ',' for mission-control commands.";
+            packages = maintenanceDevPackages;
+            devshell.motd = ''
+              {202}🔨 Development Shell{reset}
+              Run ',' for mission-control commands
+              Services: nix run .#services (postgres, redis)
+            '';
           };
+
           flask = {
-            packages = with pkgs; [
-              missionControlWrapper
-              python3
-              python3Packages.flask
-              python3Packages.virtualenv
-            ];
-            devshell.motd = "{202}🔨 Welcome to devshell{reset}\nRun ',' for mission-control commands.";
-          };
-          pentest = {
             packages =
-              (with pkgs; [
-                missionControlWrapper
-                # Recon / scanning
-                nmap
-                masscan
-                rustscan
-                amass
-                subfinder
-                httpx
-                feroxbuster
-                gobuster
-                whatweb
-                nikto
-                # Web app / exploit
-                sqlmap
-                commix
-                metasploit
-                exploitdb
-                zap
-                ffuf
-                wfuzz
-                wpscan
-                # Creds / crypto
-                hashcat
-                john
-                hydra
-                medusa
-                hashcat-utils
-                hashpump
-                # Network tooling
-                mitmproxy
-                tcpdump
-                wireshark
-                socat
-                netcat-openbsd
-                # Reversing / binaries
-                radare2
-                cutter
-                gdb
-                binwalk
-                capstone
-                ghidra
-                # Wireless
-                aircrack-ng
-                kismet
-                hcxdumptool
-                hcxtools
-                # Wordlists
-                seclists
-              ])
-              ++ [stickyKeysSlayer];
-            devshell.motd = "{202}🔨 Welcome to devshell{reset}\nRun ',' for mission-control commands.";
+              commonDevPackages
+              ++ (with pkgs; [
+                python3
+                python3Packages.flask
+                python3Packages.requests
+                python3Packages.virtualenv
+                python3Packages.pip
+                poetry
+              ]);
+            devshell.motd = ''
+              {202}🐍 Flask Development Shell{reset}
+              Python: ${pkgs.python3.version}
+            '';
+          };
+
+          web = {
+            packages =
+              commonDevPackages
+              ++ (with pkgs; [
+                nodejs # Includes npm by default
+                pnpm # Standalone, no nodejs conflict
+                yarn # Standalone, no nodejs conflict
+                nodePackages.typescript
+                nodePackages.typescript-language-server
+              ]);
+            devshell.motd = ''
+              {202}🌐 Web Development Shell{reset}
+              Node: ${pkgs.nodejs.version}
+              npm, pnpm, yarn, TypeScript available
+            '';
+          };
+
+          rust = {
+            packages =
+              commonDevPackages
+              ++ (with pkgs; [
+                rustc
+                cargo
+                rustfmt
+                clippy
+                rust-analyzer
+                cargo-watch
+                cargo-edit
+              ]);
+            devshell.motd = ''
+              {202}🦀 Rust Development Shell{reset}
+              Rustc: ${pkgs.rustc.version}
+            '';
           };
         };
       };

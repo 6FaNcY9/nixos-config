@@ -6,7 +6,7 @@
   repoRoot,
   ...
 }: let
-  userGroups = ["wheel" "networkmanager" "audio" "video" "docker"];
+  userGroups = ["wheel" "networkmanager" "audio" "video"];
 
   systemPackages = with pkgs; [
     btrfs-progs
@@ -21,6 +21,9 @@
     sops
     age
     ssh-to-age
+    nix-tree # Visualize nix dependencies
+    nix-diff # Compare nix derivations
+    nix-output-monitor # Better nix build output
   ];
 in {
   # ------------------------------------------------------------
@@ -43,6 +46,9 @@ in {
       experimental-features = ["nix-command" "flakes"];
       auto-optimise-store = true;
       warn-dirty = true;
+      # Optimize builds
+      max-jobs = "auto";
+      cores = 0;
     };
 
     # Use nh's cleaner to avoid double GC scheduling.
@@ -92,6 +98,13 @@ in {
         extraArgs = "--keep-since 4d --keep 3";
       };
     };
+
+    # Command-not-found with nix-index (better than default)
+    command-not-found.enable = false;
+    nix-index = {
+      enable = true;
+      enableFishIntegration = true;
+    };
   };
 
   users = {
@@ -104,7 +117,7 @@ in {
     };
   };
 
-  virtualisation.docker.enable = true;
+  # Docker moved to roles/development.nix
 
   security = {
     sudo.wheelNeedsPassword = true;

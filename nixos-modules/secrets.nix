@@ -22,6 +22,6 @@
 
   systemd.tmpfiles.rules = [
     "d /var/lib/sops-nix 0700 root root -"
-    "d /home/${username}/.ssh 0700 ${username} ${username} -"
+    "d /home/${username}/.ssh 0700 ${username} users -"
   ];
 }
