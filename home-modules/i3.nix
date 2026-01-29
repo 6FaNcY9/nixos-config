@@ -18,17 +18,14 @@
         config = let
           cfgLib = import ../lib {inherit lib;};
           mod = "Mod4";
-          workspaceNames = map (workspace: workspace.name) workspaces;
 
           workspaceSwitch = cfgLib.mkWorkspaceBindings {
-            inherit mod;
-            workspaces = workspaceNames;
+            inherit mod workspaces;
             commandPrefix = "workspace";
           };
 
           workspaceMove = cfgLib.mkWorkspaceBindings {
-            inherit mod;
-            workspaces = workspaceNames;
+            inherit mod workspaces;
             commandPrefix = "move container to workspace";
             shift = true;
           };
@@ -100,13 +97,6 @@
             }
           ];
 
-          assigns = {
-            "${builtins.elemAt workspaceNames 0}" = [{class = "firefox";} {class = "Firefox";}];
-            "${builtins.elemAt workspaceNames 1}" = [{class = "Alacritty";}];
-            "${builtins.elemAt workspaceNames 2}" = [{class = "Code";}];
-            "${builtins.elemAt workspaceNames 3}" = [{class = "Thunar";}];
-          };
-
           bars = lib.mkForce [];
 
           keybindings = lib.mkOptionDefault (
@@ -153,10 +143,6 @@
                 "${mod}+Shift+c" = "reload";
                 "${mod}+Shift+r" = "restart";
                 "${mod}+Shift+x" = "exec ${pkgs.i3lock}/bin/i3lock";
-                "${mod}+Shift+z" = "exec systemctl suspend";
-                "${mod}+Shift+b" = "exec systemctl reboot";
-                "${mod}+Shift+p" = "exec systemctl poweroff";
-                "${mod}+Shift+e" = "exec i3-nagbar -t warning -m 'Exit session?' -b 'Yes' 'xfce4-session-logout'";
                 "${mod}+r" = "mode \"resize\"";
 
                 "Print" = "exec ${pkgs.flameshot}/bin/flameshot gui";

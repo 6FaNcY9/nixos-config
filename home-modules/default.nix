@@ -20,10 +20,13 @@
     ./git.nix
     ./starship.nix
     ./alacritty.nix
+    ./nixpkgs.nix
 
     # Desktop environment
     ./i3.nix
     ./polybar.nix
+    ./rofi-scripts.nix
+    ./rofi-theme.nix
     ./firefox.nix
     ./desktop-services.nix
     ./xfce-session.nix

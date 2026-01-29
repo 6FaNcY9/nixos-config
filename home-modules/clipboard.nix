@@ -23,6 +23,7 @@
     # Clipboard manager service
     services.clipmenu = lib.mkIf (config.clipboard.manager == "clipmenu") {
       enable = true;
+      launcher = "rofi -dmenu";
     };
 
     # Alternative: parcellite (GTK-based)
