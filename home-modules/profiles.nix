@@ -14,10 +14,25 @@
       description = "Enable ${name} package set.";
     };
 
+  claudeCodePkg = let
+    unstablePkg = lib.attrByPath ["unstable" "claude-code"] null pkgs;
+  in
+    if unstablePkg != null
+    then unstablePkg
+    else lib.attrByPath ["claude-code"] null pkgs;
+
+  opencodePkg = let
+    unstablePkg = lib.attrByPath ["unstable" "opencode"] null pkgs;
+  in
+    if unstablePkg != null
+    then unstablePkg
+    else pkgs.opencode;
+
   corePkgs = with pkgs; [
     git
     delta
     lazygit
+    gh
     eza
     tree
     ripgrep
@@ -100,6 +115,8 @@ in {
     (lib.optionals cfg.dev devPkgs)
     (lib.optionals cfg.desktop desktopPkgs)
     (lib.optionals cfg.extras extrasPkgs)
+    (lib.optionals (cfg.ai && claudeCodePkg != null) [claudeCodePkg])
     (lib.optionals (cfg.ai && codexPkg != null) [codexPkg])
+    (lib.optionals cfg.ai [opencodePkg])
   ];
 }

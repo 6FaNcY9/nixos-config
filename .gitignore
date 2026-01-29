@@ -17,6 +17,12 @@
 /.pre-commit-config.yaml
 
 # -----------------------------
+# AI Tool Directories
+# -----------------------------
+/.serena/
+/.claude/
+
+# -----------------------------
 # Secrets / keys (never commit)
 # -----------------------------
 .env

@@ -10,7 +10,6 @@
   osConfig ? null,
   username,
   hostname,
-  repoRoot,
   ...
 }: let
   inherit (pkgs.stdenv.hostPlatform) system;
@@ -34,11 +33,11 @@ in {
   # Inject shared arguments to all home-modules
   # Colors and palette come from shared-modules/palette.nix
   _module.args = {
+    inherit (config.theme) palette;
+    inherit (config) workspaces;
     c = config.theme.colors;
-    palette = config.theme.palette;
     inherit stylixFonts i3Pkg codexPkg;
     hostname = hostName;
-    workspaces = config.workspaces;
   };
 
   # ============================================================
