@@ -1,6 +1,5 @@
 # Shell configuration: Fish, atuin, fzf, direnv, zoxide
 {
-  lib,
   pkgs,
   config,
   repoRoot,
