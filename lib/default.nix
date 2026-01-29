@@ -1,22 +1,30 @@
-{lib}: {
+_: let
+  mkWorkspaceName = ws: let
+    number = builtins.toString ws.number;
+    icon = ws.icon or "";
+  in
+    if icon == ""
+    then number
+    else "${number}:${icon}";
+in {
+  inherit mkWorkspaceName;
+
   mkWorkspaceBindings = {
     mod,
     workspaces,
     commandPrefix,
     shift ? false,
   }: let
-    indices = lib.range 1 (builtins.length workspaces);
     keyPrefix =
       if shift
       then "${mod}+Shift+"
       else "${mod}+";
   in
     builtins.listToAttrs (
-      lib.lists.zipListsWith (wsName: idx: {
-        name = "${keyPrefix}${builtins.toString idx}";
-        value = "${commandPrefix} ${wsName}";
+      map (ws: {
+        name = "${keyPrefix}${builtins.toString ws.number}";
+        value = "${commandPrefix} \"${mkWorkspaceName ws}\"";
       })
       workspaces
-      indices
     );
 }

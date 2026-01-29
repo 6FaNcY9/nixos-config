@@ -7,10 +7,12 @@
   workspaces,
   ...
 }: let
+  cfgLib = import ../lib {inherit lib;};
+  hasIcons = builtins.any (workspace: workspace.icon != "") workspaces;
   wsIconAttrs = lib.listToAttrs (
-    lib.imap0 (index: workspace: {
-      name = "ws-icon-${toString index}";
-      value = "${workspace.name};${workspace.icon}";
+    map (workspace: {
+      name = "ws-icon-${toString (workspace.number - 1)}";
+      value = "${cfgLib.mkWorkspaceName workspace};${workspace.icon}";
     })
     workspaces
   );
@@ -20,13 +22,14 @@
   showBacklight = hasBacklight;
   showPower = hasBattery;
   showIp = !hasBattery;
+  modulesLeft = "i3 spacer-tray tray";
   modulesRight = lib.concatStringsSep " " (
     ["host" "network" "pulseaudio"]
     ++ lib.optionals showIp ["ip"]
     ++ lib.optionals showBattery ["battery"]
     ++ lib.optionals showBacklight ["backlight"]
     ++ lib.optionals showPower ["power"]
-    ++ ["clock" "spacer-tray" "tray"]
+    ++ ["clock"]
   );
 in {
   config = lib.mkIf config.profiles.desktop {
@@ -71,7 +74,7 @@ in {
             font-2 = "Font Awesome 6 Free:style=Regular:pixelsize=11;2";
             font-3 = "Font Awesome 6 Brands:style=Regular:pixelsize=11;2";
 
-            modules-left = "i3";
+            modules-left = modulesLeft;
             modules-center = "xwindow";
             modules-right = modulesRight;
             cursor-click = "pointer";
@@ -85,7 +88,7 @@ in {
               format = "<label-state>";
               index-sort = true;
               pin-workspaces = true;
-              strip-wsnumbers = false;
+              strip-wsnumbers = hasIcons;
               ws-icon-default = "";
               label-separator = " ";
               label-focused = "%icon%";
@@ -137,8 +140,8 @@ in {
 
           "module/network" = {
             type = "internal/network";
-            interface-type = "wireless";
-            interval = 5;
+            interface = "wlp1s0";
+            interval = 3;
             format-connected = "<label-connected>";
             label-connected = "  %essid%";
             label-connected-background = "\${colors.background-alt}";
@@ -149,6 +152,8 @@ in {
             label-disconnected-foreground = "\${colors.danger}";
             label-connected-padding = 1;
             label-disconnected-padding = 1;
+            click-left = "rofi-network-menu";
+            click-right = "${pkgs.networkmanagerapplet}/bin/nm-connection-editor &";
           };
 
           "module/clock" = {
