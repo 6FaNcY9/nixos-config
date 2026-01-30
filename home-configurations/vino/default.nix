@@ -26,29 +26,8 @@
     config;
 
   codexPkg = inputs.codex-cli-nix.packages.${system}.default;
+  opencodePkg = inputs.opencode.packages.${system}.default;
 
-  opencodeSrc = inputs.opencode;
-  # Use newer bun for the opencode build; stable nixpkgs is behind.
-  opencodeBun = pkgs.unstable.bun;
-  opencodeNodeModulesHashes =
-    (builtins.fromJSON (builtins.readFile "${opencodeSrc}/nix/hashes.json")).nodeModules;
-  # WORKAROUND: Override x86_64-linux hash until upstream updates hashes.json for dev branch
-  # The dev branch node_modules dependencies have changed but hashes.json hasn't been updated yet
-  # This hash was computed manually via: nix-prefetch-url --unpack <node_modules_tarball>
-  # TODO: Remove this override once https://github.com/anomalyco/opencode/pull/XXX is merged
-  # Last checked: 2026-01-30
-  opencodeNodeModulesHash =
-    if system == "x86_64-linux"
-    then "sha256-gUWzUsk81miIrjg0fZQmsIQG4pZYmEHgzN6BaXI+lfc="
-    else opencodeNodeModulesHashes.${system};
-  opencodeNodeModules = pkgs.callPackage "${opencodeSrc}/nix/node_modules.nix" {
-    rev = opencodeSrc.shortRev or opencodeSrc.rev or "dirty";
-    hash = opencodeNodeModulesHash;
-  };
-  opencodePkg = pkgs.callPackage "${opencodeSrc}/nix/opencode.nix" {
-    node_modules = opencodeNodeModules;
-    bun = opencodeBun;
-  };
   i3Pkg = pkgs.i3;
 in {
   imports = [../../home-modules/default.nix] ++ hostModules;
@@ -115,7 +94,6 @@ in {
       fzf.enable = true;
       dunst.enable = true;
       xfce.enable = true;
-      rofi.enable = true;
 
       starship = {
         enable = true;
@@ -154,19 +132,6 @@ in {
       signingkey = "FC8B68693AF4E0D9DC84A4D3B872E229ADE55151";
     };
     git.settings.commit.gpgsign = true;
-
-    # Rofi (user-specific icon theme)
-    rofi = {
-      enable = true;
-      terminal = "${pkgs.alacritty}/bin/alacritty";
-      extraConfig = {
-        show-icons = true;
-        icon-theme = "Papirus-Dark";
-        modi = "run,drun,window";
-        drun-display-format = "{icon} {name}";
-        font = "${stylixFonts.sansSerif.name} 12";
-      };
-    };
 
     # btop (small config)
     btop = {
