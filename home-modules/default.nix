@@ -14,6 +14,7 @@
     ./profiles.nix
     ./devices.nix
     ./secrets.nix
+    ./user-services.nix
 
     # Shell & CLI
     ./shell.nix
@@ -31,6 +32,7 @@
     ./desktop-services.nix
     ./xfce-session.nix
     ./clipboard.nix
+    ./opencode.nix
 
     # Optional/disabled
     ./i3blocks.nix
