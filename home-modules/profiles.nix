@@ -3,6 +3,7 @@
   pkgs,
   config,
   codexPkg ? null,
+  opencodePkg ? null,
   ...
 }: let
   cfg = config.profiles;
@@ -20,13 +21,6 @@
     if unstablePkg != null
     then unstablePkg
     else lib.attrByPath ["claude-code"] null pkgs;
-
-  opencodePkg = let
-    unstablePkg = lib.attrByPath ["unstable" "opencode"] null pkgs;
-  in
-    if unstablePkg != null
-    then unstablePkg
-    else pkgs.opencode;
 
   corePkgs = with pkgs; [
     git
@@ -117,6 +111,6 @@ in {
     (lib.optionals cfg.extras extrasPkgs)
     (lib.optionals (cfg.ai && claudeCodePkg != null) [claudeCodePkg])
     (lib.optionals (cfg.ai && codexPkg != null) [codexPkg])
-    (lib.optionals cfg.ai [opencodePkg])
+    (lib.optionals (cfg.ai && opencodePkg != null) [opencodePkg])
   ];
 }
