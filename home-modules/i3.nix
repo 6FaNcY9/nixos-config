@@ -19,6 +19,43 @@
           cfgLib = import ../lib {inherit lib;};
           mod = "Mod4";
 
+          wsName = n: cfgLib.mkWorkspaceName (builtins.elemAt workspaces (n - 1));
+          assignRules = [
+            {
+              ws = 1;
+              criteria = [{class = "firefox";}];
+            }
+            {
+              ws = 2;
+              criteria = [{class = "alacritty";}];
+            }
+            {
+              ws = 3;
+              criteria = [{class = "code";}];
+            }
+            {
+              ws = 4;
+              criteria = [{class = "Thunar";}];
+            }
+            {
+              ws = 5;
+              criteria = [{class = "Spotify";}];
+            }
+            {
+              ws = 6;
+              criteria = [{class = "feh";}];
+            }
+            #{ ws = 7; criteria = [{ class = "Gaming"; }]; }
+            {
+              ws = 8;
+              criteria = [{class = "discord";}];
+            }
+            {
+              ws = 9;
+              criteria = [{class = "xfce4-settings-manager";}];
+            }
+          ];
+
           workspaceSwitch = cfgLib.mkWorkspaceBindings {
             inherit mod workspaces;
             commandPrefix = "workspace";
@@ -98,6 +135,12 @@
           ];
 
           bars = lib.mkForce [];
+
+          assigns = builtins.listToAttrs (map (r: {
+              name = wsName r.ws;
+              value = r.criteria;
+            })
+            assignRules);
 
           keybindings = lib.mkOptionDefault (
             let
