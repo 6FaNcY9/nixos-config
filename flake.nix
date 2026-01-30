@@ -64,6 +64,12 @@
 
     # Wallpaper
     gruvbox-wallpaper.url = "github:AngelJumbo/gruvbox-wallpapers";
+
+    # Opencode (upstream dev branch)
+    opencode = {
+      url = "github:anomalyco/opencode?ref=dev";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {flake-parts, ...}: let
@@ -84,6 +90,8 @@
     flake-parts.lib.mkFlake {inherit inputs;} ({self, ...}: {
       systems = [system];
 
+      # Enable flake-parts debug mode for development
+      # This adds debug output and allSystems - warnings are expected
       debug = true;
 
       imports = [
@@ -109,6 +117,7 @@
       perSystem = {
         system,
         config,
+        lib,
         ...
       }: let
         pkgs = pkgsFor system;
@@ -118,6 +127,9 @@
           else {};
         missionControlWrapper = config.mission-control.wrapper;
         maintenancePackages = [pkgs.pre-commit pkgs.nix missionControlWrapper] ++ config.pre-commit.settings.enabledPackages;
+
+        # Import our custom library helpers
+        cfgLib = import ./lib {inherit lib;};
 
         # Common utilities for project devShells (CLI tools only, no flake management)
         commonDevPackages = with pkgs; [
@@ -135,6 +147,9 @@
           eza
           bat
           tree
+          # Nix linting tools
+          statix
+          deadnix
         ];
 
         # Maintenance packages include mission-control for flake management
@@ -319,20 +334,24 @@
         devshells = {
           maintenance = {
             packages = maintenanceDevPackages;
-            devshell.motd = ''
-              {202}🔨 Maintenance Shell{reset}
-              Run ',' for mission-control commands
-              Available: fmt, qa, update, clean
-            '';
+            devshell.motd = cfgLib.mkDevshellMotd {
+              title = "Maintenance Shell";
+              description = ''
+                Run ',' for mission-control commands
+                Available: fmt, qa, update, clean
+              '';
+            };
           };
 
           default = {
             packages = maintenanceDevPackages;
-            devshell.motd = ''
-              {202}🔨 Development Shell{reset}
-              Run ',' for mission-control commands
-              Services: nix run .#services (postgres, redis)
-            '';
+            devshell.motd = cfgLib.mkDevshellMotd {
+              title = "Development Shell";
+              description = ''
+                Run ',' for mission-control commands
+                Services: nix run .#services (postgres, redis)
+              '';
+            };
           };
 
           flask = {
@@ -346,10 +365,11 @@
                 python3Packages.pip
                 poetry
               ]);
-            devshell.motd = ''
-              {202}🐍 Flask Development Shell{reset}
-              Python: ${pkgs.python3.version}
-            '';
+            devshell.motd = cfgLib.mkDevshellMotd {
+              title = "Flask Development Shell";
+              emoji = "🐍";
+              description = "Python: ${pkgs.python3.version}";
+            };
           };
 
           web = {
@@ -362,11 +382,14 @@
                 nodePackages.typescript
                 nodePackages.typescript-language-server
               ]);
-            devshell.motd = ''
-              {202}🌐 Web Development Shell{reset}
-              Node: ${pkgs.nodejs.version}
-              npm, pnpm, yarn, TypeScript available
-            '';
+            devshell.motd = cfgLib.mkDevshellMotd {
+              title = "Web Development Shell";
+              emoji = "🌐";
+              description = ''
+                Node: ${pkgs.nodejs.version}
+                npm, pnpm, yarn, TypeScript available
+              '';
+            };
           };
 
           rust = {
@@ -381,16 +404,136 @@
                 cargo-watch
                 cargo-edit
               ]);
-            devshell.motd = ''
-              {202}🦀 Rust Development Shell{reset}
-              Rustc: ${pkgs.rustc.version}
-            '';
+            devshell.motd = cfgLib.mkDevshellMotd {
+              title = "Rust Development Shell";
+              emoji = "🦀";
+              description = "Rustc: ${pkgs.rustc.version}";
+            };
+          };
+
+          go = {
+            packages =
+              commonDevPackages
+              ++ (with pkgs; [
+                go
+                gopls # Go language server
+                delve # Go debugger
+                go-tools # staticcheck, etc.
+                gotools # goimports, etc.
+                gomodifytags
+                impl
+                gotests
+              ]);
+            devshell.motd = cfgLib.mkDevshellMotd {
+              title = "Go Development Shell";
+              emoji = "🐹";
+              description = ''
+                Go: ${pkgs.go.version}
+                gopls, delve, staticcheck available
+              '';
+            };
+          };
+
+          pentest = {
+            packages =
+              commonDevPackages
+              ++ (with pkgs; [
+                nmap
+                wireshark
+                tcpdump
+                netcat
+                socat
+                sqlmap
+                john
+                hashcat
+                metasploit
+                burpsuite
+                nikto
+                dirb
+                gobuster
+                ffuf
+                hydra
+              ]);
+            devshell.motd = cfgLib.mkDevshellMotd {
+              title = "Penetration Testing Shell";
+              emoji = "🔐";
+              description = ''
+                Security testing tools available
+                nmap, wireshark, metasploit, burpsuite, etc.
+              '';
+            };
+          };
+
+          database = {
+            packages =
+              commonDevPackages
+              ++ (with pkgs; [
+                # Database servers
+                postgresql
+                mysql80
+                sqlite
+                redis
+                mongodb-tools
+                pgcli
+                mycli
+                litecli
+                mongosh
+                dbeaver-bin
+              ]);
+            devshell.motd = cfgLib.mkDevshellMotd {
+              title = "Database Development Shell";
+              emoji = "🗄️";
+              description = ''
+                Database clients and tools available
+                PostgreSQL, MySQL 8.0, SQLite, Redis, MongoDB
+              '';
+            };
+          };
+
+          nix-debug = {
+            packages =
+              commonDevPackages
+              ++ (with pkgs; [
+                # Interactive Nix tools
+                nix-tree # Visual dependency tree explorer (nix-tree /run/current-system)
+                nix-diff # Compare derivations (nix-diff drv1.drv drv2.drv)
+                nix-output-monitor # Better build output (nom build ...)
+                nix-eval-jobs # Parallel evaluation
+                # Documentation and exploration
+                manix # Search Nix documentation (manix <term>)
+                nurl # Generate Nix fetcher calls from URLs
+                nix-prefetch-git # Prefetch git repositories
+                nix-prefetch-github # Prefetch GitHub repositories
+                # Analysis tools
+                nixpkgs-review # Review nixpkgs PRs
+                nixfmt-rfc-style # Alternative Nix formatter
+                nixd # Nix language server
+              ]);
+            devshell.motd = cfgLib.mkDevshellMotd {
+              title = "Nix Debugging & Analysis Shell";
+              emoji = "🔍";
+              description = ''
+                Interactive Nix exploration and debugging tools:
+                • nix repl         - Interactive Nix REPL (:lf . to load flake)
+                • nix-tree         - Visual dependency explorer
+                • nix-diff         - Compare derivations
+                • nom              - Better build output (nom build ...)
+                • manix            - Search Nix documentation
+                • nurl             - Generate fetcher calls from URLs
+                • nixpkgs-review   - Review nixpkgs PRs
+
+                Try: nix repl → :lf . → outputs.nixosConfigurations
+              '';
+            };
           };
         };
       };
 
       flake = {
         inherit overlays;
+        # Export reusable modules for other flakes
+        # Note: 'modules' is a custom output, not a standard flake schema field
+        # The warning "unknown flake output 'modules'" is expected but harmless
         modules = {
           nixos.default = ./nixos-modules;
           home.default = ./home-modules;
