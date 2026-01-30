@@ -30,11 +30,9 @@
     ];
 
     # Power management optimized for Framework 13 AMD (Ryzen 7040)
-    powerManagement = {
-      enable = true;
-      # schedutil governor recommended for Ryzen (better than ondemand)
-      cpuFreqGovernor = lib.mkDefault "schedutil";
-    };
+    # Note: Ryzen 7040 uses amd-pstate-epp driver managed by power-profiles-daemon
+    # cpuFreqGovernor setting is incompatible with power-profiles-daemon
+    powerManagement.enable = true;
 
     # Disable USB autosuspend for Framework USB-C controllers
     services.udev.extraRules = ''
