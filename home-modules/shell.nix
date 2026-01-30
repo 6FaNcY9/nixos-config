@@ -52,7 +52,7 @@
         diffsys = "nvd diff /run/booted-system /run/current-system";
 
         ll = "eza -lah";
-        ls = "eza -ah";
+        ls = "eza -hl";
 
         lg = "lazygit";
 
