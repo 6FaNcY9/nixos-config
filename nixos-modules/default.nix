@@ -12,6 +12,8 @@
     ./storage.nix
     ./services.nix
     ./secrets.nix
+    ./monitoring.nix
+    ./backup.nix
 
     # Role system (desktop, laptop, server)
     ./roles
