@@ -105,6 +105,9 @@ in {
       enable = true;
       enableFishIntegration = true;
     };
+
+    # Allow running non‑Nix dynamic binaries (bunx/AppImage/vendor CLIs)
+    nix-ld.enable = true;
   };
 
   users = {
