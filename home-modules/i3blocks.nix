@@ -5,16 +5,17 @@
   palette,
   config,
   ...
-}: {
+}: let
+  cfgLib = import ../lib {inherit lib;};
+in {
   config = lib.mkIf config.profiles.desktop {
     programs.i3blocks = let
       # Generic wrapper for block scripts
       mkBlockScript = name: body:
-        pkgs.writeShellScriptBin "i3blocks-${name}" ''
-          #!/usr/bin/env bash
-          set -euo pipefail
-          ${body}
-        '';
+        cfgLib.mkShellScript {
+          inherit pkgs body;
+          name = "i3blocks-${name}";
+        };
 
       hostBlock = mkBlockScript "host" ''
         printf '   %s\n\n${palette.accent2}\n' "${hostname}"
