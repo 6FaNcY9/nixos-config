@@ -16,6 +16,12 @@
     # Codex (always up-to-date flake)
     codex-cli-nix.url = "github:sadjow/codex-cli-nix";
 
+    # OpenCode (track upstream; update via `nix flake update opencode`)
+    opencode = {
+      url = "github:anomalyco/opencode";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     # Hardware quirks for Framework
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware";
@@ -64,12 +70,6 @@
 
     # Wallpaper
     gruvbox-wallpaper.url = "github:AngelJumbo/gruvbox-wallpapers";
-
-    # Opencode (upstream dev branch)
-    opencode = {
-      url = "github:anomalyco/opencode?ref=dev";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = inputs @ {flake-parts, ...}: let
@@ -125,6 +125,7 @@
           if builtins.pathExists ./pkgs/default.nix
           then import ./pkgs {}
           else {};
+        opencodePkg = inputs.opencode.packages.${system}.default;
         missionControlWrapper = config.mission-control.wrapper;
         maintenancePackages = [pkgs.pre-commit pkgs.nix missionControlWrapper] ++ config.pre-commit.settings.enabledPackages;
 
@@ -392,6 +393,29 @@
             };
           };
 
+          agents = {
+            packages =
+              commonDevPackages
+              ++ [
+                opencodePkg
+              ]
+              ++ (with pkgs; [
+                nodejs
+                pnpm
+                bun 
+              ]);
+            devshell.motd = cfgLib.mkDevshellMotd {
+              title = "Agent Tools Shell";
+              emoji = "🤖";
+              description = ''
+                opencode + vercel CLI
+                oh-my-opencode: bunx oh-my-opencode install
+                agent-browser: npx @vercel/agent-browser
+                If Playwright browsers missing: npx playwright install
+              '';
+            };
+          };
+
           rust = {
             packages =
               commonDevPackages
@@ -431,6 +455,20 @@
                 Go: ${pkgs.go.version}
                 gopls, delve, staticcheck available
               '';
+            };
+          };
+
+          bunx = {
+            packages =
+              commonDevPackages
+              ++ (with pkgs; [
+                bun
+                git
+              ]);
+            devshell.motd = cfgLib.mkDevshellMotd {
+              title = "Bun Installing Shell";
+              emoji = "";
+              description = "bun: ${pkgs.bun.version}";
             };
           };
 
