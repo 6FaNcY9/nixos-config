@@ -12,6 +12,16 @@ _: {
     backlight = "amdgpu_bl1";
   };
 
+  opencode.ohMyOpencode = {
+    enable = true;
+    claude = "yes";
+    openai = true;
+    gemini = true;
+    copilot = true;
+    opencodeZen = true;
+    zaiCodingPlan = true;
+  };
+
   workspaces = [
     {
       number = 1;
@@ -19,7 +29,7 @@ _: {
     }
     {
       number = 2;
-      icon = "";
+      icon = "";
     }
     {
       number = 3;
