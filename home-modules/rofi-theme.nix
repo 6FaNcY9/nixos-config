@@ -1,124 +1,218 @@
-# Custom Rofi theme matching gruvbox aesthetic
+# Rofi theme inspired by Frost-Phoenix, adapted to our palette
 {
   config,
   lib,
   palette,
+  pkgs,
+  stylixFonts ? {monospace.name = "JetBrainsMono Nerd Font";},
   ...
 }: {
   config = lib.mkIf config.profiles.desktop (let
-    inherit (config.lib.formats.rasi) mkLiteral;
-    theme = {
-      "*" = {
-        bg = mkLiteral palette.bg;
-        bg-alt = mkLiteral palette.bgAlt;
-        fg = mkLiteral palette.text;
-        fg-alt = mkLiteral palette.muted;
-        accent = mkLiteral palette.accent2;
-        accent2 = mkLiteral palette.accent;
-        urgent = mkLiteral palette.danger;
+    themeName = "frost-gruvbox";
+    themeText = ''
+      * {
+        bg-col: ${palette.bg};
+        bg-col-light: ${palette.bgAlt};
+        border-col: ${palette.muted};
+        selected-col: ${palette.bgAlt};
+        green: ${palette.accent};
+        fg-col: ${palette.text};
+        fg-col2: ${palette.text};
+        grey: ${palette.muted};
+        highlight: @green;
+        element-bg: ${palette.bg};
+        element-alternate-bg: ${palette.bgAlt};
+      }
 
-        background-color = mkLiteral "transparent";
-        text-color = mkLiteral "@fg";
-        font = "JetBrainsMono Nerd Font 11";
-      };
+      element-text, element-icon, mode-switcher {
+        background-color: inherit;
+        text-color: inherit;
+      }
 
-      window = {
-        transparency = "real";
-        background-color = mkLiteral "@bg";
-        border = mkLiteral "2px";
-        border-color = mkLiteral "@accent";
-        border-radius = mkLiteral "8px";
-        width = mkLiteral "600px";
-        padding = mkLiteral "20px";
-      };
+      window {
+        height: 539px;
+        width: 400px;
+        border: 2px;
+        border-color: @border-col;
+        background-color: @bg-col;
+      }
 
-      mainbox = {
-        background-color = mkLiteral "transparent";
-        children = map mkLiteral ["inputbar" "message" "listview"];
-        spacing = mkLiteral "15px";
-      };
+      mainbox {
+        background-color: @bg-col;
+      }
 
-      inputbar = {
-        background-color = mkLiteral "@bg-alt";
-        text-color = mkLiteral "@fg";
-        border = mkLiteral "0px 0px 2px 0px";
-        border-color = mkLiteral "@accent";
-        border-radius = mkLiteral "4px";
-        padding = mkLiteral "12px 16px";
-        spacing = mkLiteral "10px";
-        children = map mkLiteral ["prompt" "entry"];
-      };
+      inputbar {
+        children: [ prompt, entry ];
+        background-color: @bg-col-light;
+        padding: 0px;
+      }
 
-      prompt = {
-        background-color = mkLiteral "transparent";
-        text-color = mkLiteral "@accent";
-        font = "JetBrainsMono Nerd Font Bold 11";
-      };
+      prompt {
+        background-color: @green;
+        padding: 4px;
+        text-color: @bg-col-light;
+        margin: 10px 0px 10px 10px;
+      }
 
-      entry = {
-        background-color = mkLiteral "transparent";
-        text-color = mkLiteral "@fg";
-        placeholder = "Search...";
-        placeholder-color = mkLiteral "@fg-alt";
-        cursor = mkLiteral "text";
-      };
+      textbox-prompt-colon {
+        expand: false;
+        str: ":";
+      }
 
-      message = {
-        background-color = mkLiteral "@bg-alt";
-        border = mkLiteral "2px";
-        border-color = mkLiteral "@accent2";
-        border-radius = mkLiteral "4px";
-        padding = mkLiteral "10px";
-      };
+      entry {
+        padding: 6px;
+        margin: 10px 10px 10px 5px;
+        text-color: @fg-col;
+        background-color: @bg-col;
+      }
 
-      textbox = {
-        background-color = mkLiteral "transparent";
-        text-color = mkLiteral "@fg";
-      };
+      listview {
+        border: 0px 0px 0px;
+        padding: 0px;
+        margin: 0px;
+        columns: 1;
+        background-color: @bg-col;
+        cycle: true;
+      }
 
-      listview = {
-        background-color = mkLiteral "transparent";
-        columns = 1;
-        lines = 8;
-        spacing = mkLiteral "5px";
-        cycle = true;
-        dynamic = true;
-        layout = mkLiteral "vertical";
-      };
+      element {
+        padding: 8px 8px 8px 8px;
+        margin: 0px;
+        background-color: @element-bg;
+        text-color: @fg-col;
+      }
 
-      element = {
-        background-color = mkLiteral "transparent";
-        text-color = mkLiteral "@fg";
-        orientation = mkLiteral "horizontal";
-        border-radius = mkLiteral "4px";
-        padding = mkLiteral "8px 12px";
-      };
+      element-icon {
+        size: 28px;
+      }
 
-      "element selected" = {
-        background-color = mkLiteral "@bg-alt";
-        text-color = mkLiteral "@accent";
-        border = mkLiteral "0px 0px 0px 3px";
-        border-color = mkLiteral "@accent";
-      };
+      element selected {
+        background-color: @selected-col;
+        text-color: @fg-col2;
+      }
 
-      "element-icon" = {
-        background-color = mkLiteral "transparent";
-        size = mkLiteral "24px";
-        margin = mkLiteral "0px 10px 0px 0px";
-      };
+      element alternate.normal {
+        background-color: @element-alternate-bg;
+        text-color: @fg-col;
+      }
 
-      "element-text" = {
-        background-color = mkLiteral "transparent";
-        text-color = mkLiteral "inherit";
-        vertical-align = mkLiteral "0.5";
-      };
+      mode-switcher {
+        spacing: 0;
+      }
 
-      "element-text selected" = {
-        text-color = mkLiteral "@accent";
-      };
-    };
+      button {
+        padding: 10px;
+        background-color: @bg-col-light;
+        text-color: @grey;
+        vertical-align: 0.5;
+        horizontal-align: 0.5;
+      }
+
+      button selected {
+        background-color: @bg-col;
+        text-color: @green;
+      }
+    '';
+    themeFile = builtins.toString (pkgs.writeText "${themeName}.rasi" themeText);
+    powermenuText = ''
+      @theme "${themeName}"
+
+      configuration {
+        show-icons: false;
+        font: "${stylixFonts.monospace.name} 22";
+      }
+
+      window {
+        width: 500px;
+        location: center;
+        anchor: center;
+
+        margin: 0px;
+        padding: 0px;
+
+        border: 2px solid;
+        border-radius: 0px;
+        border-color: @border-col;
+
+        background-color: @bg-col;
+      }
+
+      mainbox {
+        enabled: true;
+        border: 0px solid;
+        border-radius: 0px;
+        border-color: @selected-col;
+        background-color: inherit;
+        children: [ "listview" ];
+      }
+
+      listview {
+        enabled: true;
+        lines: 1;
+        columns: 5;
+        cycle: true;
+        dynamic: true;
+        scrollbar: false;
+        layout: vertical;
+        reverse: false;
+        fixed-height: true;
+        fixed-columns: true;
+        spacing: 0px;
+        border: inherit;
+        border-radius: inherit;
+        border-color: inherit;
+        text-color: @fg-col;
+        background-color: transparent;
+      }
+
+      element {
+        enabled: true;
+        spacing: 0px;
+        padding: 28px 0px;
+        border: inherit;
+        border-radius: inherit;
+        border-color: inherit;
+        background-color: inherit;
+        text-color: @fg-col;
+        cursor: pointer;
+      }
+
+      element-text {
+        vertical-align: 0.5;
+        horizontal-align: 0.5;
+        font: inherit;
+        text-color: inherit;
+        background-color: transparent;
+        cursor: inherit;
+      }
+
+      element selected.normal {
+        background-color: @selected-col;
+      }
+    '';
   in {
     stylix.targets.rofi.enable = lib.mkForce false;
-    programs.rofi.theme = lib.mkForce theme;
+
+    programs.rofi = {
+      theme = lib.mkForce themeFile;
+      extraConfig = lib.mkOptionDefault {
+        modi = "run,drun,window";
+        lines = 5;
+        cycle = false;
+        show-icons = true;
+        icon-theme = "Papirus-Dark";
+        drun-display-format = "{icon} {name}";
+        location = 0;
+        disable-history = true;
+        hide-scrollbar = true;
+        display-drun = " Apps ";
+        display-run = " Run ";
+        display-window = " Window ";
+        sidebar-mode = true;
+        sorting-method = "fzf";
+      };
+    };
+
+    xdg.dataFile."rofi/themes/powermenu.rasi".text = powermenuText;
   });
 }
