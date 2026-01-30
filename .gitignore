@@ -87,3 +87,8 @@ obj/
 *.jar
 *.war
 *.ear
+
+#--------------------------------
+#Custom Verify
+#--------------------------------
+verify-optimizations.sh
