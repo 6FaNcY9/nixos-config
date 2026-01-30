@@ -5,17 +5,14 @@
 ### Phase 1: Error Detection & Fixes
 - [x] Fixed flake warnings with documentation
 - [x] Added statix/deadnix to dev environment
-- [x] Documented opencode workaround
 - [x] Created desktop hardening module
 - [x] Added secrets validation
 - [x] Added GPG key validation warnings
 
 ### Phase 2: Code Quality Improvements
 - [x] Created helper library (lib/default.nix)
-- [x] Refactored rofi-scripts.nix
 - [x] Refactored i3blocks.nix
 - [x] Refactored firefox.nix
-- [x] Documented opencode.nix
 
 ### Phase 3: Feature Additions
 - [x] Created monitoring module (Prometheus, Grafana)

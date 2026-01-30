@@ -59,13 +59,12 @@ systemctl list-timers | grep nixos-config-update  # Should NOT appear
 
 | File | Size | Issue | Action |
 |------|------|-------|--------|
-| `home-modules/opencode.nix` | 601 lines | Unused AI assistant config | ❌ DELETE |
 | `home-modules/i3blocks.nix` | ~150 lines | Disabled status bar (use polybar) | ❌ DELETE |
 | `home-modules/lnav.nix` | ~30 lines | Log viewer, minimal use | ❌ DELETE |
 
 ```bash
 # Remove dead modules:
-rm home-modules/opencode.nix home-modules/i3blocks.nix home-modules/lnav.nix
+rm home-modules/i3blocks.nix home-modules/lnav.nix
 
 # Update imports in home-modules/default.nix:
 # Remove these 3 lines from imports list
@@ -275,7 +274,7 @@ Phase 1: Critical Fixes
 - [ ] Rebuild and test: sudo nixos-rebuild switch --flake .#bandit
 
 Phase 2: Bloat Removal
-- [ ] Delete dead modules (opencode, i3blocks, lnav)
+- [ ] Delete dead modules (i3blocks, lnav)
 - [ ] Remove gcc from nixos-modules/core.nix
 - [ ] Remove nix tools from core.nix (in nix-debug shell now)
 - [ ] Remove pulseaudio, vscode, p7zip from profiles.nix
