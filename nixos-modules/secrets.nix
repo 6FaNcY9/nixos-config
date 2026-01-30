@@ -3,7 +3,29 @@
   inputs,
   username,
   ...
-}: {
+}: let
+  cfgLib = import ../lib {inherit lib;};
+
+  # Secret file paths
+  githubSecretFile = "${inputs.self}/secrets/github.yaml";
+  resticSecretFile = "${inputs.self}/secrets/restic.yaml";
+
+  # Validate secrets at build time
+  # This ensures secrets exist and are encrypted before activation
+  validateAllSecrets =
+    cfgLib.validateSecretExists githubSecretFile
+    && cfgLib.validateSecretEncrypted githubSecretFile
+    && cfgLib.validateSecretExists resticSecretFile
+    && cfgLib.validateSecretEncrypted resticSecretFile;
+in {
+  # Trigger validation
+  assertions = [
+    {
+      assertion = validateAllSecrets;
+      message = "Secret validation passed";
+    }
+  ];
+
   # sops-nix system defaults (safe even without secrets defined)
   sops = {
     age = {
@@ -13,10 +35,17 @@
     };
 
     secrets."github_ssh_key" = {
-      sopsFile = "${inputs.self}/secrets/github.yaml";
+      sopsFile = githubSecretFile;
       owner = username;
       mode = "0600";
       path = "/home/${username}/.ssh/github";
+    };
+
+    secrets."restic_password" = {
+      sopsFile = resticSecretFile;
+      key = "password";
+      owner = "root";
+      mode = "0400";
     };
   };
 
