@@ -29,8 +29,12 @@
       "rtw89_pci.disable_aspm_l1ss=1"
     ];
 
-    # Basic power management (PPD handles profiles)
-    powerManagement.enable = true;
+    # Power management optimized for Framework 13 AMD (Ryzen 7040)
+    powerManagement = {
+      enable = true;
+      # schedutil governor recommended for Ryzen (better than ondemand)
+      cpuFreqGovernor = lib.mkDefault "schedutil";
+    };
 
     # Disable USB autosuspend for Framework USB-C controllers
     services.udev.extraRules = ''

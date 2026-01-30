@@ -26,10 +26,13 @@
     '';
   };
 
+  # Auto-update timer: DISABLED for battery life (manual updates preferred)
+  # Battery impact: 2-4% per update (flake update + rebuild = 10-15min CPU)
+  # Re-enable by uncommenting wantedBy line
   systemd.timers.nixos-config-update = {
-    wantedBy = ["timers.target"];
+    # wantedBy = ["timers.target"];  # ← DISABLED for battery
     timerConfig = {
-      OnCalendar = "weekly";
+      OnCalendar = "monthly"; # Changed from weekly (if re-enabled)
       RandomizedDelaySec = "2h";
       Persistent = true;
     };
