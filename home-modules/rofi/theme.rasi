@@ -1,0 +1,13 @@
+* {
+    bg-col: @@bg-col@@;
+    bg-col-light: @@bg-col-light@@;
+    border-col: @@border-col@@;
+    selected-col: @@selected-col@@;
+    green: @@green@@;
+    fg-col: @@fg-col@@;
+    fg-col2: @@fg-col2@@;
+    grey: @@grey@@;
+    highlight: @green;
+    element-bg: @@element-bg@@;
+    element-alternate-bg: @@element-alternate-bg@@;
+}

@@ -26,13 +26,11 @@
     # Desktop environment
     ./i3.nix
     ./polybar.nix
-    ./rofi-scripts.nix
-    ./rofi-theme.nix
+    ./rofi/rofi.nix
     ./firefox.nix
     ./desktop-services.nix
     ./xfce-session.nix
     ./clipboard.nix
-    ./opencode.nix
 
     # Optional/disabled
     ./i3blocks.nix
