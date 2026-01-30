@@ -5,7 +5,9 @@
   c,
   config,
   ...
-}: {
+}: let
+  cfgLib = import ../lib {inherit lib;};
+in {
   config = lib.mkIf config.profiles.desktop {
     programs.firefox = {
       enable = true;
@@ -28,10 +30,8 @@
 
         userChrome = let
           themeTemplate = builtins.readFile ../assets/firefox/userChrome.theme.css;
-          replaceColors =
-            builtins.replaceStrings
-            ["@@base00@@" "@@base01@@" "@@base02@@" "@@base03@@" "@@base04@@" "@@base05@@" "@@base08@@" "@@base0A@@" "@@base0B@@" "@@base0D@@"]
-            [c.base00 c.base01 c.base02 c.base03 c.base04 c.base05 c.base08 c.base0A c.base0B c.base0D];
+          # Use our centralized color replacement helper
+          replaceColors = cfgLib.mkColorReplacer {colors = c;};
         in
           lib.mkAfter (
             (builtins.readFile ../assets/firefox/userChrome.css)
