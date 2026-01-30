@@ -640,6 +640,27 @@
         "type": "github"
       }
     },
+    "opencode": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1769719916,
+        "narHash": "sha256-/PPddsyo++1ng3a+lHhlSlEoOa+CTqeWwgqTuDkatzs=",
+        "owner": "anomalyco",
+        "repo": "opencode",
+        "rev": "aa1d0f6167f57e22aa7252d4dcd10672c4a63fbf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "anomalyco",
+        "ref": "dev",
+        "repo": "opencode",
+        "type": "github"
+      }
+    },
     "pre-commit-hooks": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -691,6 +712,7 @@
         "nixpkgs": "nixpkgs_5",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
+        "opencode": "opencode",
         "pre-commit-hooks": "pre-commit-hooks",
         "process-compose-flake": "process-compose-flake",
         "services-flake": "services-flake",
