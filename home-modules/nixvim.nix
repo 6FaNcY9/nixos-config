@@ -51,6 +51,7 @@
       cmp-path
       cmp-cmdline
       vim-matchup
+      markview-nvim
       rainbow-delimiters-nvim
       cheatsheet-nvim
     ];
@@ -258,6 +259,11 @@
         };
       };
 
+      markview = {
+        enable = true;
+        autoLoad = true;
+      };
+
       nvim-autopairs.enable = true;
       luasnip.enable = true;
 
@@ -447,6 +453,24 @@
         options = {
           silent = true;
           desc = "Commands";
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>pm";
+        action = "<cmd>Markview toggle<cr>";
+        options = {
+          noremap = true;
+          silent = true;
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>pr";
+        action = "<cmd>Markview render<cr>";
+        options = {
+          noremap = true;
+          silent = true;
         };
       }
     ];
