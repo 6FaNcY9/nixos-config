@@ -5,6 +5,7 @@
     ./laptop.nix
     ./server.nix
     ./development.nix
+    ./desktop-hardening.nix
   ];
 
   options = {
