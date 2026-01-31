@@ -1,6 +1,7 @@
 {
   inputs,
   config,
+  lib,
   ...
 }: {
   imports = [
@@ -83,44 +84,55 @@
     };
 
     # Main filesystem optimizations
+    # Use lib.mkForce to override hardware-configuration.nix settings
+    # NOTE: BTRFS compression mount options are shared across ALL subvolumes
+    # on the same filesystem. Using zstd:3 for better space savings.
     "/" = {
-      options = [
+      device = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
+      fsType = "btrfs";
+      options = lib.mkForce [
         "subvol=@"
         "noatime" # Don't update access times (reduces writes)
         "nodiratime" # Don't update directory access times
-        "compress=zstd:1" # Lighter compression for faster I/O
+        "compress=zstd:3" # Good compression ratio with reasonable speed
         "space_cache=v2" # Better performance
         "discard=async" # SSD optimization
       ];
     };
 
     "/home" = {
-      options = [
+      device = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
+      fsType = "btrfs";
+      options = lib.mkForce [
         "subvol=@home"
         "noatime"
         "nodiratime"
-        "compress=zstd:1"
+        "compress=zstd:3"
         "space_cache=v2"
         "discard=async"
       ];
     };
 
     "/nix" = {
-      options = [
+      device = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
+      fsType = "btrfs";
+      options = lib.mkForce [
         "subvol=@nix"
         "noatime"
-        "compress=zstd:3" # Keep higher compression for /nix (store rarely accessed)
+        "compress=zstd:3" # Shared across all subvolumes (BTRFS limitation)
         "space_cache=v2"
         "discard=async"
       ];
     };
 
     "/var" = {
-      options = [
+      device = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
+      fsType = "btrfs";
+      options = lib.mkForce [
         "subvol=@var"
         "noatime"
         "nodiratime"
-        "compress=zstd:1"
+        "compress=zstd:3"
         "space_cache=v2"
         "discard=async"
       ];

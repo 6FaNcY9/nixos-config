@@ -61,4 +61,10 @@ in {
       interval = "monthly";
     };
   };
+
+  # Disable snapper timeline timer (hourly snapshots)
+  # Daily restic backups are sufficient, this reduces I/O
+  # Note: TIMELINE_CREATE attribute doesn't work in NixOS snapper module,
+  # so we disable the timer directly
+  systemd.timers.snapper-timeline.enable = false;
 }
