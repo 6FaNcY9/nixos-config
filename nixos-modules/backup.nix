@@ -112,14 +112,14 @@
         backupPrepareCommand = ''
           # Safety check: Verify backup mount is actually mounted (not just a directory)
           BACKUP_DIR=$(dirname "${cfg.repository}")
-          
+
           if ! mountpoint -q "$BACKUP_DIR"; then
             echo "ERROR: $BACKUP_DIR is not mounted"
             echo "Expected USB drive is not connected or not mounted"
             echo "Aborting backup to prevent writing to internal disk"
             exit 1
           fi
-          
+
           # Extra safety: Verify it's not the root filesystem
           MOUNT_DEV=$(df "$BACKUP_DIR" | tail -1 | awk '{print $1}')
           if echo "$MOUNT_DEV" | grep -qE 'nvme|sda|vd'; then
@@ -127,7 +127,7 @@
             echo "Expected external USB drive, aborting backup"
             exit 1
           fi
-          
+
           echo "✓ Backup mount verified: $MOUNT_DEV mounted at $BACKUP_DIR"
           echo "Starting backup: ${name}"
           echo "Repository: ${cfg.repository}"
