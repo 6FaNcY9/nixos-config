@@ -72,12 +72,12 @@
   fileSystems = {
     # Auto-mount external backup USB drive
     # USB drive must be formatted as BTRFS and labeled "ResticBackup"
-    # nofail = don't prevent boot if USB not connected
+    # nofail = system boots fine without USB (backup service checks mount separately)
     "/mnt/backup" = {
       device = "/dev/disk/by-label/ResticBackup";
       fsType = "btrfs";
       options = [
-        "nofail" # Don't fail boot if USB not plugged in
+        "nofail" # System boots without USB, backup service verifies mount
         "noatime" # Don't update access times (saves writes)
         "compress=zstd" # Enable compression (saves space)
       ];
