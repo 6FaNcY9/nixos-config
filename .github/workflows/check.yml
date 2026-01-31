@@ -2,8 +2,9 @@ name: NixOS Config Validation
 
 on:
   push:
-    branches: [main, claude/*]
+    branches: [main, dev]
   pull_request:
+    branches: [main, dev]
   workflow_dispatch:
 
 jobs:
