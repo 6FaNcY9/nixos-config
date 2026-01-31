@@ -6,27 +6,10 @@
 }: {
   config = lib.mkIf config.roles.laptop {
     services = {
-      # Power management: auto-cpufreq for battery optimization (from gkapfham)
-      # Automatically switches between performance/powersave based on AC power
-      auto-cpufreq = {
-        enable = true;
-        settings = {
-          charger = {
-            governor = "performance";
-            turbo = "auto";
-          };
-          battery = {
-            governor = "powersave";
-            scaling_min_freq = lib.mkDefault 400000;
-            scaling_max_freq = lib.mkDefault 1700000;
-            turbo = "auto";
-          };
-        };
-      };
-
-      # Disable power-profiles-daemon when using auto-cpufreq (they conflict)
-      # Use mkForce because nixos-hardware enables it by default for Framework
-      power-profiles-daemon.enable = lib.mkForce false;
+      # Power management: power-profiles-daemon with native AMD amd-pstate-epp driver
+      # Framework 13 AMD (Ryzen 7040) uses amd-pstate-epp for optimal power management
+      # nixos-hardware enables this by default, we keep it enabled
+      power-profiles-daemon.enable = true;
 
       # Fingerprint authentication (from gkapfham - Framework 13 AMD has fingerprint reader)
       # Note: PAM integration syntax changed in unstable - service enables fingerprint auth
@@ -89,8 +72,9 @@
     ];
 
     # Power management for Framework 13 AMD (Ryzen 7040)
-    # Note: Ryzen 7040 uses amd-pstate-epp driver managed by power-profiles-daemon
-    # Do NOT set cpuFreqGovernor - it conflicts with power-profiles-daemon
+    # Uses native amd-pstate-epp driver with power-profiles-daemon
+    # Available profiles: performance, balanced, power-saver
+    # Switch profiles: powerprofilesctl set <profile>
     powerManagement.enable = true;
   };
 }
