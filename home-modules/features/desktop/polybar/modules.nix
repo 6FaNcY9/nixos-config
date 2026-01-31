@@ -54,7 +54,7 @@ in {
 
       "module/host" = {
         type = "custom/text";
-        format = "  ${hostname}";
+        format = "  ${hostname}";
         format-foreground = "\${colors.accent2}";
         format-background = "\${colors.background-alt}";
         format-padding = 1;
@@ -70,11 +70,11 @@ in {
       "module/pulseaudio" = {
         type = "internal/pulseaudio";
         format-volume = "<label-volume>";
-        label-volume = " %percentage%%";
+        label-volume = " %percentage%%";
         label-volume-background = "\${colors.background-alt}";
         label-volume-foreground = "\${colors.foreground}";
         label-volume-padding = 1;
-        label-muted = " mute";
+        label-muted = " mute";
         label-muted-foreground = "\${colors.danger}";
         label-muted-background = "\${colors.background-alt}";
         label-muted-padding = 1;
@@ -85,11 +85,11 @@ in {
         interface = "wlp1s0";
         interval = 3;
         format-connected = "<label-connected>";
-        label-connected = "  %essid%";
+        label-connected = "  %essid%";
         label-connected-background = "\${colors.background-alt}";
         label-connected-foreground = "\${colors.accent}";
         format-disconnected = "<label-disconnected>";
-        label-disconnected = " offline";
+        label-disconnected = " offline";
         label-disconnected-background = "\${colors.background-alt}";
         label-disconnected-foreground = "\${colors.danger}";
         label-connected-padding = 1;
@@ -103,7 +103,7 @@ in {
         interval = 5;
         date = "%H:%M";
         format = "<label>";
-        label = "%{A1:${pkgs.gsimplecal}/bin/gsimplecal &:}  %date%%{A}";
+        label = "%{A1:${pkgs.gsimplecal}/bin/gsimplecal &:}  %date%%{A}";
         label-foreground = "\${colors.accent2}";
         label-background = "\${colors.background-alt}";
         label-padding = 1;
@@ -135,9 +135,9 @@ in {
         format-charging = "<label-charging>";
         format-discharging = "<label-discharging>";
         format-full = "<label-full>";
-        label-charging = " %percentage%%";
-        label-discharging = " %percentage%%";
-        label-full = " 100%";
+        label-charging = " %percentage%%";
+        label-discharging = " %percentage%%";
+        label-full = " 100%";
         label-charging-background = "\${colors.background-alt}";
         label-discharging-background = "\${colors.background-alt}";
         label-full-background = "\${colors.background-alt}";
@@ -156,7 +156,7 @@ in {
         exec = "${pkgs.power-profiles-daemon}/bin/powerprofilesctl get";
         interval = 5;
         format = "<label>";
-        label = " %output%";
+        label = " %output%";
         label-background = "\${colors.background-alt}";
         label-foreground = "\${colors.accent2}";
         label-padding = 1;
@@ -168,7 +168,7 @@ in {
         type = "internal/backlight";
         card = config.devices.backlight;
         format = "<label>";
-        label = " %percentage%%";
+        label = " %percentage%%";
         label-foreground = "\${colors.foreground}";
         label-background = "\${colors.background-alt}";
         label-padding = 1;
@@ -181,7 +181,7 @@ in {
         exec = "${pkgs.iproute2}/bin/ip -4 route get 1.1.1.1 | ${pkgs.gawk}/bin/awk '{for (i=1; i<=NF; i++) if ($i==\"src\") {print $(i+1); exit}}'";
         interval = 5;
         format = "<label>";
-        label = "  %output%";
+        label = "  %output%";
         label-background = "\${colors.background-alt}";
         label-foreground = "\${colors.accent}";
         label-padding = 1;
