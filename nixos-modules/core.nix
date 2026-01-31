@@ -17,13 +17,9 @@
     vim
     wget
     gnupg
-    gcc
     sops
     age
     ssh-to-age
-    nix-tree # Visualize nix dependencies
-    nix-diff # Compare nix derivations
-    nix-output-monitor # Better nix build output
   ];
 in {
   # ------------------------------------------------------------
@@ -54,8 +50,10 @@ in {
     # Use nh's cleaner to avoid double GC scheduling.
     gc.automatic = lib.mkDefault false;
 
+    # Disable automatic store optimisation (reduces background I/O)
+    # Run manually when needed: sudo nix-store --optimise
     optimise = {
-      automatic = true;
+      automatic = false;
       dates = ["weekly"];
     };
   };

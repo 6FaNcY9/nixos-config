@@ -33,8 +33,6 @@
     ./clipboard.nix
 
     # Optional/disabled
-    ./i3blocks.nix
-    ./lnav.nix
     ./nixvim.nix
   ];
 }

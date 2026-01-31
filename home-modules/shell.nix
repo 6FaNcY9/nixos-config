@@ -66,7 +66,6 @@
         zj = "zellij";
 
         nixhome = "cd ${repoRoot}/";
-
       };
 
       plugins = with pkgs.fishPlugins; [

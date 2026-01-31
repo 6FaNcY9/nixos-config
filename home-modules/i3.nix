@@ -27,11 +27,11 @@
             }
             {
               ws = 2;
-              criteria = [{class = "alacritty";}];
+              criteria = [{class = "Alacritty";}]; # Fixed: Capitalized
             }
             {
               ws = 3;
-              criteria = [{class = "code";}];
+              criteria = [{class = "Code";}]; # Fixed: Capitalized
             }
             {
               ws = 4;
@@ -48,7 +48,7 @@
             #{ ws = 7; criteria = [{ class = "Gaming"; }]; }
             {
               ws = 8;
-              criteria = [{class = "discord";}];
+              criteria = [{class = "discord";}]; # Note: Discord might be capitalized too
             }
             {
               ws = 9;

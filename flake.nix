@@ -76,7 +76,7 @@
     system = "x86_64-linux";
     primaryHost = "bandit";
     username = "vino";
-    repoRoot = "/home/${username}/src/nixos-config-ez";
+    repoRoot = "/home/${username}/src/nixos-config-claude-explore";
 
     overlays = import ./overlays {inherit inputs;};
 
@@ -402,7 +402,7 @@
               ++ (with pkgs; [
                 nodejs
                 pnpm
-                bun 
+                bun
               ]);
             devshell.motd = cfgLib.mkDevshellMotd {
               title = "Agent Tools Shell";

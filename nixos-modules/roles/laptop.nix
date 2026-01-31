@@ -17,10 +17,11 @@
     };
 
     # Memory optimization with zram (compressed swap in RAM)
+    # Reduced to 25% to free more physical RAM for applications
     zramSwap = {
       enable = true;
       algorithm = "zstd";
-      memoryPercent = 50;
+      memoryPercent = 25;
     };
 
     # Framework-specific: Fix MediaTek WiFi suspend/resume issues

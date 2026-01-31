@@ -23,7 +23,6 @@
     else lib.attrByPath ["claude-code"] null pkgs;
 
   corePkgs = with pkgs; [
-    git
     delta
     lazygit
     gh
@@ -42,9 +41,6 @@
     procs
     hexyl
     yq-go
-    curl
-    wget
-    p7zip
     unzip
     zip
     man-pages
@@ -82,8 +78,6 @@
     picom
     playerctl
     polkit_gnome
-    pulseaudio
-    vscode
     feh
     killall
     xclip

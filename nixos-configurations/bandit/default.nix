@@ -66,16 +66,64 @@
     };
   };
 
-  # Auto-mount external backup USB drive
-  # USB drive must be formatted as BTRFS and labeled "ResticBackup"
-  # nofail = don't prevent boot if USB not connected
-  fileSystems."/mnt/backup" = {
-    device = "/dev/disk/by-label/ResticBackup";
-    fsType = "btrfs";
-    options = [
-      "nofail" # Don't fail boot if USB not plugged in
-      "noatime" # Don't update access times (saves writes)
-      "compress=zstd" # Enable compression (saves space)
-    ];
+  # Filesystem optimizations for battery life and performance
+  # Override hardware-configuration.nix mount options
+  fileSystems = {
+    # Auto-mount external backup USB drive
+    # USB drive must be formatted as BTRFS and labeled "ResticBackup"
+    # nofail = don't prevent boot if USB not connected
+    "/mnt/backup" = {
+      device = "/dev/disk/by-label/ResticBackup";
+      fsType = "btrfs";
+      options = [
+        "nofail" # Don't fail boot if USB not plugged in
+        "noatime" # Don't update access times (saves writes)
+        "compress=zstd" # Enable compression (saves space)
+      ];
+    };
+
+    # Main filesystem optimizations
+    "/" = {
+      options = [
+        "subvol=@"
+        "noatime" # Don't update access times (reduces writes)
+        "nodiratime" # Don't update directory access times
+        "compress=zstd:1" # Lighter compression for faster I/O
+        "space_cache=v2" # Better performance
+        "discard=async" # SSD optimization
+      ];
+    };
+
+    "/home" = {
+      options = [
+        "subvol=@home"
+        "noatime"
+        "nodiratime"
+        "compress=zstd:1"
+        "space_cache=v2"
+        "discard=async"
+      ];
+    };
+
+    "/nix" = {
+      options = [
+        "subvol=@nix"
+        "noatime"
+        "compress=zstd:3" # Keep higher compression for /nix (store rarely accessed)
+        "space_cache=v2"
+        "discard=async"
+      ];
+    };
+
+    "/var" = {
+      options = [
+        "subvol=@var"
+        "noatime"
+        "nodiratime"
+        "compress=zstd:1"
+        "space_cache=v2"
+        "discard=async"
+      ];
+    };
   };
 }
