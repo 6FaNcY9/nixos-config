@@ -1,4 +1,4 @@
-_: {
+{...}: {
   profiles = {
     core = true;
     dev = true;
@@ -12,46 +12,6 @@ _: {
     backlight = "amdgpu_bl1";
   };
 
-  workspaces = [
-    {
-      number = 1;
-      icon = "";
-    }
-    {
-      number = 2;
-      icon = "";
-    }
-    {
-      number = 3;
-      icon = "";
-    }
-    {
-      number = 4;
-      icon = "";
-    }
-    {
-      number = 5;
-      icon = "";
-    }
-    {
-      number = 6;
-      icon = "";
-    }
-    {
-      number = 7;
-      icon = "";
-    }
-    {
-      number = 8;
-      icon = "";
-    }
-    {
-      number = 9;
-      icon = "";
-    }
-    {
-      number = 10;
-      icon = "";
-    }
-  ];
+  # Workspaces use shared defaults from shared-modules/workspaces.nix
+  # Override here only if host-specific icons are needed
 }
