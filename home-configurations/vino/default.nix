@@ -40,6 +40,7 @@ in {
     c = config.theme.colors;
     inherit stylixFonts i3Pkg codexPkg opencodePkg;
     hostname = hostName;
+    cfgLib = import ../../lib {inherit lib;};
   };
 
   # ============================================================

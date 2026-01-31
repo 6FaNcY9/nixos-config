@@ -1,9 +1,9 @@
 {
   lib,
   workspaces,
+  cfgLib,
   ...
 }: let
-  cfgLib = import ../../../../lib {inherit lib;};
   wsName = n: cfgLib.mkWorkspaceName (builtins.elemAt workspaces (n - 1));
 
   assignRules = [

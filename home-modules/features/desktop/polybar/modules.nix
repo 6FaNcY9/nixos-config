@@ -4,9 +4,9 @@
   lib,
   workspaces,
   hostname,
+  cfgLib,
   ...
 }: let
-  cfgLib = import ../../../../lib {inherit lib;};
   hasIcons = builtins.any (workspace: workspace.icon != "") workspaces;
   wsIconAttrs = lib.listToAttrs (
     map (workspace: {

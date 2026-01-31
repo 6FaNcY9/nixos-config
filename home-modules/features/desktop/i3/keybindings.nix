@@ -2,9 +2,9 @@
   lib,
   pkgs,
   workspaces,
+  cfgLib,
   ...
 }: let
-  cfgLib = import ../../../../lib {inherit lib;};
   mod = "Mod4";
 
   directionalFocus = {
