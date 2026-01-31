@@ -82,7 +82,7 @@
     killall
     xclip
     gsimplecal
-    font-awesome
+    font-awesome_6 # Font Awesome 6 for polybar icons
   ];
 
   extrasPkgs = with pkgs; [
