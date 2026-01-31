@@ -20,7 +20,7 @@
       titlebar = false;
     };
 
-    colors = lib.mkForce {
+    colors = lib.mkDefault {
       focused = {
         border = c.base0A;
         background = c.base01;
@@ -55,7 +55,7 @@
     };
 
     workspaceAutoBackAndForth = true;
-    bars = lib.mkForce [];
+    bars = lib.mkDefault [];
 
     modes = lib.mkOptionDefault {
       resize = {

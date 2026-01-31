@@ -162,7 +162,7 @@
 in {
   config = lib.mkIf config.profiles.desktop {
     # Disable Stylix theming for rofi; we manage it via palette-driven Rasi files.
-    stylix.targets.rofi.enable = lib.mkForce false;
+    stylix.targets.rofi.enable = lib.mkDefault false;
 
     xdg = {
       configFile = {

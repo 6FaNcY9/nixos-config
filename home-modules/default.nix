@@ -32,7 +32,7 @@
     ./xfce-session.nix
     ./clipboard.nix
 
-    # Optional/disabled
+    # Editor configuration
     ./features/editor/nixvim
   ];
 }
