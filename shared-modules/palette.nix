@@ -5,25 +5,25 @@
   config,
   ...
 }: let
-  # Get Stylix colors with fallback (Gruvbox dark pale)
+  # Get Stylix colors with fallback (Gruvbox dark hard)
   c =
     lib.attrByPath ["lib" "stylix" "colors" "withHashtag"] {
-      base00 = "#262626";
-      base01 = "#3a3a3a";
-      base02 = "#4e4e4e";
-      base03 = "#8a8a8a";
-      base04 = "#949494";
-      base05 = "#dab997";
-      base06 = "#d5c4a1";
-      base07 = "#ebdbb2";
-      base08 = "#d75f5f";
-      base09 = "#ff8700";
-      base0A = "#ffaf00";
-      base0B = "#afaf00";
-      base0C = "#85ad85";
-      base0D = "#83a598";
-      base0E = "#d3869b";
-      base0F = "#af5f5f";
+      base00 = "#1d2021"; # ---- (dark background)
+      base01 = "#3c3836"; # --- (dark alt background)
+      base02 = "#504945"; # -- (selection background)
+      base03 = "#665c54"; # - (comments, invisibles)
+      base04 = "#bdae93"; # + (dark foreground)
+      base05 = "#d5c4a1"; # ++ (default foreground)
+      base06 = "#ebdbb2"; # +++ (light foreground)
+      base07 = "#fbf1c7"; # ++++ (light background)
+      base08 = "#fb4934"; # red
+      base09 = "#fe8019"; # orange
+      base0A = "#fabd2f"; # yellow
+      base0B = "#b8bb26"; # green
+      base0C = "#8ec07c"; # aqua/cyan
+      base0D = "#83a598"; # blue
+      base0E = "#d3869b"; # purple
+      base0F = "#d65d0e"; # brown
     }
     config;
 in {
