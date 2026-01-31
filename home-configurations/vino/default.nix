@@ -110,8 +110,7 @@ in {
       };
 
       firefox = {
-        enable = lib.mkDefault true;
-        profileNames = [username];
+        enable = false; # Disabled - manual dark mode config in firefox.nix
       };
     };
   };

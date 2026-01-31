@@ -150,7 +150,12 @@ in {
   # ------------------------------------------------------------
   # Fonts
   # ------------------------------------------------------------
-  fonts.fontconfig.useEmbeddedBitmaps = true;
+  fonts = {
+    fontconfig.useEmbeddedBitmaps = true;
+    packages = with pkgs; [
+      font-awesome_6 # Required for polybar icons
+    ];
+  };
 
   system.stateVersion = "25.11";
 }
