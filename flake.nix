@@ -544,7 +544,7 @@
                 nix-prefetch-github # Prefetch GitHub repositories
                 # Analysis tools
                 nixpkgs-review # Review nixpkgs PRs
-                nixfmt-rfc-style # Alternative Nix formatter
+                nixfmt
                 nixd # Nix language server
               ]);
             devshell.motd = cfgLib.mkDevshellMotd {
