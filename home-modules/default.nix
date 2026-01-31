@@ -24,8 +24,8 @@
     ./nixpkgs.nix
 
     # Desktop environment
-    ./i3.nix
-    ./polybar.nix
+    ./features/desktop/i3
+    ./features/desktop/polybar
     ./rofi/rofi.nix
     ./firefox.nix
     ./desktop-services.nix
@@ -33,6 +33,6 @@
     ./clipboard.nix
 
     # Optional/disabled
-    ./nixvim.nix
+    ./features/editor/nixvim
   ];
 }
