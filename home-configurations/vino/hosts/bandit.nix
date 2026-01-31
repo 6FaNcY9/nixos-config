@@ -1,4 +1,4 @@
-{...}: {
+_: {
   profiles = {
     core = true;
     dev = true;

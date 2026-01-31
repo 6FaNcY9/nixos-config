@@ -1,4 +1,4 @@
-{...}: {
+_: {
   programs.nixvim.plugins = {
     telescope = {
       enable = true;
@@ -20,48 +20,9 @@
       nixGrammars = true;
 
       settings = {
+        auto_install = false;
         highlight.enable = true;
         indent.enable = true;
-
-        ensure_installed = [
-          # Shell & config
-          "nix"
-          "bash"
-          "fish"
-          "lua"
-          "vim"
-          "vimdoc"
-
-          # Data formats
-          "json"
-          "yaml"
-          "toml"
-          "regex"
-
-          # Systems programming
-          "rust"
-          "c"
-          "cpp"
-          "go"
-          "gomod"
-          "gosum"
-
-          # Web development
-          "javascript"
-          "typescript"
-          "tsx"
-          "html"
-          "css"
-
-          # Documentation
-          "markdown"
-          "markdown_inline"
-
-          # Git
-          "diff"
-          "gitcommit"
-          "git_config"
-        ];
 
         incremental_selection = {
           enable = true;
