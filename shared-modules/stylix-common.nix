@@ -21,7 +21,7 @@
     image = config.theme.wallpaper;
 
     polarity = lib.mkDefault "dark";
-    base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/gruvbox-dark-pale.yaml";
+    base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
 
     # Icon theme configuration (updated for unstable API)
     icons = {
