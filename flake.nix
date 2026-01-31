@@ -1,17 +1,17 @@
 # flake.nix (keep on SSD at: nixos-config/flake.nix)
 {
-  description = "Framework 13 AMD: NixOS 25.11 + i3 + XFCE services + Home Manager + Stylix Gruvbox";
+  description = "Framework 13 AMD: NixOS unstable + i3 + XFCE services + Home Manager + Stylix Gruvbox";
 
   nixConfig = {
     extra-experimental-features = "nix-command flakes";
   };
 
   inputs = {
-    # Stable 25.11
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    # Primary: Unstable (latest packages, community standard pattern)
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    # Unstable (for newer packages like codex)
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # Fallback: Stable 25.11 (when unstable breaks)
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.11";
 
     # Codex (always up-to-date flake)
     codex-cli-nix.url = "github:sadjow/codex-cli-nix";
@@ -19,28 +19,28 @@
     # OpenCode (track upstream; update via `nix flake update opencode`)
     opencode = {
       url = "github:anomalyco/opencode";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Hardware quirks for Framework
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware";
     };
-    # Match Home Manager to NixOS release branch
+    # Home Manager follows unstable (community pattern)
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # NixVim (Home Manager module)
+    # NixVim (Home Manager module) - use unstable for latest features
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-25.11";
+      url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Stylix theming
+    # Stylix theming - use unstable
     stylix = {
-      url = "github:nix-community/stylix/release-25.11";
+      url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

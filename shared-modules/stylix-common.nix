@@ -23,7 +23,8 @@
     polarity = lib.mkDefault "dark";
     base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/gruvbox-dark-pale.yaml";
 
-    iconTheme = {
+    # Icon theme configuration (updated for unstable API)
+    icons = {
       enable = true;
       package = pkgs.papirus-icon-theme;
       dark = "Papirus-Dark";

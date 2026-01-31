@@ -68,7 +68,7 @@
     alacritty
     firefox
     rofi
-    xfce.thunar
+    thunar # Moved to top-level in unstable
     networkmanagerapplet
     blueman
     btop
