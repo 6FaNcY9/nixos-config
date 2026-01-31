@@ -24,7 +24,7 @@ jobs:
             sandbox = true
 
       - name: Check formatting
-        run: nix fmt -- --check **/*.nix
+        run: nix fmt -- --ci
 
   flake-check:
     name: Flake Check
