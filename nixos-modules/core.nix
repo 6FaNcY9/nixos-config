@@ -20,6 +20,9 @@
     sops
     age
     ssh-to-age
+    # Framework-specific tools (only on Framework laptops)
+    framework-tool # Framework hardware control utility
+    fw-ectool # Embedded controller interface
   ];
 in {
   # ------------------------------------------------------------
