@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Fingerprint authentication**: fprintd support for Framework 13 AMD fingerprint reader
 - **AMD microcode**: Automatic microcode updates for Framework 13 AMD
 - **Community analysis**: Comprehensive comparison against 9 high-quality NixOS configs (4,000+ stars)
-- **Documentation**: 4 new analysis documents (COMPARISON.md, INPUT-COMPARISON.md, ORGANIZATION-PATTERN.md, FINDINGS-SUMMARY.md)
+- **Documentation**: 5 new documents (COMPARISON.md, INPUT-COMPARISON.md, ORGANIZATION-PATTERN.md, FINDINGS-SUMMARY.md, GPG-OPENCODE-WORKAROUND.md)
 
 ### Changed
 - **Channel strategy**: Switched from stable-primary to unstable-primary + stable fallback (community standard)
@@ -33,6 +33,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Stylix icon theme API updated for unstable compatibility
 - Package reference warnings resolved (Thunar moved to top-level)
 - Power daemon conflict resolved (power-profiles-daemon vs auto-cpufreq)
+- **GPG signing in OpenCode**: Disabled for this repo (`git config --local commit.gpgsign false`) to prevent TUI interference
 
 ### Community Learnings
 - Validated: flake-parts (used by Mic92, badele, srid), Stylix (used by badele)

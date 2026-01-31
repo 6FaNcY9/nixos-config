@@ -99,7 +99,10 @@ in {
 
     gnupg.agent = {
       enable = true;
-      pinentryPackage = pkgs.pinentry-curses;
+      # Use GTK2 pinentry for GUI popup (works with i3 + XFCE)
+      # pinentry-curses doesn't work in SSH/OpenCode terminal
+      # Alternative options: pinentry-gnome3, pinentry-qt, pinentry-rofi
+      pinentryPackage = pkgs.pinentry-gtk2;
       enableSSHSupport = true;
     };
 
