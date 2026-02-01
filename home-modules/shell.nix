@@ -25,8 +25,9 @@
         set -gx SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
         set -e SSH_AGENT_PID
 
-        if test -d /home/vino/.cache/.bun/bin
-          set -gx PATH /home/vino/.cache/.bun/bin $PATH
+        # Add bun binary path if it exists
+        if test -d ${config.home.homeDirectory}/.cache/.bun/bin
+          set -gx PATH ${config.home.homeDirectory}/.cache/.bun/bin $PATH
         end
 
         if test -r ${config.sops.secrets.github_mcp_pat.path}
