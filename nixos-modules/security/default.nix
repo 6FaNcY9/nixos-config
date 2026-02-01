@@ -8,5 +8,8 @@
 {
   imports = [
     ./sysctl.nix
+    ./apparmor.nix
+    ./usb-guard.nix
+    ./audit.nix
   ];
 }

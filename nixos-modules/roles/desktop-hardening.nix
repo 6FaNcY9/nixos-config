@@ -19,7 +19,7 @@
       requirePassword = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "Always require password for sudo (disable NOPASSWD)";
+        description = "Always require password for sudo";
       };
     };
 
@@ -60,7 +60,7 @@
         extraConfig = ''
           # Sudo timeout: ${toString config.desktop.hardening.sudo.timeout} minutes
           Defaults timestamp_timeout=${toString config.desktop.hardening.sudo.timeout}
-          # Require password for all commands (disable NOPASSWD)
+        # Require password for all commands
           ${lib.optionalString config.desktop.hardening.sudo.requirePassword ''
             Defaults passwd_tries=3
             Defaults passwd_timeout=1
@@ -155,6 +155,15 @@
       enable = true;
       networkHardening = true;
     };
+
+    # Audit logging (safe default)
+    security.hardening.audit.enable = true;
+
+    # AppArmor confinement (opt-in, enable for desktop hardening)
+    security.hardening.apparmor.enable = true;
+
+    # USBGuard device control (opt-in, safe default: allow mode)
+    security.hardening.usbguard.enable = true;
 
     # Additional kernel hardening (desktop-specific)
     boot.kernel.sysctl = {
