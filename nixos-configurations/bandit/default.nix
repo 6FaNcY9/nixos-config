@@ -26,6 +26,14 @@
   # Desktop Hardening - Enhanced security for desktop/laptop
   desktop.hardening.enable = true;
 
+  # Restic Backup - Plug-and-play backup to external USB drive
+  # Label your USB drive as "ResticBackup" and plug it in to auto-trigger backup
+  # First-time setup: Run `sudo restic-init` after plugging in the drive
+  # Manual backup: `sudo restic-backup-manual`
+  # View snapshots: `restic-snapshots`
+  # Restore: `restic-restore latest --target /path/to/restore`
+  backup.enable = true;
+
   # System Monitoring - Prometheus, Grafana, and enhanced logging
   # DISABLED: Power-hungry on laptop (5-8% battery drain, 344MB RAM)
   # Re-enable when docked or debugging: monitoring.enable = true;
