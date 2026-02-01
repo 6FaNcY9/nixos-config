@@ -3,7 +3,6 @@
 **Related Documents**:
 - [Comprehensive Plan](./COMPREHENSIVE-PLAN-2025.md)
 - [Quick Reference](./PLAN-QUICK-REFERENCE.md)
-- [Sudo Workaround](./SUDO-OPENCODE-WORKAROUND.md)
 
 ---
 
@@ -11,82 +10,17 @@
 
 ### Using Sudo Commands in OpenCode
 
-Your system has a **`gsudo` workaround** configured for running sudo commands in OpenCode/SSH environments.
-
-**Configuration**:
-```nix
-# home-modules/shell.nix (line 64)
-gsudo = "sudo -A";  # GUI sudo (askpass) - matches GPG pinentry workflow
-
-# nixos-modules/core.nix (lines 149-150)
-SUDO_ASKPASS = "${pkgs.openssh-askpass}/libexec/ssh-askpass";
-```
-
-**How It Works**:
-1. `gsudo` is a Fish shell abbreviation that expands to `sudo -A`
-2. The `-A` flag tells sudo to use `SUDO_ASKPASS` (GUI password prompt)
-3. A GTK dialog appears (polkit-gnome style) for password entry
-4. Works in OpenCode where regular `sudo` fails (no TTY)
-
-**Usage Examples**:
-```bash
-# Instead of:
-sudo nixos-rebuild switch
-
-# Use in OpenCode:
-gsudo nixos-rebuild switch
-
-# Other examples:
-gsudo systemctl restart some-service
-gsudo nix-collect-garbage -d
-gsudo nixos-rebuild test
-```
-
-**Important**: 
-- ✅ Works in OpenCode/SSH environments
-- ✅ GUI popup appears for password (like GPG pinentry)
-- ⚠️ Popup may briefly interfere with TUI (expected behavior)
-- ⚠️ Only works in Fish shell (your default)
-
-**Fallback for NOPASSWD Commands**:
-Some commands already work without password (configured in `nixos-modules/core.nix`):
-- `nixos-rebuild` 
-- `systemctl`
-- `nix-store`
-
-For these, you can use either `sudo` or `gsudo` - both work.
+- Standard sudo behavior only (no askpass/NOPASSWD overrides).
+- Use regular `sudo` with a TTY when needed.
 
 ---
 
 ## 📋 Phase Implementation Helpers
 
-### Phase 5: Testing Infrastructure
+### Phase 5: Testing Infrastructure (Deferred)
 
-**Commands for Testing**:
-```bash
-# Build tests without running
-nix build .#checks.x86_64-linux.system-boot-test
-
-# Run integration test
-nix build .#checks.x86_64-linux.desktop-test --print-build-logs
-
-# Run all tests
-nix flake check --print-build-logs
-
-# Quick unit test for lib helpers
-nix eval .#lib.mkWorkspaceBindings --apply 'x: x { mod = "Mod4"; workspaces = [1 2 3]; commandPrefix = "workspace"; }'
-```
-
-**NixOS Test VM**:
-```bash
-# Build and run test VM
-nix build .#nixosConfigurations.bandit.config.system.build.vm
-./result/bin/run-bandit-vm
-
-# Interactive test shell
-nix build .#checks.x86_64-linux.desktop-test.driver
-./result/bin/nixos-test-driver
-```
+- No test infrastructure is planned or needed at this time.
+- Do not create a `tests/` directory unless explicitly requested.
 
 ---
 
@@ -95,47 +29,47 @@ nix build .#checks.x86_64-linux.desktop-test.driver
 **AppArmor Commands**:
 ```bash
 # Check AppArmor status
-gsudo aa-status
+sudo aa-status
 
 # Load profile
-gsudo apparmor_parser -r /etc/apparmor.d/firefox
+sudo apparmor_parser -r /etc/apparmor.d/firefox
 
 # Set profile to complain mode (permissive)
-gsudo aa-complain /etc/apparmor.d/firefox
+sudo aa-complain /etc/apparmor.d/firefox
 
 # Set profile to enforce mode
-gsudo aa-enforce /etc/apparmor.d/firefox
+sudo aa-enforce /etc/apparmor.d/firefox
 
 # Check profile logs
-gsudo journalctl -xe | grep -i apparmor
+sudo journalctl -xe | grep -i apparmor
 ```
 
 **USBGuard Commands**:
 ```bash
 # List current USB devices
-gsudo usbguard list-devices
+sudo usbguard list-devices
 
 # List rules
-gsudo usbguard list-rules
+sudo usbguard list-rules
 
 # Allow a device permanently
-gsudo usbguard allow-device <device-id> --permanent
+sudo usbguard allow-device <device-id> --permanent
 
 # Generate rules from current devices
-gsudo usbguard generate-policy > /tmp/usbguard-policy.txt
+sudo usbguard generate-policy > /tmp/usbguard-policy.txt
 ```
 
 **Audit Commands**:
 ```bash
 # Search audit logs
-gsudo ausearch -k secrets        # Search by key
-gsudo ausearch -f /etc/passwd    # Search by file
-gsudo ausearch -ts recent        # Recent events
+sudo ausearch -k secrets        # Search by key
+sudo ausearch -f /etc/passwd    # Search by file
+sudo ausearch -ts recent        # Recent events
 
 # Audit reports
-gsudo aureport --summary
-gsudo aureport --failed
-gsudo aureport --executable
+sudo aureport --summary
+sudo aureport --failed
+sudo aureport --executable
 ```
 
 ---
@@ -183,10 +117,10 @@ export B2_ACCOUNT_KEY="your-account-key"
 restic -r b2:bucket-name:/path init
 
 # Manual backup
-gsudo systemctl start restic-backups-cloud.service
+sudo systemctl start restic-backups-cloud.service
 
 # Check backup status
-gsudo systemctl status restic-backups-cloud.service
+sudo systemctl status restic-backups-cloud.service
 
 # List snapshots
 restic -r /mnt/backup/restic snapshots
@@ -262,14 +196,14 @@ hyprctl dispatch exec alacritty
 **⚠️ CRITICAL: Backup Before Migration**:
 ```bash
 # 1. Full restic backup
-gsudo systemctl start restic-backups-local.service
+sudo systemctl start restic-backups-local.service
 
 # 2. BTRFS snapshots
-gsudo snapper -c root create --description "Pre-impermanence"
-gsudo snapper -c home create --description "Pre-impermanence"
+sudo snapper -c root create --description "Pre-impermanence"
+sudo snapper -c home create --description "Pre-impermanence"
 
 # 3. Export age key (CRITICAL!)
-gsudo cp /var/lib/sops-nix/key.txt ~/age-key-backup.txt
+sudo cp /var/lib/sops-nix/key.txt ~/age-key-backup.txt
 # Copy to USB drive or password manager
 
 # 4. List all files in /var/lib (identify what to persist)
@@ -292,7 +226,7 @@ findmnt | grep persist
 ls -la /persist/
 
 # Create test file to verify ephemeral root
-echo "test" | gsudo tee /test-file.txt
+echo "test" | sudo tee /test-file.txt
 # Reboot, file should be gone
 ```
 
@@ -300,56 +234,16 @@ echo "test" | gsudo tee /test-file.txt
 
 ## 🐛 Troubleshooting Common Issues
 
-### "gsudo: command not found"
-**Cause**: Not in Fish shell or abbreviations not loaded
-
-**Fix**:
-```bash
-# Check current shell
-echo $SHELL  # Should be /run/current-system/sw/bin/fish
-
-# Reload Fish config
-source ~/.config/fish/config.fish
-
-# Or just use sudo -A directly
-sudo -A command
-```
-
----
-
-### GUI Popup Doesn't Appear
-**Cause**: SUDO_ASKPASS not configured or X11 not available
-
-**Fix**:
-```bash
-# Check environment variable
-echo $SUDO_ASKPASS
-# Should show: /nix/store/.../ssh-askpass
-
-# Check X11 display
-echo $DISPLAY
-# Should show: :0 or :1
-
-# Test askpass directly
-$SUDO_ASKPASS "Test password prompt"
-# Should show GUI popup
-```
-
----
-
-### Test Builds Fail
+### Builds Fail
 **Cause**: Various - check build output
 
 **Fix**:
 ```bash
-# Verbose build
-nix build .#checks.x86_64-linux.system-test --print-build-logs
+# Build system with logs
+nix build .#nixosConfigurations.bandit.config.system.build.toplevel --print-build-logs
 
-# Check test logs
-nix log /nix/store/...-system-test
-
-# Build without tests
-nix build .#nixosConfigurations.bandit.config.system.build.toplevel
+# Check flake evaluations
+nix flake check
 ```
 
 ---
@@ -363,9 +257,9 @@ nix build .#nixosConfigurations.bandit.config.system.build.toplevel
 ls -la /persist/var/lib/sops-nix/key.txt
 
 # If missing, copy from backup
-gsudo mkdir -p /persist/var/lib/sops-nix
-gsudo cp ~/age-key-backup.txt /persist/var/lib/sops-nix/key.txt
-gsudo chmod 600 /persist/var/lib/sops-nix/key.txt
+sudo mkdir -p /persist/var/lib/sops-nix
+sudo cp ~/age-key-backup.txt /persist/var/lib/sops-nix/key.txt
+sudo chmod 600 /persist/var/lib/sops-nix/key.txt
 ```
 
 ---
@@ -374,12 +268,8 @@ gsudo chmod 600 /persist/var/lib/sops-nix/key.txt
 
 ### Phase Completion Checklist
 
-**Phase 5: Testing** ⬜
-- [ ] `tests/` directory created
-- [ ] Integration tests written (boot, desktop, services)
-- [ ] Unit tests for lib helpers
-- [ ] CI workflow runs tests
-- [ ] All tests passing
+**Phase 5: Testing (Deferred)** ⬜
+- [ ] Deferred (no tests directory planned)
 
 **Phase 6: Security** ⬜
 - [ ] AppArmor enabled
@@ -422,10 +312,10 @@ gsudo chmod 600 /persist/var/lib/sops-nix/key.txt
 
 ```bash
 # Build system
-gsudo nixos-rebuild switch --flake .#bandit
+sudo nixos-rebuild switch --flake .#bandit
 
 # Test without activating
-gsudo nixos-rebuild test --flake .#bandit
+sudo nixos-rebuild test --flake .#bandit
 
 # Build home manager
 home-manager switch --flake .#vino@bandit
@@ -440,7 +330,7 @@ nix fmt
 nix flake update
 
 # Clean up
-gsudo nix-collect-garbage -d
+sudo nix-collect-garbage -d
 
 # Check what will be built
 nix build .#nixosConfigurations.bandit.config.system.build.toplevel --dry-run
@@ -452,7 +342,7 @@ nix build .#nixosConfigurations.bandit.config.system.build.toplevel --dry-run
 
 When implementing phases from the comprehensive plan:
 
-1. **Always use `gsudo` instead of `sudo`** in OpenCode environment
+1. **Use standard `sudo` (no askpass overrides)**
 2. **Check existing documentation** before creating new docs
 3. **Test in VM first** for destructive changes (Phases 9, 10)
 4. **Create backups** before major changes
@@ -464,5 +354,5 @@ When implementing phases from the comprehensive plan:
 ---
 
 **Last Updated**: February 1, 2025  
-**Related**: COMPREHENSIVE-PLAN-2025.md, SUDO-OPENCODE-WORKAROUND.md  
+**Related**: COMPREHENSIVE-PLAN-2025.md
 **Status**: Ready for Implementation

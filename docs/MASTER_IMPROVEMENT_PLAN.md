@@ -24,12 +24,34 @@
 - Appendices provide detailed inventories, backlog, metrics, and definitions.
 
 ## Executive Summary
-- Overall codebase health is strong and stable, with a weighted score of 7.7/10.
-- Highest leverage work is short, targeted consistency and documentation cleanup.
+- Overall codebase health is strong and stable, with a weighted score of 7.7/10 (initial) and ~8.0/10 after Week 1-2 quick wins.
+- Highest leverage work was short, targeted consistency and documentation cleanup (now completed).
 - Structural foundations (architecture, module organization, CI/CD) are solid.
-- Immediate focus: 12-15 hours of quick wins to reduce friction and drift.
-- Short term focus: testing infrastructure, security hardening, and key refactors.
+- Immediate focus: complete; next focus shifts to security hardening and multi-host readiness.
+- Testing infrastructure is deferred per request (no tests/ folder will be created).
 - Medium to long term focus: multi-host support, backup enhancements, Wayland, and impermanence.
+
+## Status Update (2026-02-01)
+
+### Completed Since Initial Plan
+- Shell tools reorganized under `home-modules/features/shell/` (fish, git, starship, alacritty)
+- i3 directional keybindings extracted into `lib.mkDirectionalBindings`
+- Hardcoded `/home/vino` paths replaced with `config.home.homeDirectory`
+- `backup.nix` split into `nixos-modules/backup/` submodules
+- Sysctl settings centralized in `nixos-modules/security/sysctl.nix`
+- Magic numbers documented (polybar intervals, battery thresholds, retention values)
+- Module headers added (backup, monitoring, i3, secrets)
+- Sudo workflow remains standard (password prompts; no askpass/NOPASSWD overrides)
+
+### Updated Baseline
+- Post-quick-wins score: ~8.0/10 (improved organization, portability, documentation)
+- Remaining highest-impact gaps:
+  - Automated testing infrastructure (Phase 5)
+  - Security hardening (AppArmor, USBGuard, audit) (Phase 6)
+  - Multi-host support and off-site backups (Phase 7/8)
+
+### Next Phase
+- Phase 5: Testing Infrastructure (deferred per request)
 
 ## Key Takeaways
 - The repository is well-structured and consistent with community patterns.
@@ -101,6 +123,7 @@
 - Overall health score: 7.7/10 (weighted composite)
 - Interpretation: stable foundation with a clear improvement path
 - Short-term opportunity: raise to ~8.5/10 with <15 hours
+- Updated baseline (2026-02-01): ~8.0/10 after Week 1-2 quick wins
 
 ### Weighted Score Breakdown
 | Area | Score | Weight | Weighted | Notes |
@@ -1335,56 +1358,17 @@ pkgs.runCommand "test-workspaces" {} ''
 
 ## Appendix G: Detailed Phase Playbooks (Phases 5-14)
 
-### Phase 5: Testing Infrastructure
-#### Goal
-- Add automated validation to catch failures before deployment
-- Establish baseline tests for core system and home configuration
-- Enable rapid iteration with predictable feedback
+### Phase 5: Testing Infrastructure (Deferred)
+#### Status
+- Deferred per request: do not create a `tests/` directory or implement tests.
 
-#### Current Gap
-- No unit tests for lib helpers or module options
-- No integration tests for system boot or key services
-- CI only runs formatting and flake checks
-- Regressions are currently found during manual rebuilds
+#### Rationale
+- Current workflow relies on manual rebuilds and flake checks.
+- Testing can be revisited later if needed.
 
-#### Key Findings and Inputs
-- NixOS test framework is suitable for integration tests
-- Home modules are stable enough for unit-style evaluation tests
-- CI already uses flake checks; can expand checks output
-- Module analysis highlights repeated patterns ideal for testing
-
-#### Scope
-- Unit tests for lib/default.nix helpers
-- Integration test for base system boot
-- Smoke test for core services and login target
-- Optional home activation package build test
-- CI integration for tests
-
-#### Implementation Plan
-1. Create tests/ directory structure
-2. Add tests/unit/ for helper functions
-3. Add tests/integration/ for system boot
-4. Add a minimal test that boots to multi-user.target
-5. Add a test that verifies key systemd services
-6. Add flake checks outputs for tests
-7. Update CI workflow to run tests
-8. Document how to run tests locally
-9. Add a failure triage guide
-10. Add a test template for future additions
-
-#### Task Breakdown
-- P5-01: Create tests/unit and tests/integration directories (0.5h)
-- P5-02: Add unit test for workspace bindings helper (1h)
-- P5-03: Add unit test for secret validation helper (1h)
-- P5-04: Add integration test for system boot (2h)
-- P5-05: Add integration test for services (2h)
-- P5-06: Add flake checks for tests (1h)
-- P5-07: Update CI workflow to run tests (1h)
-- P5-08: Document local test commands (0.5h)
-
-#### Dependencies and Prerequisites
-- NixOS test framework available via nixpkgs
-- Existing flake outputs can be extended
+#### Notes
+- If re-enabled in the future, use the NixOS test framework and extend flake checks.
+- No test scaffolding should be added until explicitly requested.
 - CI runner must have sufficient resources
 - Ensure tests do not require secrets
 
@@ -2262,4 +2246,3 @@ repos:
 #### Resources
 - NixOS Discourse
 - NixOS Wiki contribution guide
-

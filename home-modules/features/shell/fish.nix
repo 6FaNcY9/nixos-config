@@ -63,9 +63,6 @@
 
         se = "sudoedit";
 
-        # Sudo with askpass (GUI password prompt) for OpenCode/SSH environments
-        gsudo = "sudo -A";
-
         v = "nvim";
         zj = "zellij";
 

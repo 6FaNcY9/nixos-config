@@ -20,7 +20,6 @@
     sops
     age
     ssh-to-age
-    openssh-askpass # GUI sudo password prompt for OpenCode/SSH environments
     # Framework-specific tools (only on Framework laptops)
     framework-tool # Framework hardware control utility
     fw-ectool # Embedded controller interface
@@ -140,55 +139,13 @@ in {
   # Docker moved to roles/development.nix
 
   security = {
-    # Hybrid sudo approach: NOPASSWD for safe system management commands
-    # See: docs/SUDO-OPENCODE-WORKAROUND.md
-    sudo = {
-      wheelNeedsPassword = true; # Default: require password for dangerous commands
-
-      # NOPASSWD rules for safe, common system management commands
-      # This enables smooth nixos-rebuild in OpenCode/SSH environments
-      extraRules = [
-        {
-          users = [username];
-          commands = [
-            {
-              command = "/run/current-system/sw/bin/nixos-rebuild";
-              options = ["NOPASSWD"];
-            }
-            {
-              command = "/run/current-system/sw/bin/home-manager";
-              options = ["NOPASSWD"];
-            }
-            {
-              command = "/run/current-system/sw/bin/systemctl";
-              options = ["NOPASSWD"];
-            }
-            {
-              command = "/run/current-system/sw/bin/nix-store";
-              options = ["NOPASSWD"];
-            }
-            {
-              command = "/run/current-system/sw/bin/nh";
-              options = ["NOPASSWD"];
-            }
-          ];
-        }
-      ];
-    };
+    sudo.wheelNeedsPassword = true;
   };
 
   # ------------------------------------------------------------
   # Packages
   # ------------------------------------------------------------
   environment.systemPackages = systemPackages;
-
-  # ------------------------------------------------------------
-  # Environment Variables
-  # ------------------------------------------------------------
-  environment.variables = {
-    # Sudo askpass helper for OpenCode/SSH environments (GUI password prompt)
-    SUDO_ASKPASS = "${pkgs.openssh-askpass}/libexec/ssh-askpass";
-  };
 
   # ------------------------------------------------------------
   # Fonts
