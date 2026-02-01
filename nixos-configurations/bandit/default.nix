@@ -47,6 +47,7 @@
   # NOTE: Plug in USB drive before backups run, or backup will fail gracefully (nofail option)
   backup = {
     enable = true;
+    user = "root"; # Run backups as root to access all files and write to repository
     repositories.home = {
       repository = "/mnt/backup/restic"; # 128GB USB drive (BTRFS)
       passwordFile = config.sops.secrets.restic_password.path;

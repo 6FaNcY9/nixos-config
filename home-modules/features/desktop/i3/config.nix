@@ -18,6 +18,16 @@
     window = {
       border = 3;
       titlebar = false;
+      commands = [
+        # Floating backup progress terminal
+        {
+          criteria = {
+            title = "Backup Progress";
+            class = "Alacritty";
+          };
+          command = "floating enable, resize set 900 600, move position center";
+        }
+      ];
     };
 
     colors = lib.mkDefault {

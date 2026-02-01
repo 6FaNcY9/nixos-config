@@ -44,7 +44,7 @@ in {
     secrets."restic_password" = {
       sopsFile = resticSecretFile;
       key = "password";
-      owner = "root";
+      owner = "root";  # Root for backup service access
       mode = "0400";
     };
   };
