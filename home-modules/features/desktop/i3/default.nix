@@ -3,7 +3,8 @@
   i3Pkg,
   config,
   ...
-}: # Module: features/desktop/i3
+}:
+# Module: features/desktop/i3
 # Purpose: i3 window manager configuration
 #
 # Structure:

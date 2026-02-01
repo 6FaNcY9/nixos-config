@@ -157,7 +157,7 @@ in {
       if shift
       then "${mod}+Shift+"
       else "${mod}+";
-    
+
     # Map vim-style keys to directions
     vimKeys = {
       "j" = "left";
@@ -165,7 +165,7 @@ in {
       "l" = "up";
       "semicolon" = "right";
     };
-    
+
     # Map arrow keys to directions
     arrowKeys = {
       "Left" = "left";
@@ -173,7 +173,7 @@ in {
       "Up" = "up";
       "Right" = "right";
     };
-    
+
     # Generate bindings for both vim and arrow keys
     allKeys = vimKeys // arrowKeys;
   in

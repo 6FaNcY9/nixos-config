@@ -30,7 +30,6 @@
 #
 {
   lib,
-  config,
   inputs,
   username,
   ...

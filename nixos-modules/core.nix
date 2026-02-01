@@ -144,7 +144,7 @@ in {
     # See: docs/SUDO-OPENCODE-WORKAROUND.md
     sudo = {
       wheelNeedsPassword = true; # Default: require password for dangerous commands
-      
+
       # NOPASSWD rules for safe, common system management commands
       # This enables smooth nixos-rebuild in OpenCode/SSH environments
       extraRules = [

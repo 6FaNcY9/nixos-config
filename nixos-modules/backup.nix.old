@@ -1,6 +1,6 @@
 # Module: backup.nix
 # Purpose: Restic backup configuration for local USB drive
-# 
+#
 # Features:
 #   - Automated daily backups to USB drive (ResticBackup label)
 #   - Battery-aware: only runs on AC power

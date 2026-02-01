@@ -7,22 +7,20 @@
     # Shared modules
     ../shared-modules/stylix-common.nix
 
-    # Core system
+    # Core system modules
     ./core.nix
     ./storage.nix
     ./services.nix
     ./secrets.nix
     ./monitoring.nix
-    ./backup.nix
+    ./backup # Now a directory with options.nix, power-check.nix, restic.nix
+    ./stylix-nixos.nix
 
-    # Role system (desktop, laptop, server)
+    # Roles (conditional behavior)
     ./roles
 
     # Desktop environment
     ./desktop.nix
-    ./stylix-nixos.nix
-
-    # Home Manager integration
     ./home-manager.nix
   ];
 }
