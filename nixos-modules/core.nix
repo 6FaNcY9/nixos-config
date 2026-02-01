@@ -148,6 +148,14 @@ in {
   environment.systemPackages = systemPackages;
 
   # ------------------------------------------------------------
+  # Environment Variables
+  # ------------------------------------------------------------
+  environment.variables = {
+    # Sudo askpass helper for OpenCode/SSH environments (GUI password prompt)
+    SUDO_ASKPASS = "${pkgs.openssh-askpass}/libexec/ssh-askpass";
+  };
+
+  # ------------------------------------------------------------
   # Fonts
   # ------------------------------------------------------------
   fonts = {
