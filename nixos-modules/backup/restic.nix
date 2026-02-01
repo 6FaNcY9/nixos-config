@@ -10,17 +10,16 @@
   lib,
   pkgs,
   config,
-  username ? "vino",
   backupPowerScripts ? null,
   ...
 }: let
   cfg = config.backup;
 
   # Backup configuration constants
-  backupUser = username;
+  # backupUser = username;
   backupDriveLabel = "ResticBackup";
   backupMountPoint = "/mnt/backup/restic";
-  
+
   # Default exclude patterns (optimized for development workstation)
   defaultExcludePatterns = [
     "/home/.snapshots" # BTRFS snapshots (redundant)
@@ -127,49 +126,74 @@
 in {
   config = lib.mkIf cfg.enable {
     # Systemd services for each repository
-    systemd.services = lib.mapAttrs' (name: repo:
-      lib.nameValuePair "restic-backup-${name}" {
-        description = "Restic backup to ${name}";
-        after = ["network.target"];
-        
-        serviceConfig = {
-          Type = "oneshot";
-          User = "root";
-          ExecStart = "${mkBackupScript name repo}";
-          
-          # Security hardening
-          PrivateTmp = true;
-          ProtectSystem = "strict";
-          ProtectHome = "read-only";
-          ReadWritePaths = [repo.repository];
-        };
-      }
-    ) cfg.repositories;
+    systemd = {
+      services =
+        lib.mapAttrs' (
+          name: repo:
+            lib.nameValuePair "restic-backup-${name}" {
+              description = "Restic backup to ${name}";
+              after = ["network.target"];
 
-    # Systemd timers for automated backups
-    systemd.timers = lib.mapAttrs' (name: repo:
-      lib.nameValuePair "restic-backup-${name}" {
-        description = "Timer for restic backup to ${name}";
-        wantedBy = ["timers.target"];
-        
-        timerConfig = repo.timerConfig // {
-          Unit = "restic-backup-${name}.service";
-        };
-      }
-    ) cfg.repositories;
+              serviceConfig = {
+                Type = "oneshot";
+                User = "root";
+                ExecStart = "${mkBackupScript name repo}";
+
+                # Security hardening
+                PrivateTmp = true;
+                ProtectSystem = "strict";
+                ProtectHome = "read-only";
+                ReadWritePaths = [repo.repository];
+              };
+            }
+        )
+        cfg.repositories;
+
+      timers =
+        lib.mapAttrs' (
+          name: repo:
+            lib.nameValuePair "restic-backup-${name}" {
+              description = "Timer for restic backup to ${name}";
+              wantedBy = ["timers.target"];
+
+              timerConfig =
+                repo.timerConfig
+                // {
+                  Unit = "restic-backup-${name}.service";
+                };
+            }
+        )
+        cfg.repositories;
+    };
+
+    # # Systemd timers for automated backups
+    # systemd.timers =
+    #   lib.mapAttrs' (
+    #     name: repo:
+    #       lib.nameValuePair "restic-backup-${name}" {
+    #         description = "Timer for restic backup to ${name}";
+    #         wantedBy = ["timers.target"];
+    #
+    #         timerConfig =
+    #           repo.timerConfig
+    #           // {
+    #             Unit = "restic-backup-${name}.service";
+    #           };
+    #       }
+    #   )
+    #   cfg.repositories;
 
     # Helper scripts for manual operations
-    environment.systemPackages =
-      lib.flatten (lib.mapAttrsToList (name: repo: [
+    environment.systemPackages = lib.flatten (lib.mapAttrsToList (name: repo: [
         (pkgs.writeShellScriptBin "restic-init-${name}" ''
           exec ${mkInitScript name repo} "$@"
         '')
-        
+
         (pkgs.writeShellScriptBin "restic-backup-${name}-now" ''
           echo "Running immediate backup to ${name}..."
           systemctl start restic-backup-${name}.service
         '')
-        
+
         (pkgs.writeShellScriptBin "restic-prune-${name}" ''
           echo "Pruning old snapshots from ${name}..."
           ${pkgs.restic}/bin/restic -r ${repo.repository} \
@@ -181,7 +205,8 @@ in {
             --keep-yearly 3 \
             --prune
         '')
-      ]) cfg.repositories);
+      ])
+      cfg.repositories);
 
     # USB auto-mount for backup drive
     services.udev.extraRules = ''

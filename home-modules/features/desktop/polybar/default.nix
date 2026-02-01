@@ -6,8 +6,8 @@
 }: let
   # UI Configuration Constants
   polybarHeight = 26; # px - Optimal for 1080p displays with 11pt fonts
-  networkUpdateInterval = 3; # seconds - Balance responsiveness vs CPU usage
-  systemMetricsInterval = 5; # seconds - CPU, memory, disk updates
+  # networkUpdateInterval = 3; # seconds - Balance responsiveness vs CPU usage
+  # systemMetricsInterval = 5; # seconds - CPU, memory, disk updates
 
   # Device detection
   hasBattery = config.devices.battery != "";
@@ -16,7 +16,7 @@
   showBacklight = hasBacklight;
   showPower = hasBattery;
   showIp = !hasBattery;
-  
+
   # Module layout
   modulesLeft = "i3 spacer-tray tray";
   modulesRight = lib.concatStringsSep " " (

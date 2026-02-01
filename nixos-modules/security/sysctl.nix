@@ -52,36 +52,35 @@
   config = lib.mkMerge [
     # Security hardening sysctl settings
     (lib.mkIf config.security.hardenedSysctl.enable {
-      boot.kernel.sysctl =
-        lib.mkMerge [
-          # Network hardening (enabled by default)
-          (lib.mkIf config.security.hardenedSysctl.networkHardening {
-            # Disable IP forwarding (not a router)
-            "net.ipv4.ip_forward" = lib.mkDefault 0;
-            "net.ipv6.conf.all.forwarding" = lib.mkDefault 0;
+      boot.kernel.sysctl = lib.mkMerge [
+        # Network hardening (enabled by default)
+        (lib.mkIf config.security.hardenedSysctl.networkHardening {
+          # Disable IP forwarding (not a router)
+          "net.ipv4.ip_forward" = lib.mkDefault 0;
+          "net.ipv6.conf.all.forwarding" = lib.mkDefault 0;
 
-            # Enable reverse path filtering (prevent IP spoofing)
-            # This validates incoming packets against routing table
-            "net.ipv4.conf.all.rp_filter" = 1;
-            "net.ipv4.conf.default.rp_filter" = 1;
+          # Enable reverse path filtering (prevent IP spoofing)
+          # This validates incoming packets against routing table
+          "net.ipv4.conf.all.rp_filter" = 1;
+          "net.ipv4.conf.default.rp_filter" = 1;
 
-            # Enable SYN cookies (protection against SYN flood attacks)
-            "net.ipv4.tcp_syncookies" = 1;
+          # Enable SYN cookies (protection against SYN flood attacks)
+          "net.ipv4.tcp_syncookies" = 1;
 
-            # Disable ICMP redirects (prevent MITM attacks)
-            "net.ipv4.conf.all.accept_redirects" = 0;
-            "net.ipv4.conf.default.accept_redirects" = 0;
-            "net.ipv6.conf.all.accept_redirects" = 0;
-            "net.ipv6.conf.default.accept_redirects" = 0;
+          # Disable ICMP redirects (prevent MITM attacks)
+          "net.ipv4.conf.all.accept_redirects" = 0;
+          "net.ipv4.conf.default.accept_redirects" = 0;
+          "net.ipv6.conf.all.accept_redirects" = 0;
+          "net.ipv6.conf.default.accept_redirects" = 0;
 
-            # Disable sending ICMP redirects (we're not a router)
-            "net.ipv4.conf.all.send_redirects" = 0;
-            "net.ipv4.conf.default.send_redirects" = 0;
+          # Disable sending ICMP redirects (we're not a router)
+          "net.ipv4.conf.all.send_redirects" = 0;
+          "net.ipv4.conf.default.send_redirects" = 0;
 
-            # Ignore ICMP ping requests (optional stealth)
-            # "net.ipv4.icmp_echo_ignore_all" = 1;
-          })
-        ];
+          # Ignore ICMP ping requests (optional stealth)
+          # "net.ipv4.icmp_echo_ignore_all" = 1;
+        })
+      ];
     })
 
     # Development tweaks

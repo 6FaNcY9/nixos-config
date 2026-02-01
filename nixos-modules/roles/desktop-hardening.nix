@@ -54,21 +54,57 @@
 
   config = lib.mkIf (config.desktop.hardening.enable && config.roles.desktop) {
     # Sudo configuration
-    security.sudo = {
-      execWheelOnly = lib.mkIf config.desktop.hardening.sudo.requirePassword true;
-      extraConfig = ''
-        # Sudo timeout: ${toString config.desktop.hardening.sudo.timeout} minutes
-        Defaults timestamp_timeout=${toString config.desktop.hardening.sudo.timeout}
-        # Require password for all commands (disable NOPASSWD)
-        ${lib.optionalString config.desktop.hardening.sudo.requirePassword ''
-          Defaults passwd_tries=3
-          Defaults passwd_timeout=1
-        ''}
-      '';
+    security = {
+      sudo = {
+        execWheelOnly = lib.mkIf config.desktop.hardening.sudo.requirePassword true;
+        extraConfig = ''
+          # Sudo timeout: ${toString config.desktop.hardening.sudo.timeout} minutes
+          Defaults timestamp_timeout=${toString config.desktop.hardening.sudo.timeout}
+          # Require password for all commands (disable NOPASSWD)
+          ${lib.optionalString config.desktop.hardening.sudo.requirePassword ''
+            Defaults passwd_tries=3
+            Defaults passwd_timeout=1
+          ''}
+        '';
+      };
+      polkit = lib.mkIf config.desktop.hardening.polkit.restrictUserActions {
+        enable = true;
+        extraConfig = ''
+          // Restrict regular users from system-wide changes
+          // Users in 'wheel' group can still use sudo for these actions
+
+          // Disable user installation of system packages
+          polkit.addRule(function(action, subject) {
+            if (action.id == "org.freedesktop.packagekit.package-install" ||
+                action.id == "org.freedesktop.packagekit.package-remove") {
+              return polkit.Result.AUTH_ADMIN;
+            }
+          });
+
+          // Require admin for system services control
+          polkit.addRule(function(action, subject) {
+            if (action.id.indexOf("org.freedesktop.systemd1.manage-units") == 0) {
+              if (!subject.isInGroup("wheel")) {
+                return polkit.Result.AUTH_ADMIN;
+              }
+            }
+          });
+
+          // Require admin for network configuration
+          polkit.addRule(function(action, subject) {
+            if (action.id.indexOf("org.freedesktop.NetworkManager") == 0) {
+              if (!subject.isInGroup("wheel")) {
+                return polkit.Result.AUTH_ADMIN;
+              }
+            }
+          });
+        '';
+      };
     };
 
     # Polkit hardening
-    security.polkit = lib.mkIf config.desktop.hardening.polkit.restrictUserActions {
+    /*
+       security.polkit = lib.mkIf config.desktop.hardening.polkit.restrictUserActions {
       enable = true;
       extraConfig = ''
         // Restrict regular users from system-wide changes
@@ -101,6 +137,7 @@
         });
       '';
     };
+    */
 
     # Firewall configuration
     networking.firewall = lib.mkIf config.desktop.hardening.firewall.enable {
