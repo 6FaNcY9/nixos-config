@@ -4,12 +4,20 @@
   lib,
   ...
 }: let
+  # UI Configuration Constants
+  polybarHeight = 26; # px - Optimal for 1080p displays with 11pt fonts
+  networkUpdateInterval = 3; # seconds - Balance responsiveness vs CPU usage
+  systemMetricsInterval = 5; # seconds - CPU, memory, disk updates
+
+  # Device detection
   hasBattery = config.devices.battery != "";
   hasBacklight = config.devices.backlight != "";
   showBattery = hasBattery;
   showBacklight = hasBacklight;
   showPower = hasBattery;
   showIp = !hasBattery;
+  
+  # Module layout
   modulesLeft = "i3 spacer-tray tray";
   modulesRight = lib.concatStringsSep " " (
     ["host" "network" "pulseaudio"]
@@ -41,7 +49,7 @@ in {
 
       settings."bar/top" = {
         width = "100%";
-        height = 26;
+        height = polybarHeight; # Defined in let block with explanation
         background = "\${colors.background}";
         foreground = "\${colors.foreground}";
         padding = 2;

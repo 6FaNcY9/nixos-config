@@ -7,6 +7,11 @@
   cfgLib,
   ...
 }: let
+  # Update intervals (seconds) - Balance responsiveness vs CPU/battery usage
+  networkUpdateInterval = 3; # Network status (WiFi SSID, connection state)
+  systemMetricsInterval = 5; # CPU, memory, disk, battery updates
+
+  # Workspace configuration
   hasIcons = builtins.any (workspace: workspace.icon != "") workspaces;
   wsIconAttrs = lib.listToAttrs (
     map (workspace: {
@@ -83,7 +88,7 @@ in {
       "module/network" = {
         type = "internal/network";
         interface = "wlp1s0";
-        interval = 3;
+        interval = networkUpdateInterval; # Defined in let block
         format-connected = "<label-connected>";
         label-connected = "  %essid%";
         label-connected-background = "\${colors.background-alt}";
@@ -100,7 +105,7 @@ in {
 
       "module/clock" = {
         type = "internal/date";
-        interval = 5;
+        interval = systemMetricsInterval; # CPU/memory/battery updates
         date = "%H:%M";
         format = "<label>";
         label = "%{A1:${pkgs.gsimplecal}/bin/gsimplecal &:}  %date%%{A}";
@@ -154,7 +159,7 @@ in {
       "module/power" = {
         type = "custom/script";
         exec = "${pkgs.power-profiles-daemon}/bin/powerprofilesctl get";
-        interval = 5;
+        interval = systemMetricsInterval; # CPU/memory/battery updates
         format = "<label>";
         label = " %output%";
         label-background = "\${colors.background-alt}";
@@ -179,7 +184,7 @@ in {
       "module/ip" = {
         type = "custom/script";
         exec = "${pkgs.iproute2}/bin/ip -4 route get 1.1.1.1 | ${pkgs.gawk}/bin/awk '{for (i=1; i<=NF; i++) if ($i==\"src\") {print $(i+1); exit}}'";
-        interval = 5;
+        interval = systemMetricsInterval; # CPU/memory/battery updates
         format = "<label>";
         label = "  %output%";
         label-background = "\${colors.background-alt}";
