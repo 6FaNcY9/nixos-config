@@ -15,13 +15,10 @@
     ./devices.nix
     ./secrets.nix
     ./user-services.nix
-
-    # Shell & CLI
-    ./shell.nix
-    ./git.nix
-    ./starship.nix
-    ./alacritty.nix
     ./nixpkgs.nix
+
+    # Shell & CLI environment
+    ./features/shell
 
     # Desktop environment
     ./features/desktop/i3
