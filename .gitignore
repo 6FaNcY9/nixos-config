@@ -15,6 +15,7 @@
 /AGENTS.md
 /agent.md
 /.pre-commit-config.yaml
+/tests/
 
 # -----------------------------
 # AI Tool Directories

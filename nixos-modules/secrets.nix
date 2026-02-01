@@ -8,15 +8,11 @@
 
   # Secret file paths
   githubSecretFile = "${inputs.self}/secrets/github.yaml";
-  resticSecretFile = "${inputs.self}/secrets/restic.yaml";
 
   # Validate secrets at build time
-  # This ensures secrets exist and are encrypted before activation
   validateAllSecrets =
     cfgLib.validateSecretExists githubSecretFile
-    && cfgLib.validateSecretEncrypted githubSecretFile
-    && cfgLib.validateSecretExists resticSecretFile
-    && cfgLib.validateSecretEncrypted resticSecretFile;
+    && cfgLib.validateSecretEncrypted githubSecretFile;
 in {
   # Trigger validation
   assertions = [
@@ -39,13 +35,6 @@ in {
       owner = username;
       mode = "0600";
       path = "/home/${username}/.ssh/github";
-    };
-
-    secrets."restic_password" = {
-      sopsFile = resticSecretFile;
-      key = "password";
-      owner = "root";  # Root for backup service access
-      mode = "0400";
     };
   };
 

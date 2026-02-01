@@ -9,7 +9,7 @@
   snapperUsers = [username];
   snapperTimeline = {
     FSTYPE = "btrfs";
-    TIMELINE_CREATE = false; # Disabled hourly snapshots (reduces I/O, daily backups sufficient)
+    TIMELINE_CREATE = false; # Disabled hourly snapshots (reduces I/O)
     TIMELINE_CLEANUP = true;
     TIMELINE_LIMIT_HOURLY = "10";
     TIMELINE_LIMIT_DAILY = "7";
@@ -63,7 +63,7 @@ in {
   };
 
   # Disable snapper timeline timer (hourly snapshots)
-  # Daily restic backups are sufficient, this reduces I/O
+  # Daily scrub is sufficient, this reduces I/O
   # Note: TIMELINE_CREATE attribute doesn't work in NixOS snapper module,
   # so we disable the timer directly
   systemd.timers.snapper-timeline.enable = false;
