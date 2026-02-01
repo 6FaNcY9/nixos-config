@@ -93,3 +93,16 @@ obj/
 #Custom Verify
 #--------------------------------
 verify-optimizations.sh
+
+# -----------------------------
+# Analysis and planning documents (generated, not tracked)
+# -----------------------------
+docs/HOME_MODULES_ANALYSIS.md
+docs/HOME_MODULES_INDEX.md
+docs/HOME_MODULES_RECOMMENDATIONS.md
+docs/MASTER_IMPROVEMENT_PLAN.md
+docs/MODULES_ANALYSIS.md
+docs/MODULES_ANALYSIS_VISUAL.md
+docs/MODULES_QUICK_REFERENCE.md
+docs/README_ANALYSIS.md
+ANALYSIS_EXECUTIVE_SUMMARY.txt
