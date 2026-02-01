@@ -113,30 +113,19 @@
       rejectPackets = lib.mkDefault true;
     };
 
-    # Kernel hardening
+    # Network security hardening via centralized sysctl module
+    security.hardenedSysctl = {
+      enable = true;
+      networkHardening = true;
+    };
+
+    # Additional kernel hardening (desktop-specific)
     boot.kernel.sysctl = {
-      # Disable IP forwarding (not needed on desktop)
-      "net.ipv4.ip_forward" = 0;
-      "net.ipv6.conf.all.forwarding" = 0;
-
-      # Enable reverse path filtering (prevent IP spoofing)
-      "net.ipv4.conf.all.rp_filter" = 1;
-      "net.ipv4.conf.default.rp_filter" = 1;
-
-      # Disable ICMP redirects
-      "net.ipv4.conf.all.accept_redirects" = 0;
-      "net.ipv4.conf.default.accept_redirects" = 0;
-      "net.ipv6.conf.all.accept_redirects" = 0;
-      "net.ipv6.conf.default.accept_redirects" = 0;
-
-      # Disable source routing
+      # Disable source routing (additional security)
       "net.ipv4.conf.all.accept_source_route" = 0;
       "net.ipv4.conf.default.accept_source_route" = 0;
       "net.ipv6.conf.all.accept_source_route" = 0;
       "net.ipv6.conf.default.accept_source_route" = 0;
-
-      # Enable SYN cookies (DDoS protection)
-      "net.ipv4.tcp_syncookies" = 1;
 
       # Log martian packets (packets with impossible source addresses)
       "net.ipv4.conf.all.log_martians" = lib.mkDefault true;

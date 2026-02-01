@@ -12,6 +12,7 @@
     ./storage.nix
     ./services.nix
     ./secrets.nix
+    ./security # Centralized security settings (sysctl, future: AppArmor, USBGuard)
     ./monitoring.nix
     ./backup # Now a directory with options.nix, power-check.nix, restic.nix
     ./stylix-nixos.nix

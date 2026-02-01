@@ -45,12 +45,8 @@
     # Allow unfree packages (common for dev tools)
     nixpkgs.config.allowUnfree = lib.mkDefault true;
 
-    # Development-friendly kernel parameters
-    boot.kernel.sysctl = {
-      # Allow more file watchers (for large projects)
-      "fs.inotify.max_user_watches" = lib.mkDefault 524288;
-      "fs.inotify.max_user_instances" = lib.mkDefault 1024;
-    };
+    # Development-friendly kernel parameters via centralized sysctl module
+    development.sysctlTweaks.enable = true;
 
     # Enable direnv system-wide
     programs.direnv = {
