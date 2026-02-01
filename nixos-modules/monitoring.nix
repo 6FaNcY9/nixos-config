@@ -1,5 +1,25 @@
-# System monitoring and logging configuration
-# Provides opt-in Prometheus, Grafana, and enhanced logging
+# Module: monitoring.nix
+# Purpose: Prometheus + Grafana + node_exporter monitoring stack
+#
+# Features:
+#   - System metrics collection via node_exporter
+#   - Prometheus time-series database (30 day retention)
+#   - Grafana dashboards for visualization
+#   - Enhanced journald logging with structured output
+#
+# Options:
+#   - monitoring.enable (bool): Enable monitoring stack
+#   - monitoring.grafana.enable (bool): Enable Grafana dashboard
+#   - monitoring.grafana.port (int): Grafana port (default: 3000)
+#   - monitoring.logging.enhancedJournal (bool): Enhanced journald
+#
+# Access:
+#   - Grafana: http://localhost:3000 (admin/admin)
+#   - Prometheus: http://localhost:9090
+#
+# Notes:
+#   - Currently disabled on laptop for battery life
+#   - Enable on AC power or server deployments
 {
   lib,
   config,

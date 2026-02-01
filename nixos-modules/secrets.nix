@@ -1,5 +1,36 @@
+# Module: secrets.nix
+# Purpose: sops-nix secret management with build-time validation
+#
+# Features:
+#   - Encrypted secrets via sops-nix with age encryption
+#   - Build-time validation (file exists + encrypted check)
+#   - Automatic decryption to /run/secrets/ at activation
+#   - Per-secret permissions (owner, mode, path)
+#
+# Dependencies:
+#   - sops-nix (for secret decryption)
+#   - age (encryption/decryption)
+#   - lib validation helpers (validateSecretExists, validateSecretEncrypted)
+#
+# Secrets managed:
+#   - github_ssh_key: GitHub SSH key for git operations
+#   - github_mcp_pat: GitHub PAT for MCP
+#   - restic_password: Backup encryption password
+#
+# Secret files:
+#   - secrets/github.yaml (GitHub credentials)
+#   - secrets/github-mcp.yaml (MCP token)
+#   - secrets/restic.yaml (Backup password)
+#
+# CRITICAL: Age key must be backed up offline!
+#   Location: /var/lib/sops-nix/key.txt
+#   Without this key, secrets cannot be decrypted!
+#
+# See: docs/disaster-recovery.md for key backup procedures
+#
 {
   lib,
+  config,
   inputs,
   username,
   ...

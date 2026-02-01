@@ -1,3 +1,35 @@
+# Module: backup.nix
+# Purpose: Restic backup configuration for local USB drive
+# 
+# Features:
+#   - Automated daily backups to USB drive (ResticBackup label)
+#   - Battery-aware: only runs on AC power
+#   - BTRFS-aware: excludes snapshots to avoid duplication
+#   - Retention policy: 7 daily, 4 weekly, 6 monthly, 3 yearly
+#   - Prune strategy: monthly cleanup of old snapshots
+#
+# Dependencies:
+#   - sops-nix: for encrypted password storage (restic_password)
+#   - systemd: for timer-based scheduling
+#   - restic package
+#
+# Options:
+#   - backup.enable (bool): Enable backup service
+#   - backup.repositories.<name>: Repository configuration
+#
+# Usage:
+#   backup.enable = true;
+#   backup.repositories.home = {
+#     repository = "/mnt/backup/restic/restic-repo";
+#     passwordFile = "/run/secrets/restic_password";
+#   };
+#
+# Notes:
+#   - Backup drive must have label "ResticBackup"
+#   - Mount point: /mnt/backup/restic
+#   - Excludes: .cache, Downloads, node_modules, etc.
+#   - Runs at 00:03 daily with 1h random delay
+#
 {
   lib,
   pkgs,
