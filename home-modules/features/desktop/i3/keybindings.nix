@@ -7,26 +7,17 @@
 }: let
   mod = "Mod4";
 
-  directionalFocus = {
-    "${mod}+j" = "focus left";
-    "${mod}+k" = "focus down";
-    "${mod}+l" = "focus up";
-    "${mod}+semicolon" = "focus right";
-    "${mod}+Left" = "focus left";
-    "${mod}+Down" = "focus down";
-    "${mod}+Up" = "focus up";
-    "${mod}+Right" = "focus right";
+  # Generate directional focus bindings (j/k/l/; and arrows)
+  directionalFocus = cfgLib.mkDirectionalBindings {
+    inherit mod;
+    command = "focus";
   };
 
-  directionalMove = {
-    "${mod}+Shift+j" = "move left";
-    "${mod}+Shift+k" = "move down";
-    "${mod}+Shift+l" = "move up";
-    "${mod}+Shift+semicolon" = "move right";
-    "${mod}+Shift+Left" = "move left";
-    "${mod}+Shift+Down" = "move down";
-    "${mod}+Shift+Up" = "move up";
-    "${mod}+Shift+Right" = "move right";
+  # Generate directional move bindings (Shift+j/k/l/; and arrows)
+  directionalMove = cfgLib.mkDirectionalBindings {
+    inherit mod;
+    command = "move";
+    shift = true;
   };
 
   layoutBindings = {

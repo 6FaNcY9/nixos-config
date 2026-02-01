@@ -145,4 +145,43 @@ in {
 
   # Polybar helpers
   inherit mkPolybarModule;
+
+  # i3 keybinding helpers
+  # Generate directional keybindings for i3 (focus/move)
+  mkDirectionalBindings = {
+    mod,
+    command, # "focus" or "move"
+    shift ? false,
+  }: let
+    keyPrefix =
+      if shift
+      then "${mod}+Shift+"
+      else "${mod}+";
+    
+    # Map vim-style keys to directions
+    vimKeys = {
+      "j" = "left";
+      "k" = "down";
+      "l" = "up";
+      "semicolon" = "right";
+    };
+    
+    # Map arrow keys to directions
+    arrowKeys = {
+      "Left" = "left";
+      "Down" = "down";
+      "Up" = "up";
+      "Right" = "right";
+    };
+    
+    # Generate bindings for both vim and arrow keys
+    allKeys = vimKeys // arrowKeys;
+  in
+    builtins.listToAttrs (
+      lib.mapAttrsToList (key: direction: {
+        name = "${keyPrefix}${key}";
+        value = "${command} ${direction}";
+      })
+      allKeys
+    );
 }
