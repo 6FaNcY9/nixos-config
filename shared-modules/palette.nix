@@ -62,7 +62,7 @@ in {
             type = lib.types.str;
             default = c.base0D;
             description = "Secondary accent color (blue).";
-          }; 
+          };
           warn = lib.mkOption {
             type = lib.types.str;
             default = c.base0A;

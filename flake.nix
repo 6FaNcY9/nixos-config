@@ -76,7 +76,7 @@
     system = "x86_64-linux";
     primaryHost = "bandit";
     username = "vino";
-    repoRoot = "/home/${username}/src/nixos-config-claude-explore";
+    repoRoot = "/home/${username}/src/nixos-config";
 
     overlays = import ./overlays {inherit inputs;};
 

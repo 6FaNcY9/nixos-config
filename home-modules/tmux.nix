@@ -77,7 +77,7 @@
           {
             name = "Next pane";
             key = "Tab";
-            command = "select-pane -t :.+";  # note the dot after :
+            command = "select-pane -t :.+"; # note the dot after :
             transient = true;
           }
           {
@@ -222,7 +222,7 @@ in {
   };
 
   # Dependencies commonly needed for the included plugins / workflows:
-  home.packages = with pkgs; [ 
+  home.packages = with pkgs; [
     python3
     wl-clipboard
     xclip
