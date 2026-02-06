@@ -113,6 +113,11 @@ in {
       firefox = {
         enable = false; # Disabled - manual dark mode config in firefox.nix
       };
+
+      tmux = {
+        enable = true;
+        colors.enable = true;
+      };
     };
   };
 

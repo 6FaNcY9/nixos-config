@@ -33,6 +33,9 @@
     ./clipboard.nix
 
     # Editor configuration
-    ./features/editor/nixvim
+    ./features/editor/nixvim#
+    
+    # Tmux
+    ./tmux.nix
   ];
 }
