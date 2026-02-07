@@ -55,6 +55,8 @@ in {
             + "\n"
             + replaceColors themeTemplate
           );
+
+        userContent = builtins.readFile ../assets/firefox/userContent.css;
       };
     };
   };

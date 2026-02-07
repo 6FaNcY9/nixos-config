@@ -1,20 +1,23 @@
 /* assets/firefox/userChrome.css */
+/* Medium+ Minimal Firefox Theme */
+/* Keeps usability while removing visual clutter */
 
-/* Only Firefox UI (chrome) */
 @-moz-document url(chrome://browser/content/browser.xul),
                url(chrome://browser/content/browser.xhtml) {
 
+  /* ══════════════════════════════════════════════════════════════
+     FONTS
+     ══════════════════════════════════════════════════════════════ */
   :root {
-    /* Your installed families (from fc-list) */
     --uc-font: "JetBrainsMono Nerd Font",
                "JetBrainsMonoNL Nerd Font",
                "JetBrains Mono",
                monospace;
-
     --uc-font-size: 12px;
+    --uc-transition: 0.15s ease;
   }
 
-  /* Global top UI (tabs + toolbars) */
+  /* Global font application */
   #navigator-toolbox,
   #toolbar-menubar,
   #TabsToolbar,
@@ -80,5 +83,209 @@
     font-family: var(--uc-font) !important;
     font-size: var(--uc-font-size) !important;
   }
-}
 
+  /* ══════════════════════════════════════════════════════════════
+     HIDE NAVIGATION BUTTONS (use Alt+← / Alt+→)
+     ══════════════════════════════════════════════════════════════ */
+  #back-button,
+  #forward-button {
+    display: none !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     HIDE EXTENSIONS BUTTON (use Ctrl+Shift+A)
+     ══════════════════════════════════════════════════════════════ */
+  #unified-extensions-button {
+    display: none !important;
+  }
+
+  /* Hide extension name in URL bar */
+  #identity-box.extensionPage #identity-icon-label {
+    visibility: collapse !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     HIDE URL BAR ICONS (declutter)
+     ══════════════════════════════════════════════════════════════ */
+  /* Bookmark star */
+  #star-button-box {
+    display: none !important;
+  }
+
+  /* Reader mode */
+  #reader-mode-button {
+    display: none !important;
+  }
+
+  /* Picture-in-picture */
+  #picture-in-picture-button {
+    display: none !important;
+  }
+
+  /* Tracking protection shield */
+  #tracking-protection-icon-container {
+    display: none !important;
+  }
+
+  /* Translation button */
+  #translations-button {
+    display: none !important;
+  }
+
+  /* Page action button (three dots) */
+  #pageActionButton {
+    display: none !important;
+  }
+
+  /* Permissions box (camera, mic, etc - shows when needed) */
+  #identity-permission-box {
+    display: none !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     HIDE "SEARCH WITH..." DROPDOWN
+     ══════════════════════════════════════════════════════════════ */
+  #urlbar .search-one-offs {
+    display: none !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     HIDE ALL TABS BUTTON
+     ══════════════════════════════════════════════════════════════ */
+  #alltabs-button {
+    display: none !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     TAB CLOSE BUTTON - SHOW ON HOVER ONLY
+     ══════════════════════════════════════════════════════════════ */
+  /* Hide close button by default */
+  .tabbrowser-tab:not(:hover):not([selected]) .tab-close-button {
+    opacity: 0 !important;
+    width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    transition: opacity var(--uc-transition), width var(--uc-transition) !important;
+  }
+
+  /* Show on selected tab (dimmed) */
+  .tabbrowser-tab[selected]:not(:hover) .tab-close-button {
+    opacity: 0.4 !important;
+    transition: opacity var(--uc-transition) !important;
+  }
+
+  /* Show on hover */
+  .tabbrowser-tab:hover .tab-close-button {
+    opacity: 0.7 !important;
+    width: auto !important;
+    transition: opacity var(--uc-transition) !important;
+  }
+
+  /* Full opacity when hovering close button itself */
+  .tab-close-button:hover {
+    opacity: 1 !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     AUTO-HIDE BOOKMARKS BAR
+     ══════════════════════════════════════════════════════════════ */
+  #PersonalToolbar {
+    --uc-bm-height: 24px;
+    --uc-bm-padding: 4px;
+    max-height: 0 !important;
+    min-height: 0 !important;
+    padding-block: 0 !important;
+    overflow: hidden !important;
+    transition: max-height 0.2s ease, padding 0.2s ease !important;
+  }
+
+  /* Show on hover */
+  #navigator-toolbox:hover #PersonalToolbar,
+  #PersonalToolbar:focus-within {
+    max-height: calc(var(--uc-bm-height) + var(--uc-bm-padding) * 2) !important;
+    padding-block: var(--uc-bm-padding) !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     FADE INACTIVE WINDOW
+     ══════════════════════════════════════════════════════════════ */
+  #navigator-toolbox:-moz-window-inactive {
+    opacity: 0.85;
+    transition: opacity 0.2s ease !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     COMPACT URL SUGGESTIONS
+     ══════════════════════════════════════════════════════════════ */
+  /* Reduce row height */
+  .urlbarView-row {
+    min-height: 28px !important;
+    padding-block: 2px !important;
+  }
+
+  /* Smaller type icons */
+  .urlbarView-type-icon {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  /* Hide favicons in suggestions (cleaner look) */
+  .urlbarView-favicon {
+    display: none !important;
+  }
+
+  /* Reduce padding in URL bar dropdown */
+  .urlbarView-body-inner {
+    padding: 4px !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     REMOVE TITLEBAR SPACERS
+     ══════════════════════════════════════════════════════════════ */
+  .titlebar-spacer[type="pre-tabs"],
+  .titlebar-spacer[type="post-tabs"] {
+    display: none !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     REMOVE ANNOYING BORDERS
+     ══════════════════════════════════════════════════════════════ */
+  #navigator-toolbox {
+    border-bottom: none !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     SMOOTH TRANSITIONS EVERYWHERE
+     ══════════════════════════════════════════════════════════════ */
+  toolbarbutton,
+  .tabbrowser-tab,
+  .tab-background,
+  #urlbar,
+  #urlbar-background,
+  menuitem,
+  .subviewbutton {
+    transition: background-color var(--uc-transition),
+                border-color var(--uc-transition),
+                opacity var(--uc-transition) !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     CLEANER NEW TAB BUTTON
+     ══════════════════════════════════════════════════════════════ */
+  #tabs-newtab-button {
+    padding-inline: 8px !important;
+  }
+
+  /* Remove extra new tab button in overflow */
+  #new-tab-button {
+    display: none !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     FULLSCREEN FIXES
+     ══════════════════════════════════════════════════════════════ */
+  /* Remove fullscreen warning border */
+  #fullscreen-warning {
+    border: none !important;
+  }
+}
