@@ -42,6 +42,7 @@
     gh
     eza
     tree
+    nix-tree
     ripgrep
     fd
     fzf
