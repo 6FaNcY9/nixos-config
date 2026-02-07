@@ -1,58 +1,18 @@
 /* assets/firefox/userContent.css */
-/* Styles for Firefox content pages (new tab, about:*, etc.) */
+/* Minimal styles for Firefox content pages */
 
-/* ══════════════════════════════════════════════════════════════
-   NEW TAB PAGE - Minimal dark style
-   ══════════════════════════════════════════════════════════════ */
+/* Force dark mode on about: pages */
+@-moz-document url-prefix("about:") {
+  :root {
+    color-scheme: dark !important;
+  }
+}
+
+/* Hide sponsored content on new tab */
 @-moz-document url("about:newtab"), url("about:home") {
-  /* Dark background */
-  body {
-    background-color: var(--newtab-background-color, #262626) !important;
-  }
-
-  /* Hide sponsored content */
   .top-site-outer.sponsored-label,
-  .ds-top-sites .top-site-outer.sponsored-label {
-    display: none !important;
-  }
-
-  /* Hide Pocket recommendations */
+  .ds-top-sites .top-site-outer.sponsored-label,
   section[data-section-id="topstories"] {
     display: none !important;
-  }
-
-  /* Cleaner search box */
-  .search-wrapper .search-handoff-button {
-    border-radius: 0 !important;
-    border: 1px solid #4e4e4e !important;
-  }
-
-  /* Hide logo */
-  .logo-and-wordmark {
-    display: none !important;
-  }
-
-  /* Compact top sites */
-  .top-sites-list {
-    margin-inline: auto !important;
-  }
-}
-
-/* ══════════════════════════════════════════════════════════════
-   ABOUT PAGES - Consistent styling
-   ══════════════════════════════════════════════════════════════ */
-@-moz-document url-prefix("about:") {
-  /* Force dark mode */
-  :root {
-    color-scheme: dark !important;
-  }
-}
-
-/* ══════════════════════════════════════════════════════════════
-   PDF VIEWER - Dark mode
-   ══════════════════════════════════════════════════════════════ */
-@-moz-document url-prefix("moz-extension://"), url-prefix("resource://pdf.js/") {
-  :root {
-    color-scheme: dark !important;
   }
 }
