@@ -20,6 +20,7 @@
 
   systemPackages = with pkgs; [
     btrfs-progs
+    cachix # Binary cache management
     curl
     efibootmgr
     git
@@ -65,10 +66,12 @@ in {
       substituters = [
         "https://cache.nixos.org"
         "https://nix-community.cachix.org"
+        "https://vino-nixos-config.cachix.org" # Personal binary cache
       ];
       trusted-public-keys = [
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "vino-nixos-config.cachix.org-1:8LFVkzmO/+crLWO0Q3bqWOOamVjScT3v1/PCHPiTiUU=" # Personal cache key
       ];
     };
 

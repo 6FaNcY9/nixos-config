@@ -10,13 +10,16 @@
   # Secret file paths
   githubMcpSecretFile = "${inputs.self}/secrets/github-mcp.yaml";
   gpgSigningKeyFile = "${inputs.self}/secrets/gpg-signing-key.yaml";
+  cachixSecretFile = "${inputs.self}/secrets/cachix.yaml";
 
   # Validate secrets at build time
   validateAllSecrets =
     cfgLib.validateSecretExists githubMcpSecretFile
     && cfgLib.validateSecretEncrypted githubMcpSecretFile
     && cfgLib.validateSecretExists gpgSigningKeyFile
-    && cfgLib.validateSecretEncrypted gpgSigningKeyFile;
+    && cfgLib.validateSecretEncrypted gpgSigningKeyFile
+    && cfgLib.validateSecretExists cachixSecretFile
+    && cfgLib.validateSecretEncrypted cachixSecretFile;
 in {
   # Trigger validation
   assertions = [
@@ -30,15 +33,23 @@ in {
   sops = {
     age.keyFile = lib.mkDefault "${config.xdg.configHome}/sops/age/keys.txt";
 
-    secrets.github_mcp_pat = {
-      sopsFile = githubMcpSecretFile;
-      format = "yaml";
-    };
+    secrets = {
+      github_mcp_pat = {
+        sopsFile = githubMcpSecretFile;
+        format = "yaml";
+      };
 
-    secrets.gpg_signing_key = {
-      sopsFile = gpgSigningKeyFile;
-      key = "gpg_private_key";
-      format = "yaml";
+      gpg_signing_key = {
+        sopsFile = gpgSigningKeyFile;
+        key = "gpg_private_key";
+        format = "yaml";
+      };
+
+      cachix_auth_token = {
+        sopsFile = cachixSecretFile;
+        key = "cachix_auth_token";
+        format = "yaml";
+      };
     };
   };
 

@@ -1,0 +1,58 @@
+name: Cachix Binary Cache
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v15
+        with:
+          name: vino-nixos-config
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+          pushFilter: '(-source$|nixpkgs|nixos-unstable)'
+
+      - name: Build NixOS configuration
+        run: |
+          echo "🔨 Building NixOS configuration..."
+          nix build .#nixosConfigurations.bandit.config.system.build.toplevel \
+            --print-build-logs \
+            --fallback
+
+      - name: Build Home Manager configuration
+        run: |
+          echo "🏠 Building Home Manager configuration..."
+          nix build .#homeConfigurations.\"vino@bandit\".activationPackage \
+            --print-build-logs \
+            --fallback
+
+      - name: Build all devshells
+        run: |
+          echo "🔧 Building development shells..."
+          nix build .#devShells.x86_64-linux.default \
+            .#devShells.x86_64-linux.web \
+            .#devShells.x86_64-linux.rust \
+            .#devShells.x86_64-linux.go \
+            --print-build-logs \
+            --fallback
+
+      - name: Cache Summary
+        run: |
+          echo "✅ Build complete!"
+          echo "📦 All packages pushed to: https://vino-nixos-config.cachix.org"
