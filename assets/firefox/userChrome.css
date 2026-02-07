@@ -175,13 +175,7 @@
   border: none !important;
 }
 
-/* ══════════════════════════════════════════════════════════════
-   INACTIVE WINDOW - Subtle fade
-   ══════════════════════════════════════════════════════════════ */
-
-#navigator-toolbox-background:-moz-window-inactive {
-  filter: contrast(90%);
-}
+/* Inactive window styling removed - let system handle it */
 
 /* ══════════════════════════════════════════════════════════════
    FULLSCREEN

@@ -27,7 +27,7 @@
     # Desktop environment
     ./desktop/i3
     ./desktop/polybar
-    ./rofi/rofi.nix
+    ./rofi/default.nix
     ./firefox.nix
     ./desktop-services.nix
     ./xfce-session.nix

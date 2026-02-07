@@ -1,23 +1,66 @@
-/* Gruvbox accent overrides - subtle touches on Firefox's native dark theme */
+/* Gruvbox theme overrides for Firefox */
 /* Colors injected via Home Manager from palette.nix */
 
 @-moz-document url(chrome://browser/content/browser.xhtml),
                url(chrome://browser/content/browser.xul) {
   :root {
     /* Gruvbox palette */
+    --uc-bg: @@base00@@;
+    --uc-bg-alt: @@base01@@;
+    --uc-fg: @@base05@@;
+    --uc-border: @@base02@@;
     --uc-accent: @@base0B@@;
     --uc-accent-2: @@base0D@@;
     --uc-danger: @@base08@@;
   }
+
+  /* ══════════════════════════════════════════════════════════════
+     TOOLBAR BACKGROUND - Force Gruvbox dark colors
+     ══════════════════════════════════════════════════════════════ */
+
+  /* Main toolbar area */
+  #navigator-toolbox {
+    background-color: var(--uc-bg) !important;
+  }
+
+  /* Tab bar */
+  #TabsToolbar {
+    background-color: var(--uc-bg) !important;
+  }
+
+  /* Navigation bar (URL bar row) */
+  #nav-bar {
+    background-color: var(--uc-bg) !important;
+  }
+
+  /* Tab backgrounds */
+  .tab-background {
+    background-color: transparent !important;
+  }
+
+  .tabbrowser-tab[selected] .tab-background {
+    background-color: var(--uc-bg-alt) !important;
+  }
+
+  .tabbrowser-tab:hover:not([selected]) .tab-background {
+    background-color: var(--uc-border) !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     ACCENTS - Subtle Gruvbox touches
+     ══════════════════════════════════════════════════════════════ */
 
   /* Selected tab accent line */
   .tabbrowser-tab[selected] .tab-background {
     border-top: 2px solid var(--uc-accent) !important;
   }
 
-  /* URL bar focus accent */
-  #urlbar[focused="true"] > #urlbar-background,
-  #searchbar:focus-within {
+  /* URL bar */
+  #urlbar-background {
+    background-color: var(--uc-bg-alt) !important;
+  }
+
+  #urlbar[focused="true"] > #urlbar-background {
     outline: 1px solid var(--uc-accent-2) !important;
     outline-offset: -1px;
   }
@@ -25,5 +68,22 @@
   /* Loading tab indicator */
   .tabbrowser-tab[busy] .tab-background {
     border-top: 2px solid var(--uc-accent-2) !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     PANELS & MENUS - Consistent dark theme
+     ══════════════════════════════════════════════════════════════ */
+
+  panel,
+  panelview,
+  .panel-subview-body,
+  menupopup {
+    background-color: var(--uc-bg) !important;
+    color: var(--uc-fg) !important;
+  }
+
+  menuitem:hover,
+  .subviewbutton:hover {
+    background-color: var(--uc-bg-alt) !important;
   }
 }
