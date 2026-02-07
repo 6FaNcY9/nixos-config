@@ -739,8 +739,8 @@
               motd = cfgLib.mkDevshellMotd {
                 title = "Maintenance Shell";
                 description = ''
-                  Run ',' for mission-control commands
-                  Available: fmt, qa, update, clean, sysinfo, tree
+                  Type ',' to see all available commands
+                  Quick actions: fmt, qa, update, clean, sysinfo
 
                   Bash users: source $MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/,
                 '';
@@ -753,6 +753,26 @@
                   source "$MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/,"
                 fi
               '';
+              startup.show-devshell-info.text = ''
+                # Show useful context information
+                if command -v git >/dev/null 2>&1; then
+                  REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
+                  if [ -n "$REPO_ROOT" ]; then
+                    BRANCH=$(git branch --show-current 2>/dev/null || echo "detached")
+                    DIRTY=$(git status --porcelain 2>/dev/null | wc -l)
+                    echo "📦 Repository: $(basename "$REPO_ROOT")"
+                    if [ "$DIRTY" -gt 0 ]; then
+                      echo "🌿 Branch: $BRANCH (''${DIRTY} uncommitted changes)"
+                    else
+                      echo "🌿 Branch: $BRANCH (clean)"
+                    fi
+                  fi
+                fi
+                if [ -n "''${DIRENV_DIR:-}" ]; then
+                  echo "🔄 Direnv: active"
+                fi
+                echo ""
+              '';
             };
           };
 
@@ -762,8 +782,9 @@
               motd = cfgLib.mkDevshellMotd {
                 title = "Development Shell";
                 description = ''
-                  Run ',' for mission-control commands
+                  Type ',' to see all available commands
                   Services: nix run .#services (postgres, redis)
+                  Quick shells: devweb, devrust, devgo, devflask
 
                   Bash users: source $MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/,
                 '';
@@ -775,6 +796,26 @@
                 if [ -n "$BASH_VERSION" ] && [ -f "$MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/," ]; then
                   source "$MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/,"
                 fi
+              '';
+              startup.show-devshell-info.text = ''
+                # Show useful context information
+                if command -v git >/dev/null 2>&1; then
+                  REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
+                  if [ -n "$REPO_ROOT" ]; then
+                    BRANCH=$(git branch --show-current 2>/dev/null || echo "detached")
+                    DIRTY=$(git status --porcelain 2>/dev/null | wc -l)
+                    echo "📦 Repository: $(basename "$REPO_ROOT")"
+                    if [ "$DIRTY" -gt 0 ]; then
+                      echo "🌿 Branch: $BRANCH (''${DIRTY} uncommitted changes)"
+                    else
+                      echo "🌿 Branch: $BRANCH (clean)"
+                    fi
+                  fi
+                fi
+                if [ -n "''${DIRENV_DIR:-}" ]; then
+                  echo "🔄 Direnv: active"
+                fi
+                echo ""
               '';
             };
           };

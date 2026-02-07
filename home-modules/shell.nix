@@ -48,24 +48,62 @@
       '';
 
       shellAbbrs = {
+        # System Management
         rebuild = "nh os switch -H ${hostname}";
         hms = "nh home switch -c ${username}@${hostname}";
+        diffsys = "nvd diff /run/booted-system /run/current-system";
+        sysinfo = "nix run ${repoRoot}#sysinfo";
 
+        # NixOS Development
         qa = "nix --option warn-dirty false run ${repoRoot}#qa";
         gcommit = "nix --option warn-dirty false run ${repoRoot}#commit";
-        diffsys = "nvd diff /run/booted-system /run/current-system";
+        update = "nix flake update";
+        check = "nix flake check --option warn-dirty false";
+        fmt = "nix fmt";
 
+        # Devshell Quick Access
+        devweb = "nix develop ${repoRoot}#web";
+        devrust = "nix develop ${repoRoot}#rust";
+        devgo = "nix develop ${repoRoot}#go";
+        devflask = "nix develop ${repoRoot}#flask";
+        devagents = "nix develop ${repoRoot}#agents";
+        devdb = "nix develop ${repoRoot}#database";
+
+        # Git Shortcuts
+        gs = "git status";
+        gd = "git diff";
+        gds = "git diff --staged";
+        ga = "git add";
+        gaa = "git add --all";
+        gc = "git commit";
+        gca = "git commit --amend";
+        gp = "git push";
+        gpl = "git pull";
+        gco = "git checkout";
+        gcb = "git checkout -b";
+        gb = "git branch";
+        gl = "git log --oneline --graph --decorate -20";
+        gla = "git log --oneline --graph --decorate --all -20";
+        gst = "git stash";
+        gstp = "git stash pop";
+
+        # File Operations
         ll = "eza -lah";
         ls = "eza -hl";
+        lt = "eza --tree --level=2";
+        lta = "eza --tree --level=3 --all";
 
+        # Common Tools
         lg = "lazygit";
-
         se = "sudoedit";
-
         v = "nvim";
         zj = "zellij";
 
+        # Navigation
         nixhome = "cd ${repoRoot}/";
+        ".." = "cd ..";
+        "..." = "cd ../..";
+        "...." = "cd ../../..";
       };
 
       plugins = with pkgs.fishPlugins; [
