@@ -10,6 +10,7 @@ _: {
   devices = {
     battery = "BAT1";
     backlight = "amdgpu_bl1";
+    networkInterface = "wlp1s0";
   };
 
   # Workspaces use shared defaults from shared-modules/workspaces.nix

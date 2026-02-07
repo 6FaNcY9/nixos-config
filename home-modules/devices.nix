@@ -17,5 +17,11 @@
       default = "";
       description = "Backlight device name for status widgets.";
     };
+
+    networkInterface = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      description = "Network interface name for status widgets (e.g., wlp1s0).";
+    };
   };
 }

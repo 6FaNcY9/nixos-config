@@ -8,11 +8,4 @@
   }
 }
 
-/* Hide sponsored content on new tab */
-@-moz-document url("about:newtab"), url("about:home") {
-  .top-site-outer.sponsored-label,
-  .ds-top-sites .top-site-outer.sponsored-label,
-  section[data-section-id="topstories"] {
-    display: none !important;
-  }
-}
+/* New tab sponsored content is disabled via policies/prefs */

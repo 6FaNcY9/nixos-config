@@ -17,6 +17,7 @@
   );
   hasBattery = config.devices.battery != "";
   hasBacklight = config.devices.backlight != "";
+  hasNetwork = config.devices.networkInterface != "";
   showBattery = hasBattery;
   showBacklight = hasBacklight;
   showPower = hasBattery;
@@ -82,25 +83,6 @@ in {
         label-muted-padding = 1;
       };
 
-      # Network - using Material Design wifi icons
-      "module/network" = {
-        type = "internal/network";
-        interface = "wlp1s0";
-        interval = 3;
-        format-connected = "<label-connected>";
-        label-connected = "󰖩 %essid%";
-        label-connected-background = "\${colors.background-alt}";
-        label-connected-foreground = "\${colors.accent}";
-        format-disconnected = "<label-disconnected>";
-        label-disconnected = "󰖪 offline";
-        label-disconnected-background = "\${colors.background-alt}";
-        label-disconnected-foreground = "\${colors.danger}";
-        label-connected-padding = 1;
-        label-disconnected-padding = 1;
-        click-left = "rofi-network-menu";
-        click-right = "${pkgs.networkmanagerapplet}/bin/nm-connection-editor &";
-      };
-
       # Clock - using clock outline icon
       "module/clock" = {
         type = "internal/date";
@@ -130,6 +112,27 @@ in {
         format-padding = 1;
       };
     }
+
+    # Network - using Material Design wifi icons
+    (lib.optionalAttrs hasNetwork {
+      "module/network" = {
+        type = "internal/network";
+        interface = "${config.devices.networkInterface}";
+        interval = 3;
+        format-connected = "<label-connected>";
+        label-connected = "󰖩 %essid%";
+        label-connected-background = "\${colors.background-alt}";
+        label-connected-foreground = "\${colors.accent}";
+        format-disconnected = "<label-disconnected>";
+        label-disconnected = "󰖪 offline";
+        label-disconnected-background = "\${colors.background-alt}";
+        label-disconnected-foreground = "\${colors.danger}";
+        label-connected-padding = 1;
+        label-disconnected-padding = 1;
+        click-left = "rofi-network-menu";
+        click-right = "${pkgs.networkmanagerapplet}/bin/nm-connection-editor &";
+      };
+    })
 
     # Battery - using Material Design battery icons
     (lib.optionalAttrs showBattery {

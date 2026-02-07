@@ -13,7 +13,7 @@ Use explicit Rasi files (Frost-Phoenix structure) and drive colors from the shar
 ## Changes Made
 
 ### Files
-- `home-modules/rofi/rofi.nix` - wires the theme files and disables Stylix rofi target
+- `home-modules/rofi/default.nix` - wires the theme files and disables Stylix rofi target
 - `home-modules/rofi/theme.rasi` - palette-driven color variables
 - `home-modules/rofi/config.rasi` - main launcher layout
 - `home-modules/rofi/powermenu-theme.rasi` - power menu layout

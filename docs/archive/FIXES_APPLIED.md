@@ -60,7 +60,7 @@ This will completely override default bindings instead of merging with them.
 
 ## Files Modified
 
-1. `home-modules/rofi/rofi.nix` - Palette-driven Rasi wiring and Stylix disable
+1. `home-modules/rofi/default.nix` - Palette-driven Rasi wiring and Stylix disable
 2. `home-modules/rofi/*.rasi` - Theme/config/powermenu files
 2. `nixos-modules/roles/laptop.nix` - Removed incompatible cpuFreqGovernor setting
 

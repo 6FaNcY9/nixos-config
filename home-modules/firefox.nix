@@ -13,6 +13,25 @@ in {
       enable = true;
       package = pkgs.firefox;
 
+      # Enforce privacy-related policies (enterprise policies)
+      policies = {
+        DisableTelemetry = true;
+        DisableFirefoxStudies = true;
+        DisableFirefoxAccounts = true;
+        DisablePocket = true; # deprecated but still hides UI
+        DNSOverHTTPS = {
+          Enabled = false;
+        };
+        FirefoxHome = {
+          SponsoredTopSites = false;
+          SponsoredPocket = false;
+        };
+        FirefoxSuggest = {
+          SponsoredSuggestions = false;
+          ImproveSuggest = false;
+        };
+      };
+
       profiles.${username} = {
         id = 0;
         isDefault = lib.mkDefault true;

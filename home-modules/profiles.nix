@@ -81,7 +81,6 @@
 
   desktopPkgs = with pkgs; [
     alacritty
-    firefox
     rofi
     thunar # Moved to top-level in unstable
     networkmanagerapplet
