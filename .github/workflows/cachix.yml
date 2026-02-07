@@ -11,6 +11,15 @@ jobs:
   build-and-cache:
     runs-on: ubuntu-latest
     steps:
+      - name: Free disk space
+        run: |
+          echo "=== Before cleanup ==="
+          df -h /
+          # Remove unnecessary tools to free ~10GB
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache
+          echo "=== After cleanup ==="
+          df -h /
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -34,6 +43,9 @@ jobs:
           nix build .#nixosConfigurations.bandit.config.system.build.toplevel \
             --print-build-logs \
             --fallback
+          # Clean up build artifacts to save space
+          rm -f result
+          nix-collect-garbage
 
       - name: Build Home Manager configuration
         run: |
@@ -41,18 +53,22 @@ jobs:
           nix build .#homeConfigurations.\"vino@bandit\".activationPackage \
             --print-build-logs \
             --fallback
+          rm -f result
+          nix-collect-garbage
 
-      - name: Build all devshells
+      - name: Build devshells
         run: |
           echo "🔧 Building development shells..."
-          nix build .#devShells.x86_64-linux.default \
-            .#devShells.x86_64-linux.web \
-            .#devShells.x86_64-linux.rust \
-            .#devShells.x86_64-linux.go \
-            --print-build-logs \
-            --fallback
+          # Build one at a time to manage disk space
+          for shell in default web rust go; do
+            echo "Building $shell shell..."
+            nix build .#devShells.x86_64-linux.$shell --fallback
+            rm -f result
+          done
+          nix-collect-garbage
 
       - name: Cache Summary
         run: |
           echo "✅ Build complete!"
           echo "📦 All packages pushed to: https://vino-nixos-config.cachix.org"
+          df -h /

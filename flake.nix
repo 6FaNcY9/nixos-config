@@ -730,7 +730,8 @@
               fi
 
               # Export token for cachix
-              export CACHIX_AUTH_TOKEN=$(cat "$TOKEN_PATH")
+              CACHIX_AUTH_TOKEN=$(cat "$TOKEN_PATH")
+              export CACHIX_AUTH_TOKEN
 
               echo "📦 Building current system configuration..."
               SYSTEM_PATH=$(nix build --no-link --print-out-paths .#nixosConfigurations.${primaryHost}.config.system.build.toplevel 2>&1 | tail -1)

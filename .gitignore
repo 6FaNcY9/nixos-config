@@ -15,6 +15,7 @@
 # -----------------------------
 /.codex/
 /AGENTS.md
+/CLAUDE.md
 /agent.md
 /.pre-commit-config.yaml
 
