@@ -52,9 +52,10 @@ in {
         }
         // wsIconAttrs;
 
+      # Host module - using laptop icon
       "module/host" = {
         type = "custom/text";
-        format = "  ${hostname}";
+        format = "󰌢  ${hostname}";
         format-foreground = "\${colors.accent2}";
         format-background = "\${colors.background-alt}";
         format-padding = 1;
@@ -67,29 +68,31 @@ in {
         label-padding = 1;
       };
 
+      # Audio - using Material Design volume icons
       "module/pulseaudio" = {
         type = "internal/pulseaudio";
         format-volume = "<label-volume>";
-        label-volume = " %percentage%%";
+        label-volume = "󰕾 %percentage%%";
         label-volume-background = "\${colors.background-alt}";
         label-volume-foreground = "\${colors.foreground}";
         label-volume-padding = 1;
-        label-muted = " mute";
+        label-muted = "󰖁 mute";
         label-muted-foreground = "\${colors.danger}";
         label-muted-background = "\${colors.background-alt}";
         label-muted-padding = 1;
       };
 
+      # Network - using Material Design wifi icons
       "module/network" = {
         type = "internal/network";
         interface = "wlp1s0";
         interval = 3;
         format-connected = "<label-connected>";
-        label-connected = "  %essid%";
+        label-connected = "󰖩 %essid%";
         label-connected-background = "\${colors.background-alt}";
         label-connected-foreground = "\${colors.accent}";
         format-disconnected = "<label-disconnected>";
-        label-disconnected = " offline";
+        label-disconnected = "󰖪 offline";
         label-disconnected-background = "\${colors.background-alt}";
         label-disconnected-foreground = "\${colors.danger}";
         label-connected-padding = 1;
@@ -98,12 +101,13 @@ in {
         click-right = "${pkgs.networkmanagerapplet}/bin/nm-connection-editor &";
       };
 
+      # Clock - using clock outline icon
       "module/clock" = {
         type = "internal/date";
         interval = 5;
         date = "%H:%M";
         format = "<label>";
-        label = "%{A1:${pkgs.gsimplecal}/bin/gsimplecal &:}  %date%%{A}";
+        label = "%{A1:${pkgs.gsimplecal}/bin/gsimplecal &:}󰥔 %date%%{A}";
         label-foreground = "\${colors.accent2}";
         label-background = "\${colors.background-alt}";
         label-padding = 1;
@@ -127,6 +131,7 @@ in {
       };
     }
 
+    # Battery - using Material Design battery icons
     (lib.optionalAttrs showBattery {
       "module/battery" = {
         type = "internal/battery";
@@ -135,9 +140,9 @@ in {
         format-charging = "<label-charging>";
         format-discharging = "<label-discharging>";
         format-full = "<label-full>";
-        label-charging = " %percentage%%";
-        label-discharging = " %percentage%%";
-        label-full = " 100%";
+        label-charging = "󰂄 %percentage%%";
+        label-discharging = "󰁹 %percentage%%";
+        label-full = "󰁹 100%";
         label-charging-background = "\${colors.background-alt}";
         label-discharging-background = "\${colors.background-alt}";
         label-full-background = "\${colors.background-alt}";
@@ -150,38 +155,45 @@ in {
       };
     })
 
+    # Power profile - using speedometer icon
     (lib.optionalAttrs showPower {
       "module/power" = {
         type = "custom/script";
         exec = "${pkgs.power-profiles-daemon}/bin/powerprofilesctl get";
         interval = 5;
         format = "<label>";
-        label = " %output%";
+        label = "󰓅 %output%";
         label-background = "\${colors.background-alt}";
         label-foreground = "\${colors.accent2}";
         label-padding = 1;
       };
     })
 
+    # Brightness - using sun icon
+    # Use custom/script with brightnessctl instead of internal/backlight
+    # because AMD GPU backlight reports actual_brightness at ~97% max
+    # while brightnessctl reports the requested brightness (100%)
     (lib.optionalAttrs showBacklight {
       "module/backlight" = {
-        type = "internal/backlight";
-        card = config.devices.backlight;
+        type = "custom/script";
+        exec = "${pkgs.brightnessctl}/bin/brightnessctl -m | ${pkgs.coreutils}/bin/cut -d',' -f4 | ${pkgs.coreutils}/bin/tr -d '%'";
+        interval = 2;
         format = "<label>";
-        label = " %percentage%%";
+        label = "󰃠 %output%%";
         label-foreground = "\${colors.foreground}";
         label-background = "\${colors.background-alt}";
         label-padding = 1;
       };
     })
 
+    # IP address - using globe icon
     (lib.optionalAttrs showIp {
       "module/ip" = {
         type = "custom/script";
         exec = "${pkgs.iproute2}/bin/ip -4 route get 1.1.1.1 | ${pkgs.gawk}/bin/awk '{for (i=1; i<=NF; i++) if ($i==\"src\") {print $(i+1); exit}}'";
         interval = 5;
         format = "<label>";
-        label = "  %output%";
+        label = "󰖟 %output%";
         label-background = "\${colors.background-alt}";
         label-foreground = "\${colors.accent}";
         label-padding = 1;

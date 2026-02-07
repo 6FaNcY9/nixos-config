@@ -14,6 +14,8 @@
     NPM_CONFIG_USERCONFIG = "${config.xdg.configHome}/npm/npmrc";
     NPM_CONFIG_CACHE = "${config.xdg.cacheHome}/npm";
     NPM_CONFIG_PREFIX = "${config.xdg.dataHome}/npm";
+    NPM_CONFIG_LOGS_DIR = "${config.xdg.stateHome}/npm/logs";
+    NPM_CONFIG_UPDATE_NOTIFIER = "false"; # Prevents ~/.npm/_update-notifier-last-checked
 
     # ──────────────────────────────────────────────────────────────
     # Yarn
