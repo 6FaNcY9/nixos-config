@@ -157,6 +157,25 @@ in {
         '';
       }
 
+      # Battery status indicator
+      {
+        plugin = pkgs.tmuxPlugins.battery;
+        extraConfig = ''
+          # Battery icons
+          set -g @batt_icon_charge_tier8 '🔋'
+          set -g @batt_icon_charge_tier7 '🔋'
+          set -g @batt_icon_charge_tier6 '🔋'
+          set -g @batt_icon_charge_tier5 '🔋'
+          set -g @batt_icon_charge_tier4 '🔋'
+          set -g @batt_icon_charge_tier3 '🔋'
+          set -g @batt_icon_charge_tier2 '🪫'
+          set -g @batt_icon_charge_tier1 '🪫'
+          set -g @batt_icon_status_charged '🔌'
+          set -g @batt_icon_status_charging '⚡'
+          set -g @batt_icon_status_discharging '🔋'
+        '';
+      }
+
       # Clipboard yank in copy-mode
       pkgs.tmuxPlugins.yank
 
@@ -198,19 +217,28 @@ in {
       bind -r K resize-pane -U 5
       bind -r L resize-pane -R 5
 
-      ##### Status line (minimal; customize freely) #####
+      ##### Status line (enhanced for laptop use) #####
       set -g status on
-      set -g status-interval 2
+      set -g status-interval 5
       set -g status-left-length 40
-      set -g status-right-length 120
+      set -g status-right-length 150
       set -g status-style "fg=${palette.text},bg=${palette.bg}"
       set -g message-style "fg=${palette.text},bg=${palette.bg}"
 
-      # Left: session + window list
-      set -g status-left "#[fg=${palette.text},bold] #S #[default]"
+      # Left: session name (bold) + window indicator
+      set -g status-left "#[fg=${palette.accent},bold] #S #[default]#[fg=${palette.muted}]|#[default] "
 
-      # Right: host + time (continuum may append/hook here; keep it simple)
-      set -g status-right "#[fg=${palette.accent2}]#H#[default]  #[fg=${palette.accent}]%Y-%m-%d %H:%M#[default]"
+      # Right: battery + load + host + time
+      # Battery: Show percentage and charging status
+      # Load: Show 1-min load average
+      # Host: Hostname in accent color
+      # Time: Date and time in accent color
+      set -g status-right "#[fg=${palette.warn}]#{?#{==:#{battery_percentage},},, #{battery_percentage} #{battery_icon}}#[default] #[fg=${palette.muted}]|#[default] #[fg=${palette.accent2}]#{?#{==:#(cat /proc/loadavg | cut -d' ' -f1),},, #(cat /proc/loadavg | cut -d' ' -f1)}#[default] #[fg=${palette.muted}]|#[default] #[fg=${palette.accent2}]#H#[default] #[fg=${palette.muted}]|#[default] #[fg=${palette.accent}]%Y-%m-%d %H:%M#[default]"
+
+      # Window status format
+      set -g window-status-format "#[fg=${palette.muted}]#I:#W#F#[default]"
+      set -g window-status-current-format "#[fg=${palette.accent},bold]#I:#W#F#[default]"
+      set -g window-status-separator " #[fg=${palette.muted}]│#[default] "
 
       ##### Plugin-specific settings #####
       # continuum: enable auto-restore

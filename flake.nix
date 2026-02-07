@@ -233,6 +233,8 @@
             };
             statix.enable = true;
             deadnix.enable = true;
+            shellcheck.enable = true;
+            shfmt.enable = true;
           };
         };
 
@@ -282,7 +284,7 @@
               pkgs.pre-commit
               pkgs.statix
               config.treefmt.build.wrapper
-            ] "Run QA, stage, and commit with a prompt" ''
+            ] "Run QA, stage, and commit with editor" ''
               set -euo pipefail
               ${repoRootCmd}
               cd "$repo_root"
@@ -294,14 +296,71 @@
 
               git add -A
 
-              printf "Commit message: "
-              read -r msg
-              if [ -z "$msg" ]; then
-                echo "Commit message required." >&2
-                exit 1
-              fi
-              git commit --no-verify -m "$msg"
+              # Use git commit with editor (like normal git workflow)
+              # This properly handles multi-line messages
+              git commit --no-verify
+
               rm -f result result-*
+            '';
+
+          generate-age-key =
+            mkApp "generate-age-key" [
+              pkgs.age
+              pkgs.coreutils
+            ] "Generate Age key for sops-nix encryption" ''
+              set -euo pipefail
+
+              KEY_DIR="$HOME/.config/sops/age"
+              KEY_FILE="$KEY_DIR/keys.txt"
+
+              echo "🔑 Age Key Generation for sops-nix"
+              echo "=================================="
+              echo ""
+
+              # Check if key already exists
+              if [ -f "$KEY_FILE" ]; then
+                echo "⚠️  Age key already exists at: $KEY_FILE"
+                echo ""
+                echo "Current public key:"
+                grep "public key:" "$KEY_FILE" || echo "(Could not read public key)"
+                echo ""
+                read -p "Generate a new key anyway? This will backup the old one. [y/N] " -n 1 -r
+                echo
+                if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+                  echo "Aborted."
+                  exit 0
+                fi
+                # Backup existing key
+                BACKUP="$KEY_FILE.backup.$(date +%Y%m%d-%H%M%S)"
+                cp "$KEY_FILE" "$BACKUP"
+                echo "✅ Backed up existing key to: $BACKUP"
+                echo ""
+              fi
+
+              # Create directory
+              mkdir -p "$KEY_DIR"
+              chmod 700 "$KEY_DIR"
+
+              # Generate new key
+              echo "Generating new Age key..."
+              age-keygen -o "$KEY_FILE"
+              chmod 600 "$KEY_FILE"
+
+              echo ""
+              echo "✅ Age key generated successfully!"
+              echo ""
+              echo "📍 Location: $KEY_FILE"
+              echo ""
+              echo "📋 Your public key (add this to .sops.yaml):"
+              echo "───────────────────────────────────────────────"
+              grep "public key:" "$KEY_FILE"
+              echo "───────────────────────────────────────────────"
+              echo ""
+              echo "📖 Next steps:"
+              echo "  1. Add the public key above to .sops.yaml"
+              echo "  2. Run: sops updatekeys secrets/*.yaml"
+              echo "  3. Commit the updated secrets"
+              echo ""
             '';
         };
 
