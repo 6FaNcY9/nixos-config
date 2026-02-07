@@ -14,7 +14,10 @@
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.11";
 
     # Codex (always up-to-date flake)
-    codex-cli-nix.url = "github:sadjow/codex-cli-nix";
+    codex-cli-nix = {
+      url = "github:sadjow/codex-cli-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # OpenCode (track upstream; update via `nix flake update opencode`)
     opencode = {
@@ -59,9 +62,19 @@
     # Flake composition
     flake-parts.url = "github:hercules-ci/flake-parts";
     ez-configs.url = "github:ehllie/ez-configs";
-    treefmt-nix.url = "github:numtide/treefmt-nix";
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     mission-control.url = "github:Platonic-Systems/mission-control";
-    devshell.url = "github:numtide/devshell";
+
+    devshell = {
+      url = "github:numtide/devshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     flake-root.url = "github:srid/flake-root";
 
     # Development services (replaces docker-compose)
@@ -194,6 +207,11 @@
               exec = "nix run .#clean";
               category = "Dev Tools";
             };
+            sysinfo = {
+              description = "System diagnostics and status";
+              exec = "nix run .#sysinfo";
+              category = "Analysis";
+            };
             services = {
               description = "Start local services (postgres, redis)";
               exec = "nix run .#services";
@@ -235,6 +253,103 @@
             deadnix.enable = true;
             shellcheck.enable = true;
             shfmt.enable = true;
+
+            # Security: Prevent committing unencrypted secrets
+            detect-unencrypted-secrets = {
+              enable = true;
+              name = "Detect unencrypted secrets";
+              entry = "${pkgs.writeShellScript "detect-unencrypted-secrets" ''
+                set -euo pipefail
+                # Check for unencrypted YAML files in secrets/ directory
+                if [ -d secrets ]; then
+                  for file in secrets/*.yaml secrets/*.yml; do
+                    [ -e "$file" ] || continue
+                    if ! grep -q "^sops:" "$file" 2>/dev/null; then
+                      echo "❌ ERROR: Unencrypted secret detected: $file"
+                      echo "   All secrets must be encrypted with sops."
+                      echo "   Run: sops secrets/$(basename "$file")"
+                      exit 1
+                    fi
+                  done
+                fi
+              ''}";
+              files = "^secrets/.*\\.(yaml|yml)$";
+              pass_filenames = false;
+            };
+
+            # Security: Detect hardcoded credentials and tokens
+            detect-secrets = {
+              enable = true;
+              name = "Detect hardcoded secrets";
+              entry = "${pkgs.writeShellScript "detect-hardcoded-secrets" ''
+                set -euo pipefail
+                # Patterns to detect (exclude false positives)
+                PATTERNS=(
+                  'password\s*=\s*["\x27][^"\x27]{8,}'
+                  'api[_-]?key\s*=\s*["\x27][A-Za-z0-9]{20,}'
+                  'secret\s*=\s*["\x27][^"\x27]{12,}'
+                  'token\s*=\s*["\x27][A-Za-z0-9]{20,}'
+                  'AKIA[0-9A-Z]{16}'  # AWS Access Key
+                  'ghp_[0-9a-zA-Z]{36}'  # GitHub Personal Access Token
+                )
+
+                EXIT_CODE=0
+                for file in "$@"; do
+                  # Skip encrypted files, lock files, and secrets directory
+                  if [[ "$file" =~ (flake\.lock|.*\.age|.*\.gpg|secrets/|\.git/) ]]; then
+                    continue
+                  fi
+
+                  # Only check text files
+                  if [[ ! "$file" =~ \.(nix|sh|bash|fish|yaml|yml|json|toml|env)$ ]]; then
+                    continue
+                  fi
+
+                  for pattern in "''${PATTERNS[@]}"; do
+                    if grep -iE "$pattern" "$file" >/dev/null 2>&1; then
+                      echo "❌ WARNING: Potential hardcoded secret in: $file"
+                      echo "   Pattern matched: $pattern"
+                      echo "   Please use sops-nix for secrets or environment variables."
+                      EXIT_CODE=1
+                    fi
+                  done
+                done
+                exit $EXIT_CODE
+              ''}";
+              files = ".*";
+            };
+
+            # Performance: Warn about large binary files
+            check-large-files = {
+              enable = true;
+              name = "Check for large files";
+              entry = "${pkgs.writeShellScript "check-large-files" ''
+                set -euo pipefail
+                MAX_SIZE_KB=500  # 500KB threshold
+                EXIT_CODE=0
+
+                for file in "$@"; do
+                  # Skip lock files and git directory
+                  if [[ "$file" =~ (flake\.lock|\.git/) ]]; then
+                    continue
+                  fi
+
+                  if [ -f "$file" ] && [ ! -h "$file" ]; then
+                    size_kb=$(du -k "$file" | cut -f1)
+                    if [ "$size_kb" -gt "$MAX_SIZE_KB" ]; then
+                      echo "⚠️  WARNING: Large file detected: $file ($size_kb KB)"
+                      echo "   Consider:"
+                      echo "   - Using Git LFS for binaries"
+                      echo "   - Adding to .gitignore if temporary"
+                      echo "   - Compressing if possible"
+                      EXIT_CODE=1
+                    fi
+                  fi
+                done
+                exit $EXIT_CODE
+              ''}";
+              files = ".*";
+            };
           };
         };
 
@@ -360,6 +475,191 @@
               echo "  1. Add the public key above to .sops.yaml"
               echo "  2. Run: sops updatekeys secrets/*.yaml"
               echo "  3. Commit the updated secrets"
+              echo ""
+            '';
+
+          sysinfo =
+            mkApp "sysinfo" [
+              pkgs.coreutils
+              pkgs.gnupg
+              pkgs.git
+              pkgs.nix
+              pkgs.gnugrep
+              pkgs.gawk
+            ] "System diagnostics and configuration status" ''
+              set -euo pipefail
+
+              # Color codes for output
+              RED='\033[0;31m'
+              GREEN='\033[0;32m'
+              YELLOW='\033[1;33m'
+              BLUE='\033[0;34m'
+              NC='\033[0m' # No Color
+
+              echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+              echo "   NixOS Configuration Diagnostics"
+              echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+              echo ""
+
+              # ========================================
+              # Hardware Device Detection
+              # ========================================
+              echo -e "''${BLUE}🖥️  Hardware Devices''${NC}"
+              echo "────────────────────────────────────────────"
+
+              # Battery detection
+              if BAT_DEVICE=$(find /sys/class/power_supply -maxdepth 1 -name 'BAT*' -type l -printf '%f\n' 2>/dev/null | head -1); then
+                if [ -n "$BAT_DEVICE" ]; then
+                  echo -e "''${GREEN}✓''${NC} Battery: $BAT_DEVICE"
+                else
+                  echo -e "''${YELLOW}⚠''${NC} Battery: Not detected (desktop system?)"
+                fi
+              else
+                echo -e "''${YELLOW}⚠''${NC} Battery: Not detected (desktop system?)"
+              fi
+
+              # Backlight detection
+              if BACKLIGHT_DEVICE=$(find /sys/class/backlight -maxdepth 1 -mindepth 1 -type l -printf '%f\n' 2>/dev/null | head -1); then
+                if [ -n "$BACKLIGHT_DEVICE" ]; then
+                  echo -e "''${GREEN}✓''${NC} Backlight: $BACKLIGHT_DEVICE"
+                else
+                  echo -e "''${YELLOW}⚠''${NC} Backlight: Not detected (desktop system?)"
+                fi
+              else
+                echo -e "''${YELLOW}⚠''${NC} Backlight: Not detected (desktop system?)"
+              fi
+
+              echo ""
+
+              # ========================================
+              # Secrets Management Status
+              # ========================================
+              echo -e "''${BLUE}🔐 Secrets Management''${NC}"
+              echo "────────────────────────────────────────────"
+
+              # Age key check
+              AGE_KEY="$HOME/.config/sops/age/keys.txt"
+              if [ -f "$AGE_KEY" ]; then
+                echo -e "''${GREEN}✓''${NC} Age key: Present ($AGE_KEY)"
+                if AGE_PUB=$(grep "public key:" "$AGE_KEY" 2>/dev/null); then
+                  echo "  Public: $(echo "$AGE_PUB" | awk '{print $NF}')"
+                fi
+              else
+                echo -e "''${RED}✗''${NC} Age key: Missing"
+                echo "  Run: nix run .#generate-age-key"
+              fi
+
+              # GPG key check
+              GPG_KEY="FC8B68693AF4E0D9DC84A4D3B872E229ADE55151"
+              if gpg --list-secret-keys "$GPG_KEY" >/dev/null 2>&1; then
+                echo -e "''${GREEN}✓''${NC} GPG signing key: Imported ($GPG_KEY)"
+              else
+                echo -e "''${YELLOW}⚠''${NC} GPG signing key: Not imported"
+                echo "  Key will auto-import on next home-manager activation"
+              fi
+
+              # Secrets directory check
+              SECRETS_DIR="$HOME/.config/sops-nix/secrets"
+              if [ -d "$SECRETS_DIR" ]; then
+                SECRET_COUNT=$(find "$SECRETS_DIR" -type f -o -type l 2>/dev/null | wc -l)
+                if [ "$SECRET_COUNT" -gt 0 ]; then
+                  echo -e "''${GREEN}✓''${NC} Decrypted secrets: $SECRET_COUNT available"
+                else
+                  echo -e "''${YELLOW}⚠''${NC} Decrypted secrets: Directory exists but empty"
+                fi
+              else
+                echo -e "''${YELLOW}⚠''${NC} Decrypted secrets: Not yet activated"
+                echo "  Run: nh os switch"
+              fi
+
+              echo ""
+
+              # ========================================
+              # Git Repository Status
+              # ========================================
+              echo -e "''${BLUE}📦 Repository Status''${NC}"
+              echo "────────────────────────────────────────────"
+
+              ${repoRootCmd}
+              cd "$repo_root"
+
+              # Git status
+              if git diff-index --quiet HEAD -- 2>/dev/null; then
+                echo -e "''${GREEN}✓''${NC} Git status: Clean"
+              else
+                DIRTY_COUNT=$(git status --porcelain | wc -l)
+                echo -e "''${YELLOW}⚠''${NC} Git status: $DIRTY_COUNT uncommitted changes"
+                echo "  Run: git status"
+              fi
+
+              # Current branch
+              BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
+              echo "  Branch: $BRANCH"
+
+              # Last commit
+              LAST_COMMIT=$(git log -1 --format="%h - %s" 2>/dev/null || echo "unknown")
+              echo "  Last commit: $LAST_COMMIT"
+
+              echo ""
+
+              # ========================================
+              # System Information
+              # ========================================
+              echo -e "''${BLUE}💻 System Information''${NC}"
+              echo "────────────────────────────────────────────"
+
+              # Hostname
+              HOSTNAME=$(hostname)
+              echo "  Hostname: $HOSTNAME"
+
+              # NixOS version
+              if [ -f /etc/os-release ]; then
+                NIXOS_VERSION=$(grep "VERSION=" /etc/os-release | cut -d'"' -f2 || echo "unknown")
+                echo "  NixOS: $NIXOS_VERSION"
+              fi
+
+              # Current generation
+              if [ -e /run/current-system ]; then
+                CURRENT_GEN=$(readlink /run/current-system | grep -oP 'system-\K[0-9]+-link' || echo "unknown")
+                echo "  Generation: $CURRENT_GEN"
+              fi
+
+              echo ""
+
+              # ========================================
+              # Nix Store Status
+              # ========================================
+              echo -e "''${BLUE}🗄️  Nix Store Status''${NC}"
+              echo "────────────────────────────────────────────"
+
+              # Store size
+              if STORE_SIZE=$(du -sh /nix/store 2>/dev/null | awk '{print $1}'); then
+                echo "  Store size: $STORE_SIZE"
+              fi
+
+              # Check if optimization is beneficial
+              if command -v nix-store >/dev/null 2>&1; then
+                echo "  Optimization: Run 'sudo nix-store --optimise' to deduplicate"
+              fi
+
+              # Generation count
+              if [ -d /nix/var/nix/profiles ]; then
+                GEN_COUNT=$(find /nix/var/nix/profiles -maxdepth 1 -name 'system-*-link' 2>/dev/null | wc -l)
+                echo "  Generations: $GEN_COUNT (clean old: nh clean all --keep 5)"
+              fi
+
+              echo ""
+
+              # ========================================
+              # Quick Actions
+              # ========================================
+              echo -e "''${BLUE}⚡ Quick Actions''${NC}"
+              echo "────────────────────────────────────────────"
+              echo "  Update system: nh os switch"
+              echo "  Update inputs: nix flake update"
+              echo "  Run QA checks: nix run .#qa"
+              echo "  Clean old gens: nh clean all --keep 5"
+              echo "  Optimize store: sudo nix-store --optimise"
               echo ""
             '';
         };

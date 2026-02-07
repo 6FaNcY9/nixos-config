@@ -1,3 +1,13 @@
+# Core system configuration - Base settings for all NixOS hosts
+#
+# This module provides fundamental system configuration including:
+#   - User account and groups
+#   - Networking and hostname
+#   - Nix settings (flakes, auto-gc, optimization)
+#   - System packages (essential CLI tools)
+#   - Default shell and environment
+#
+# This module is automatically imported for all hosts via ez-configs
 {
   lib,
   pkgs,

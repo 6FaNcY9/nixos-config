@@ -1,3 +1,16 @@
+# Package profiles - Opt-in collections of packages organized by purpose
+#
+# Profiles allow granular control over installed packages without cluttering
+# the main configuration. Enable/disable entire categories as needed.
+#
+# Available profiles:
+#   - core: Essential CLI tools (always enabled)
+#   - dev: Development tools and programming languages
+#   - desktop: GUI applications for desktop use
+#   - extras: Nice-to-have utilities and tools
+#   - ai: AI/LLM tools (Codex, OpenCode)
+#
+# Usage: Set `profiles.<name> = true` in home configuration
 {
   lib,
   pkgs,
