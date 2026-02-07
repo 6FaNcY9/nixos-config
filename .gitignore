@@ -95,6 +95,6 @@ obj/
 *.ear
 
 #--------------------------------
-#Custom Verify
+#Scripts
 #--------------------------------
-verify-optimizations.sh
+scripts/

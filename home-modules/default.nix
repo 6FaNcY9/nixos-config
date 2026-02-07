@@ -17,6 +17,7 @@
     ./user-services.nix
 
     # Shell & CLI
+    ./package-managers.nix
     ./shell.nix
     ./git.nix
     ./starship.nix

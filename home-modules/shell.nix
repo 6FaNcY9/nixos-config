@@ -25,10 +25,6 @@
         set -gx SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
         set -e SSH_AGENT_PID
 
-        if test -d $HOME/.cache/.bun/bin
-          set -gx PATH $HOME/.cache/.bun/bin $PATH
-        end
-
         if test -r ${config.sops.secrets.github_mcp_pat.path}
           set -x GITHUB_MCP_PAT (cat ${config.sops.secrets.github_mcp_pat.path})
         end
@@ -53,6 +49,9 @@
         hms = "nh home switch -c ${username}@${hostname}";
         diffsys = "nvd diff /run/booted-system /run/current-system";
         sysinfo = "nix run ${repoRoot}#sysinfo";
+
+        # devshell commit function
+        cmt = "nix run .#commit";
 
         # NixOS Development
         qa = "nix --option warn-dirty false run ${repoRoot}#qa";
