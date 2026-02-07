@@ -167,7 +167,7 @@
         ];
 
         # Maintenance packages include mission-control for flake management
-        maintenanceDevPackages = maintenancePackages ++ commonDevPackages;
+        maintenanceDevPackages = maintenancePackages ++ commonDevPackages ++ [config.packages.mission-control-completions];
 
         repoRootCmd = ''repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"'';
 
@@ -240,6 +240,47 @@
           customPackages
           // {
             gruvboxWallpaperOutPath = pkgs.writeText "gruvbox-wallpaper-outPath" inputs.gruvbox-wallpaper.outPath;
+
+            # Shell completions for mission-control (,) command
+            mission-control-completions = pkgs.symlinkJoin {
+              name = "mission-control-completions";
+              paths = [
+                # Fish completions
+                (pkgs.writeTextFile {
+                  name = "mission-control-fish-completions";
+                  destination = "/share/fish/vendor_completions.d/mission-control.fish";
+                  text = ''
+                    # Fish shell completions for mission-control (,) command
+                    # Generated from flake mission-control configuration
+
+                    # Complete the , command with available mission-control scripts
+                    complete -c ',' -f -a "fmt" -d "Format Nix files"
+                    complete -c ',' -f -a "qa" -d "Format, lint, and flake check"
+                    complete -c ',' -f -a "update" -d "Update flake inputs"
+                    complete -c ',' -f -a "clean" -d "Remove result symlinks"
+                    complete -c ',' -f -a "sysinfo" -d "System diagnostics and status"
+                    complete -c ',' -f -a "services" -d "Start local services (postgres, redis)"
+                    complete -c ',' -f -a "tree" -d "Visualize nix dependencies"
+                    complete -c ',' -f -a "web" -d "Enter web development shell"
+                    complete -c ',' -f -a "rust" -d "Enter Rust development shell"
+                  '';
+                })
+                # Bash completions
+                (pkgs.writeTextFile {
+                  name = "mission-control-bash-completions";
+                  destination = "/share/bash-completion/completions/,";
+                  text = ''
+                    # Bash completion for mission-control (,) command
+                    _mission_control_completion() {
+                      local cur="''${COMP_WORDS[COMP_CWORD]}"
+                      local commands="fmt qa update clean sysinfo services tree web rust"
+                      COMPREPLY=($(compgen -W "$commands" -- "$cur"))
+                    }
+                    complete -F _mission_control_completion ','
+                  '';
+                })
+              ];
+            };
           };
 
         pre-commit = {
@@ -694,22 +735,46 @@
         devshells = {
           maintenance = {
             packages = maintenanceDevPackages;
-            devshell.motd = cfgLib.mkDevshellMotd {
-              title = "Maintenance Shell";
-              description = ''
-                Run ',' for mission-control commands
-                Available: fmt, qa, update, clean
+            devshell = {
+              motd = cfgLib.mkDevshellMotd {
+                title = "Maintenance Shell";
+                description = ''
+                  Run ',' for mission-control commands
+                  Available: fmt, qa, update, clean, sysinfo, tree
+
+                  Bash users: source $MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/,
+                '';
+              };
+              startup.load-mission-control-completions.text = ''
+                # Load mission-control completions
+                export MISSION_CONTROL_COMPLETIONS="${config.packages.mission-control-completions}"
+                # For bash: source completion if bash-completion is available
+                if [ -n "$BASH_VERSION" ] && [ -f "$MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/," ]; then
+                  source "$MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/,"
+                fi
               '';
             };
           };
 
           default = {
             packages = maintenanceDevPackages;
-            devshell.motd = cfgLib.mkDevshellMotd {
-              title = "Development Shell";
-              description = ''
-                Run ',' for mission-control commands
-                Services: nix run .#services (postgres, redis)
+            devshell = {
+              motd = cfgLib.mkDevshellMotd {
+                title = "Development Shell";
+                description = ''
+                  Run ',' for mission-control commands
+                  Services: nix run .#services (postgres, redis)
+
+                  Bash users: source $MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/,
+                '';
+              };
+              startup.load-mission-control-completions.text = ''
+                # Load mission-control completions
+                export MISSION_CONTROL_COMPLETIONS="${config.packages.mission-control-completions}"
+                # For bash: source completion if bash-completion is available
+                if [ -n "$BASH_VERSION" ] && [ -f "$MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/," ]; then
+                  source "$MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/,"
+                fi
               '';
             };
           };
