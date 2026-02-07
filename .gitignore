@@ -4,7 +4,7 @@
 /result
 /result-*
 /.direnv/
-.envrc
+.envrc.local  # Local direnv overrides (machine-specific)
 # devenv/direnv caches (if used)
 /.devenv/
 /.venv/

@@ -37,6 +37,7 @@
 
   corePkgs = with pkgs; [
     delta
+    direnv # Auto-load/unload environments per directory
     lazygit
     gh
     eza

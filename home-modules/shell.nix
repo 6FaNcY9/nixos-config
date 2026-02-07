@@ -106,7 +106,8 @@
 
     direnv = {
       enable = true;
-      nix-direnv.enable = true;
+      enableFishIntegration = true;
+      nix-direnv.enable = true; # Better Nix flake integration
     };
 
     zoxide = {
