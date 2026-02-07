@@ -46,7 +46,7 @@
   # SCHEDULE: Daily at 00:03 with 1-hour random delay
   # NOTE: Plug in USB drive before backups run, or backup will fail gracefully (nofail option)
   backup = {
-    enable = true;
+    enable = false;
     repositories.home = {
       repository = "/mnt/backup/restic"; # 128GB USB drive (BTRFS)
       passwordFile = config.sops.secrets.restic_password.path;
