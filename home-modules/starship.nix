@@ -25,7 +25,8 @@
       };
 
       git_status = {
-        format = "[ $all_status$ahead_behind ]($style)";
+        # Hide module entirely when there is no status to show
+        format = "([ $all_status$ahead_behind ]($style))";
         style = "fg:${c.base0A} bg:${c.base01}";
       };
 
