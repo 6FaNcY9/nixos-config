@@ -1,11 +1,15 @@
-# Replace the age recipient below with your real public key.
-# Example: age1... (from: age-keygen -o ~/.config/sops/age/keys.txt)
+# Encryption keys for sops-nix
+# Age keys: Generated with age-keygen -o ~/.config/sops/age/keys.txt
+# GPG keys: Existing GPG keys from keyring
 keys:
   - &user  age134u5vtdts98pnept0k9v0uy4m6guthggfguw0ycvzn0evjeqgemsgl0krt
   - &host age1r6cncetmt3xx9mv2hedvwm8dwc2nhy9rmekhah747kxeguzygplq6a875l
+  - &gpg_user FC8B68693AF4E0D9DC84A4D3B872E229ADE55151
 creation_rules:
   - path_regex: secrets/.*\.ya?ml
     key_groups:
       - age:
           - *user
-          - *host 
+          - *host
+        pgp:
+          - *gpg_user 

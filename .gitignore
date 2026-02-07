@@ -4,9 +4,11 @@
 /result
 /result-*
 /.direnv/
+.envrc
 # devenv/direnv caches (if used)
 /.devenv/
 /.venv/
+/tmp/
 
 # -----------------------------
 # Project-specific
@@ -37,6 +39,9 @@
 /keys/
 /.gnupg/
 /.ssh/
+# sops temporary files
+.decrypted~*
+*.dec
 
 # -----------------------------
 # Editor / IDE / OS junk

@@ -119,7 +119,7 @@
       {
         name = "Reload tmux config";
         key = "r";
-        command = "source-file ~/.config/tmux/tmux.conf \\; display-message 'tmux reloaded'";
+        command = "source-file $XDG_CONFIG_HOME/tmux/tmux.conf \\; display-message 'tmux reloaded'";
       }
       {
         name = "Kill tmux server";
@@ -145,25 +145,25 @@ in {
       # Sensible defaults (optional but recommended if available)
       pkgs.tmuxPlugins.sensible
 
-      # Keybinding helper (which-key style popup menus). :contentReference[oaicite:5]{index=5}
+      # Keybinding helper (which-key style popup menus)
       {
         plugin = wkPlugin;
         extraConfig = ''
-          # Use XDG paths so config lives under ~/.config (works well on declarative systems). :contentReference[oaicite:6]{index=6}
+          # Use XDG paths so config lives under ~/.config (works well on declarative systems)
           set -g @tmux-which-key-xdg-enable 1
 
-          # Optional: if you don't want YAML->init rebuild on each tmux start:
+          # Optional: if you don't want YAML->init rebuild on each tmux start
           set -g @tmux-which-key-disable-autobuild 1
         '';
       }
 
-      # Clipboard yank in copy-mode. :contentReference[oaicite:7]{index=7}
+      # Clipboard yank in copy-mode
       pkgs.tmuxPlugins.yank
 
-      # Session restore/save. :contentReference[oaicite:8]{index=8}
+      # Session restore/save
       pkgs.tmuxPlugins.resurrect
 
-      # Autosave + auto-restore (requires resurrect). :contentReference[oaicite:9]{index=9}
+      # Autosave + auto-restore (requires resurrect)
       pkgs.tmuxPlugins.continuum
     ];
 
@@ -175,7 +175,7 @@ in {
       bind C-a send-prefix
 
       # Fast reload (also available in which-key menu)
-      bind r source-file ~/.config/tmux/tmux.conf \; display-message "tmux reloaded"
+      bind r source-file $XDG_CONFIG_HOME/tmux/tmux.conf \; display-message "tmux reloaded"
 
       # Vi copy-mode and better selection keys
       setw -g mode-keys vi
@@ -229,6 +229,6 @@ in {
   ];
 
   # Write the which-key YAML config into XDG config path.
-  # tmux-which-key supports XDG locations when @tmux-which-key-xdg-enable is set. :contentReference[oaicite:12]{index=12}
+  # tmux-which-key supports XDG locations when @tmux-which-key-xdg-enable is set.
   xdg.configFile."tmux/plugins/tmux-which-key/config.yaml".text = wkYaml;
 }
