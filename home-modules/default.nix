@@ -25,8 +25,8 @@
     ./nixpkgs.nix
 
     # Desktop environment
-    ./features/desktop/i3
-    ./features/desktop/polybar
+    ./desktop/i3
+    ./desktop/polybar
     ./rofi/rofi.nix
     ./firefox.nix
     ./desktop-services.nix
@@ -34,7 +34,7 @@
     ./clipboard.nix
 
     # Editor configuration
-    ./features/editor/nixvim #
+    ./editor/nixvim
 
     # Tmux
     ./tmux.nix
