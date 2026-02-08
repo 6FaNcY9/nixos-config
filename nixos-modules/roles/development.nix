@@ -36,10 +36,7 @@
       gdb
       strace
       ltrace
-
-      # Documentation
-      man-pages
-      man-pages-posix
+      # Note: man-pages and man-pages-posix are in home-modules/profiles.nix corePkgs
     ];
 
     # Allow unfree packages (common for dev tools)

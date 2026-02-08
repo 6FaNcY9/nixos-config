@@ -103,9 +103,9 @@
     flake-parts.lib.mkFlake {inherit inputs;} ({self, ...}: {
       systems = [system];
 
-      # Enable flake-parts debug mode for development
-      # This adds debug output and allSystems - warnings are expected
-      debug = true;
+      # Enable flake-parts debug mode for development (adds allSystems/currentSystem outputs)
+      # Keep false in normal builds to avoid "unknown flake output" warnings.
+      debug = false;
 
       imports = [
         inputs.ez-configs.flakeModule
@@ -134,11 +134,7 @@
         ...
       }: let
         pkgs = pkgsFor system;
-        customPackages =
-          if builtins.pathExists ./pkgs/default.nix
-          then import ./pkgs {}
-          else {};
-        opencodePkg = inputs.opencode.packages.${system}.default;
+        opencodePkg = pkgs.opencode;
         missionControlWrapper = config.mission-control.wrapper;
         maintenancePackages = [pkgs.pre-commit pkgs.nix missionControlWrapper] ++ config.pre-commit.settings.enabledPackages;
 
@@ -170,6 +166,38 @@
         maintenanceDevPackages = maintenancePackages ++ commonDevPackages ++ [config.packages.mission-control-completions];
 
         repoRootCmd = ''repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"'';
+
+        # Shared startup configuration for devshells (DRY principle)
+        devshellStartup = {
+          load-mission-control-completions.text = ''
+            # Load mission-control completions
+            export MISSION_CONTROL_COMPLETIONS="${config.packages.mission-control-completions}"
+            # For bash: source completion if bash-completion is available
+            if [ -n "$BASH_VERSION" ] && [ -f "$MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/," ]; then
+              source "$MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/,"
+            fi
+          '';
+          show-devshell-info.text = ''
+            # Show useful context information
+            if command -v git >/dev/null 2>&1; then
+              REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
+              if [ -n "$REPO_ROOT" ]; then
+                BRANCH=$(git branch --show-current 2>/dev/null || echo "detached")
+                DIRTY=$(git status --porcelain 2>/dev/null | wc -l)
+                echo "📦 Repository: $(basename "$REPO_ROOT")"
+                if [ "$DIRTY" -gt 0 ]; then
+                  echo "🌿 Branch: $BRANCH (''${DIRTY} uncommitted changes)"
+                else
+                  echo "🌿 Branch: $BRANCH (clean)"
+                fi
+              fi
+            fi
+            if [ -n "''${DIRENV_DIR:-}" ]; then
+              echo "🔄 Direnv: active"
+            fi
+            echo ""
+          '';
+        };
 
         mkApp = name: runtimeInputs: description: text: {
           type = "app";
@@ -232,17 +260,48 @@
               exec = "nix develop .#rust";
               category = "Dev Shells";
             };
+            go = {
+              description = "Enter Go development shell";
+              exec = "nix develop .#go";
+              category = "Dev Shells";
+            };
+            flask = {
+              description = "Enter Flask development shell";
+              exec = "nix develop .#flask";
+              category = "Dev Shells";
+            };
+            agents = {
+              description = "Enter Agent Tools shell";
+              exec = "nix develop .#agents";
+              category = "Dev Shells";
+            };
+            database = {
+              description = "Enter Database development shell";
+              exec = "nix develop .#database";
+              category = "Dev Shells";
+            };
           };
         };
 
         # nix eval fix (wrap outPath as a derivation)
-        packages =
-          customPackages
-          // {
-            gruvboxWallpaperOutPath = pkgs.writeText "gruvbox-wallpaper-outPath" inputs.gruvbox-wallpaper.outPath;
+        packages = {
+          gruvboxWallpaperOutPath = pkgs.writeText "gruvbox-wallpaper-outPath" inputs.gruvbox-wallpaper.outPath;
 
-            # Shell completions for mission-control (,) command
-            mission-control-completions = pkgs.symlinkJoin {
+          # Shell completions for mission-control (,) command
+          # Dynamically generated from config.mission-control.scripts
+          mission-control-completions = let
+            inherit (config.mission-control) scripts;
+            scriptNames = builtins.attrNames scripts;
+            # Generate fish completions
+            fishCompletions =
+              lib.concatMapStrings (name: ''
+                complete -c ',' -f -a "${name}" -d "${scripts.${name}.description}"
+              '')
+              scriptNames;
+            # Generate bash command list
+            bashCommands = lib.concatStringsSep " " scriptNames;
+          in
+            pkgs.symlinkJoin {
               name = "mission-control-completions";
               paths = [
                 # Fish completions
@@ -251,18 +310,8 @@
                   destination = "/share/fish/vendor_completions.d/mission-control.fish";
                   text = ''
                     # Fish shell completions for mission-control (,) command
-                    # Generated from flake mission-control configuration
-
-                    # Complete the , command with available mission-control scripts
-                    complete -c ',' -f -a "fmt" -d "Format Nix files"
-                    complete -c ',' -f -a "qa" -d "Format, lint, and flake check"
-                    complete -c ',' -f -a "update" -d "Update flake inputs"
-                    complete -c ',' -f -a "clean" -d "Remove result symlinks"
-                    complete -c ',' -f -a "sysinfo" -d "System diagnostics and status"
-                    complete -c ',' -f -a "services" -d "Start local services (postgres, redis)"
-                    complete -c ',' -f -a "tree" -d "Visualize nix dependencies"
-                    complete -c ',' -f -a "web" -d "Enter web development shell"
-                    complete -c ',' -f -a "rust" -d "Enter Rust development shell"
+                    # Auto-generated from flake mission-control configuration
+                    ${fishCompletions}
                   '';
                 })
                 # Bash completions
@@ -271,9 +320,10 @@
                   destination = "/share/bash-completion/completions/,";
                   text = ''
                     # Bash completion for mission-control (,) command
+                    # Auto-generated from flake mission-control configuration
                     _mission_control_completion() {
                       local cur="''${COMP_WORDS[COMP_CWORD]}"
-                      local commands="fmt qa update clean sysinfo services tree web rust"
+                      local commands="${bashCommands}"
                       COMPREPLY=($(compgen -W "$commands" -- "$cur"))
                     }
                     complete -F _mission_control_completion ','
@@ -281,7 +331,7 @@
                 })
               ];
             };
-          };
+        };
 
         pre-commit = {
           check.enable = true;
@@ -796,34 +846,7 @@
                   Bash users: source $MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/,
                 '';
               };
-              startup.load-mission-control-completions.text = ''
-                # Load mission-control completions
-                export MISSION_CONTROL_COMPLETIONS="${config.packages.mission-control-completions}"
-                # For bash: source completion if bash-completion is available
-                if [ -n "$BASH_VERSION" ] && [ -f "$MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/," ]; then
-                  source "$MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/,"
-                fi
-              '';
-              startup.show-devshell-info.text = ''
-                # Show useful context information
-                if command -v git >/dev/null 2>&1; then
-                  REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
-                  if [ -n "$REPO_ROOT" ]; then
-                    BRANCH=$(git branch --show-current 2>/dev/null || echo "detached")
-                    DIRTY=$(git status --porcelain 2>/dev/null | wc -l)
-                    echo "📦 Repository: $(basename "$REPO_ROOT")"
-                    if [ "$DIRTY" -gt 0 ]; then
-                      echo "🌿 Branch: $BRANCH (''${DIRTY} uncommitted changes)"
-                    else
-                      echo "🌿 Branch: $BRANCH (clean)"
-                    fi
-                  fi
-                fi
-                if [ -n "''${DIRENV_DIR:-}" ]; then
-                  echo "🔄 Direnv: active"
-                fi
-                echo ""
-              '';
+              startup = devshellStartup;
             };
           };
 
@@ -840,34 +863,7 @@
                   Bash users: source $MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/,
                 '';
               };
-              startup.load-mission-control-completions.text = ''
-                # Load mission-control completions
-                export MISSION_CONTROL_COMPLETIONS="${config.packages.mission-control-completions}"
-                # For bash: source completion if bash-completion is available
-                if [ -n "$BASH_VERSION" ] && [ -f "$MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/," ]; then
-                  source "$MISSION_CONTROL_COMPLETIONS/share/bash-completion/completions/,"
-                fi
-              '';
-              startup.show-devshell-info.text = ''
-                # Show useful context information
-                if command -v git >/dev/null 2>&1; then
-                  REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
-                  if [ -n "$REPO_ROOT" ]; then
-                    BRANCH=$(git branch --show-current 2>/dev/null || echo "detached")
-                    DIRTY=$(git status --porcelain 2>/dev/null | wc -l)
-                    echo "📦 Repository: $(basename "$REPO_ROOT")"
-                    if [ "$DIRTY" -gt 0 ]; then
-                      echo "🌿 Branch: $BRANCH (''${DIRTY} uncommitted changes)"
-                    else
-                      echo "🌿 Branch: $BRANCH (clean)"
-                    fi
-                  fi
-                fi
-                if [ -n "''${DIRENV_DIR:-}" ]; then
-                  echo "🔄 Direnv: active"
-                fi
-                echo ""
-              '';
+              startup = devshellStartup;
             };
           };
 
@@ -971,20 +967,6 @@
                 Go: ${pkgs.go.version}
                 gopls, delve, staticcheck available
               '';
-            };
-          };
-
-          bunx = {
-            packages =
-              commonDevPackages
-              ++ (with pkgs; [
-                bun
-                git
-              ]);
-            devshell.motd = cfgLib.mkDevshellMotd {
-              title = "Bun Installing Shell";
-              emoji = "";
-              description = "bun: ${pkgs.bun.version}";
             };
           };
 

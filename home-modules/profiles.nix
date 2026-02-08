@@ -105,8 +105,8 @@
 in {
   options.profiles = {
     core = mkProfile "core CLI tools" true;
-    dev = mkProfile "development tools" false;
-    desktop = mkProfile "desktop apps" false;
+    dev = mkProfile "development tools" true; # Default true for typical dev machine
+    desktop = mkProfile "desktop apps" true; # Default true for typical desktop
     extras = mkProfile "nice-to-have extras" false;
     ai = mkProfile "AI tools" false;
   };

@@ -26,7 +26,7 @@
     config;
 
   codexPkg = inputs.codex-cli-nix.packages.${system}.default;
-  opencodePkg = inputs.opencode.packages.${system}.default;
+  opencodePkg = pkgs.opencode;
 
   i3Pkg = pkgs.i3;
 in {

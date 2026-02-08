@@ -36,7 +36,7 @@
     };
 
     desktop.variant = lib.mkOption {
-      type = lib.types.enum ["i3-xfce" "sway"];
+      type = lib.types.enum ["i3-xfce"]; # sway removed - not implemented
       default = "i3-xfce";
       description = "Desktop stack variant to use when roles.desktop = true.";
     };

@@ -1,8 +1,6 @@
 _: {
+  # core, dev, desktop are now true by default in profiles.nix
   profiles = {
-    core = true;
-    dev = true;
-    desktop = true;
     extras = true;
     ai = true;
   };
