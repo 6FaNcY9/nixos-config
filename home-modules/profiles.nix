@@ -35,6 +35,12 @@
     then unstablePkg
     else lib.attrByPath ["claude-code"] null pkgs;
 
+  aiPkgs = lib.filter (p: p != null) [
+    claudeCodePkg
+    codexPkg
+    opencodePkg
+  ];
+
   corePkgs = with pkgs; [
     delta
     direnv # Auto-load/unload environments per directory
@@ -116,8 +122,6 @@ in {
     (lib.optionals cfg.dev devPkgs)
     (lib.optionals cfg.desktop desktopPkgs)
     (lib.optionals cfg.extras extrasPkgs)
-    (lib.optionals (cfg.ai && claudeCodePkg != null) [claudeCodePkg])
-    (lib.optionals (cfg.ai && codexPkg != null) [codexPkg])
-    (lib.optionals (cfg.ai && opencodePkg != null) [opencodePkg])
+    (lib.optionals cfg.ai aiPkgs)
   ];
 }
