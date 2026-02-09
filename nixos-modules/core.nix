@@ -136,7 +136,38 @@ in {
     };
 
     # Allow running non‑Nix dynamic binaries (bunx/AppImage/vendor CLIs)
-    nix-ld.enable = true;
+    nix-ld = {
+      enable = true;
+      libraries = with pkgs; [
+        # Default/core libs (NixOS wiki baseline)
+        zlib
+        zstd
+        stdenv.cc.cc
+        curl
+        openssl
+        attr
+        libssh
+        bzip2
+        libxml2
+        acl
+        libsodium
+        util-linux
+        xz
+        systemd
+
+        # Common desktop/runtime additions
+        glib
+        gtk3
+        libGL
+        libva
+        pipewire
+        xorg.libX11
+        xorg.libXext
+        xorg.libXrandr
+        xorg.libXrender
+        xorg.libxcb
+      ];
+    };
   };
 
   users = {
