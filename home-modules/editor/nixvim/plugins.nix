@@ -1,5 +1,38 @@
 _: {
   programs.nixvim.plugins = {
+    copilot-lua = {
+      enable = true;
+      autoLoad = true;
+
+      settings = {
+        suggestion = {
+          enable = true;
+          auto_trigger = true;
+          debounce = 75;
+          keymaps = {
+            accept = "<M-l>";
+            accept_word = "<M-w>";
+            accept_line = "<M-j>";
+            next = "<M-[>";
+            prev = "<M-]>";
+            dismiss = "<M-\\>";
+          };
+        };
+
+        panel = {
+          enable = true;
+          auto_refresh = false;
+          keymaps = {
+            jump_prev = "[[";
+            jump_next = "]]";
+            accept = "<CR>";
+            refresh = "gr";
+            open = "<M-CR>";
+          };
+        };
+      };
+    };
+
     telescope = {
       enable = true;
       extensions.fzf-native.enable = true;
