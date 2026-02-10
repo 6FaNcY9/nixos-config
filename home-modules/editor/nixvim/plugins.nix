@@ -9,26 +9,13 @@ _: {
           enable = true;
           auto_trigger = true;
           debounce = 75;
-          keymaps = {
-            accept = "<M-l>";
-            accept_word = "<M-w>";
-            accept_line = "<M-j>";
-            next = "<M-[>";
-            prev = "<M-]>";
-            dismiss = "<M-\\>";
-          };
+          keymaps = {};
         };
 
         panel = {
           enable = true;
           auto_refresh = false;
-          keymaps = {
-            jump_prev = "[[";
-            jump_next = "]]";
-            accept = "<CR>";
-            refresh = "gr";
-            open = "<M-CR>";
-          };
+          keymaps = {};
         };
       };
     };
