@@ -10,32 +10,17 @@
     ../shared-modules/workspaces.nix
     ../shared-modules/palette.nix
 
-    # Core modules
-    ./profiles.nix
+    # Categories
+    ./desktop
+    ./editor
+    ./shell
+    ./terminal
+
+    # Infrastructure (flat)
     ./devices.nix
-    ./secrets.nix
-
-    # Shell & CLI
-    ./package-managers.nix
-    ./shell.nix
-    ./git.nix
-    ./starship.nix
-    ./alacritty.nix
     ./nixpkgs.nix
-
-    # Desktop environment
-    ./desktop/i3
-    ./desktop/polybar
-    ./rofi/default.nix
-    ./firefox.nix
-    ./desktop-services.nix
-    ./xfce-session.nix
-    ./clipboard.nix
-
-    # Editor configuration
-    ./editor/nixvim
-
-    # Tmux
-    ./tmux.nix
+    ./package-managers.nix
+    ./profiles.nix
+    ./secrets.nix
   ];
 }

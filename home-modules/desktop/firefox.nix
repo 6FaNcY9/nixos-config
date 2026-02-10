@@ -6,7 +6,7 @@
   config,
   ...
 }: let
-  cfgLib = import ../lib {inherit lib;};
+  cfgLib = import ../../lib {inherit lib;};
 in {
   config = lib.mkIf config.profiles.desktop {
     programs.firefox = {
@@ -176,16 +176,16 @@ in {
         };
 
         userChrome = let
-          themeTemplate = builtins.readFile ../assets/firefox/userChrome.theme.css;
+          themeTemplate = builtins.readFile ../../assets/firefox/userChrome.theme.css;
           replaceColors = cfgLib.mkColorReplacer {colors = c;};
         in
           lib.mkAfter (
-            (builtins.readFile ../assets/firefox/userChrome.css)
+            (builtins.readFile ../../assets/firefox/userChrome.css)
             + "\n"
             + replaceColors themeTemplate
           );
 
-        userContent = builtins.readFile ../assets/firefox/userContent.css;
+        userContent = builtins.readFile ../../assets/firefox/userContent.css;
       };
     };
   };

@@ -1,0 +1,66 @@
+@theme "theme"
+
+configuration {
+    show-icons: false;
+    font: "@@font-base@@ Bold 26";
+}
+
+window {
+    width: 550px;
+    location: center;
+    anchor: center;
+    margin: 0px;
+    padding: 0px;
+    border: 5px;
+    border-radius: 2px;
+    border-color: @bg-col;
+    background-color: @bg-col;
+    transparency: "real";
+}
+
+mainbox {
+    enabled: true;
+    background-color: inherit;
+    children: [ "listview" ];
+}
+
+listview {
+    enabled: true;
+    lines: 1;
+    columns: 5;
+    cycle: true;
+    dynamic: true;
+    scrollbar: false;
+    layout: vertical;
+    reverse: false;
+    fixed-height: true;
+    fixed-columns: true;
+    spacing: 0px;
+    border: 0px;
+    text-color: @cream;
+    background-color: @bg-col;
+}
+
+element {
+    enabled: true;
+    spacing: 0px;
+    padding: 28px 0px;
+    border: 0px;
+    background-color: @bg-col;
+    text-color: @cream;
+    cursor: pointer;
+}
+
+element-text {
+    vertical-align: 0.5;
+    horizontal-align: 0.5;
+    font: inherit;
+    text-color: inherit;
+    background-color: transparent;
+    cursor: inherit;
+}
+
+element selected.normal {
+    background-color: @red-alt;
+    text-color: @cream;
+}

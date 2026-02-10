@@ -8,7 +8,7 @@
   stylixFonts ? {monospace.name = "Monospace";},
   ...
 }: let
-  cfgLib = import ../../lib {inherit lib;};
+  cfgLib = import ../../../lib {inherit lib;};
   fontBase = stylixFonts.monospace.name;
 
   replace = cfgLib.mkColorReplacer {

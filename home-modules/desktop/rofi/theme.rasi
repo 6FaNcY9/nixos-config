@@ -1,13 +1,19 @@
 * {
+    /* Gruvbox palette — matches polybar color scheme */
     bg-col: @@bg-col@@;
     bg-col-light: @@bg-col-light@@;
     border-col: @@border-col@@;
     selected-col: @@selected-col@@;
-    green: @@green@@;
+    orange: @@orange@@;
+    orange-alt: @@orange-alt@@;
+    yellow: @@yellow@@;
+    yellow-alt: @@yellow-alt@@;
     fg-col: @@fg-col@@;
     fg-col2: @@fg-col2@@;
     grey: @@grey@@;
-    highlight: @green;
+    cream: @@cream@@;
+    red-alt: @@red-alt@@;
     element-bg: @@element-bg@@;
     element-alternate-bg: @@element-alternate-bg@@;
+    highlight: underline bold @@yellow-alt@@;
 }

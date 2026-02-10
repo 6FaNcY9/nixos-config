@@ -1,0 +1,143 @@
+configuration{
+    modi: "run,drun,window";
+    lines: 10;
+    cycle: false;
+    font: "@@font-base@@ 11";
+    show-icons: true;
+    icon-theme: "@@icon-theme@@";
+    terminal: "@@terminal@@";
+    drun-display-format: "{icon} {name}";
+    location: 0;
+    disable-history: true;
+    hide-scrollbar: false;
+    display-drun: " Apps";
+    display-run: " Run";
+    display-window: " Window";
+    sidebar-mode: true;
+    sorting-method: "fzf";
+    scroll-method: 1;
+}
+
+@theme "theme"
+
+element-text, element-icon, mode-switcher {
+    background-color: inherit;
+    text-color:       inherit;
+}
+
+window {
+    width: 450px;
+    location: center;
+    anchor: center;
+    padding: 0px;
+    border: 5px;
+    border-radius: 2px;
+    border-color: @bg-col;
+    background-color: @bg-col;
+    spacing: 0;
+}
+
+mainbox {
+    spacing: 0;
+    background-color: @bg-col;
+    children: [ inputbar, listview, mode-switcher ];
+}
+
+inputbar {
+    children: [prompt,entry];
+    background-color: @bg-col;
+    border: 2px;
+    border-color: @grey;
+    padding: 0px;
+    margin: 0px;
+}
+
+prompt {
+    background-color: @orange-alt;
+    padding: 10px 14px;
+    text-color: @bg-col;
+    font: "@@font-base@@ Bold 11";
+}
+
+textbox-prompt-colon {
+    expand: false;
+    str: ":";
+}
+
+entry {
+    padding: 10px 14px;
+    text-color: @red-alt;
+    background-color: @bg-col;
+    placeholder: "Search...";
+    placeholder-color: @grey;
+}
+
+listview {
+    padding: 3px;
+    border: 0px 2px 2px 2px;
+    border-color: @grey;
+    background-color: @bg-col;
+    dynamic: false;
+    lines: 10;
+    columns: 1;
+    cycle: true;
+    scrollbar: false;
+    fixed-height: true;
+}
+
+element {
+    padding: 4px 8px;
+    vertical-align: 0.5;
+    border: 2px;
+    border-radius: 0px;
+    background-color: @element-bg;
+    text-color: @cream;
+}
+
+element-icon {
+    size: 22px;
+    margin: 0px 8px 0px 0px;
+    background-color: inherit;
+}
+
+element selected.normal {
+    background-color: @selected-col;
+    text-color: @cream;
+}
+
+element normal.active {
+    text-color: @orange-alt;
+}
+
+element alternate.normal {
+    background-color: @element-alternate-bg;
+}
+
+element alternate.active {
+    text-color: @orange-alt;
+}
+
+element selected.active {
+    background-color: @red-alt;
+    text-color: @bg-col;
+}
+
+mode-switcher {
+    spacing: 0;
+    border: 0px 2px 2px 2px;
+    border-color: @grey;
+    background-color: @bg-col;
+}
+
+button {
+    padding: 8px;
+    background-color: @bg-col;
+    text-color: @grey;
+    vertical-align: 0.5;
+    horizontal-align: 0.5;
+}
+
+button selected {
+    background-color: @orange;
+    text-color: @cream;
+}
