@@ -33,6 +33,9 @@ _: {
       updatetime = 200;
       undofile = true;
       swapfile = false;
+
+      # Completion menu behavior
+      completeopt = ["menu" "menuone" "noselect"];
     };
   };
 }

@@ -249,12 +249,7 @@ in {
     '';
   };
 
-  # Dependencies commonly needed for the included plugins / workflows:
-  home.packages = with pkgs; [
-    python3
-    wl-clipboard
-    xclip
-  ];
+  # xclip is in profiles.nix desktopPkgs; wl-clipboard not needed (X11, not Wayland)
 
   # Write the which-key YAML config into XDG config path.
   # tmux-which-key supports XDG locations when @tmux-which-key-xdg-enable is set.

@@ -5,19 +5,15 @@
   ...
 }: let
   hasBattery = config.devices.battery != "";
-  hasBacklight = config.devices.backlight != "";
-  showBattery = hasBattery;
-  showBacklight = hasBacklight;
-  showPower = hasBattery;
-  showIp = !hasBattery;
-  modulesLeft = "i3 spacer-tray tray";
+  hasNetwork = config.devices.networkInterface != "";
+  modulesLeft = "menu i3 xwindow tray";
+  modulesCenter = "time date";
   modulesRight = lib.concatStringsSep " " (
-    ["host" "network" "pulseaudio"]
-    ++ lib.optionals showIp ["ip"]
-    ++ lib.optionals showBattery ["battery"]
-    ++ lib.optionals showBacklight ["backlight"]
-    ++ lib.optionals showPower ["power"]
-    ++ ["clock"]
+    ["host" "cpu" "temp" "memory"]
+    ++ lib.optionals hasNetwork ["network"]
+    ++ ["pulseaudio"]
+    ++ lib.optionals hasBattery ["battery"]
+    ++ ["power"]
   );
 in {
   imports = [
@@ -39,24 +35,36 @@ in {
         ${config.services.polybar.package}/bin/polybar --reload top &
       '';
 
-      settings."bar/top" = {
-        width = "100%";
-        height = 26;
-        background = "\${colors.background}";
-        foreground = "\${colors.foreground}";
-        padding = 2;
-        module-margin = 0;
-        font-0 = "JetBrainsMono Nerd Font:size=11;2";
-        font-1 = "Font Awesome 6 Free:style=Solid:pixelsize=11;2";
-        font-2 = "Font Awesome 6 Free:style=Regular:pixelsize=11;2";
-        font-3 = "Font Awesome 6 Brands:style=Regular:pixelsize=11;2";
-
-        modules-left = modulesLeft;
-        modules-center = "xwindow";
-        modules-right = modulesRight;
-        cursor-click = "pointer";
-        enable-ipc = true;
-        wm-restack = "i3";
+      settings = {
+        "bar/top" = {
+          width = "100%";
+          height = "17pt";
+          radius = 0;
+          dpi = 100;
+          background = "\${colors.dark}";
+          foreground = "\${colors.muted}";
+          padding = 0;
+          module-margin = 0;
+          line-size = "0pt";
+          border-size = "3pt";
+          border-color = "\${colors.dark}";
+          separator = ".";
+          separator-foreground = "\${colors.transparent}";
+          font-0 = "Iosevka Term:size=12:weight=bold;2"; # Plain (no NerdFont) — no FA6 icon conflict
+          font-1 = "Font Awesome 6 Free Solid:pixelsize=13;3"; # Proportional icons
+          font-2 = "Font Awesome 6 Free:pixelsize=13;3";
+          font-3 = "Font Awesome 6 Brands:pixelsize=13;3";
+          modules-left = modulesLeft;
+          modules-center = modulesCenter;
+          modules-right = modulesRight;
+          cursor-click = "pointer";
+          enable-ipc = true;
+          tray-position = "none";
+        };
+        "settings" = {
+          screenchange-reload = true;
+          pseudo-transparency = true;
+        };
       };
     };
   };

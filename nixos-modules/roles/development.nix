@@ -39,9 +39,6 @@
       # Note: man-pages and man-pages-posix are in home-modules/profiles.nix corePkgs
     ];
 
-    # Allow unfree packages (common for dev tools)
-    nixpkgs.config.allowUnfree = lib.mkDefault true;
-
     # Development-friendly kernel parameters
     boot.kernel.sysctl = {
       # Allow more file watchers (for large projects)

@@ -57,7 +57,15 @@ _: {
     {
       mode = "n";
       key = "<leader>fk";
-      action = "<cmd>Telescope keymaps<cr>";
+      action = ''
+        <cmd> lua require("telescope.builtin").keymaps(
+          require("telescope.themes").get_dropdown({
+            winblend = 10,
+            previewer = false,
+            layout_config = { width = 0.80, height = 0.70},
+          })
+        )<cr>
+      '';
       options = {
         silent = true;
         desc = "Keymaps";
@@ -178,6 +186,82 @@ _: {
       options = {
         silent = true;
         desc = "Copilot: open panel";
+      };
+    }
+
+    # Bufferline navigation
+    {
+      mode = "n";
+      key = "<Tab>";
+      action = "<cmd>BufferLineCycleNext<cr>";
+      options = {
+        silent = true;
+        desc = "Next buffer";
+      };
+    }
+    {
+      mode = "n";
+      key = "<S-Tab>";
+      action = "<cmd>BufferLineCyclePrev<cr>";
+      options = {
+        silent = true;
+        desc = "Previous buffer";
+      };
+    }
+    {
+      mode = "n";
+      key = "<leader>bd";
+      action = "<cmd>bdelete<cr>";
+      options = {
+        silent = true;
+        desc = "Delete buffer";
+      };
+    }
+    {
+      mode = "n";
+      key = "<leader>bp";
+      action = "<cmd>BufferLinePick<cr>";
+      options = {
+        silent = true;
+        desc = "Pick buffer";
+      };
+    }
+
+    # Trouble diagnostics
+    {
+      mode = "n";
+      key = "<leader>xx";
+      action = "<cmd>Trouble diagnostics toggle<cr>";
+      options = {
+        silent = true;
+        desc = "Diagnostics (Trouble)";
+      };
+    }
+    {
+      mode = "n";
+      key = "<leader>xd";
+      action = "<cmd>Trouble diagnostics toggle filter.buf=0<cr>";
+      options = {
+        silent = true;
+        desc = "Buffer Diagnostics (Trouble)";
+      };
+    }
+    {
+      mode = "n";
+      key = "<leader>xl";
+      action = "<cmd>Trouble loclist toggle<cr>";
+      options = {
+        silent = true;
+        desc = "Location List (Trouble)";
+      };
+    }
+    {
+      mode = "n";
+      key = "<leader>xq";
+      action = "<cmd>Trouble qflist toggle<cr>";
+      options = {
+        silent = true;
+        desc = "Quickfix List (Trouble)";
       };
     }
   ];

@@ -56,7 +56,7 @@ in {
   nix = {
     settings = {
       experimental-features = ["nix-command" "flakes"];
-      auto-optimise-store = true;
+      auto-optimise-store = false; # Disabled: runs inline on every build (adds latency). Run manually: sudo nix-store --optimise
       warn-dirty = true;
       # Optimize builds
       max-jobs = "auto";
@@ -78,12 +78,8 @@ in {
     # Use nh's cleaner to avoid double GC scheduling.
     gc.automatic = lib.mkDefault false;
 
-    # Disable automatic store optimisation (reduces background I/O)
-    # Run manually when needed: sudo nix-store --optimise
-    optimise = {
-      automatic = false;
-      dates = ["weekly"];
-    };
+    # Store optimisation disabled (run manually: sudo nix-store --optimise)
+    optimise.automatic = false;
   };
 
   # Pin nixpkgs for legacy commands and for `nix run nixpkgs#...`
@@ -190,6 +186,13 @@ in {
   # Packages
   # ------------------------------------------------------------
   environment.systemPackages = systemPackages;
+
+  # Many third-party scripts use #!/bin/bash shebangs (e.g. Claude Code plugins).
+  # NixOS doesn't provide /bin/bash by default — only /bin/sh.
+  environment.shells = [pkgs.bash];
+  system.activationScripts.binbash = lib.stringAfter ["stdio"] ''
+    ln -sfn ${pkgs.bash}/bin/bash /bin/bash
+  '';
 
   # ------------------------------------------------------------
   # Fonts

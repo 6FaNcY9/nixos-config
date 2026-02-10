@@ -6,6 +6,40 @@
       config.allowUnfree = true;
     };
 
+    # Build tree-sitter CLI v0.26.5 separately (for neovim checkhealth)
+    # Note: This is separate from the tree-sitter library that neovim links against.
+    # Neovim 0.11.6 requires tree-sitter library 0.25.x (API compatibility),
+    # but checkhealth wants tree-sitter CLI 0.26.1+ for parsing features.
+    tree-sitter-cli = prev.rustPlatform.buildRustPackage rec {
+      pname = "tree-sitter-cli";
+      version = "0.26.5";
+
+      src = prev.fetchFromGitHub {
+        owner = "tree-sitter";
+        repo = "tree-sitter";
+        rev = "v${version}";
+        hash = "sha256-tnZ8VllRRYPL8UhNmrda7IjKSeFmmOnW/2/VqgJFLgU=";
+        fetchSubmodules = true;
+      };
+
+      cargoHash = "sha256-EU8kdG2NT3NvrZ1AqvaJPLpDQQwUhYG3Gj5TAjPYRsY=";
+
+      nativeBuildInputs = [prev.llvmPackages.libclang.lib];
+      buildInputs = [];
+
+      # Disable tests (they fail when building just the CLI)
+      doCheck = false;
+
+      LIBCLANG_PATH = "${prev.llvmPackages.libclang.lib}/lib";
+      BINDGEN_EXTRA_CLANG_ARGS = "-isystem ${prev.llvmPackages.libclang.lib}/lib/clang/${prev.llvmPackages.libclang.version}/include -isystem ${prev.stdenv.cc.libc.dev}/include";
+
+      meta = with prev.lib; {
+        description = "Tree-sitter CLI tool for parser generation and testing";
+        homepage = "https://tree-sitter.github.io/tree-sitter/";
+        license = licenses.mit;
+      };
+    };
+
     # OpenCode override: force bun isolated installs
     # Required because bun's default hoisting behavior breaks symlinks in the nix store.
     # The --linker=isolated flag ensures each package gets its own node_modules copy,

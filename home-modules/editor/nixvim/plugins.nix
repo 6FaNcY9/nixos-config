@@ -33,8 +33,6 @@ _: {
       };
     };
 
-    lualine.enable = true;
-
     treesitter = {
       enable = true;
       nixGrammars = true;
@@ -162,6 +160,31 @@ _: {
           {name = "buffer";}
           {name = "luasnip";}
         ];
+      };
+
+      # Cmdline completion
+      cmdline = {
+        "/" = {
+          mapping.__raw = "cmp.mapping.preset.cmdline()";
+          sources = [
+            {name = "buffer";}
+          ];
+        };
+
+        "?" = {
+          mapping.__raw = "cmp.mapping.preset.cmdline()";
+          sources = [
+            {name = "buffer";}
+          ];
+        };
+
+        ":" = {
+          mapping.__raw = "cmp.mapping.preset.cmdline()";
+          sources = [
+            {name = "path";}
+            {name = "cmdline";}
+          ];
+        };
       };
     };
 

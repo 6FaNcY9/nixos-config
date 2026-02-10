@@ -9,7 +9,7 @@
   snapperUsers = [username];
   snapperTimeline = {
     FSTYPE = "btrfs";
-    TIMELINE_CREATE = false; # Disabled hourly snapshots (reduces I/O, daily backups sufficient)
+    # TIMELINE_CREATE is ignored by NixOS snapper module; timer disabled below
     TIMELINE_CLEANUP = true;
     TIMELINE_LIMIT_HOURLY = "10";
     TIMELINE_LIMIT_DAILY = "7";
@@ -31,7 +31,6 @@ in {
       useOSProber = false;
     };
 
-    # This config can stay true i think it didnt was the case for boot/efi storage overflow
     loader.efi.canTouchEfiVariables = true;
     kernelPackages = pkgs.linuxPackages_latest;
   };
@@ -40,9 +39,8 @@ in {
   swapDevices = [{device = swapFile;}];
 
   services = {
-    # SSD maintenance
+    # SSD maintenance (fwupd is enabled in roles/laptop.nix)
     fstrim.enable = true;
-    fwupd.enable = true;
 
     # Filesystems + snapshots
     snapper.configs = {

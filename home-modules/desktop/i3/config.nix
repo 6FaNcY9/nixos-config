@@ -1,6 +1,7 @@
 {
   lib,
   c,
+  palette,
   ...
 }: {
   xsession.windowManager.i3.config = {
@@ -9,24 +10,24 @@
     menu = "rofi -show drun";
 
     gaps = {
-      inner = 10;
+      inner = 8;
       outer = 0;
-      smartGaps = false;
+      smartGaps = true;
       smartBorders = "on";
     };
 
     window = {
-      border = 3;
+      border = 2;
       titlebar = false;
     };
 
     colors = lib.mkDefault {
       focused = {
-        border = c.base0A;
+        border = palette.warn;
         background = c.base01;
         text = c.base07;
-        indicator = c.base0A;
-        childBorder = c.base0A;
+        indicator = palette.warn;
+        childBorder = palette.warn;
       };
 
       focusedInactive = {
@@ -46,16 +47,42 @@
       };
 
       urgent = {
-        border = c.base08;
+        border = palette.danger;
         background = c.base00;
         text = c.base07;
-        indicator = c.base08;
-        childBorder = c.base08;
+        indicator = palette.danger;
+        childBorder = palette.danger;
       };
     };
 
     workspaceAutoBackAndForth = true;
     bars = lib.mkDefault [];
+
+    window.commands = [
+      {
+        command = "floating enable";
+        criteria = {class = "Pavucontrol";};
+      }
+      {
+        command = "floating enable";
+        criteria = {class = "Nm-connection-editor";};
+      }
+      {
+        command = "floating enable";
+        criteria = {class = "Gsimplecal";};
+      }
+      {
+        command = "floating enable";
+        criteria = {class = "Blueman-manager";};
+      }
+      {
+        command = "floating enable, resize set 800 600";
+        criteria = {
+          class = "Thunar";
+          title = "File Operation Progress";
+        };
+      }
+    ];
 
     modes = lib.mkOptionDefault {
       resize = {

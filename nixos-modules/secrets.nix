@@ -22,7 +22,7 @@ in {
   assertions = [
     {
       assertion = validateAllSecrets;
-      message = "Secret validation passed";
+      message = "System secrets: one or more secret files are missing or unencrypted. Check ${githubSecretFile} and ${resticSecretFile}.";
     }
   ];
 

@@ -14,7 +14,6 @@
     ./profiles.nix
     ./devices.nix
     ./secrets.nix
-    ./user-services.nix
 
     # Shell & CLI
     ./package-managers.nix

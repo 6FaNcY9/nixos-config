@@ -11,6 +11,7 @@
   githubMcpSecretFile = "${inputs.self}/secrets/github-mcp.yaml";
   gpgSigningKeyFile = "${inputs.self}/secrets/gpg-signing-key.yaml";
   cachixSecretFile = "${inputs.self}/secrets/cachix.yaml";
+  exaApiSecretFile = "${inputs.self}/secrets/exa-api.yaml";
 
   # Validate secrets at build time
   validateAllSecrets =
@@ -19,13 +20,15 @@
     && cfgLib.validateSecretExists gpgSigningKeyFile
     && cfgLib.validateSecretEncrypted gpgSigningKeyFile
     && cfgLib.validateSecretExists cachixSecretFile
-    && cfgLib.validateSecretEncrypted cachixSecretFile;
+    && cfgLib.validateSecretEncrypted cachixSecretFile
+    && cfgLib.validateSecretExists exaApiSecretFile
+    && cfgLib.validateSecretEncrypted exaApiSecretFile;
 in {
   # Trigger validation
   assertions = [
     {
       assertion = validateAllSecrets;
-      message = "Secret validation passed";
+      message = "Home secrets: one or more secret files are missing or unencrypted. Check github-mcp, gpg-signing-key, cachix, and exa-api in secrets/.";
     }
   ];
 
@@ -48,6 +51,11 @@ in {
       cachix_auth_token = {
         sopsFile = cachixSecretFile;
         key = "cachix_auth_token";
+        format = "yaml";
+      };
+
+      exa_api_key = {
+        sopsFile = exaApiSecretFile;
         format = "yaml";
       };
     };

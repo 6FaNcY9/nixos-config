@@ -77,10 +77,6 @@
 
     flake-root.url = "github:srid/flake-root";
 
-    # Development services (replaces docker-compose)
-    process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
-    services-flake.url = "github:juspay/services-flake";
-
     # Wallpaper
     gruvbox-wallpaper.url = "github:AngelJumbo/gruvbox-wallpapers";
   };
@@ -114,8 +110,6 @@
         inputs.mission-control.flakeModule
         inputs.devshell.flakeModule
         inputs.flake-root.flakeModule
-        inputs.flake-parts.flakeModules.modules
-        inputs.process-compose-flake.flakeModule
       ];
 
       ezConfigs = {
@@ -239,11 +233,6 @@
               description = "System diagnostics and status";
               exec = "nix run .#sysinfo";
               category = "Analysis";
-            };
-            services = {
-              description = "Start local services (postgres, redis)";
-              exec = "nix run .#services";
-              category = "Services";
             };
             tree = {
               description = "Visualize nix dependencies";
@@ -812,27 +801,6 @@
           home-vino = self.homeConfigurations."${username}@${primaryHost}".activationPackage;
         };
 
-        # Process-compose services for local development
-        process-compose."services" = {
-          imports = [inputs.services-flake.processComposeModules.default];
-
-          services.postgres."pg1" = {
-            enable = false; # Enable manually when needed
-            initialDatabases = [{name = "dev";}];
-            port = 5432;
-          };
-
-          services.redis."redis1" = {
-            enable = false; # Enable manually when needed
-            port = 6379;
-          };
-
-          settings.processes = {
-            # Example custom process
-            # my-app.command = "echo 'Add your app command here'";
-          };
-        };
-
         devshells = {
           maintenance = {
             packages = maintenanceDevPackages;
@@ -1067,13 +1035,6 @@
 
       flake = {
         inherit overlays;
-        # Export reusable modules for other flakes
-        # Note: 'modules' is a custom output, not a standard flake schema field
-        # The warning "unknown flake output 'modules'" is expected but harmless
-        modules = {
-          nixos.default = ./nixos-modules;
-          home.default = ./home-modules;
-        };
       };
     });
 }

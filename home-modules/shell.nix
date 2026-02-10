@@ -11,8 +11,6 @@
     fish = {
       enable = true;
 
-      shellInit = "";
-
       interactiveShellInit = ''
         set -g fish_greeting
         fish_default_key_bindings
@@ -27,6 +25,10 @@
 
         if test -r ${config.sops.secrets.github_mcp_pat.path}
           set -x GITHUB_MCP_PAT (cat ${config.sops.secrets.github_mcp_pat.path})
+        end
+
+        if test -r ${config.sops.secrets.exa_api_key.path}
+          set -x EXA_API_KEY (cat ${config.sops.secrets.exa_api_key.path})
         end
 
         set -g fzf_fd_opts --hidden --follow --exclude .git

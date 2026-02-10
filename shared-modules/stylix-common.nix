@@ -32,8 +32,8 @@
     };
 
     # Fonts strategy:
-    # - Use regular JetBrains Mono (better glyph metrics).
-    # - Install Symbols Nerd Font (symbols-only) separately (nixos-modules/core.nix) so icons come via fallback.
+    # - Use Iosevka Term (terminal-optimized variant with narrow symbols and ligatures).
+    # - Nerd Font patched version provides icon glyph support.
     fonts = {
       sizes = {
         applications = 10;
@@ -43,18 +43,18 @@
       };
 
       monospace = {
-        package = pkgs.nerd-fonts.jetbrains-mono;
-        name = "JetBrainsMono Nerd Font";
+        package = pkgs.nerd-fonts.iosevka-term;
+        name = "IosevkaTerm Nerd Font";
       };
 
       sansSerif = {
-        package = pkgs.nerd-fonts.jetbrains-mono;
-        name = "JetBrainsMono Nerd Font";
+        package = pkgs.nerd-fonts.iosevka-term;
+        name = "IosevkaTerm Nerd Font";
       };
 
       serif = {
-        package = pkgs.nerd-fonts.jetbrains-mono;
-        name = "JetBrainsMono Nerd Font";
+        package = pkgs.nerd-fonts.iosevka-term;
+        name = "IosevkaTerm Nerd Font";
       };
 
       emoji = {

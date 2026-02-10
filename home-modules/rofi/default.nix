@@ -15,14 +15,14 @@
     colors = {
       "bg-col" = palette.bg;
       "bg-col-light" = palette.bgAlt;
-      "border-col" = c.base04;
-      "selected-col" = c.base02;
-      "green" = palette.accent;
+      "border-col" = "#d65d0e"; # Gruvbox orange — matches polybar accent
+      "selected-col" = "#fabd2f"; # Yellow-alt — matches polybar focused workspace
+      "green" = "#fe8019"; # Orange-alt — matches polybar MENU button
       "fg-col" = palette.text;
       "fg-col2" = c.base06;
       "grey" = palette.muted;
-      "element-bg" = c.base01;
-      "element-alternate-bg" = c.base02;
+      "element-bg" = palette.bg;
+      "element-alternate-bg" = palette.bgAlt;
       "font-base" = fontBase;
       "icon-theme" = "Papirus-Dark";
       "terminal" = "alacritty";
@@ -38,7 +38,7 @@
     inherit pkgs;
     name = "rofi-power-menu";
     body = ''
-      options="Lock\nLogout\nSuspend\nReboot\nPoweroff"
+      options=" Lock\n󰗽 Logout\n󰤄 Suspend\n Reboot\n Poweroff"
 
       chosen=$(echo -e "$options" | ${pkgs.rofi}/bin/rofi -dmenu \
         -i \
@@ -46,19 +46,19 @@
         -theme powermenu-theme)
 
       case "$chosen" in
-        Lock)
+        *Lock)
           ${pkgs.i3lock}/bin/i3lock
           ;;
-        Logout)
+        *Logout)
           i3-msg exit
           ;;
-        Suspend)
+        *Suspend)
           systemctl suspend
           ;;
-        Reboot)
+        *Reboot)
           systemctl reboot
           ;;
-        Poweroff)
+        *Poweroff)
           systemctl poweroff
           ;;
       esac

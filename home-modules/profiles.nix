@@ -83,10 +83,12 @@
     clippy
     uv
     devenv
+    tree-sitter-cli # v0.26.5 CLI tool (separate from tree-sitter library for neovim)
   ];
 
   desktopPkgs = with pkgs; [
     alacritty
+    autotiling
     rofi
     thunar # Moved to top-level in unstable
     networkmanagerapplet
@@ -106,7 +108,7 @@
 
   extrasPkgs = with pkgs; [
     chafa
-    neofetch
+    fastfetch # neofetch replacement (actively maintained)
   ];
 in {
   options.profiles = {

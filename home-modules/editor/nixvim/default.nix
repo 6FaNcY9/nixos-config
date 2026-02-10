@@ -1,6 +1,9 @@
 {...}: {
   imports = [
     ./options.nix
+    ./autocmds.nix
+    ./highlights.nix
+    ./ui.nix
     ./plugins.nix
     ./keymaps.nix
     ./extra-config.nix

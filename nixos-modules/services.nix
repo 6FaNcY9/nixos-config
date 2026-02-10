@@ -50,10 +50,7 @@
 
     trezord.enable = lib.mkDefault config.roles.desktop;
 
-    journald.extraConfig = ''
-      SystemMaxUse=500M
-      RuntimeMaxUse=200M
-      MaxRetentionSec=30day
-    '';
+    # journald settings are managed by monitoring.nix (monitoring.logging.*)
+    # to avoid duplicate directives in extraConfig
   };
 }
