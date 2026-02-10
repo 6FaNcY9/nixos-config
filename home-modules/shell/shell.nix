@@ -31,6 +31,10 @@
           set -x EXA_API_KEY (cat ${config.sops.secrets.exa_api_key.path})
         end
 
+        if test -r ${config.sops.secrets.context7_api_key.path}
+          set -x CONTEXT7_API_KEY (cat ${config.sops.secrets.context7_api_key.path})
+        end
+
         set -g fzf_fd_opts --hidden --follow --exclude .git
         set -g fzf_preview_dir_cmd 'eza --all --color=always --group-directories-first'
         set -g fzf_preview_file_cmd 'bat --style=numbers --color=always'
