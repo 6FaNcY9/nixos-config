@@ -51,16 +51,16 @@
 
         # Subtle transparency for depth
         activeOpacity = 1.0;
-        inactiveOpacity = 0.92;
-        menuOpacity = 0.95;
+        inactiveOpacity = 0.98;
+        menuOpacity = 0.99;
 
         # Fade animations
-        fade = true;
+        fade = false;
         fadeDelta = 4;
         fadeSteps = [0.03 0.03];
 
         # Subtle shadows
-        shadow = true;
+        shadow = false;
         shadowOffsets = [(-4) (-4)];
         shadowOpacity = 0.25;
         shadowExclude = [
@@ -74,7 +74,7 @@
 
         settings = {
           # Rounded corners on windows
-          corner-radius = 10;
+          corner-radius = 8;
           rounded-corners-exclude = [
             "window_type = 'dock'"
             "window_type = 'desktop'"

@@ -38,7 +38,7 @@ in {
       settings = {
         "bar/top" = {
           width = "100%";
-          height = "17pt";
+          height = "16pt";
           radius = 0;
           dpi = 100;
           background = "\${colors.dark}";
@@ -50,10 +50,10 @@ in {
           border-color = "\${colors.dark}";
           separator = ".";
           separator-foreground = "\${colors.transparent}";
-          font-0 = "Iosevka Term:size=12:weight=bold;2"; # Plain (no NerdFont) — no FA6 icon conflict
-          font-1 = "Font Awesome 6 Free Solid:pixelsize=13;3"; # Proportional icons
-          font-2 = "Font Awesome 6 Free:pixelsize=13;3";
-          font-3 = "Font Awesome 6 Brands:pixelsize=13;3";
+          font-0 = "Iosevka Term:size=11.5:weight=bold;2"; # Plain (no NerdFont) — no FA6 icon conflict
+          font-1 = "Font Awesome 6 Free Solid:pixelsize=12;3"; # Proportional icons
+          font-2 = "Font Awesome 6 Free:pixelsize=12;3";
+          font-3 = "Font Awesome 6 Brands:pixelsize=12;3";
           modules-left = modulesLeft;
           modules-center = modulesCenter;
           modules-right = modulesRight;
