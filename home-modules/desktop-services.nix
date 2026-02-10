@@ -81,7 +81,7 @@
             "class_g = 'Polybar'"
           ];
           shadow-radius = 8;
-          shadow-color = "#1d2021";
+          shadow-color = palette.bg;
         };
       };
 
