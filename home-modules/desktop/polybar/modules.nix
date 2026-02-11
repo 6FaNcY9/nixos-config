@@ -5,6 +5,7 @@
   workspaces,
   hostname,
   cfgLib,
+  palette,
   ...
 }: let
   inherit (cfgLib) mkPolybarTwoTone mkPolybarTwoToneState;
@@ -177,6 +178,69 @@ in {
         click-left = "exec rofi-power-menu";
         format-foreground = "\${colors.black}";
         format-background = "\${colors.yellow}";
+      };
+
+      # ── Brightness (purple two-tone) ──
+      "module/brightness" =
+        {
+          type = "internal/backlight";
+          card = "intel_backlight";
+          enable-scroll = true;
+        }
+        // mkPolybarTwoTone {
+          icon = "";
+          color = "purple";
+        };
+
+      # ── Now-Playing (custom script) ──
+      "module/now-playing" = {
+        type = "custom/script";
+        exec = "${pkgs.writeShellScript "polybar-now-playing" ''
+          player_status=$(${pkgs.playerctl}/bin/playerctl status 2>/dev/null)
+          if [ "$player_status" = "Playing" ]; then
+            title=$(${pkgs.playerctl}/bin/playerctl metadata title 2>/dev/null | cut -c1-30)
+            artist=$(${pkgs.playerctl}/bin/playerctl metadata artist 2>/dev/null | cut -c1-20)
+            if [ -n "$title" ]; then
+              echo " $artist - $title"
+            fi
+          elif [ "$player_status" = "Paused" ]; then
+            title=$(${pkgs.playerctl}/bin/playerctl metadata title 2>/dev/null | cut -c1-30)
+            echo " $title"
+          fi
+        ''}";
+        interval = 3;
+        click-left = "${pkgs.playerctl}/bin/playerctl play-pause";
+        click-right = "${pkgs.playerctl}/bin/playerctl next";
+        format = "<label>";
+        label = "%output%";
+        label-foreground = "\${colors.cream}";
+        format-background = "\${colors.bg}";
+        format-padding = 1;
+      };
+
+      # ── Autotiling Indicator (custom script) ──
+      "module/autotiling" = {
+        type = "custom/script";
+        exec = "${pkgs.writeShellScript "polybar-autotiling" ''
+          if ${pkgs.procps}/bin/pgrep -x autotiling > /dev/null; then
+            echo ""
+          else
+            echo "%{F${palette.muted}}%{F-}"
+          fi
+        ''}";
+        interval = 5;
+        click-left = "${pkgs.writeShellScript "toggle-autotiling" ''
+          if ${pkgs.procps}/bin/pgrep -x autotiling > /dev/null; then
+            ${pkgs.procps}/bin/pkill -x autotiling
+          else
+            ${pkgs.autotiling}/bin/autotiling &
+          fi
+        ''}";
+        format = "<label>";
+        label = "%output%";
+        label-foreground = "\${colors.cream}";
+        format-background = "\${colors.bg}";
+        format-padding = 1;
       };
     }
 

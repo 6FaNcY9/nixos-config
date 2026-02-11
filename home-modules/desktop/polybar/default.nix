@@ -6,10 +6,10 @@
 }: let
   hasBattery = config.devices.battery != "";
   hasNetwork = config.devices.networkInterface != "";
-  modulesLeft = "menu i3 xwindow tray";
-  modulesCenter = "time";
+  modulesLeft = "menu i3 autotiling xwindow tray";
+  modulesCenter = "now-playing time";
   modulesRight = lib.concatStringsSep " " (
-    ["host" "cpu" "temp" "memory"]
+    ["host" "cpu" "temp" "memory" "brightness"]
     ++ lib.optionals hasNetwork ["network"]
     ++ ["pulseaudio"]
     ++ lib.optionals hasBattery ["battery"]
