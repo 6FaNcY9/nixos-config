@@ -5,7 +5,7 @@
     ./highlights.nix
     ./ui.nix
     ./plugins.nix
-    ./keymaps.nix
+    ./keymaps
     ./extra-config.nix
   ];
 

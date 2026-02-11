@@ -1,7 +1,6 @@
 {
   lib,
   pkgs,
-  palette,
   ...
 }: let
   # If nixpkgs already has tmuxPlugins.tmux-which-key (it usually does),
@@ -130,14 +129,6 @@
   };
 in {
   programs.tmux = {
-    enable = true;
-
-    # HM-typed options (safe defaults)
-    mouse = true;
-    keyMode = "vi";
-    historyLimit = 50000;
-    terminal = "tmux-256color";
-
     # Plugins: Home Manager will append run-shell lines for them.
     # NOTE: tmux-continuum should be last because it hooks status-right and can be broken
     # by themes/plugins that overwrite status-right. :contentReference[oaicite:4]{index=4}
@@ -187,59 +178,6 @@ in {
     ];
 
     extraConfig = ''
-      ##### Core ergonomics #####
-      # Prefix: C-a (common), keep C-b as send-prefix
-      set -g prefix C-a
-      unbind C-b
-      bind C-a send-prefix
-
-      # Fast reload (also available in which-key menu)
-      bind r source-file $XDG_CONFIG_HOME/tmux/tmux.conf \; display-message "tmux reloaded"
-
-      # Vi copy-mode and better selection keys
-      setw -g mode-keys vi
-      bind -T copy-mode-vi v send -X begin-selection
-      bind -T copy-mode-vi y send -X copy-selection-and-cancel
-
-      # Make splits use current path
-      bind | split-window -h -c "#{pane_current_path}"
-      bind - split-window -v -c "#{pane_current_path}"
-
-      # Pane navigation (vim-ish)
-      bind h select-pane -L
-      bind j select-pane -D
-      bind k select-pane -U
-      bind l select-pane -R
-
-      # Resize panes quickly
-      bind -r H resize-pane -L 5
-      bind -r J resize-pane -D 5
-      bind -r K resize-pane -U 5
-      bind -r L resize-pane -R 5
-
-      ##### Status line (enhanced for laptop use) #####
-      set -g status on
-      set -g status-interval 5
-      set -g status-left-length 40
-      set -g status-right-length 150
-      set -g status-style "fg=${palette.text},bg=${palette.bg}"
-      set -g message-style "fg=${palette.text},bg=${palette.bg}"
-
-      # Left: session name (bold) + window indicator
-      set -g status-left "#[fg=${palette.accent},bold] #S #[default]#[fg=${palette.muted}]|#[default] "
-
-      # Right: battery + load + host + time
-      # Battery: Show percentage and charging status
-      # Load: Show 1-min load average
-      # Host: Hostname in accent color
-      # Time: Date and time in accent color
-      set -g status-right "#[fg=${palette.warn}]#{?#{==:#{battery_percentage},},, #{battery_percentage} #{battery_icon}}#[default] #[fg=${palette.muted}]|#[default] #[fg=${palette.accent2}]#{?#{==:#(cat /proc/loadavg | cut -d' ' -f1),},, #(cat /proc/loadavg | cut -d' ' -f1)}#[default] #[fg=${palette.muted}]|#[default] #[fg=${palette.accent2}]#H#[default] #[fg=${palette.muted}]|#[default] #[fg=${palette.accent}]%Y-%m-%d %H:%M#[default]"
-
-      # Window status format
-      set -g window-status-format "#[fg=${palette.muted}]#I:#W#F#[default]"
-      set -g window-status-current-format "#[fg=${palette.accent},bold]#I:#W#F#[default]"
-      set -g window-status-separator " #[fg=${palette.muted}]│#[default] "
-
       ##### Plugin-specific settings #####
       # continuum: enable auto-restore
       set -g @continuum-restore "on"
