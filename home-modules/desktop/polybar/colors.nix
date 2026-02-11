@@ -19,25 +19,25 @@
     # Gruvbox two-tone module pairs (icon-bg / label-bg)
     #
     # Each polybar module uses a "two-tone" design: a darker icon block and
-    # a brighter label block.  The dark variant maps to a base16 slot where
-    # possible; the bright "-alt" variant uses a hardcoded Gruvbox hex because
-    # the base16 palette has no "bright" counterpart for most hues.
+    # a brighter label block.  The dark variant is ~30% darker than the base16
+    # slot to create a visible shadow effect; the bright "-alt" variant uses a
+    # hardcoded Gruvbox hex for the label background.
     #
-    # If switching themes, update the -alt hex values to match the new palette's
-    # bright variants, or derive them programmatically (e.g. lighten by 15%).
-    green = c.base0B;
+    # If switching themes, update both the dark and -alt hex values to match
+    # the new palette (e.g. darken base by 30%, brighten alt by 15%).
+    green = "#7a7a00";
     green-alt = "#b8bb26";
-    yellow = palette.warn;
+    yellow = "#b37a00";
     yellow-alt = "#fabd2f";
-    orange = c.base0F;
+    orange = "#96410a";
     orange-alt = c.base09;
-    blue = c.base0D;
+    blue = "#5c7979";
     blue-alt = "#83a598";
-    aqua = c.base0C;
+    aqua = "#5d795d";
     aqua-alt = "#8ec07c";
-    purple = c.base0E;
-    purple-alt = c.base0E; # same as dark — no bright variant needed
-    red = palette.danger;
+    purple = "#945d79";
+    purple-alt = c.base0E;
+    red = "#964242";
     red-alt = "#fb4934";
   };
 }

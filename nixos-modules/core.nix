@@ -157,11 +157,11 @@ in {
         libGL
         libva
         pipewire
-        xorg.libX11
-        xorg.libXext
-        xorg.libXrandr
-        xorg.libXrender
-        xorg.libxcb
+        libx11
+        libxext
+        libxrandr
+        libxrender
+        libxcb
       ];
     };
   };
@@ -200,7 +200,7 @@ in {
   fonts = {
     fontconfig.useEmbeddedBitmaps = true;
     packages = with pkgs; [
-      font-awesome_6 # Required for polybar icons (proportional)
+      font-awesome_7 # Required for polybar icons (proportional)
       iosevka-bin # Plain Iosevka Term without NerdFont icon conflicts
     ];
   };
