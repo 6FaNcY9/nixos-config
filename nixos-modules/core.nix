@@ -200,8 +200,8 @@ in {
   fonts = {
     fontconfig.useEmbeddedBitmaps = true;
     packages = with pkgs; [
-      font-awesome_7 # Required for polybar icons (proportional)
-      iosevka-bin # Plain Iosevka Term without NerdFont icon conflicts
+      nerd-fonts.symbols-only # Symbols Nerd Font Mono — monospaced icons for polybar
+      iosevka-bin # Plain Iosevka Term for polybar text
     ];
   };
 

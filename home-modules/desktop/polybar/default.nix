@@ -50,10 +50,8 @@ in {
           border-color = "\${colors.dark}";
           separator = ".";
           separator-foreground = "\${colors.transparent}";
-          font-0 = "Iosevka Term:size=11.5:weight=bold;2"; # Plain (no NerdFont) — no FA6 icon conflict
-          font-1 = "Font Awesome 6 Free Solid:pixelsize=12;3"; # Proportional icons
-          font-2 = "Font Awesome 6 Free:pixelsize=12;3";
-          font-3 = "Font Awesome 6 Brands:pixelsize=12;3";
+          font-0 = "Iosevka Term:size=11.5:weight=bold;2"; # Plain text
+          font-1 = "Symbols Nerd Font Mono:size=14;3"; # Monospaced icons (nerd-fonts.symbols-only)
           modules-left = modulesLeft;
           modules-center = modulesCenter;
           modules-right = modulesRight;

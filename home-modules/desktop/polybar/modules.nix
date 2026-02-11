@@ -24,7 +24,7 @@ in {
       # ── MENU button ──
       "module/menu" = {
         type = "custom/text";
-        format = " MENU ";
+        format = " MENU "; # Note: I like this more.
         click-left = "exec rofi -show drun -disable-history -show-icons &";
         format-foreground = "\${colors.black}";
         format-background = "\${colors.orange-alt}";
@@ -85,7 +85,7 @@ in {
           label = "%title:0:50:.....%";
         }
         // mkPolybarTwoTone {
-          icon = "";
+          icon = "󰇣 ";
           color = "purple";
         };
 
@@ -99,7 +99,7 @@ in {
           label = "%{A1:${pkgs.gsimplecal}/bin/gsimplecal &:}%date%%{A}";
         }
         // mkPolybarTwoTone {
-          icon = "";
+          icon = "󰥔 ";
           color = "orange";
         };
 
@@ -113,7 +113,7 @@ in {
           label = "%date%";
         }
         // mkPolybarTwoTone {
-          icon = "";
+          icon = "󰃭 ";
           color = "yellow";
         };
 
@@ -125,7 +125,7 @@ in {
           interval = 3600;
         }
         // mkPolybarTwoTone {
-          icon = "";
+          icon = "󱩊 ";
           color = "blue";
         };
 
@@ -137,7 +137,7 @@ in {
           label = "%percentage:2%%";
         }
         // mkPolybarTwoTone {
-          icon = "";
+          icon = " ";
           color = "green";
         };
 
@@ -149,7 +149,7 @@ in {
           interval = 2;
         }
         // mkPolybarTwoTone {
-          icon = "";
+          icon = " ";
           color = "red";
         };
 
@@ -161,7 +161,7 @@ in {
           label = "%free%";
         }
         // mkPolybarTwoTone {
-          icon = "";
+          icon = "󰍛 ";
           color = "orange";
         };
 
@@ -174,19 +174,19 @@ in {
         }
         // mkPolybarTwoToneState {
           state = "volume";
-          icon = "";
+          icon = "󰕾";
           color = "yellow";
         }
         // mkPolybarTwoToneState {
           state = "muted";
-          icon = "";
+          icon = "󰖁";
           color = "red";
         };
 
       # ── Power button (yellow block) ──
       "module/power" = {
         type = "custom/text";
-        format = "  ";
+        format = " 󰐥 ";
         click-left = "exec rofi-power-menu";
         format-foreground = "\${colors.black}";
         format-background = "\${colors.yellow}";
@@ -207,12 +207,12 @@ in {
         }
         // mkPolybarTwoToneState {
           state = "connected";
-          icon = "";
+          icon = "󰖩";
           color = "green";
         }
         // mkPolybarTwoToneState {
           state = "disconnected";
-          icon = "睊";
+          icon = "󰖪";
           color = "red";
         };
     })
@@ -230,17 +230,17 @@ in {
         }
         // mkPolybarTwoToneState {
           state = "charging";
-          icon = "";
+          icon = "󰂄";
           color = "aqua";
         }
         // mkPolybarTwoToneState {
           state = "discharging";
-          icon = "";
+          icon = "󰂎";
           color = "aqua";
         }
         // mkPolybarTwoToneState {
           state = "full";
-          icon = "";
+          icon = "󰁹";
           color = "aqua";
         };
     })
