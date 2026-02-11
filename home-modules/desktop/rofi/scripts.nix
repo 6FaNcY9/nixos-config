@@ -15,7 +15,7 @@
     inherit pkgs;
     name = "rofi-power-menu";
     body = ''
-      options=" Lock\n\u{f0931} Logout\n\u{f0904} Suspend\n\u{f04b2} Hibernate\n Reboot\n Poweroff"
+      options="\u{f033e} Lock\n\u{f0931} Logout\n\u{f0904} Suspend\n\u{f04b2} Hibernate\n\u{f0709} Reboot\n\u{f0425} Poweroff"
 
       chosen=$(echo -e "$options" | ${rofi} -dmenu \
         -i \
@@ -26,7 +26,7 @@
 
       confirm_action() {
         local answer
-        answer=$(echo -e " Yes\n No" | ${rofi} -dmenu \
+        answer=$(echo -e "\u{f012c} Yes\n\u{f0156} No" | ${rofi} -dmenu \
           -i \
           -p "Are you sure?" \
           -theme powermenu-theme \
@@ -39,7 +39,7 @@
 
       case "$chosen" in
         *Lock)
-          ${pkgs.i3lock}/bin/i3lock
+          lock-screen
           ;;
         *Logout)
           i3-msg exit
@@ -105,11 +105,11 @@
               info=$(get_wifi_info)
               local options="$info
       \u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}
-       Scan Networks
-       Disconnect
+      \u{f0349} Scan Networks
+      \u{f0a6c} Disconnect
       \u{f0609} Enable WiFi
       \u{f060a} Disable WiFi
-       Network Settings"
+      \u{f0493} Network Settings"
 
               echo -e "$options" | ${rofi} -dmenu \
                 -i \
@@ -192,12 +192,49 @@
       CM_LAUNCHER_ARGS="-theme clipboard-theme" ${pkgs.clipmenu}/bin/clipmenu
     '';
   };
+
+  # Audio output switcher -- pactl-based device selection
+  audioSwitcher = cfgLib.mkShellScript {
+    inherit pkgs;
+    name = "rofi-audio-switcher";
+    body = ''
+      get_sinks() {
+        ${pkgs.pulseaudio}/bin/pactl list sinks short | while IFS=$'\t' read -r id name _ state _; do
+          description=$(${pkgs.pulseaudio}/bin/pactl list sinks | grep -A1 "Sink #$id" | grep "Description:" | sed 's/.*Description: //')
+          default_sink=$(${pkgs.pulseaudio}/bin/pactl get-default-sink)
+          if [ "$name" = "$default_sink" ]; then
+            printf "\u{f04c3}  %s (active)\n" "$description"
+          else
+            printf "\u{f02cb}  %s\n" "$description"
+          fi
+        done
+      }
+
+      chosen=$(get_sinks | ${rofi} -dmenu -p " \u{f04c3}  Audio" -theme ~/.config/rofi/audio-switcher-theme.rasi)
+
+      if [ -z "$chosen" ]; then
+        exit 0
+      fi
+
+      # Strip icon prefix and (active) suffix to get description
+      clean_name=$(echo "$chosen" | sed 's/^[^ ]* *//; s/ (active)$//')
+
+      # Find matching sink by description
+      sink_name=$(${pkgs.pulseaudio}/bin/pactl list sinks | grep -B1 "Description: $clean_name" | grep "Name:" | sed 's/.*Name: //')
+
+      if [ -n "$sink_name" ]; then
+        ${pkgs.pulseaudio}/bin/pactl set-default-sink "$sink_name"
+        ${notify} "Audio Output" "Switched to: $clean_name"
+      fi
+    '';
+  };
 in {
   config = lib.mkIf config.profiles.desktop {
     home.packages = [
       powerMenu
       networkMenu
       clipboardMenu
+      audioSwitcher
     ];
 
     xsession.windowManager.i3.config.keybindings = let
@@ -207,6 +244,7 @@ in {
         "${mod}+Shift+e" = "exec ${powerMenu}/bin/rofi-power-menu";
         "${mod}+Shift+v" = "exec ${clipboardMenu}/bin/rofi-clipboard-menu";
         "${mod}+Shift+n" = "exec ${networkMenu}/bin/rofi-network-menu";
+        "${mod}+Shift+s" = "exec ${audioSwitcher}/bin/rofi-audio-switcher";
       };
   };
 }

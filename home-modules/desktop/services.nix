@@ -24,6 +24,9 @@
             horizontal_padding = lib.mkForce 12;
             icon_position = lib.mkForce "left";
             max_icon_size = lib.mkForce 32;
+
+            show_indicators = lib.mkForce true;
+            history_length = lib.mkForce 20;
           };
           urgency_low = {
             background = lib.mkForce palette.bg;

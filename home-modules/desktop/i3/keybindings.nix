@@ -48,7 +48,7 @@
     "${mod}+Shift+q" = "kill";
     "${mod}+Shift+c" = "reload";
     "${mod}+Shift+r" = "restart";
-    "${mod}+Shift+x" = "exec ${pkgs.i3lock}/bin/i3lock";
+    "${mod}+Shift+x" = "exec lock-screen";
     "${mod}+r" = "mode \"resize\"";
 
     "Print" = "exec ${pkgs.flameshot}/bin/flameshot gui";
@@ -63,6 +63,11 @@
     "XF86AudioPlay" = "exec --no-startup-id ${pkgs.playerctl}/bin/playerctl play-pause";
     "XF86AudioNext" = "exec --no-startup-id ${pkgs.playerctl}/bin/playerctl next";
     "XF86AudioPrev" = "exec --no-startup-id ${pkgs.playerctl}/bin/playerctl previous";
+
+    # Dunst notification controls
+    "${mod}+grave" = "exec ${pkgs.dunst}/bin/dunstctl history-pop";
+    "${mod}+Shift+d" = "exec ${pkgs.dunst}/bin/dunstctl set-paused toggle";
+    "${mod}+Shift+period" = "exec ${pkgs.dunst}/bin/dunstctl close-all";
   };
 
   workspaceSwitch = cfgLib.mkWorkspaceBindings {

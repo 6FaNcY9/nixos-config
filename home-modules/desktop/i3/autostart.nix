@@ -10,7 +10,13 @@
       notification = false;
     }
     {
-      command = "${pkgs.xss-lock}/bin/xss-lock --transfer-sleep-lock --ignore-sleep ${pkgs.i3lock}/bin/i3lock";
+      command = "${pkgs.xss-lock}/bin/xss-lock --transfer-sleep-lock --ignore-sleep -- lock-screen";
+      always = false;
+      notification = false;
+    }
+    {
+      command = "${pkgs.xautolock}/bin/xautolock -time 5 -locker lock-screen -killtime 10 -killer '${pkgs.xorg.xset}/bin/xset dpms force off'";
+      always = false;
       notification = false;
     }
     {

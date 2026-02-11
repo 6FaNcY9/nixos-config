@@ -44,6 +44,7 @@
   powermenuText = replace (builtins.readFile ./powermenu-theme.rasi);
   networkText = replace (builtins.readFile ./network-theme.rasi);
   clipboardText = replace (builtins.readFile ./clipboard-theme.rasi);
+  audioSwitcherText = replace (builtins.readFile ./audio-switcher-theme.rasi);
 in {
   imports = [./scripts.nix];
   config = lib.mkIf config.profiles.desktop {
@@ -57,6 +58,7 @@ in {
         "rofi/powermenu-theme.rasi".text = powermenuText;
         "rofi/network-theme.rasi".text = networkText;
         "rofi/clipboard-theme.rasi".text = clipboardText;
+        "rofi/audio-switcher-theme.rasi".text = audioSwitcherText;
       };
     };
   };
