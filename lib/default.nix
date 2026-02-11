@@ -46,7 +46,7 @@
     secretPaths;
 
   # Validate a list of secret files: all must exist and be encrypted
-  # Returns { valid = bool; assertion = { assertion, message }; }
+  # Returns { valid = bool; assertions = [{ assertion, message }]; }
   mkSecretValidation = {
     secrets,
     label ? "secrets",
@@ -57,10 +57,12 @@
     secrets;
   in {
     inherit valid;
-    assertion = {
-      assertion = valid;
-      message = "${label}: one or more secret files are missing or unencrypted.";
-    };
+    assertions = [
+      {
+        assertion = valid;
+        message = "${label}: one or more secret files are missing or unencrypted.";
+      }
+    ];
   };
 
   # Devshell helpers

@@ -6,7 +6,6 @@
   cfgLib,
   ...
 }: let
-
   # Secret file paths
   githubMcpSecretFile = "${inputs.self}/secrets/github-mcp.yaml";
   gpgSigningKeyFile = "${inputs.self}/secrets/gpg-signing-key.yaml";

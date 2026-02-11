@@ -1,4 +1,4 @@
-{...}: {
+_: {
   programs.tmux.extraConfig = ''
     ##### Core ergonomics #####
     # Prefix: C-a (common), keep C-b as send-prefix

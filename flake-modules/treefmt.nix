@@ -1,8 +1,5 @@
-{...}: {
-  perSystem = {
-    config,
-    ...
-  }: {
+_: {
+  perSystem = {config, ...}: {
     treefmt = {
       projectRootFile = "flake.nix";
       programs.alejandra.enable = true;

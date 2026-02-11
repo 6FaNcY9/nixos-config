@@ -4,9 +4,7 @@
   username,
   ...
 }: {
-  perSystem = {
-    ...
-  }: {
+  perSystem = _: {
     # Maintenance: static checks + eval targets
     checks = {
       nixos-bandit = self.nixosConfigurations.${primaryHost}.config.system.build.toplevel;

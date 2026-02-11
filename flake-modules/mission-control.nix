@@ -1,8 +1,5 @@
-{...}: {
-  perSystem = {
-    config,
-    ...
-  }: {
+_: {
+  perSystem = {config, ...}: {
     mission-control = {
       scripts = {
         fmt = {

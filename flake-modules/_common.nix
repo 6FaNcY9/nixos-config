@@ -1,9 +1,8 @@
 {
   pkgs,
-  lib,
   config,
-  inputs,
   cfgLib,
+  ...
 }: let
   opencodePkg = pkgs.opencode;
   missionControlWrapper = config.mission-control.wrapper;

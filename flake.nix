@@ -96,7 +96,7 @@
         config.allowUnfree = true;
       };
   in
-    flake-parts.lib.mkFlake {inherit inputs;} ({self, ...}: {
+    flake-parts.lib.mkFlake {inherit inputs;} ({...}: {
       systems = [system];
 
       # Enable flake-parts debug mode for development (adds allSystems/currentSystem outputs)

@@ -84,7 +84,10 @@ in {
           type = "internal/xwindow";
           label = "%title:0:50:.....%";
         }
-        // mkPolybarTwoTone {icon = ""; color = "purple";};
+        // mkPolybarTwoTone {
+          icon = "";
+          color = "purple";
+        };
 
       # ── Time (center, orange two-tone) ──
       "module/time" =
@@ -95,7 +98,10 @@ in {
           format = "<label>";
           label = "%{A1:${pkgs.gsimplecal}/bin/gsimplecal &:}%date%%{A}";
         }
-        // mkPolybarTwoTone {icon = ""; color = "orange";};
+        // mkPolybarTwoTone {
+          icon = "";
+          color = "orange";
+        };
 
       # ── Date (center, yellow two-tone) ──
       "module/date" =
@@ -106,7 +112,10 @@ in {
           format = "<label>";
           label = "%date%";
         }
-        // mkPolybarTwoTone {icon = ""; color = "yellow";};
+        // mkPolybarTwoTone {
+          icon = "";
+          color = "yellow";
+        };
 
       # ── Hostname (blue two-tone) ──
       "module/host" =
@@ -115,7 +124,10 @@ in {
           exec = "echo ${hostname}";
           interval = 3600;
         }
-        // mkPolybarTwoTone {icon = ""; color = "blue";};
+        // mkPolybarTwoTone {
+          icon = "";
+          color = "blue";
+        };
 
       # ── CPU (green two-tone) ──
       "module/cpu" =
@@ -124,7 +136,10 @@ in {
           interval = 1;
           label = "%percentage:2%%";
         }
-        // mkPolybarTwoTone {icon = ""; color = "green";};
+        // mkPolybarTwoTone {
+          icon = "";
+          color = "green";
+        };
 
       # ── Temperature (red two-tone) ──
       "module/temp" =
@@ -133,7 +148,10 @@ in {
           exec = "${pkgs.lm_sensors}/bin/sensors 2>/dev/null | ${pkgs.gawk}/bin/awk '/^edge/||/^Tctl/ {print $2; exit}' || echo N/A";
           interval = 2;
         }
-        // mkPolybarTwoTone {icon = ""; color = "red";};
+        // mkPolybarTwoTone {
+          icon = "";
+          color = "red";
+        };
 
       # ── Memory (orange two-tone) ──
       "module/memory" =
@@ -142,7 +160,10 @@ in {
           interval = 1;
           label = "%free%";
         }
-        // mkPolybarTwoTone {icon = ""; color = "orange";};
+        // mkPolybarTwoTone {
+          icon = "";
+          color = "orange";
+        };
 
       # ── Audio (yellow two-tone, muted = red) ──
       "module/pulseaudio" =
@@ -151,8 +172,16 @@ in {
           label-volume = "%percentage%%";
           label-muted = "muted";
         }
-        // mkPolybarTwoToneState {state = "volume"; icon = ""; color = "yellow";}
-        // mkPolybarTwoToneState {state = "muted"; icon = ""; color = "red";};
+        // mkPolybarTwoToneState {
+          state = "volume";
+          icon = "";
+          color = "yellow";
+        }
+        // mkPolybarTwoToneState {
+          state = "muted";
+          icon = "";
+          color = "red";
+        };
 
       # ── Power button (yellow block) ──
       "module/power" = {
@@ -176,8 +205,16 @@ in {
           click-left = "rofi-network-menu";
           click-right = "${pkgs.networkmanagerapplet}/bin/nm-connection-editor &";
         }
-        // mkPolybarTwoToneState {state = "connected"; icon = ""; color = "green";}
-        // mkPolybarTwoToneState {state = "disconnected"; icon = ""; color = "red";};
+        // mkPolybarTwoToneState {
+          state = "connected";
+          icon = "";
+          color = "green";
+        }
+        // mkPolybarTwoToneState {
+          state = "disconnected";
+          icon = "";
+          color = "red";
+        };
     })
 
     # ── Battery (aqua two-tone) ──
@@ -191,9 +228,21 @@ in {
           label-discharging = "%percentage%%";
           label-full = "100%";
         }
-        // mkPolybarTwoToneState {state = "charging"; icon = ""; color = "aqua";}
-        // mkPolybarTwoToneState {state = "discharging"; icon = ""; color = "aqua";}
-        // mkPolybarTwoToneState {state = "full"; icon = ""; color = "aqua";};
+        // mkPolybarTwoToneState {
+          state = "charging";
+          icon = "";
+          color = "aqua";
+        }
+        // mkPolybarTwoToneState {
+          state = "discharging";
+          icon = "";
+          color = "aqua";
+        }
+        // mkPolybarTwoToneState {
+          state = "full";
+          icon = "";
+          color = "aqua";
+        };
     })
   ];
 }
