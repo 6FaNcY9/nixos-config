@@ -15,6 +15,18 @@ _: {
     git = {
       enable = true;
 
+      aliases = {
+        co = "checkout";
+        br = "branch";
+        ci = "commit";
+        st = "status";
+        lg = "log --oneline --graph --decorate --all";
+        unstage = "reset HEAD --";
+        last = "log -1 HEAD";
+        amend = "commit --amend --no-edit";
+        wip = "commit -am 'WIP'";
+      };
+
       settings = {
         init.defaultBranch = "main";
         pull.ff = "only";
@@ -25,6 +37,9 @@ _: {
         merge.conflictstyle = "zdiff3";
         fetch.prune = true;
         rebase.autoStash = true;
+        credential.helper = "libsecret";
+        rerere.enabled = true;
+        column.ui = "auto";
       };
     };
   };
