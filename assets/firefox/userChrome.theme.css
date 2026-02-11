@@ -1,68 +1,103 @@
-/* Gruvbox theme overrides for Firefox */
-/* Colors injected via Home Manager from palette.nix */
+/* Gruvbox theme overrides for Firefox
+   Colors injected via Home Manager from palette.nix (@@baseXX@@ placeholders)
+   Accent: deep orange (base0F) / bright orange (base09) */
 
 @-moz-document url(chrome://browser/content/browser.xhtml),
                url(chrome://browser/content/browser.xul) {
+
+  /* ══════════════════════════════════════════════════════════════
+     1. CSS CUSTOM PROPERTIES + FIREFOX VARIABLE OVERRIDES
+     ══════════════════════════════════════════════════════════════ */
+
   :root {
-    /* Gruvbox palette */
     --uc-bg: @@base00@@;
     --uc-bg-alt: @@base01@@;
-    --uc-fg: @@base05@@;
     --uc-border: @@base02@@;
-    --uc-accent: @@base0B@@;
-    --uc-accent-2: @@base0D@@;
+    --uc-muted: @@base03@@;
+    --uc-fg: @@base05@@;
+    --uc-cream: @@base07@@;
     --uc-danger: @@base08@@;
+    --uc-accent-2: @@base09@@;
+    --uc-yellow: @@base0A@@;
+    --uc-green: @@base0B@@;
+    --uc-teal: @@base0C@@;
+    --uc-blue: @@base0D@@;
+    --uc-purple: @@base0E@@;
+    --uc-accent: @@base0F@@;
+
+    /* Firefox built-in variable overrides */
+    --toolbar-bgcolor: var(--uc-bg) !important;
+    --toolbox-bgcolor-inactive: var(--uc-bg) !important;
+    --toolbar-non-lwt-bgcolor: var(--uc-bg) !important;
+    --toolbar-color: var(--uc-fg) !important;
+    --lwt-text-color: var(--uc-fg) !important;
+    --toolbarbutton-icon-fill: var(--uc-fg) !important;
+    --toolbar-field-color: var(--uc-fg) !important;
+    --toolbar-field-focus-color: var(--uc-fg) !important;
+    --toolbar-field-focus-background-color: var(--uc-bg-alt) !important;
+    --tab-selected-bgcolor: var(--uc-bg-alt) !important;
+    --tab-selected-textcolor: var(--uc-fg) !important;
+    --tab-hover-background-color: var(--uc-border) !important;
+    --tabpanel-background-color: var(--uc-bg) !important;
+    --newtab-background-color: var(--uc-bg) !important;
+    --arrowpanel-background: var(--uc-bg) !important;
+    --arrowpanel-color: var(--uc-fg) !important;
+    --arrowpanel-border-color: var(--uc-border) !important;
+    --chrome-content-separator-color: var(--uc-border) !important;
+    --sidebar-border-color: var(--uc-border) !important;
+    --input-bgcolor: var(--uc-bg-alt) !important;
+    --input-color: var(--uc-fg) !important;
+    --input-border-color: var(--uc-border) !important;
+    --urlbarView-separator-color: var(--uc-border) !important;
   }
 
   /* ══════════════════════════════════════════════════════════════
-     TOOLBAR BACKGROUND - Force Gruvbox dark colors
+     2. TOOLBAR & NAV BAR
      ══════════════════════════════════════════════════════════════ */
 
-  /* Main toolbar area */
   #navigator-toolbox {
     background-color: var(--uc-bg) !important;
+    border-bottom: 1px solid var(--uc-border) !important;
   }
 
-  /* Tab bar */
   #TabsToolbar {
     background-color: var(--uc-bg) !important;
   }
 
-  /* Navigation bar (URL bar row) */
   #nav-bar {
     background-color: var(--uc-bg) !important;
+    border-top: none !important;
   }
 
-  /* Tab backgrounds */
-  .tab-background {
-    background-color: transparent !important;
-  }
-
-  .tabbrowser-tab[selected] .tab-background {
+  /* Toolbar button hover/active */
+  toolbar .toolbarbutton-1:hover:not([disabled="true"]),
+  toolbar .toolbarbutton-1[open] {
     background-color: var(--uc-bg-alt) !important;
   }
 
-  .tabbrowser-tab:hover:not([selected]) .tab-background {
+  toolbar .toolbarbutton-1:hover:active:not([disabled="true"]) {
     background-color: var(--uc-border) !important;
   }
 
   /* ══════════════════════════════════════════════════════════════
-     ACCENTS - Subtle Gruvbox touches
+     3. TAB BAR
      ══════════════════════════════════════════════════════════════ */
 
-  /* Selected tab accent line */
+  /* Default tab background */
+  .tab-background {
+    background-color: transparent !important;
+    border: none !important;
+  }
+
+  /* Selected tab */
   .tabbrowser-tab[selected] .tab-background {
+    background-color: var(--uc-bg-alt) !important;
     border-top: 2px solid var(--uc-accent) !important;
   }
 
-  /* URL bar */
-  #urlbar-background {
-    background-color: var(--uc-bg-alt) !important;
-  }
-
-  #urlbar[focused="true"] > #urlbar-background {
-    outline: 1px solid var(--uc-accent-2) !important;
-    outline-offset: -1px;
+  /* Hovered unselected tab */
+  .tabbrowser-tab:hover:not([selected]) .tab-background {
+    background-color: var(--uc-border) !important;
   }
 
   /* Loading tab indicator */
@@ -70,20 +105,514 @@
     border-top: 2px solid var(--uc-accent-2) !important;
   }
 
+  /* Audio playing indicator */
+  .tab-icon-overlay:is([soundplaying]) {
+    fill: var(--uc-accent) !important;
+    color: var(--uc-accent) !important;
+  }
+
+  /* Muted tab indicator */
+  .tab-icon-overlay:is([muted]) {
+    fill: var(--uc-danger) !important;
+    color: var(--uc-danger) !important;
+  }
+
+  /* Multiselected tabs */
+  .tabbrowser-tab[multiselected]:not([selected]) .tab-background {
+    background-color: var(--uc-bg-alt) !important;
+    outline: 1px solid var(--uc-accent) !important;
+    outline-offset: -1px;
+  }
+
+  /* Pinned tab separator */
+  #tabbrowser-tabs[haspinnedtabs]:not([positionpinnedtabs])
+    > #tabbrowser-arrowscrollbox
+    > .tabbrowser-tab:nth-child(1 of :not([pinned])) {
+    margin-inline-start: 2px !important;
+  }
+
+  /* Tab close button */
+  .tab-close-button:hover {
+    background-color: var(--uc-danger) !important;
+    fill: var(--uc-cream) !important;
+    border-radius: 2px !important;
+  }
+
+  /* New tab button */
+  #tabs-newtab-button:hover {
+    background-color: var(--uc-bg-alt) !important;
+  }
+
+  /* Tab label text */
+  .tab-text {
+    color: var(--uc-fg) !important;
+  }
+
+  .tabbrowser-tab:not([selected]) .tab-text {
+    color: var(--uc-muted) !important;
+  }
+
+  .tabbrowser-tab:not([selected]):hover .tab-text {
+    color: var(--uc-fg) !important;
+  }
+
   /* ══════════════════════════════════════════════════════════════
-     PANELS & MENUS - Consistent dark theme
+     4. URL BAR
      ══════════════════════════════════════════════════════════════ */
 
-  panel,
-  panelview,
-  .panel-subview-body,
-  menupopup {
+  #urlbar-background {
+    background-color: var(--uc-bg-alt) !important;
+    border: 1px solid var(--uc-border) !important;
+  }
+
+  #urlbar[focused="true"] > #urlbar-background {
+    border-color: var(--uc-accent) !important;
+    outline: none !important;
+  }
+
+  /* Site identity (lock icon area) */
+  #identity-box {
+    color: var(--uc-muted) !important;
+  }
+
+  #identity-box:hover {
+    background-color: var(--uc-border) !important;
+  }
+
+  /* Tracking protection icon */
+  #tracking-protection-icon-container:hover {
+    background-color: var(--uc-border) !important;
+  }
+
+  /* Page action buttons (bookmark star, etc.) */
+  .urlbar-page-action:hover {
+    background-color: var(--uc-border) !important;
+  }
+
+  /* Bookmarked star filled */
+  #star-button[starred] {
+    fill: var(--uc-accent) !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     5. AUTOCOMPLETE / URL BAR POPUP
+     ══════════════════════════════════════════════════════════════ */
+
+  .urlbarView {
     background-color: var(--uc-bg) !important;
     color: var(--uc-fg) !important;
   }
 
-  menuitem:hover,
+  .urlbarView-row {
+    border-radius: 4px !important;
+    padding-block: 3px !important;
+  }
+
+  .urlbarView-row:not([type="tip"])[selected] > .urlbarView-row-inner {
+    background-color: var(--uc-accent) !important;
+    color: var(--uc-bg) !important;
+  }
+
+  .urlbarView-row:hover:not([selected]) > .urlbarView-row-inner {
+    background-color: var(--uc-bg-alt) !important;
+  }
+
+  .urlbarView-title {
+    color: var(--uc-fg) !important;
+  }
+
+  .urlbarView-url {
+    color: var(--uc-blue) !important;
+  }
+
+  /* Selected row overrides child colors */
+  .urlbarView-row[selected] .urlbarView-title,
+  .urlbarView-row[selected] .urlbarView-url,
+  .urlbarView-row[selected] .urlbarView-action {
+    color: var(--uc-bg) !important;
+  }
+
+  /* Switch-to-tab action indicator */
+  .urlbarView-action:not(:empty) {
+    color: var(--uc-green) !important;
+  }
+
+  /* Type icon (search, bookmark, tab, etc.) */
+  .urlbarView-type-icon {
+    fill: var(--uc-muted) !important;
+  }
+
+  .urlbarView-row[selected] .urlbarView-type-icon {
+    fill: var(--uc-bg) !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     6. BOOKMARKS TOOLBAR
+     ══════════════════════════════════════════════════════════════ */
+
+  #PersonalToolbar {
+    background-color: var(--uc-bg) !important;
+    border-bottom: 1px solid var(--uc-border) !important;
+  }
+
+  #PlacesToolbarItems > .bookmark-item:hover {
+    background-color: var(--uc-bg-alt) !important;
+  }
+
+  /* Bookmark folder dropmarker */
+  #PlacesToolbarItems > .bookmark-item > .toolbarbutton-icon {
+    fill: var(--uc-muted) !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     7. CONTEXT MENUS
+     ══════════════════════════════════════════════════════════════ */
+
+  menupopup {
+    -moz-appearance: none !important;
+    background-color: var(--uc-bg) !important;
+    color: var(--uc-fg) !important;
+    border: 1px solid var(--uc-border) !important;
+    border-radius: 4px !important;
+    padding: 4px 0 !important;
+  }
+
+  menupopup > menuitem,
+  menupopup > menu {
+    -moz-appearance: none !important;
+    color: var(--uc-fg) !important;
+    padding: 4px 8px !important;
+  }
+
+  menupopup > menuitem[_moz-menuactive="true"]:not([disabled="true"]),
+  menupopup > menu[_moz-menuactive="true"]:not([disabled="true"]) {
+    background-color: var(--uc-accent) !important;
+    color: var(--uc-bg) !important;
+  }
+
+  menupopup > menuitem[disabled="true"],
+  menupopup > menu[disabled="true"] {
+    color: var(--uc-muted) !important;
+    opacity: 0.6 !important;
+  }
+
+  menuseparator {
+    border-color: var(--uc-border) !important;
+    padding: 0 !important;
+    margin: 4px 8px !important;
+  }
+
+  /* Submenu arrow (invert for dark bg) */
+  .menu-right {
+    -moz-appearance: none !important;
+  }
+
+  menupopup > menu > .menu-right > image {
+    filter: invert(85%) !important;
+  }
+
+  /* Checkbox/radio marks in menus */
+  menuitem[checked="true"] > .menu-iconic-left {
+    fill: var(--uc-accent) !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     8. PANELS & POPUPS
+     ══════════════════════════════════════════════════════════════ */
+
+  panel,
+  panelview,
+  .panel-subview-body {
+    background-color: var(--uc-bg) !important;
+    color: var(--uc-fg) !important;
+  }
+
   .subviewbutton:hover {
     background-color: var(--uc-bg-alt) !important;
+    color: var(--uc-fg) !important;
+  }
+
+  .subviewbutton[shortcut]::after {
+    color: var(--uc-muted) !important;
+  }
+
+  /* Panel header */
+  .panel-header {
+    background-color: var(--uc-bg-alt) !important;
+    border-bottom: 1px solid var(--uc-border) !important;
+    color: var(--uc-fg) !important;
+  }
+
+  /* Hamburger menu (app menu) */
+  #appMenu-popup panelview {
+    background-color: var(--uc-bg) !important;
+  }
+
+  /* Unified extensions panel */
+  #unified-extensions-panel .unified-extensions-item:hover {
+    background-color: var(--uc-bg-alt) !important;
+  }
+
+  /* Panel arrows */
+  .panel-arrow {
+    fill: var(--uc-bg) !important;
+    stroke: var(--uc-border) !important;
+  }
+
+  /* Panel toolbarbuttons */
+  panelview .toolbarbutton-1:hover {
+    background-color: var(--uc-bg-alt) !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     9. SIDEBAR
+     ══════════════════════════════════════════════════════════════ */
+
+  #sidebar-box {
+    background-color: var(--uc-bg) !important;
+    color: var(--uc-fg) !important;
+  }
+
+  #sidebar-header {
+    background-color: var(--uc-bg) !important;
+    border-bottom: 1px solid var(--uc-border) !important;
+    color: var(--uc-fg) !important;
+  }
+
+  #sidebar-splitter {
+    border-color: var(--uc-border) !important;
+    width: 1px !important;
+    min-width: 1px !important;
+  }
+
+  #sidebar-search-container {
+    background-color: var(--uc-bg) !important;
+  }
+
+  #sidebar-search-container > input,
+  #sidebar-search-container > searchbar {
+    background-color: var(--uc-bg-alt) !important;
+    color: var(--uc-fg) !important;
+    border: 1px solid var(--uc-border) !important;
+  }
+
+  #sidebar-search-container > input:focus,
+  #sidebar-search-container > searchbar:focus-within {
+    border-color: var(--uc-accent) !important;
+  }
+
+  /* Sidebar panel content (bookmarks, history trees) */
+  #sidebar {
+    background-color: var(--uc-bg) !important;
+    color: var(--uc-fg) !important;
+  }
+
+  /* Tree rows in sidebar */
+  treechildren::-moz-tree-row(hover) {
+    background-color: var(--uc-bg-alt) !important;
+  }
+
+  treechildren::-moz-tree-row(selected) {
+    background-color: var(--uc-accent) !important;
+  }
+
+  treechildren::-moz-tree-cell-text {
+    color: var(--uc-fg) !important;
+  }
+
+  treechildren::-moz-tree-cell-text(selected) {
+    color: var(--uc-bg) !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     10. FINDBAR
+     ══════════════════════════════════════════════════════════════ */
+
+  findbar {
+    background-color: var(--uc-bg) !important;
+    border-top: 1px solid var(--uc-border) !important;
+    color: var(--uc-fg) !important;
+  }
+
+  .findbar-textbox {
+    background-color: var(--uc-bg-alt) !important;
+    color: var(--uc-fg) !important;
+    border: 1px solid var(--uc-border) !important;
+  }
+
+  .findbar-textbox:focus {
+    border-color: var(--uc-accent) !important;
+  }
+
+  /* Not found state */
+  findbar[status="notfound"] .findbar-textbox {
+    background-color: var(--uc-danger) !important;
+    color: var(--uc-cream) !important;
+    border-color: var(--uc-danger) !important;
+  }
+
+  /* Findbar buttons */
+  .findbar-find-previous:hover,
+  .findbar-find-next:hover,
+  .findbar-highlight:hover {
+    background-color: var(--uc-bg-alt) !important;
+  }
+
+  /* Highlight button active state */
+  .findbar-highlight[checked="true"] {
+    background-color: var(--uc-accent) !important;
+    color: var(--uc-bg) !important;
+  }
+
+  /* Case-sensitive button active */
+  .findbar-case-sensitive[checked="true"] {
+    background-color: var(--uc-accent) !important;
+    color: var(--uc-bg) !important;
+  }
+
+  /* Close button */
+  .findbar-closebutton:hover {
+    background-color: var(--uc-danger) !important;
+    fill: var(--uc-cream) !important;
+  }
+
+  /* Match count label */
+  .found-matches {
+    color: var(--uc-muted) !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     11. NOTIFICATION BARS
+     ══════════════════════════════════════════════════════════════ */
+
+  .notificationbox-stack notification {
+    background-color: var(--uc-bg-alt) !important;
+    color: var(--uc-fg) !important;
+    border: none !important;
+    border-bottom: 1px solid var(--uc-border) !important;
+  }
+
+  notification[type="warning"],
+  notification[value="infobar-sessionrestore"] {
+    border-left: 3px solid var(--uc-yellow) !important;
+  }
+
+  notification[type="critical"] {
+    border-left: 3px solid var(--uc-danger) !important;
+  }
+
+  notification .notification-button {
+    background-color: var(--uc-border) !important;
+    color: var(--uc-fg) !important;
+    border: none !important;
+    border-radius: 3px !important;
+  }
+
+  notification .notification-button:hover {
+    background-color: var(--uc-accent) !important;
+    color: var(--uc-bg) !important;
+  }
+
+  notification .notification-button[type="primary"] {
+    background-color: var(--uc-accent) !important;
+    color: var(--uc-bg) !important;
+  }
+
+  notification .notification-button[type="primary"]:hover {
+    background-color: var(--uc-accent-2) !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     12. MISC
+     ══════════════════════════════════════════════════════════════ */
+
+  /* Tooltips */
+  tooltip {
+    -moz-appearance: none !important;
+    background-color: var(--uc-bg-alt) !important;
+    color: var(--uc-fg) !important;
+    border: 1px solid var(--uc-border) !important;
+    border-radius: 3px !important;
+    padding: 4px 6px !important;
+  }
+
+  /* Status panel (bottom-left link hover) */
+  #statuspanel-label {
+    background-color: var(--uc-bg-alt) !important;
+    color: var(--uc-fg) !important;
+    border: 1px solid var(--uc-border) !important;
+    border-radius: 0 3px 0 0 !important;
+  }
+
+  /* Tab content area */
+  #tabbrowser-tabpanels {
+    background-color: var(--uc-bg) !important;
+  }
+
+  /* Private browsing indicator */
+  .private-browsing-indicator {
+    fill: var(--uc-purple) !important;
+  }
+
+  #private-browsing-indicator-with-label > label {
+    color: var(--uc-purple) !important;
+  }
+
+  /* Downloads indicator badge */
+  #downloads-indicator-counter {
+    background-color: var(--uc-accent) !important;
+    color: var(--uc-cream) !important;
+  }
+
+  #downloads-indicator-progress-inner {
+    background-color: var(--uc-accent) !important;
+  }
+
+  /* Navigation buttons (back/forward/reload/stop) */
+  #back-button:hover:not([disabled="true"]),
+  #forward-button:hover:not([disabled="true"]),
+  #reload-button:hover,
+  #stop-button:hover {
+    background-color: var(--uc-bg-alt) !important;
+  }
+
+  /* Disabled nav buttons */
+  #back-button[disabled="true"],
+  #forward-button[disabled="true"] {
+    opacity: 0.4 !important;
+  }
+
+  /* Scrollbar theming (content area inherits, but chrome UI) */
+  * {
+    scrollbar-color: var(--uc-muted) var(--uc-bg) !important;
+    scrollbar-width: thin !important;
+  }
+
+  /* Search bar */
+  #searchbar {
+    background-color: var(--uc-bg-alt) !important;
+    color: var(--uc-fg) !important;
+  }
+
+  #searchbar:focus-within {
+    border-color: var(--uc-accent) !important;
+  }
+
+  /* All-tabs menu panel */
+  #allTabsMenu-allTabsView {
+    background-color: var(--uc-bg) !important;
+  }
+
+  #allTabsMenu-allTabsView .all-tabs-item:hover {
+    background-color: var(--uc-bg-alt) !important;
+  }
+
+  #allTabsMenu-allTabsView .all-tabs-item[selected] {
+    background-color: var(--uc-border) !important;
+  }
+
+  /* Extension popup panels */
+  .webextension-popup-browser {
+    background-color: var(--uc-bg) !important;
   }
 }
