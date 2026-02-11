@@ -3,9 +3,9 @@
   lib,
   inputs,
   pkgs,
+  cfgLib,
   ...
 }: let
-  cfgLib = import ../lib {inherit lib;};
 
   # Secret file paths
   githubMcpSecretFile = "${inputs.self}/secrets/github-mcp.yaml";
@@ -14,26 +14,18 @@
   exaApiSecretFile = "${inputs.self}/secrets/exa-api.yaml";
   context7SecretFile = "${inputs.self}/secrets/context7-api.yaml";
 
-  # Validate secrets at build time
-  validateAllSecrets =
-    cfgLib.validateSecretExists githubMcpSecretFile
-    && cfgLib.validateSecretEncrypted githubMcpSecretFile
-    && cfgLib.validateSecretExists gpgSigningKeyFile
-    && cfgLib.validateSecretEncrypted gpgSigningKeyFile
-    && cfgLib.validateSecretExists cachixSecretFile
-    && cfgLib.validateSecretEncrypted cachixSecretFile
-    && cfgLib.validateSecretExists exaApiSecretFile
-    && cfgLib.validateSecretEncrypted exaApiSecretFile
-    && cfgLib.validateSecretExists context7SecretFile
-    && cfgLib.validateSecretEncrypted context7SecretFile;
+  secretValidation = cfgLib.mkSecretValidation {
+    secrets = [
+      githubMcpSecretFile
+      gpgSigningKeyFile
+      cachixSecretFile
+      exaApiSecretFile
+      context7SecretFile
+    ];
+    label = "Home";
+  };
 in {
-  # Trigger validation
-  assertions = [
-    {
-      assertion = validateAllSecrets;
-      message = "Home secrets: one or more secret files are missing or unencrypted. Check github-mcp, gpg-signing-key, cachix, exa-api, and context7-api in secrets/.";
-    }
-  ];
+  inherit (secretValidation) assertions;
 
   # sops-nix Home Manager defaults (kept minimal)
   sops = {

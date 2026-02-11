@@ -10,21 +10,12 @@
   githubSecretFile = "${inputs.self}/secrets/github.yaml";
   resticSecretFile = "${inputs.self}/secrets/restic.yaml";
 
-  # Validate secrets at build time
-  # This ensures secrets exist and are encrypted before activation
-  validateAllSecrets =
-    cfgLib.validateSecretExists githubSecretFile
-    && cfgLib.validateSecretEncrypted githubSecretFile
-    && cfgLib.validateSecretExists resticSecretFile
-    && cfgLib.validateSecretEncrypted resticSecretFile;
+  secretValidation = cfgLib.mkSecretValidation {
+    secrets = [githubSecretFile resticSecretFile];
+    label = "System";
+  };
 in {
-  # Trigger validation
-  assertions = [
-    {
-      assertion = validateAllSecrets;
-      message = "System secrets: one or more secret files are missing or unencrypted. Check ${githubSecretFile} and ${resticSecretFile}.";
-    }
-  ];
+  inherit (secretValidation) assertions;
 
   # sops-nix system defaults (safe even without secrets defined)
   sops = {

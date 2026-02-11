@@ -15,18 +15,12 @@
   lib,
   pkgs,
   config,
+  cfgLib,
   codexPkg ? null,
   opencodePkg ? null,
   ...
 }: let
   cfg = config.profiles;
-
-  mkProfile = name: default:
-    lib.mkOption {
-      type = lib.types.bool;
-      inherit default;
-      description = "Enable ${name} package set.";
-    };
 
   claudeCodePkg = let
     unstablePkg = lib.attrByPath ["unstable" "claude-code"] null pkgs;
@@ -112,11 +106,11 @@
   ];
 in {
   options.profiles = {
-    core = mkProfile "core CLI tools" true;
-    dev = mkProfile "development tools" true; # Default true for typical dev machine
-    desktop = mkProfile "desktop apps" true; # Default true for typical desktop
-    extras = mkProfile "nice-to-have extras" false;
-    ai = mkProfile "AI tools" false;
+    core = cfgLib.mkProfile "core CLI tools" true;
+    dev = cfgLib.mkProfile "development tools" true;
+    desktop = cfgLib.mkProfile "desktop apps" true;
+    extras = cfgLib.mkProfile "nice-to-have extras" false;
+    ai = cfgLib.mkProfile "AI tools" false;
   };
 
   config.home.packages = lib.concatLists [

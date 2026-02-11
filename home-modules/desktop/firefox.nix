@@ -4,10 +4,9 @@
   username,
   c,
   config,
+  cfgLib,
   ...
-}: let
-  cfgLib = import ../../lib {inherit lib;};
-in {
+}: {
   config = lib.mkIf config.profiles.desktop {
     programs.firefox = {
       enable = true;
