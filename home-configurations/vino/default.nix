@@ -32,8 +32,21 @@
 in {
   imports = [../../home-modules/default.nix] ++ hostModules;
 
-  # Inject shared arguments to all home-modules
-  # Colors and palette come from shared-modules/palette.nix
+  # Inject shared arguments available to ALL home-modules via function args.
+  #
+  # Available args and their sources:
+  #   palette   — semantic colors (bg, text, accent, ...) from shared-modules/palette.nix
+  #   c         — raw base16 colors (base00..base0F) from config.theme.colors
+  #   workspaces — i3 workspace definitions [{number, icon}] from shared-modules/workspaces.nix
+  #   stylixFonts — {sansSerif, monospace} from Stylix config (with fallback)
+  #   i3Pkg     — the i3 package (pkgs.i3)
+  #   codexPkg  — codex CLI from flake input
+  #   opencodePkg — opencode from overlay
+  #   hostname  — current host name (from NixOS or ez-configs)
+  #   cfgLib    — helper library from lib/ (mkShellScript, mkColorReplacer, etc.)
+  #
+  # Usage: add the arg name to any home-module's function args, e.g.
+  #   {pkgs, palette, cfgLib, ...}:
   _module.args = {
     inherit (config.theme) palette;
     inherit (config) workspaces;

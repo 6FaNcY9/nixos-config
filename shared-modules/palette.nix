@@ -1,5 +1,16 @@
-# Shared color palette - derives semantic colors from Stylix base16 scheme
-# This provides a consistent theming interface across all modules
+# Shared color palette - derives semantic colors from Stylix base16 scheme.
+#
+# Two color systems are exposed via _module.args:
+#
+#   c (config.theme.colors)   — raw base16 slots (base00..base0F).
+#     Use when you need a specific base16 hue by slot number, e.g. c.base0D
+#     for "blue".  These are positional and theme-dependent.
+#
+#   palette (config.theme.palette) — semantic names (bg, text, accent, warn, ...).
+#     Prefer this for most UI code.  Meaning stays stable across themes.
+#
+# Rule of thumb: reach for `palette` first; use `c` only when the semantic
+# name doesn't exist (e.g. c.base07 for "cream", c.base0F for "orange").
 {
   lib,
   config,
