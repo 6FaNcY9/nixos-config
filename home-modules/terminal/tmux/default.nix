@@ -13,5 +13,7 @@
     keyMode = "vi";
     historyLimit = 50000;
     terminal = "tmux-256color";
+    escapeTime = 0;
+    baseIndex = 1;
   };
 }

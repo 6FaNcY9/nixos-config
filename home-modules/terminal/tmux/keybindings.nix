@@ -1,10 +1,10 @@
 _: {
   programs.tmux.extraConfig = ''
     ##### Core ergonomics #####
-    # Prefix: C-a (common), keep C-b as send-prefix
-    set -g prefix C-a
+    # Prefix: C-Space
+    set -g prefix C-Space
     unbind C-b
-    bind C-a send-prefix
+    bind C-Space send-prefix
 
     # Fast reload (also available in which-key menu)
     bind r source-file $XDG_CONFIG_HOME/tmux/tmux.conf \; display-message "tmux reloaded"
