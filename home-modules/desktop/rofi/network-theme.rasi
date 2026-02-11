@@ -11,7 +11,7 @@ window {
     anchor: center;
     padding: 0px;
     border: 2px 0px 0px 0px;
-    border-radius: 12px;
+    border-radius: 6px;
     border-color: @accent-blue;
     background-color: @bg-col;
     transparency: "real";
@@ -29,13 +29,13 @@ inputbar {
     padding: 4px;
     margin: 8px 8px 0px 8px;
     border: 0px;
-    border-radius: 8px;
+    border-radius: 4px;
 }
 
 prompt {
     background-color: @accent-blue;
     padding: 8px 14px;
-    border-radius: 8px;
+    border-radius: 4px;
     text-color: @bg-col;
     font: "@@font-base@@ Bold 11";
 }
@@ -64,7 +64,7 @@ element {
     padding: 10px 14px;
     vertical-align: 0.5;
     border: 0px;
-    border-radius: 6px;
+    border-radius: 4px;
     background-color: @surface;
     text-color: @cream;
     margin: 2px 4px;

@@ -12,7 +12,7 @@ window {
     margin: 0px;
     padding: 0px;
     border: 2px 0px 0px 0px;
-    border-radius: 12px;
+    border-radius: 6px;
     border-color: @selected-col;
     background-color: @bg-col;
     transparency: "real";
@@ -61,7 +61,7 @@ element {
     spacing: 0px;
     padding: 35px 10px;
     border: 0px;
-    border-radius: 10px;
+    border-radius: 4px;
     background-color: @surface;
     text-color: @cream;
     cursor: pointer;
@@ -77,6 +77,6 @@ element-text {
 }
 
 element selected.normal {
-    background-color: @orange-alt;
+    background-color: @yellow-alt;
     text-color: @bg-col;
 }

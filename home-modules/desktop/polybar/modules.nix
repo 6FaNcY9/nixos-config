@@ -62,8 +62,8 @@ in {
           label-urgent-foreground = "\${colors.black}";
           label-urgent-background = "\${colors.red-alt}";
           label-urgent-padding = 0;
-          label-separator = "•";
-          label-separator-padding = 1;
+          label-separator = "·";
+          label-separator-padding = 0;
           label-separator-foreground = "\${colors.yellow-alt}";
         }
         // wsIconAttrs;
@@ -89,28 +89,15 @@ in {
           color = "purple";
         };
 
-      # ── Time (center, orange two-tone) ──
+      # ── Time + Date (center, yellow two-tone, merged block) ──
       "module/time" =
         {
           type = "internal/date";
           interval = 1;
-          date = "%H:%M:%S";
-          format = "<label>";
-          label = "%{A1:${pkgs.gsimplecal}/bin/gsimplecal &:}%date%%{A}";
-        }
-        // mkPolybarTwoTone {
-          icon = "󰥔 ";
-          color = "orange";
-        };
-
-      # ── Date (center, yellow two-tone) ──
-      "module/date" =
-        {
-          type = "internal/date";
-          interval = 60;
+          time = "%H:%M:%S";
           date = "%d-%m-%Y";
           format = "<label>";
-          label = "%date%";
+          label = "%{A1:${pkgs.gsimplecal}/bin/gsimplecal &:}%time%  ||  %date%%{A}";
         }
         // mkPolybarTwoTone {
           icon = "󰃭 ";
@@ -153,7 +140,7 @@ in {
           color = "red";
         };
 
-      # ── Memory (orange two-tone) ──
+      # ── Memory (aqua two-tone) ──
       "module/memory" =
         {
           type = "internal/memory";

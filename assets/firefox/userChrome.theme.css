@@ -209,7 +209,7 @@
   }
 
   .urlbarView-row:not([type="tip"])[selected] > .urlbarView-row-inner {
-    background-color: var(--uc-accent) !important;
+    background-color: var(--uc-blue) !important;
     color: var(--uc-bg) !important;
   }
 
@@ -286,7 +286,7 @@
 
   menupopup > menuitem[_moz-menuactive="true"]:not([disabled="true"]),
   menupopup > menu[_moz-menuactive="true"]:not([disabled="true"]) {
-    background-color: var(--uc-accent) !important;
+    background-color: var(--uc-blue) !important;
     color: var(--uc-bg) !important;
   }
 
@@ -313,7 +313,7 @@
 
   /* Checkbox/radio marks in menus */
   menuitem[checked="true"] > .menu-iconic-left {
-    fill: var(--uc-accent) !important;
+    fill: var(--uc-blue) !important;
   }
 
   /* ══════════════════════════════════════════════════════════════
@@ -413,7 +413,7 @@
   }
 
   treechildren::-moz-tree-row(selected) {
-    background-color: var(--uc-accent) !important;
+    background-color: var(--uc-blue) !important;
   }
 
   treechildren::-moz-tree-cell-text {
@@ -460,13 +460,13 @@
 
   /* Highlight button active state */
   .findbar-highlight[checked="true"] {
-    background-color: var(--uc-accent) !important;
+    background-color: var(--uc-yellow) !important;
     color: var(--uc-bg) !important;
   }
 
   /* Case-sensitive button active */
   .findbar-case-sensitive[checked="true"] {
-    background-color: var(--uc-accent) !important;
+    background-color: var(--uc-yellow) !important;
     color: var(--uc-bg) !important;
   }
 
@@ -509,12 +509,12 @@
   }
 
   notification .notification-button:hover {
-    background-color: var(--uc-accent) !important;
+    background-color: var(--uc-green) !important;
     color: var(--uc-bg) !important;
   }
 
   notification .notification-button[type="primary"] {
-    background-color: var(--uc-accent) !important;
+    background-color: var(--uc-green) !important;
     color: var(--uc-bg) !important;
   }
 
@@ -560,12 +560,12 @@
 
   /* Downloads indicator badge */
   #downloads-indicator-counter {
-    background-color: var(--uc-accent) !important;
+    background-color: var(--uc-green) !important;
     color: var(--uc-cream) !important;
   }
 
   #downloads-indicator-progress-inner {
-    background-color: var(--uc-accent) !important;
+    background-color: var(--uc-green) !important;
   }
 
   /* Navigation buttons (back/forward/reload/stop) */
@@ -595,7 +595,7 @@
   }
 
   #searchbar:focus-within {
-    border-color: var(--uc-accent) !important;
+    border-color: var(--uc-blue) !important;
   }
 
   /* All-tabs menu panel */
