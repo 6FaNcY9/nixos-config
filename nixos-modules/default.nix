@@ -14,6 +14,7 @@
     ./secrets.nix
     ./monitoring.nix
     ./backup.nix
+    ./tailscale.nix
 
     # Role system (desktop, laptop, server)
     ./roles
