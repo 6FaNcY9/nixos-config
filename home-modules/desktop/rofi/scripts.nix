@@ -6,17 +6,36 @@
   cfgLib,
   ...
 }: let
-  # Power menu script
+  rofi = "${pkgs.rofi}/bin/rofi";
+  nmcli = "${pkgs.networkmanager}/bin/nmcli";
+  notify = "${pkgs.libnotify}/bin/notify-send";
+
+  # Power menu script -- 6 options with confirmation for destructive actions
   powerMenu = cfgLib.mkShellScript {
     inherit pkgs;
     name = "rofi-power-menu";
     body = ''
-      options=" Lock\n󰗽 Logout\n󰤄 Suspend\n Reboot\n Poweroff"
+      options=" Lock\n\u{f0931} Logout\n\u{f0904} Suspend\n\u{f04b2} Hibernate\n Reboot\n Poweroff"
 
-      chosen=$(echo -e "$options" | ${pkgs.rofi}/bin/rofi -dmenu \
+      chosen=$(echo -e "$options" | ${rofi} -dmenu \
         -i \
         -p "Power" \
         -theme powermenu-theme)
+
+      [ -z "$chosen" ] && exit 0
+
+      confirm_action() {
+        local answer
+        answer=$(echo -e " Yes\n No" | ${rofi} -dmenu \
+          -i \
+          -p "Are you sure?" \
+          -theme powermenu-theme \
+          -theme-str 'listview { columns: 2; lines: 1; }' \
+          -theme-str 'window { width: 320px; }' \
+          -theme-str 'element { padding: 20px 10px; }' \
+          -theme-str 'mainbox { children: [ "listview" ]; }')
+        [[ "$answer" == *"Yes"* ]]
+      }
 
       case "$chosen" in
         *Lock)
@@ -28,92 +47,132 @@
         *Suspend)
           systemctl suspend
           ;;
+        *Hibernate)
+          systemctl hibernate
+          ;;
         *Reboot)
-          systemctl reboot
+          confirm_action && systemctl reboot
           ;;
         *Poweroff)
-          systemctl poweroff
+          confirm_action && systemctl poweroff
           ;;
       esac
     '';
   };
 
-  # Network menu script
+  # Network menu script -- dynamic interface detection, signal strength icons
   networkMenu = cfgLib.mkShellScript {
     inherit pkgs;
     name = "rofi-network-menu";
     body = ''
+            get_interface() {
+              ${nmcli} -t -f DEVICE,TYPE device status | ${pkgs.gnugrep}/bin/grep ':wifi$' | ${pkgs.coreutils}/bin/head -1 | ${pkgs.coreutils}/bin/cut -d: -f1
+            }
+
+            signal_icon() {
+              local signal="$1"
+              if   [ "$signal" -ge 75 ]; then echo "\u{f0928}"
+              elif [ "$signal" -ge 50 ]; then echo "\u{f0925}"
+              elif [ "$signal" -ge 25 ]; then echo "\u{f0922}"
+              else echo "\u{f091f}"
+              fi
+            }
+
             get_wifi_info() {
-              local interface=$(${pkgs.iproute2}/bin/ip -br link | ${pkgs.gawk}/bin/awk '/wl/ {print $1; exit}')
-              if [ -z "$interface" ]; then
-                echo "No wireless interface found"
+              local iface
+              iface=$(get_interface)
+              if [ -z "$iface" ]; then
+                echo "\u{f092d} No wireless interface"
                 return
               fi
 
-              local ssid=$(${pkgs.networkmanager}/bin/nmcli -t -f active,ssid dev wifi | ${pkgs.gnugrep}/bin/grep '^yes' | ${pkgs.coreutils}/bin/cut -d':' -f2)
-              local signal=$(${pkgs.networkmanager}/bin/nmcli -t -f active,signal dev wifi | ${pkgs.gnugrep}/bin/grep '^yes' | ${pkgs.coreutils}/bin/cut -d':' -f2)
-              local ip=$(${pkgs.iproute2}/bin/ip -4 addr show "$interface" | ${pkgs.gawk}/bin/awk '/inet / {print $2}')
+              local ssid signal ip
+              ssid=$(${nmcli} -t -f active,ssid dev wifi | ${pkgs.gnugrep}/bin/grep '^yes' | ${pkgs.coreutils}/bin/cut -d: -f2)
+              signal=$(${nmcli} -t -f active,signal dev wifi | ${pkgs.gnugrep}/bin/grep '^yes' | ${pkgs.coreutils}/bin/cut -d: -f2)
+              ip=$(${pkgs.iproute2}/bin/ip -4 addr show "$iface" 2>/dev/null | ${pkgs.gawk}/bin/awk '/inet / {print $2}')
 
               if [ -n "$ssid" ]; then
-                echo "Connected: $ssid"
-                echo "Signal: $signal%"
-                echo "IP: $ip"
-                echo "Interface: $interface"
+                local icon
+                icon=$(signal_icon "$signal")
+                echo "$icon $ssid ($signal%) - $ip"
               else
-                echo "Not connected"
-                echo "Interface: $interface"
+                echo "\u{f092d} Not connected"
               fi
             }
 
             show_menu() {
-              local info=$(get_wifi_info)
+              local info
+              info=$(get_wifi_info)
               local options="$info
-      ────────────────
+      \u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}
        Scan Networks
        Disconnect
-      󰖪 Enable WiFi
-      󰖪 Disable WiFi
+      \u{f0609} Enable WiFi
+      \u{f060a} Disable WiFi
        Network Settings"
 
-              echo -e "$options" | ${pkgs.rofi}/bin/rofi -dmenu \
+              echo -e "$options" | ${rofi} -dmenu \
                 -i \
-                -p "Network"
+                -p "Network" \
+                -theme network-theme
             }
 
             show_networks() {
-              ${pkgs.networkmanager}/bin/nmcli device wifi rescan 2>/dev/null
+              ${nmcli} device wifi rescan 2>/dev/null
               sleep 1
 
-              local networks=$(${pkgs.networkmanager}/bin/nmcli -t -f SSID,SIGNAL,SECURITY device wifi list | \
-                ${pkgs.gawk}/bin/awk -F: '{if ($1) printf "%s  %s%%  %s\n", $1, $2, ($3 ? "🔒" : "📡")}' | \
-                ${pkgs.coreutils}/bin/sort -rn -k2)
+              local networks
+              networks=$(${nmcli} -t -f SSID,SIGNAL,SECURITY device wifi list | \
+                ${pkgs.gawk}/bin/awk -F: '{
+                  if ($1 != "" && !seen[$1]++) {
+                    if ($2 >= 75) icon="\u{f0928}"
+                    else if ($2 >= 50) icon="\u{f0925}"
+                    else if ($2 >= 25) icon="\u{f0922}"
+                    else icon="\u{f091f}"
+                    lock = ($3 != "") ? "\u{f033e}" : "\u{f0337}"
+                    printf "%s %s  %s%%  %s\n", icon, $1, $2, lock
+                  }
+                }' | ${pkgs.coreutils}/bin/sort -t'%' -k1 -rn)
 
-              local chosen=$(echo "$networks" | ${pkgs.rofi}/bin/rofi -dmenu \
+              local chosen
+              chosen=$(echo "$networks" | ${rofi} -dmenu \
                 -i \
-                -p "Select Network")
+                -p "Select Network" \
+                -theme network-theme)
 
               if [ -n "$chosen" ]; then
-                local ssid=$(echo "$chosen" | ${pkgs.gawk}/bin/awk '{print $1}')
-                ${pkgs.networkmanager}/bin/nmcli device wifi connect "$ssid" || \
-                  ${pkgs.networkmanager}/bin/nmcli device wifi connect "$ssid" --ask
+                local ssid
+                ssid=$(echo "$chosen" | ${pkgs.gawk}/bin/awk '{print $2}')
+                if ${nmcli} device wifi connect "$ssid" 2>/dev/null; then
+                  ${notify} -i network-wireless "WiFi" "Connected to $ssid"
+                else
+                  ${nmcli} device wifi connect "$ssid" --ask
+                fi
               fi
             }
 
             choice=$(show_menu)
+            [ -z "$choice" ] && exit 0
+
+            iface=$(get_interface)
 
             case "$choice" in
               *"Scan Networks")
                 show_networks
                 ;;
               *"Disconnect")
-                ${pkgs.networkmanager}/bin/nmcli device disconnect wlan0 2>/dev/null || \
-                ${pkgs.networkmanager}/bin/nmcli device disconnect wlp* 2>/dev/null
+                if [ -n "$iface" ]; then
+                  ${nmcli} device disconnect "$iface"
+                  ${notify} -i network-offline "WiFi" "Disconnected"
+                fi
                 ;;
               *"Enable WiFi")
-                ${pkgs.networkmanager}/bin/nmcli radio wifi on
+                ${nmcli} radio wifi on
+                ${notify} -i network-wireless "WiFi" "Enabled"
                 ;;
               *"Disable WiFi")
-                ${pkgs.networkmanager}/bin/nmcli radio wifi off
+                ${nmcli} radio wifi off
+                ${notify} -i network-offline "WiFi" "Disabled"
                 ;;
               *"Network Settings")
                 ${pkgs.networkmanagerapplet}/bin/nm-connection-editor &
@@ -122,14 +181,15 @@
     '';
   };
 
-  # Enhanced clipboard menu with Rofi
+  # Clipboard menu -- themed clipmenu wrapper
   clipboardMenu = cfgLib.mkShellScript {
     inherit pkgs;
     name = "rofi-clipboard-menu";
     body = ''
       export CM_LAUNCHER=rofi
       export CM_HISTLENGTH=20
-      ${pkgs.clipmenu}/bin/clipmenu
+      export ROFI_THEME=clipboard-theme
+      CM_LAUNCHER_ARGS="-theme clipboard-theme" ${pkgs.clipmenu}/bin/clipmenu
     '';
   };
 in {

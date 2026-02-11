@@ -1,5 +1,5 @@
 * {
-    /* Gruvbox palette — matches polybar color scheme */
+    /* Gruvbox palette -- matches polybar color scheme */
     bg-col: @@bg-col@@;
     bg-col-light: @@bg-col-light@@;
     border-col: @@border-col@@;
@@ -16,4 +16,11 @@
     element-bg: @@element-bg@@;
     element-alternate-bg: @@element-alternate-bg@@;
     highlight: underline bold @@yellow-alt@@;
+
+    /* Extended palette for specialized menus */
+    accent-green: @@accent-green@@;
+    accent-blue: @@accent-blue@@;
+    purple: @@purple@@;
+    surface: @@surface@@;
+    green: @@green@@;
 }

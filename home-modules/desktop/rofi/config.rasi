@@ -1,6 +1,6 @@
 configuration{
-    modi: "run,drun,window";
-    lines: 10;
+    modi: "drun,run,window";
+    lines: 8;
     cycle: false;
     font: "@@font-base@@ 11";
     show-icons: true;
@@ -8,8 +8,8 @@ configuration{
     terminal: "@@terminal@@";
     drun-display-format: "{icon} {name}";
     location: 0;
-    disable-history: true;
-    hide-scrollbar: false;
+    disable-history: false;
+    hide-scrollbar: true;
     display-drun: " Apps";
     display-run: " Run";
     display-window: " Window";
@@ -26,13 +26,13 @@ element-text, element-icon, mode-switcher {
 }
 
 window {
-    width: 450px;
+    width: 550px;
     location: center;
     anchor: center;
     padding: 0px;
-    border: 5px;
-    border-radius: 2px;
-    border-color: @bg-col;
+    border: 2px 0px 0px 0px;
+    border-radius: 12px;
+    border-color: @selected-col;
     background-color: @bg-col;
     spacing: 0;
 }
@@ -46,39 +46,34 @@ mainbox {
 inputbar {
     children: [prompt,entry];
     background-color: @bg-col;
-    border: 2px;
-    border-color: @grey;
-    padding: 0px;
-    margin: 0px;
+    padding: 4px;
+    margin: 8px 8px 0px 8px;
+    border: 0px;
+    border-radius: 8px;
 }
 
 prompt {
     background-color: @orange-alt;
-    padding: 10px 14px;
+    padding: 8px 14px;
+    border-radius: 8px;
     text-color: @bg-col;
     font: "@@font-base@@ Bold 11";
 }
 
-textbox-prompt-colon {
-    expand: false;
-    str: ":";
-}
-
 entry {
-    padding: 10px 14px;
-    text-color: @red-alt;
-    background-color: @bg-col;
+    padding: 8px 14px;
+    text-color: @cream;
+    background-color: transparent;
     placeholder: "Search...";
     placeholder-color: @grey;
 }
 
 listview {
-    padding: 3px;
-    border: 0px 2px 2px 2px;
-    border-color: @grey;
+    padding: 6px;
+    margin: 4px 0px 0px 0px;
     background-color: @bg-col;
     dynamic: false;
-    lines: 10;
+    lines: 8;
     columns: 1;
     cycle: true;
     scrollbar: false;
@@ -86,17 +81,18 @@ listview {
 }
 
 element {
-    padding: 4px 8px;
+    padding: 10px 14px;
     vertical-align: 0.5;
-    border: 2px;
-    border-radius: 0px;
-    background-color: @element-bg;
+    border: 0px;
+    border-radius: 6px;
+    background-color: @surface;
     text-color: @cream;
+    margin: 2px 4px;
 }
 
 element-icon {
-    size: 22px;
-    margin: 0px 8px 0px 0px;
+    size: 28px;
+    margin: 0px 12px 0px 0px;
     background-color: inherit;
 }
 
@@ -110,7 +106,7 @@ element normal.active {
 }
 
 element alternate.normal {
-    background-color: @element-alternate-bg;
+    background-color: @element-bg;
 }
 
 element alternate.active {
@@ -118,23 +114,24 @@ element alternate.active {
 }
 
 element selected.active {
-    background-color: @red-alt;
+    background-color: @orange-alt;
     text-color: @bg-col;
 }
 
 mode-switcher {
-    spacing: 0;
-    border: 0px 2px 2px 2px;
-    border-color: @grey;
+    spacing: 6px;
+    padding: 6px 8px 8px 8px;
     background-color: @bg-col;
+    border: 0px;
 }
 
 button {
     padding: 8px;
-    background-color: @bg-col;
+    background-color: @surface;
     text-color: @grey;
     vertical-align: 0.5;
     horizontal-align: 0.5;
+    border-radius: 6px;
 }
 
 button selected {

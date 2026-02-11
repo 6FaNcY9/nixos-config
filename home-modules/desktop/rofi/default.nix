@@ -30,12 +30,20 @@
       "font-base" = fontBase;
       "icon-theme" = "Papirus-Dark";
       "terminal" = "alacritty";
+      # Extended palette for specialized menus
+      "accent-green" = palette.accent; # clipboard accent
+      "accent-blue" = palette.accent2; # network accent
+      "purple" = c.base0E; # hibernate highlight
+      "surface" = "#2e2e2e"; # card bg between bg and bgAlt
+      "green" = c.base0C; # connected indicator
     };
   };
 
   themeText = replace (builtins.readFile ./theme.rasi);
   configText = replace (builtins.readFile ./config.rasi);
   powermenuText = replace (builtins.readFile ./powermenu-theme.rasi);
+  networkText = replace (builtins.readFile ./network-theme.rasi);
+  clipboardText = replace (builtins.readFile ./clipboard-theme.rasi);
 in {
   imports = [./scripts.nix];
   config = lib.mkIf config.profiles.desktop {
@@ -47,6 +55,8 @@ in {
         "rofi/theme.rasi".text = themeText;
         "rofi/config.rasi".text = configText;
         "rofi/powermenu-theme.rasi".text = powermenuText;
+        "rofi/network-theme.rasi".text = networkText;
+        "rofi/clipboard-theme.rasi".text = clipboardText;
       };
     };
   };
