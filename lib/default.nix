@@ -45,6 +45,24 @@
       && (validateSecretEncrypted path))
     secretPaths;
 
+  # Validate a list of secret files: all must exist and be encrypted
+  # Returns { valid = bool; assertion = { assertion, message }; }
+  mkSecretValidation = {
+    secrets,
+    label ? "secrets",
+  }: let
+    valid = builtins.all (path:
+      (validateSecretExists path)
+      && (validateSecretEncrypted path))
+    secrets;
+  in {
+    inherit valid;
+    assertion = {
+      assertion = valid;
+      message = "${label}: one or more secret files are missing or unencrypted.";
+    };
+  };
+
   # Devshell helpers
   # Create a formatted MOTD (message of the day) for devshells
   mkDevshellMotd = {
@@ -84,27 +102,48 @@
   in
     builtins.replaceStrings oldStrs newStrs;
 
+  # Profile helpers
+  mkProfile = name: default:
+    lib.mkOption {
+      type = lib.types.bool;
+      inherit default;
+      description = "Enable ${name} package set.";
+    };
+
   # Polybar helpers
-  # Create a polybar module with standard formatting
-  mkPolybarModule = {
-    type,
-    format,
-    foreground ? null,
-    background ? null,
-    padding ? 1,
-    extraConfig ? {},
-  }:
-    {
-      inherit type format;
-      format-padding = padding;
-    }
-    // (lib.optionalAttrs (foreground != null) {
-      format-foreground = "\${colors.${foreground}}";
-    })
-    // (lib.optionalAttrs (background != null) {
-      format-background = "\${colors.${background}}";
-    })
-    // extraConfig;
+  # Two-tone module style: icon block (dark color) + label block (bright variant)
+  mkPolybarTwoTone = {
+    icon,
+    color,
+    colorAlt ? "${color}-alt",
+    fg ? "black",
+  }: {
+    format-prefix = "  ${icon} ";
+    format-prefix-foreground = "\${colors.${fg}}";
+    format-prefix-background = "\${colors.${color}}";
+    label-foreground = "\${colors.${fg}}";
+    label-background = "\${colors.${colorAlt}}";
+    label-padding-left = 1;
+    label-padding-right = 1;
+  };
+
+  # Two-tone style for a named state (e.g. format-volume, format-charging)
+  mkPolybarTwoToneState = {
+    state,
+    icon,
+    color,
+    colorAlt ? "${color}-alt",
+    fg ? "black",
+  }: {
+    "format-${state}-prefix" = "  ${icon} ";
+    "format-${state}-prefix-foreground" = "\${colors.${fg}}";
+    "format-${state}-prefix-background" = "\${colors.${color}}";
+    "format-${state}" = "<label-${state}>";
+    "label-${state}-foreground" = "\${colors.${fg}}";
+    "label-${state}-background" = "\${colors.${colorAlt}}";
+    "label-${state}-padding-left" = 1;
+    "label-${state}-padding-right" = 1;
+  };
 in {
   # Workspace helpers
   inherit mkWorkspaceName;
@@ -135,6 +174,7 @@ in {
     validateSecretExists
     validateSecretEncrypted
     validateSecrets
+    mkSecretValidation
     ;
 
   # Devshell helpers
@@ -143,6 +183,9 @@ in {
   # Color helpers
   inherit mkColorReplacer;
 
+  # Profile helpers
+  inherit mkProfile;
+
   # Polybar helpers
-  inherit mkPolybarModule;
+  inherit mkPolybarTwoTone mkPolybarTwoToneState;
 }
