@@ -25,8 +25,7 @@ in {
       "module/menu" = {
         type = "custom/text";
         format = " MENU ";
-        click-left = "exec rofi-dropdown-menu &";
-        click-right = "exec rofi -show drun -disable-history -show-icons &";
+        click-right = "exec ${pkgs.rofi}/bin/rofi -show drun -disable-history -show-icons &";
         format-foreground = "\${colors.black}";
         format-background = "\${colors.orange-alt}";
       };
@@ -63,9 +62,8 @@ in {
           label-urgent-foreground = "\${colors.black}";
           label-urgent-background = "\${colors.red-alt}";
           label-urgent-padding = 0;
-          label-separator = "·";
-          label-separator-padding = 0;
-          label-separator-foreground = "\${colors.yellow-alt}";
+      label-separator = " ";
+      label-separator-padding = 0;
         }
         // wsIconAttrs;
 
@@ -175,7 +173,6 @@ in {
       "module/power" = {
         type = "custom/text";
         format = " 󰐥 ";
-        click-left = "exec rofi-power-menu";
         format-foreground = "\${colors.black}";
         format-background = "\${colors.yellow}";
       };
@@ -223,7 +220,7 @@ in {
         {
           type = "custom/script";
           exec = "${pkgs.writeShellScript "polybar-autotiling" ''
-            if ${pkgs.procps}/bin/pgrep -x autotiling > /dev/null; then
+            if ${pkgs.procps}/bin/pgrep -f autotiling > /dev/null; then
               echo "on"
             else
               echo "off"
@@ -231,8 +228,8 @@ in {
           ''}";
           interval = 5;
           click-left = "${pkgs.writeShellScript "toggle-autotiling" ''
-            if ${pkgs.procps}/bin/pgrep -x autotiling > /dev/null; then
-              ${pkgs.procps}/bin/pkill -x autotiling
+            if ${pkgs.procps}/bin/pgrep -f autotiling > /dev/null; then
+              ${pkgs.procps}/bin/pkill -f autotiling
             else
               ${pkgs.autotiling}/bin/autotiling &
             fi
@@ -253,7 +250,6 @@ in {
           interval = 3;
           label-connected = "%essid%";
           label-disconnected = "off";
-          click-left = "rofi-network-menu";
           click-right = "${pkgs.networkmanagerapplet}/bin/nm-connection-editor &";
         }
         // mkPolybarTwoToneState {

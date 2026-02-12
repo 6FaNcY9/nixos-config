@@ -15,7 +15,7 @@
     inherit pkgs;
     name = "rofi-power-menu";
     body = ''
-      options="\u{f033e} Lock\n\u{f0931} Logout\n\u{f0904} Suspend\n\u{f04b2} Hibernate\n\u{f0709} Reboot\n\u{f0425} Poweroff"
+      options="󰌾 Lock\n󰤱 Logout\n󰤄 Suspend\n󰒲 Hibernate\n󰜉 Reboot\n󰐥 Poweroff"
 
       chosen=$(echo -e "$options" | ${rofi} -dmenu \
         -i \
@@ -26,7 +26,7 @@
 
       confirm_action() {
         local answer
-        answer=$(echo -e "\u{f012c} Yes\n\u{f0156} No" | ${rofi} -dmenu \
+        answer=$(echo -e "󰄬 Yes\n󰅖 No" | ${rofi} -dmenu \
           -i \
           -p "Are you sure?" \
           -theme powermenu-theme \
@@ -71,10 +71,10 @@
 
             signal_icon() {
               local signal="$1"
-              if   [ "$signal" -ge 75 ]; then echo "\u{f0928}"
-              elif [ "$signal" -ge 50 ]; then echo "\u{f0925}"
-              elif [ "$signal" -ge 25 ]; then echo "\u{f0922}"
-              else echo "\u{f091f}"
+              if   [ "$signal" -ge 75 ]; then echo "󰤨"
+              elif [ "$signal" -ge 50 ]; then echo "󰤥"
+              elif [ "$signal" -ge 25 ]; then echo "󰤢"
+              else echo "󰤟"
               fi
             }
 
@@ -82,7 +82,7 @@
               local iface
               iface=$(get_interface)
               if [ -z "$iface" ]; then
-                echo "\u{f092d} No wireless interface"
+                echo "󰤭 No wireless interface"
                 return
               fi
 
@@ -96,7 +96,7 @@
                 icon=$(signal_icon "$signal")
                 echo "$icon $ssid ($signal%) - $ip"
               else
-                echo "\u{f092d} Not connected"
+                echo "󰤭 Not connected"
               fi
             }
 
@@ -104,12 +104,12 @@
               local info
               info=$(get_wifi_info)
               local options="$info
-      \u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}\u{2500}
-      \u{f0349} Scan Networks
-      \u{f0a6c} Disconnect
-      \u{f0609} Enable WiFi
-      \u{f060a} Disable WiFi
-      \u{f0493} Network Settings"
+      ────────────────
+      󰍉 Scan Networks
+      󰩬 Disconnect
+      󰘉 Enable WiFi
+      󰘊 Disable WiFi
+      󰒓 Network Settings"
 
               echo -e "$options" | ${rofi} -dmenu \
                 -i \
@@ -125,11 +125,11 @@
               networks=$(${nmcli} -t -f SSID,SIGNAL,SECURITY device wifi list | \
                 ${pkgs.gawk}/bin/awk -F: '{
                   if ($1 != "" && !seen[$1]++) {
-                    if ($2 >= 75) icon="\u{f0928}"
-                    else if ($2 >= 50) icon="\u{f0925}"
-                    else if ($2 >= 25) icon="\u{f0922}"
-                    else icon="\u{f091f}"
-                    lock = ($3 != "") ? "\u{f033e}" : "\u{f0337}"
+                    if ($2 >= 75) icon="󰤨"
+                    else if ($2 >= 50) icon="󰤥"
+                    else if ($2 >= 25) icon="󰤢"
+                    else icon="󰤟"
+                    lock = ($3 != "") ? "󰌾" : "󰌷"
                     printf "%s %s  %s%%  %s\n", icon, $1, $2, lock
                   }
                 }' | ${pkgs.coreutils}/bin/sort -t'%' -k1 -rn)
@@ -203,14 +203,14 @@
           description=$(${pkgs.pulseaudio}/bin/pactl list sinks | grep -A1 "Sink #$id" | grep "Description:" | sed 's/.*Description: //')
           default_sink=$(${pkgs.pulseaudio}/bin/pactl get-default-sink)
           if [ "$name" = "$default_sink" ]; then
-            printf "\u{f04c3}  %s (active)\n" "$description"
+            printf "󰓃  %s (active)\n" "$description"
           else
-            printf "\u{f02cb}  %s\n" "$description"
+            printf "󰋋  %s\n" "$description"
           fi
         done
       }
 
-      chosen=$(get_sinks | ${rofi} -dmenu -p " \u{f04c3}  Audio" -theme ~/.config/rofi/audio-switcher-theme.rasi)
+      chosen=$(get_sinks | ${rofi} -dmenu -p " 󰓃  Audio" -theme ~/.config/rofi/audio-switcher-theme.rasi)
 
       if [ -z "$chosen" ]; then
         exit 0
@@ -249,38 +249,38 @@
         title=$($playerctl metadata title 2>/dev/null | ${pkgs.coreutils}/bin/cut -c1-28)
         artist=$($playerctl metadata artist 2>/dev/null | ${pkgs.coreutils}/bin/cut -c1-18)
         [ -n "$artist" ] && now_playing="$artist - $title" || now_playing="$title"
-        play_icon=$'\u{f040a}'
+        play_icon="󰐊"
       elif [ "$player_status" = "Paused" ]; then
         title=$($playerctl metadata title 2>/dev/null | ${pkgs.coreutils}/bin/cut -c1-30)
         now_playing="$title (paused)"
-        play_icon=$'\u{f03e4}'
+        play_icon="󰏤"
       else
         now_playing="Nothing playing"
-        play_icon=$'\u{f03e4}'
+        play_icon="󰏤"
       fi
 
       if [ "$muted" = "yes" ]; then
-        vol_icon=$'\u{f0581}'
+        vol_icon="󰖁"
         vol_label="Muted"
       else
-        vol_icon=$'\u{f057e}'
+        vol_icon="󰕾"
         vol_label="''${volume}%"
       fi
 
-      if $pgrep -x autotiling > /dev/null 2>&1; then
+      if $pgrep -f autotiling > /dev/null 2>&1; then
         auto_state="ON"
-        auto_icon=$'\u{f056d}'
+        auto_icon="󰕭"
       else
         auto_state="OFF"
-        auto_icon=$'\u{f056d}'
+        auto_icon="󰕭"
       fi
 
-      entries="$'\u{f00df}'  Brightness: ''${brightness}%
+      entries="󰃟  Brightness: ''${brightness}%
       $play_icon  $now_playing
       $vol_icon  Volume: $vol_label
       $auto_icon  Autotiling: $auto_state"
 
-      chosen=$(echo -e "$entries" | ${pkgs.coreutils}/bin/sed 's/^[[:space:]]*//' | ${rofi} -dmenu \
+      chosen=$(echo -e "$entries" | ${pkgs.gnused}/bin/sed 's/^[[:space:]]*//' | ${rofi} -dmenu \
         -theme ~/.config/rofi/dropdown-theme.rasi \
         -selected-row 0)
 
@@ -289,7 +289,7 @@
       case "$chosen" in
         *Brightness*)
           current=$(( $($brightnessctl get) * 100 / $($brightnessctl max) ))
-          options="$'\u{f00de}'  100%\n$'\u{f00de}'  75%\n$'\u{f00dd}'  50%\n$'\u{f00dc}'  25%\n$'\u{f00db}'  10%"
+          options="󰃞  100%\n󰃞  75%\n󰃝  50%\n󰃜  25%\n󰃛  10%"
           level=$(echo -e "$options" | ${rofi} -dmenu \
             -theme ~/.config/rofi/dropdown-theme.rasi \
             -theme-str 'listview { lines: 5; }' \
@@ -304,8 +304,8 @@
           ${audioSwitcher}/bin/rofi-audio-switcher
           ;;
         *Autotiling*)
-          if $pgrep -x autotiling > /dev/null 2>&1; then
-            $pkill -x autotiling
+          if $pgrep -f autotiling > /dev/null 2>&1; then
+            $pkill -f autotiling
             ${notify} -t 1500 "Autotiling" "Disabled"
           else
             ${pkgs.autotiling}/bin/autotiling &
@@ -329,6 +329,18 @@ in {
       audioSwitcher
       dropdownMenu
     ];
+
+    services.polybar.settings = {
+      "module/menu" = {
+        click-left = "exec ${dropdownMenu}/bin/rofi-dropdown-menu &";
+      };
+      "module/power" = {
+        click-left = "exec ${powerMenu}/bin/rofi-power-menu";
+      };
+      "module/network" = {
+        click-left = "${networkMenu}/bin/rofi-network-menu";
+      };
+    };
 
     xsession.windowManager.i3.config.keybindings = let
       mod = config.xsession.windowManager.i3.config.modifier;

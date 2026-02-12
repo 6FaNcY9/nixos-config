@@ -15,7 +15,7 @@
       notification = false;
     }
     {
-      command = "${pkgs.xautolock}/bin/xautolock -time 5 -locker lock-screen -killtime 10 -killer '${pkgs.xorg.xset}/bin/xset dpms force off'";
+      command = "${pkgs.xautolock}/bin/xautolock -time 5 -locker lock-screen -killtime 10 -killer '${pkgs.xset}/bin/xset dpms force off'";
       always = false;
       notification = false;
     }
