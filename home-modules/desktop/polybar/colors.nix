@@ -1,14 +1,17 @@
 {
+  cfgLib,
   palette,
   c,
   ...
-}: {
+}: let
+  darken = cfgLib.darkenColor;
+in {
   services.polybar.settings."colors" = {
     # Base (from shared palette)
     background = palette.bg;
     background-alt = palette.bgAlt;
     foreground = palette.text;
-    dark = palette.bg; # Match global background
+    dark = palette.bg;
     black = "#000000";
     transparent = "#00000000";
 
@@ -19,25 +22,21 @@
     # Gruvbox two-tone module pairs (icon-bg / label-bg)
     #
     # Each polybar module uses a "two-tone" design: a darker icon block and
-    # a brighter label block.  The dark variant is ~30% darker than the base16
-    # slot to create a visible shadow effect; the bright "-alt" variant uses a
-    # hardcoded Gruvbox hex for the label background.
-    #
-    # If switching themes, update both the dark and -alt hex values to match
-    # the new palette (e.g. darken base by 30%, brighten alt by 15%).
-    green = "#7a7a00";
-    green-alt = "#b8bb26";
-    yellow = "#b37a00";
-    yellow-alt = "#fabd2f";
-    orange = "#96410a";
+    # a brighter label block.  The dark variant is derived via darkenColor
+    # from the base16 slot; the "-alt" variant is the base16 color itself.
+    green = darken 0.30 c.base0B;
+    green-alt = c.base0B;
+    yellow = darken 0.30 c.base0A;
+    yellow-alt = c.base0A;
+    orange = darken 0.47 c.base09;
     orange-alt = c.base09;
-    blue = "#5c7979";
-    blue-alt = "#83a598";
-    aqua = "#5d795d";
-    aqua-alt = "#8ec07c";
-    purple = "#945d79";
+    blue = darken 0.30 c.base0D;
+    blue-alt = c.base0D;
+    aqua = darken 0.30 c.base0C;
+    aqua-alt = c.base0C;
+    purple = darken 0.30 c.base0E;
     purple-alt = c.base0E;
-    red = "#964242";
-    red-alt = "#fb4934";
+    red = darken 0.30 c.base08;
+    red-alt = c.base08;
   };
 }
