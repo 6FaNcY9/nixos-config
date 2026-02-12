@@ -301,7 +301,38 @@
           fi
           ;;
         *Volume*|*Muted*)
-          ${audioSwitcher}/bin/rofi-audio-switcher
+          if [ "$muted" = "yes" ]; then
+            mute_label="󰖁  Unmute"
+          else
+            mute_label="󰖁  Mute"
+          fi
+          vol_options="󰕾  100%\n󰕾  75%\n󰕾  50%\n󰕾  25%\n󰕾  10%\n$mute_label\n󰓃  Switch Output"
+          vol_choice=$(echo -e "$vol_options" | ${rofi} -dmenu \
+            -theme ~/.config/rofi/dropdown-theme.rasi \
+            -theme-str 'listview { lines: 7; }' \
+            -selected-row 0)
+          if [ -n "$vol_choice" ]; then
+            case "$vol_choice" in
+              *Mute*|*Unmute*)
+                $pactl set-sink-mute @DEFAULT_SINK@ toggle
+                new_mute=$($pactl get-sink-mute @DEFAULT_SINK@ | ${pkgs.gnugrep}/bin/grep -Po '(yes|no)')
+                if [ "$new_mute" = "yes" ]; then
+                  ${notify} -t 1500 "Volume" "Muted"
+                else
+                  new_vol=$($pactl get-sink-volume @DEFAULT_SINK@ | ${pkgs.gnugrep}/bin/grep -Po '\d+(?=%)' | ${pkgs.coreutils}/bin/head -1)
+                  ${notify} -t 1500 "Volume" "Unmuted (''${new_vol}%)"
+                fi
+                ;;
+              *"Switch Output"*)
+                ${audioSwitcher}/bin/rofi-audio-switcher
+                ;;
+              *)
+                pct=$(echo "$vol_choice" | ${pkgs.gnugrep}/bin/grep -Po '\d+')
+                $pactl set-sink-volume @DEFAULT_SINK@ "''${pct}%"
+                ${notify} -t 1500 "Volume" "Set to ''${pct}%"
+                ;;
+            esac
+          fi
           ;;
         *Autotiling*)
           if $pgrep -f autotiling > /dev/null 2>&1; then

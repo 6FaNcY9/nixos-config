@@ -11,7 +11,6 @@
   modulesRight = lib.concatStringsSep " " (
     ["host" "cpu" "temp" "memory"]
     ++ lib.optionals hasNetwork ["network"]
-    ++ ["pulseaudio"]
     ++ lib.optionals hasBattery ["battery"]
     ++ ["power"]
   );
