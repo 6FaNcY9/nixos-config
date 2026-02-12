@@ -1,7 +1,7 @@
 {lib}: let
   # Workspace helpers
   mkWorkspaceName = ws: let
-    number = builtins.toString ws.number;
+    number = toString ws.number;
     icon = ws.icon or "";
   in
     if icon == ""
@@ -12,7 +12,7 @@
   # Check if a file exists and is readable
   validateFileExists = path: message:
     assert builtins.pathExists path
-    || builtins.throw "Validation failed: ${message}\n  File not found: ${path}"; true;
+    || throw "Validation failed: ${message}\n  File not found: ${path}"; true;
 
   # Check if a file has correct permissions
   # Note: This is a compile-time check, so it checks the source file in the nix store
@@ -32,7 +32,7 @@
       && (lib.hasInfix "mac" content || lib.hasInfix "enc" content);
   in
     assert isEncrypted
-    || builtins.throw ''
+    || throw ''
       Validation failed: Secret file appears to be unencrypted
         File: ${secretPath}
         Hint: Use 'sops -e ${secretPath}' to encrypt it
@@ -91,6 +91,38 @@
     '';
 
   # Color helpers
+  # Darken a "#rrggbb" hex color by a fraction (0.0 – 1.0).
+  # darkenColor 0.30 "#ff8700" => "#b25e00"
+  darkenColor = fraction: hex: let
+    hexDigits = "0123456789abcdef";
+    hexToInt = c: let
+      lower = lib.toLower c;
+      idx = lib.lists.findFirstIndex (x: x == lower) null (lib.stringToCharacters hexDigits);
+    in
+      if idx != null
+      then idx
+      else 0;
+    parseChannel = a: b: hexToInt a * 16 + hexToInt b;
+    clamp = v:
+      if v < 0
+      then 0
+      else if v > 255
+      then 255
+      else v;
+    toHex = n: let
+      hi = builtins.elemAt (lib.stringToCharacters hexDigits) (n / 16);
+      lo = builtins.elemAt (lib.stringToCharacters hexDigits) (lib.mod n 16);
+    in "${hi}${lo}";
+    chars = lib.stringToCharacters hex;
+    r = parseChannel (builtins.elemAt chars 1) (builtins.elemAt chars 2);
+    g = parseChannel (builtins.elemAt chars 3) (builtins.elemAt chars 4);
+    b = parseChannel (builtins.elemAt chars 5) (builtins.elemAt chars 6);
+    factor = 1.0 - fraction;
+    newR = clamp (builtins.floor (r * factor + 0.5));
+    newG = clamp (builtins.floor (g * factor + 0.5));
+    newB = clamp (builtins.floor (b * factor + 0.5));
+  in "#${toHex newR}${toHex newG}${toHex newB}";
+
   # Replace color placeholders in a string with actual color values
   # Example: mkColorReplacer {colors = {base00 = "#282828"; base01 = "#3c3836";}} "@@base00@@"
   mkColorReplacer = {
@@ -163,7 +195,7 @@ in {
   in
     builtins.listToAttrs (
       map (ws: {
-        name = "${keyPrefix}${builtins.toString ws.number}";
+        name = "${keyPrefix}${toString ws.number}";
         value = "${commandPrefix} \"${mkWorkspaceName ws}\"";
       })
       workspaces
@@ -183,7 +215,7 @@ in {
   inherit mkDevshellMotd mkShellScript;
 
   # Color helpers
-  inherit mkColorReplacer;
+  inherit darkenColor mkColorReplacer;
 
   # Profile helpers
   inherit mkProfile;
