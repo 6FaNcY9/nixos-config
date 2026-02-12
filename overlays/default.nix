@@ -70,6 +70,15 @@
               --replace "../../../node_modules/@opentui/solid/scripts/solid-plugin" \
                         "../node_modules/@opentui/solid/scripts/solid-plugin"
           '';
+        # The embedded Bun JS runtime's file watcher needs libstdc++.so.6 at runtime.
+        # The upstream installPhase already wraps with makeBinaryWrapper for PATH.
+        # We re-wrap to also add LD_LIBRARY_PATH for the native watcher binding.
+        postFixup =
+          (old.postFixup or "")
+          + ''
+            wrapProgram $out/bin/opencode \
+              --prefix LD_LIBRARY_PATH : "${final.stdenv.cc.cc.lib}/lib"
+          '';
       });
   };
 }

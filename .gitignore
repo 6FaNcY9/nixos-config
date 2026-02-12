@@ -24,6 +24,7 @@
 # -----------------------------
 /.serena/
 /.claude/
+/.sisyphus/*
 
 # -----------------------------
 # Secrets / keys (never commit)

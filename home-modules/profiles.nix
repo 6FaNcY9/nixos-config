@@ -71,6 +71,7 @@
     gnumake
     pkg-config
     nodejs
+    github-copilot-cli
     rustc
     cargo
     rustfmt
