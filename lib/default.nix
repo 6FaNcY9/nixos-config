@@ -9,26 +9,22 @@
     else "${number}:${icon}";
 
   # Validation helpers
-  # Check if a file exists and is readable
-  validateFileExists = path: message:
-    assert builtins.pathExists path
-    || throw "Validation failed: ${message}\n  File not found: ${path}"; true;
-
-  # Check if a file has correct permissions
-  # Note: This is a compile-time check, so it checks the source file in the nix store
-  validateFileReadable = path: message:
-    validateFileExists path message;
-
   # Validate that a secret file exists
   validateSecretExists = secretPath:
-    validateFileExists secretPath "Secret file not found: ${secretPath}";
+    assert builtins.pathExists secretPath
+    || throw "Secret file not found: ${toString secretPath}"; true;
 
   # Validate that a secret file is encrypted (basic check: not plaintext YAML/JSON)
   validateSecretEncrypted = secretPath: let
-    content = builtins.readFile secretPath;
+    exists = builtins.pathExists secretPath;
+    content =
+      if exists
+      then builtins.readFile secretPath
+      else "";
     # Check if file contains sops metadata (encrypted files have this)
     isEncrypted =
-      (lib.hasInfix "sops" content)
+      exists
+      && (lib.hasInfix "sops" content)
       && (lib.hasInfix "mac" content || lib.hasInfix "enc" content);
   in
     assert isEncrypted
@@ -38,19 +34,13 @@
         Hint: Use 'sops -e ${secretPath}' to encrypt it
     ''; true;
 
-  # Validate multiple secrets at once
-  validateSecrets = secretPaths:
-    builtins.all (path:
-      (validateSecretExists path)
-      && (validateSecretEncrypted path))
-    secretPaths;
-
   # Validate a list of secret files: all must exist and be encrypted
   # Returns { valid = bool; assertions = [{ assertion, message }]; }
   mkSecretValidation = {
     secrets,
     label ? "secrets",
   }: let
+    missing = builtins.filter (p: !(builtins.pathExists p)) secrets;
     valid = builtins.all (path:
       (validateSecretExists path)
       && (validateSecretEncrypted path))
@@ -60,7 +50,10 @@
     assertions = [
       {
         assertion = valid;
-        message = "${label}: one or more secret files are missing or unencrypted.";
+        message =
+          "${label}: one or more secret files are missing or unencrypted."
+          + lib.optionalString (missing != [])
+          " Missing: ${builtins.concatStringsSep ", " (map toString missing)}";
       }
     ];
   };
@@ -113,15 +106,18 @@
       hi = builtins.elemAt (lib.stringToCharacters hexDigits) (n / 16);
       lo = builtins.elemAt (lib.stringToCharacters hexDigits) (lib.mod n 16);
     in "${hi}${lo}";
-    chars = lib.stringToCharacters hex;
-    r = parseChannel (builtins.elemAt chars 1) (builtins.elemAt chars 2);
-    g = parseChannel (builtins.elemAt chars 3) (builtins.elemAt chars 4);
-    b = parseChannel (builtins.elemAt chars 5) (builtins.elemAt chars 6);
-    factor = 1.0 - fraction;
-    newR = clamp (builtins.floor (r * factor + 0.5));
-    newG = clamp (builtins.floor (g * factor + 0.5));
-    newB = clamp (builtins.floor (b * factor + 0.5));
-  in "#${toHex newR}${toHex newG}${toHex newB}";
+  in
+    assert (builtins.stringLength hex == 7 && builtins.substring 0 1 hex == "#")
+    || throw "darkenColor: expected '#rrggbb' (7 chars), got '${hex}'"; let
+      chars = lib.stringToCharacters hex;
+      r = parseChannel (builtins.elemAt chars 1) (builtins.elemAt chars 2);
+      g = parseChannel (builtins.elemAt chars 3) (builtins.elemAt chars 4);
+      b = parseChannel (builtins.elemAt chars 5) (builtins.elemAt chars 6);
+      factor = 1.0 - fraction;
+      newR = clamp (builtins.floor (r * factor + 0.5));
+      newG = clamp (builtins.floor (g * factor + 0.5));
+      newB = clamp (builtins.floor (b * factor + 0.5));
+    in "#${toHex newR}${toHex newG}${toHex newB}";
 
   # Replace color placeholders in a string with actual color values
   # Example: mkColorReplacer {colors = {base00 = "#282828"; base01 = "#3c3836";}} "@@base00@@"
@@ -203,11 +199,8 @@ in {
 
   # Validation helpers
   inherit
-    validateFileExists
-    validateFileReadable
     validateSecretExists
     validateSecretEncrypted
-    validateSecrets
     mkSecretValidation
     ;
 

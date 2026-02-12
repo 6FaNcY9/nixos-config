@@ -62,8 +62,8 @@ in {
           label-urgent-foreground = "\${colors.black}";
           label-urgent-background = "\${colors.red-alt}";
           label-urgent-padding = 0;
-      label-separator = " ";
-      label-separator-padding = 0;
+          label-separator = " ";
+          label-separator-padding = 0;
         }
         // wsIconAttrs;
 
