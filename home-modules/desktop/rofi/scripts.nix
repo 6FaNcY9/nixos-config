@@ -228,6 +228,98 @@
       fi
     '';
   };
+
+  # Dropdown menu -- consolidates brightness, now-playing, audio, autotiling
+  dropdownMenu = cfgLib.mkShellScript {
+    inherit pkgs;
+    name = "rofi-dropdown-menu";
+    body = ''
+      brightnessctl="${pkgs.brightnessctl}/bin/brightnessctl"
+      playerctl="${pkgs.playerctl}/bin/playerctl"
+      pactl="${pkgs.pulseaudio}/bin/pactl"
+      pgrep="${pkgs.procps}/bin/pgrep"
+      pkill="${pkgs.procps}/bin/pkill"
+
+      brightness=$(( $($brightnessctl get) * 100 / $($brightnessctl max) ))
+      volume=$($pactl get-sink-volume @DEFAULT_SINK@ | ${pkgs.gnugrep}/bin/grep -Po '\d+(?=%)' | ${pkgs.coreutils}/bin/head -1)
+      muted=$($pactl get-sink-mute @DEFAULT_SINK@ | ${pkgs.gnugrep}/bin/grep -Po '(yes|no)')
+
+      player_status=$($playerctl status 2>/dev/null || echo "Stopped")
+      if [ "$player_status" = "Playing" ]; then
+        title=$($playerctl metadata title 2>/dev/null | ${pkgs.coreutils}/bin/cut -c1-28)
+        artist=$($playerctl metadata artist 2>/dev/null | ${pkgs.coreutils}/bin/cut -c1-18)
+        [ -n "$artist" ] && now_playing="$artist - $title" || now_playing="$title"
+        play_icon=$'\u{f040a}'
+      elif [ "$player_status" = "Paused" ]; then
+        title=$($playerctl metadata title 2>/dev/null | ${pkgs.coreutils}/bin/cut -c1-30)
+        now_playing="$title (paused)"
+        play_icon=$'\u{f03e4}'
+      else
+        now_playing="Nothing playing"
+        play_icon=$'\u{f03e4}'
+      fi
+
+      if [ "$muted" = "yes" ]; then
+        vol_icon=$'\u{f0581}'
+        vol_label="Muted"
+      else
+        vol_icon=$'\u{f057e}'
+        vol_label="''${volume}%"
+      fi
+
+      if $pgrep -x autotiling > /dev/null 2>&1; then
+        auto_state="ON"
+        auto_icon=$'\u{f056d}'
+      else
+        auto_state="OFF"
+        auto_icon=$'\u{f056d}'
+      fi
+
+      entries="$'\u{f00df}'  Brightness: ''${brightness}%
+      $play_icon  $now_playing
+      $vol_icon  Volume: $vol_label
+      $auto_icon  Autotiling: $auto_state"
+
+      chosen=$(echo -e "$entries" | ${pkgs.coreutils}/bin/sed 's/^[[:space:]]*//' | ${rofi} -dmenu \
+        -theme ~/.config/rofi/dropdown-theme.rasi \
+        -selected-row 0)
+
+      [ -z "$chosen" ] && exit 0
+
+      case "$chosen" in
+        *Brightness*)
+          current=$(( $($brightnessctl get) * 100 / $($brightnessctl max) ))
+          options="$'\u{f00de}'  100%\n$'\u{f00de}'  75%\n$'\u{f00dd}'  50%\n$'\u{f00dc}'  25%\n$'\u{f00db}'  10%"
+          level=$(echo -e "$options" | ${rofi} -dmenu \
+            -theme ~/.config/rofi/dropdown-theme.rasi \
+            -theme-str 'listview { lines: 5; }' \
+            -selected-row 0)
+          if [ -n "$level" ]; then
+            pct=$(echo "$level" | ${pkgs.gnugrep}/bin/grep -Po '\d+')
+            $brightnessctl set "''${pct}%"
+            ${notify} -t 1500 "Brightness" "Set to ''${pct}%"
+          fi
+          ;;
+        *Volume*|*Muted*)
+          ${audioSwitcher}/bin/rofi-audio-switcher
+          ;;
+        *Autotiling*)
+          if $pgrep -x autotiling > /dev/null 2>&1; then
+            $pkill -x autotiling
+            ${notify} -t 1500 "Autotiling" "Disabled"
+          else
+            ${pkgs.autotiling}/bin/autotiling &
+            ${notify} -t 1500 "Autotiling" "Enabled"
+          fi
+          ;;
+        *)
+          if [ "$player_status" = "Playing" ] || [ "$player_status" = "Paused" ]; then
+            $playerctl play-pause
+          fi
+          ;;
+      esac
+    '';
+  };
 in {
   config = lib.mkIf config.profiles.desktop {
     home.packages = [
@@ -235,6 +327,7 @@ in {
       networkMenu
       clipboardMenu
       audioSwitcher
+      dropdownMenu
     ];
 
     xsession.windowManager.i3.config.keybindings = let

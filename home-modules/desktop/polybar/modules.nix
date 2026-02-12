@@ -5,7 +5,6 @@
   workspaces,
   hostname,
   cfgLib,
-  palette,
   ...
 }: let
   inherit (cfgLib) mkPolybarTwoTone mkPolybarTwoToneState;
@@ -22,11 +21,12 @@
 in {
   services.polybar.settings = lib.mkMerge [
     {
-      # ── MENU button ──
+      # ── MENU button (opens dropdown with brightness, now-playing, volume, autotiling) ──
       "module/menu" = {
         type = "custom/text";
-        format = " MENU "; # Note: I like this more.
-        click-left = "exec rofi -show drun -disable-history -show-icons &";
+        format = " MENU ";
+        click-left = "exec rofi-dropdown-menu &";
+        click-right = "exec rofi -show drun -disable-history -show-icons &";
         format-foreground = "\${colors.black}";
         format-background = "\${colors.orange-alt}";
       };
@@ -184,7 +184,7 @@ in {
       "module/brightness" =
         {
           type = "internal/backlight";
-          card = "intel_backlight";
+          card = "amdgpu_bl1";
           enable-scroll = true;
         }
         // mkPolybarTwoTone {
@@ -218,30 +218,30 @@ in {
         format-padding = 1;
       };
 
-      # ── Autotiling Indicator (custom script) ──
-      "module/autotiling" = {
-        type = "custom/script";
-        exec = "${pkgs.writeShellScript "polybar-autotiling" ''
-          if ${pkgs.procps}/bin/pgrep -x autotiling > /dev/null; then
-            echo ""
-          else
-            echo "%{F${palette.muted}}%{F-}"
-          fi
-        ''}";
-        interval = 5;
-        click-left = "${pkgs.writeShellScript "toggle-autotiling" ''
-          if ${pkgs.procps}/bin/pgrep -x autotiling > /dev/null; then
-            ${pkgs.procps}/bin/pkill -x autotiling
-          else
-            ${pkgs.autotiling}/bin/autotiling &
-          fi
-        ''}";
-        format = "<label>";
-        label = "%output%";
-        label-foreground = "\${colors.cream}";
-        format-background = "\${colors.bg}";
-        format-padding = 1;
-      };
+      # ── Autotiling Indicator (aqua two-tone) ──
+      "module/autotiling" =
+        {
+          type = "custom/script";
+          exec = "${pkgs.writeShellScript "polybar-autotiling" ''
+            if ${pkgs.procps}/bin/pgrep -x autotiling > /dev/null; then
+              echo "on"
+            else
+              echo "off"
+            fi
+          ''}";
+          interval = 5;
+          click-left = "${pkgs.writeShellScript "toggle-autotiling" ''
+            if ${pkgs.procps}/bin/pgrep -x autotiling > /dev/null; then
+              ${pkgs.procps}/bin/pkill -x autotiling
+            else
+              ${pkgs.autotiling}/bin/autotiling &
+            fi
+          ''}";
+        }
+        // mkPolybarTwoTone {
+          icon = "󰕭 ";
+          color = "aqua";
+        };
     }
 
     # ── Network / WiFi (green two-tone) ──
@@ -258,12 +258,12 @@ in {
         }
         // mkPolybarTwoToneState {
           state = "connected";
-          icon = "󰖩";
+          icon = "󰖩 ";
           color = "green";
         }
         // mkPolybarTwoToneState {
           state = "disconnected";
-          icon = "󰖪";
+          icon = "󰖪 ";
           color = "red";
         };
     })

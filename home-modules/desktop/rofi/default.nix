@@ -45,6 +45,7 @@
   networkText = replace (builtins.readFile ./network-theme.rasi);
   clipboardText = replace (builtins.readFile ./clipboard-theme.rasi);
   audioSwitcherText = replace (builtins.readFile ./audio-switcher-theme.rasi);
+  dropdownText = replace (builtins.readFile ./dropdown-theme.rasi);
 in {
   imports = [./scripts.nix];
   config = lib.mkIf config.profiles.desktop {
@@ -59,6 +60,7 @@ in {
         "rofi/network-theme.rasi".text = networkText;
         "rofi/clipboard-theme.rasi".text = clipboardText;
         "rofi/audio-switcher-theme.rasi".text = audioSwitcherText;
+        "rofi/dropdown-theme.rasi".text = dropdownText;
       };
     };
   };
