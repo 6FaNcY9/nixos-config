@@ -15,19 +15,18 @@ _: {
     git = {
       enable = true;
 
-      aliases = {
-        co = "checkout";
-        br = "branch";
-        ci = "commit";
-        st = "status";
-        lg = "log --oneline --graph --decorate --all";
-        unstage = "reset HEAD --";
-        last = "log -1 HEAD";
-        amend = "commit --amend --no-edit";
-        wip = "commit -am 'WIP'";
-      };
-
       settings = {
+        alias = {
+          co = "checkout";
+          br = "branch";
+          ci = "commit";
+          st = "status";
+          lg = "log --oneline --graph --decorate --all";
+          unstage = "reset HEAD --";
+          last = "log -1 HEAD";
+          amend = "commit --amend --no-edit";
+          wip = "commit -am 'WIP'";
+        };
         init.defaultBranch = "main";
         pull.ff = "only";
         push.autoSetupRemote = true;
