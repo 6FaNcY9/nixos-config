@@ -1,19 +1,12 @@
-{
-  inputs,
-  primaryHost,
-  pkgsFor,
-  ...
-}: {
+# Apps are for `nix run .#<name>` from outside devshells (standalone, self-contained).
+# For in-shell equivalents, use `,` commands from mission-control.nix.
+{primaryHost, ...}: {
   perSystem = {
-    system,
+    common,
     config,
-    lib,
     ...
   }: let
-    pkgs = pkgsFor system;
-    cfgLib = import ../lib {inherit lib;};
-    common = import ./_common.nix {inherit pkgs lib config inputs cfgLib;};
-    inherit (common) mkApp repoRootCmd;
+    inherit (common) pkgs mkApp repoRootCmd;
   in {
     apps = {
       update = mkApp "update" [pkgs.coreutils pkgs.git pkgs.nix] "Update flake inputs" ''
@@ -90,13 +83,13 @@
           KEY_DIR="$HOME/.config/sops/age"
           KEY_FILE="$KEY_DIR/keys.txt"
 
-          echo "🔑 Age Key Generation for sops-nix"
+          echo "Age Key Generation for sops-nix"
           echo "=================================="
           echo ""
 
           # Check if key already exists
           if [ -f "$KEY_FILE" ]; then
-            echo "⚠️  Age key already exists at: $KEY_FILE"
+            echo "Age key already exists at: $KEY_FILE"
             echo ""
             echo "Current public key:"
             grep "public key:" "$KEY_FILE" || echo "(Could not read public key)"
@@ -110,7 +103,7 @@
             # Backup existing key
             BACKUP="$KEY_FILE.backup.$(date +%Y%m%d-%H%M%S)"
             cp "$KEY_FILE" "$BACKUP"
-            echo "✅ Backed up existing key to: $BACKUP"
+            echo "Backed up existing key to: $BACKUP"
             echo ""
           fi
 
@@ -124,16 +117,16 @@
           chmod 600 "$KEY_FILE"
 
           echo ""
-          echo "✅ Age key generated successfully!"
+          echo "Age key generated successfully!"
           echo ""
-          echo "📍 Location: $KEY_FILE"
+          echo "Location: $KEY_FILE"
           echo ""
-          echo "📋 Your public key (add this to .sops.yaml):"
-          echo "───────────────────────────────────────────────"
+          echo "Your public key (add this to .sops.yaml):"
+          echo "-------------------------------------------"
           grep "public key:" "$KEY_FILE"
-          echo "───────────────────────────────────────────────"
+          echo "-------------------------------------------"
           echo ""
-          echo "📖 Next steps:"
+          echo "Next steps:"
           echo "  1. Add the public key above to .sops.yaml"
           echo "  2. Run: sops updatekeys secrets/*.yaml"
           echo "  3. Commit the updated secrets"
@@ -158,37 +151,37 @@
           BLUE='\033[0;34m'
           NC='\033[0m' # No Color
 
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "================================================"
           echo "   NixOS Configuration Diagnostics"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "================================================"
           echo ""
 
           # ========================================
           # Hardware Device Detection
           # ========================================
-          echo -e "''${BLUE}🖥️  Hardware Devices''${NC}"
-          echo "────────────────────────────────────────────"
+          echo -e "''${BLUE}Hardware Devices''${NC}"
+          echo "--------------------------------------------"
 
           # Battery detection
           if BAT_DEVICE=$(find /sys/class/power_supply -maxdepth 1 -name 'BAT*' -type l -printf '%f\n' 2>/dev/null | head -1); then
             if [ -n "$BAT_DEVICE" ]; then
-              echo -e "''${GREEN}✓''${NC} Battery: $BAT_DEVICE"
+              echo -e "''${GREEN}OK''${NC} Battery: $BAT_DEVICE"
             else
-              echo -e "''${YELLOW}⚠''${NC} Battery: Not detected (desktop system?)"
+              echo -e "''${YELLOW}--''${NC} Battery: Not detected (desktop system?)"
             fi
           else
-            echo -e "''${YELLOW}⚠''${NC} Battery: Not detected (desktop system?)"
+            echo -e "''${YELLOW}--''${NC} Battery: Not detected (desktop system?)"
           fi
 
           # Backlight detection
           if BACKLIGHT_DEVICE=$(find /sys/class/backlight -maxdepth 1 -mindepth 1 -type l -printf '%f\n' 2>/dev/null | head -1); then
             if [ -n "$BACKLIGHT_DEVICE" ]; then
-              echo -e "''${GREEN}✓''${NC} Backlight: $BACKLIGHT_DEVICE"
+              echo -e "''${GREEN}OK''${NC} Backlight: $BACKLIGHT_DEVICE"
             else
-              echo -e "''${YELLOW}⚠''${NC} Backlight: Not detected (desktop system?)"
+              echo -e "''${YELLOW}--''${NC} Backlight: Not detected (desktop system?)"
             fi
           else
-            echo -e "''${YELLOW}⚠''${NC} Backlight: Not detected (desktop system?)"
+            echo -e "''${YELLOW}--''${NC} Backlight: Not detected (desktop system?)"
           fi
 
           echo ""
@@ -196,27 +189,27 @@
           # ========================================
           # Secrets Management Status
           # ========================================
-          echo -e "''${BLUE}🔐 Secrets Management''${NC}"
-          echo "────────────────────────────────────────────"
+          echo -e "''${BLUE}Secrets Management''${NC}"
+          echo "--------------------------------------------"
 
           # Age key check
           AGE_KEY="$HOME/.config/sops/age/keys.txt"
           if [ -f "$AGE_KEY" ]; then
-            echo -e "''${GREEN}✓''${NC} Age key: Present ($AGE_KEY)"
+            echo -e "''${GREEN}OK''${NC} Age key: Present ($AGE_KEY)"
             if AGE_PUB=$(grep "public key:" "$AGE_KEY" 2>/dev/null); then
               echo "  Public: $(echo "$AGE_PUB" | awk '{print $NF}')"
             fi
           else
-            echo -e "''${RED}✗''${NC} Age key: Missing"
+            echo -e "''${RED}MISSING''${NC} Age key: Missing"
             echo "  Run: nix run .#generate-age-key"
           fi
 
           # GPG key check
           GPG_KEY="FC8B68693AF4E0D9DC84A4D3B872E229ADE55151"
           if gpg --list-secret-keys "$GPG_KEY" >/dev/null 2>&1; then
-            echo -e "''${GREEN}✓''${NC} GPG signing key: Imported ($GPG_KEY)"
+            echo -e "''${GREEN}OK''${NC} GPG signing key: Imported ($GPG_KEY)"
           else
-            echo -e "''${YELLOW}⚠''${NC} GPG signing key: Not imported"
+            echo -e "''${YELLOW}--''${NC} GPG signing key: Not imported"
             echo "  Key will auto-import on next home-manager activation"
           fi
 
@@ -225,12 +218,12 @@
           if [ -d "$SECRETS_DIR" ]; then
             SECRET_COUNT=$(find "$SECRETS_DIR" -type f -o -type l 2>/dev/null | wc -l)
             if [ "$SECRET_COUNT" -gt 0 ]; then
-              echo -e "''${GREEN}✓''${NC} Decrypted secrets: $SECRET_COUNT available"
+              echo -e "''${GREEN}OK''${NC} Decrypted secrets: $SECRET_COUNT available"
             else
-              echo -e "''${YELLOW}⚠''${NC} Decrypted secrets: Directory exists but empty"
+              echo -e "''${YELLOW}--''${NC} Decrypted secrets: Directory exists but empty"
             fi
           else
-            echo -e "''${YELLOW}⚠''${NC} Decrypted secrets: Not yet activated"
+            echo -e "''${YELLOW}--''${NC} Decrypted secrets: Not yet activated"
             echo "  Run: nh os switch"
           fi
 
@@ -239,18 +232,18 @@
           # ========================================
           # Git Repository Status
           # ========================================
-          echo -e "''${BLUE}📦 Repository Status''${NC}"
-          echo "────────────────────────────────────────────"
+          echo -e "''${BLUE}Repository Status''${NC}"
+          echo "--------------------------------------------"
 
           ${repoRootCmd}
           cd "$repo_root"
 
           # Git status
           if git diff-index --quiet HEAD -- 2>/dev/null; then
-            echo -e "''${GREEN}✓''${NC} Git status: Clean"
+            echo -e "''${GREEN}OK''${NC} Git status: Clean"
           else
             DIRTY_COUNT=$(git status --porcelain | wc -l)
-            echo -e "''${YELLOW}⚠''${NC} Git status: $DIRTY_COUNT uncommitted changes"
+            echo -e "''${YELLOW}--''${NC} Git status: $DIRTY_COUNT uncommitted changes"
             echo "  Run: git status"
           fi
 
@@ -267,8 +260,8 @@
           # ========================================
           # System Information
           # ========================================
-          echo -e "''${BLUE}💻 System Information''${NC}"
-          echo "────────────────────────────────────────────"
+          echo -e "''${BLUE}System Information''${NC}"
+          echo "--------------------------------------------"
 
           # Hostname
           HOSTNAME=$(hostname)
@@ -291,8 +284,8 @@
           # ========================================
           # Nix Store Status
           # ========================================
-          echo -e "''${BLUE}🗄️  Nix Store Status''${NC}"
-          echo "────────────────────────────────────────────"
+          echo -e "''${BLUE}Nix Store Status''${NC}"
+          echo "--------------------------------------------"
 
           # Store size
           if STORE_SIZE=$(du -sh /nix/store 2>/dev/null | awk '{print $1}'); then
@@ -315,8 +308,8 @@
           # ========================================
           # Quick Actions
           # ========================================
-          echo -e "''${BLUE}⚡ Quick Actions''${NC}"
-          echo "────────────────────────────────────────────"
+          echo -e "''${BLUE}Quick Actions''${NC}"
+          echo "--------------------------------------------"
           echo "  Update system: nh os switch"
           echo "  Update inputs: nix flake update"
           echo "  Run QA checks: nix run .#qa"
@@ -337,13 +330,13 @@
           CACHE_NAME="vino-nixos-config"
           TOKEN_PATH="$HOME/.config/sops-nix/secrets/cachix_auth_token"
 
-          echo "🚀 Cachix Push Utility"
+          echo "Cachix Push Utility"
           echo "======================"
           echo ""
 
           # Check if token exists
           if [ ! -f "$TOKEN_PATH" ]; then
-            echo "❌ ERROR: Cachix auth token not found at: $TOKEN_PATH"
+            echo "ERROR: Cachix auth token not found at: $TOKEN_PATH"
             echo ""
             echo "Make sure secrets are activated:"
             echo "  nh home switch"
@@ -354,24 +347,24 @@
           CACHIX_AUTH_TOKEN=$(cat "$TOKEN_PATH")
           export CACHIX_AUTH_TOKEN
 
-          echo "📦 Building current system configuration..."
+          echo "Building current system configuration..."
           SYSTEM_PATH=$(nix build --no-link --print-out-paths .#nixosConfigurations.${primaryHost}.config.system.build.toplevel 2>&1 | tail -1)
 
           if [ -z "$SYSTEM_PATH" ]; then
-            echo "❌ ERROR: Failed to build system"
+            echo "ERROR: Failed to build system"
             exit 1
           fi
 
-          echo "✅ Built: $SYSTEM_PATH"
+          echo "Built: $SYSTEM_PATH"
           echo ""
-          echo "⬆️  Pushing to Cachix cache: $CACHE_NAME"
+          echo "Pushing to Cachix cache: $CACHE_NAME"
           echo ""
 
           # Push to cachix
           cachix push "$CACHE_NAME" "$SYSTEM_PATH"
 
           echo ""
-          echo "✅ Successfully pushed to $CACHE_NAME!"
+          echo "Successfully pushed to $CACHE_NAME!"
           echo ""
           echo "Your cache URL: https://$CACHE_NAME.cachix.org"
         '';

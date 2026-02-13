@@ -60,8 +60,15 @@
     };
 
     # Flake composition
-    flake-parts.url = "github:hercules-ci/flake-parts";
-    ez-configs.url = "github:ehllie/ez-configs";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+    ez-configs = {
+      url = "github:ehllie/ez-configs";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+    };
 
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
@@ -78,7 +85,10 @@
     flake-root.url = "github:srid/flake-root";
 
     # Wallpaper
-    gruvbox-wallpaper.url = "github:AngelJumbo/gruvbox-wallpapers";
+    gruvbox-wallpaper = {
+      url = "github:AngelJumbo/gruvbox-wallpapers";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {flake-parts, ...}: let

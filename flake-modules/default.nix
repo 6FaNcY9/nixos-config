@@ -1,5 +1,6 @@
 {
   imports = [
+    ./_common.nix
     ./treefmt.nix
     ./mission-control.nix
     ./packages.nix
