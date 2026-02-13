@@ -6,6 +6,35 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+_Nothing yet._
+
+---
+
+## [2026-02-13] - Flake Infrastructure Overhaul + Repo Cleanup
+
+### Added
+- **Mission-control command palette**: Expanded from 13 to 21 scripts across 5 categories (Dev Tools, Analysis, Git, Build, Dev Shells)
+- **Git shortcuts**: `, status`, `, log`, `, diff`, `, commit` via mission-control
+- **Build shortcuts**: `, rebuild` (nh os switch), `, rebuild-test`, `, home-switch`
+- **Shell switching**: `, web`, `, rust`, `, go`, `, flask`, `, agents`, `, database`, `, pentest`, `, nix-debug`
+
+### Changed
+- **Flake inputs**: Deduplicated nixpkgs via `follows` (ez-configs, gruvbox-wallpaper, flake-parts)
+- **Mission-control**: Now available in ALL devshells (not just default)
+- **`_common.nix`**: Converted from plain function to proper flake-parts module using `_module.args.common`
+- **Devshells**: Removed duplicate `maintenance` shell (identical to `default`)
+- **Naming**: Renamed `maintenanceDevPackages` to `flakeToolsPackages`
+
+### Documentation
+- Moved 9 stale session documents to `docs/archive/`
+- Updated `AGENTS.md` to reflect current directory layout (ez-configs structure)
+- Updated `docs/using-devshells.md` with correct repo name and current shell list
+- Updated `CHANGELOG.md` with all recent work
+
+---
+
+## [2026-01-31] - Unstable Channel Migration + Hardware Optimizations
+
 ### Added
 - **Binary cache**: nix-community.cachix.org for 80%+ build speedup
 - **auto-cpufreq**: Intelligent CPU frequency scaling with AC/battery profiles
@@ -19,9 +48,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **nixpkgs**: Now uses nixos-unstable as primary channel (25.11 stable as fallback)
 - **Home Manager**: Updated to follow unstable channel
 - **nixvim**: Updated to follow unstable channel for latest features
-- **Stylix**: Updated to follow unstable channel, fixed API changes (iconTheme → icons)
+- **Stylix**: Updated to follow unstable channel, fixed API changes (iconTheme -> icons)
 - **Overlay**: Now provides `pkgs.stable.*` instead of `pkgs.unstable.*` (semantic clarity)
-- **Thunar**: Fixed reference for unstable (xfce.thunar → thunar)
+- **Thunar**: Fixed reference for unstable (xfce.thunar -> thunar)
 - **Power management**: Replaced power-profiles-daemon with auto-cpufreq for better battery optimization
 
 ### Performance
@@ -34,11 +63,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Package reference warnings resolved (Thunar moved to top-level)
 - Power daemon conflict resolved (power-profiles-daemon vs auto-cpufreq)
 - **GPG signing in OpenCode**: Disabled for this repo (`git config --local commit.gpgsign false`) to prevent TUI interference
-
-### Community Learnings
-- Validated: flake-parts (used by Mic92, badele, srid), Stylix (used by badele)
-- Adopted: Binary cache (universal), unstable-primary (67% of configs), auto-cpufreq (gkapfham)
-- Framework 13 AMD twin config found: gkapfham/nixos (exact hardware match with optimizations)
 
 ---
 

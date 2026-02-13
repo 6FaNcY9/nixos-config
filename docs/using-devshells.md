@@ -1,6 +1,22 @@
 # Using DevShells from Other Directories
 
-This guide explains how to use the devShells (web, rust, flask, etc.) from your NixOS config when working on projects in other directories.
+This guide explains how to use the devShells from your NixOS config when working on projects in other directories.
+
+## Available Shells
+
+| Shell | Purpose |
+|-------|---------|
+| `default` | Flake tools (nix, formatting, linting) |
+| `web` | Node.js, npm, TypeScript |
+| `flask` | Python, Flask |
+| `agents` | Python, AI/LLM tooling |
+| `rust` | Rust toolchain |
+| `go` | Go toolchain |
+| `pentest` | Security testing tools |
+| `database` | Database clients |
+| `nix-debug` | Nix debugging tools |
+
+All shells include **mission-control** (`, <command>`) for quick access to git, build, and dev commands. Type `, help` inside any shell.
 
 ## Method 1: Direct Reference (Quick & Simple)
 
@@ -8,10 +24,10 @@ From any directory, reference the flake directly:
 
 ```bash
 # Enter web devShell from anywhere
-nix develop /home/vino/src/nixos-config-claude-explore#web
+nix develop /home/vino/src/nixos-config#web
 
 # Or use the shorthand if you're in a subdirectory
-nix develop ~/src/nixos-config-claude-explore#web
+nix develop ~/src/nixos-config#web
 ```
 
 **Use case:** Quick one-off usage, testing, or temporary work.
@@ -30,7 +46,7 @@ direnv is already enabled system-wide in your config (via `nixos-modules/roles/d
 
 ```bash
 cd ~/projects/my-website
-echo 'use flake ~/src/nixos-config-claude-explore#web' > .envrc
+echo 'use flake ~/src/nixos-config#web' > .envrc
 direnv allow
 ```
 
@@ -53,7 +69,7 @@ Create a minimal `flake.nix` in your project that uses your config as input:
   description = "My Website Project";
 
   inputs = {
-    nixos-config.url = "path:/home/vino/src/nixos-config-claude-explore";
+    nixos-config.url = "path:/home/vino/src/nixos-config";
   };
 
   outputs = {nixos-config, ...}: {
@@ -82,9 +98,9 @@ Add to your Fish config (`~/.config/fish/config.fish` or `home-modules/shell.nix
 
 ```fish
 # Add these abbreviations
-abbr -a devweb 'nix develop ~/src/nixos-config-claude-explore#web'
-abbr -a devrust 'nix develop ~/src/nixos-config-claude-explore#rust'
-abbr -a devflask 'nix develop ~/src/nixos-config-claude-explore#flask'
+abbr -a devweb 'nix develop ~/src/nixos-config#web'
+abbr -a devrust 'nix develop ~/src/nixos-config#rust'
+abbr -a devflask 'nix develop ~/src/nixos-config#flask'
 ```
 
 Then from anywhere:
@@ -101,7 +117,7 @@ devrust   # Enters rust devShell
 Add your config to your Nix registry for easy access:
 
 ```bash
-nix registry add myconfig ~/src/nixos-config-claude-explore
+nix registry add myconfig ~/src/nixos-config
 ```
 
 Now use it from anywhere:
@@ -161,7 +177,7 @@ mkdir -p ~/projects/my-blog
 cd ~/projects/my-blog
 
 # Method 2: direnv (recommended)
-echo 'use flake ~/src/nixos-config-claude-explore#web' > .envrc
+echo 'use flake ~/src/nixos-config#web' > .envrc
 direnv allow
 
 # Now you have Node.js, npm, TypeScript, etc. automatically!
@@ -177,14 +193,14 @@ cd ~  # web devShell deactivates
 
 ## Tips
 
-1. **Keep config path consistent**: If you move `nixos-config-claude-explore`, update paths in your `.envrc` files
+1. **Keep config path consistent**: If you move `nixos-config`, update paths in your `.envrc` files
 
 2. **VSCode integration**: Install the `direnv` extension to load devShells automatically in integrated terminal
 
 3. **Mix and match**: You can use direnv with project-specific customizations:
    ```bash
    # .envrc
-   use flake ~/src/nixos-config-claude-explore#web
+   use flake ~/src/nixos-config#web
 
    # Add project-specific vars
    export DATABASE_URL="postgresql://localhost/mydb"
