@@ -28,6 +28,13 @@
           category = "Dev Tools";
         };
 
+        # ── Services ──────────────────────────────────────────────
+        services = {
+          description = "Start dev services (PostgreSQL + Redis)";
+          exec = config.packages.dev-services;
+          category = "Services";
+        };
+
         # ── Analysis ─────────────────────────────────────────────
         sysinfo = {
           description = "System diagnostics and status";

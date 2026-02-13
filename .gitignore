@@ -9,6 +9,7 @@
 /.devenv/
 /.venv/
 /tmp/
+/data/            # process-compose service data (PostgreSQL, Redis)
 
 # -----------------------------
 # Project-specific

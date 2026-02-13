@@ -84,6 +84,10 @@
 
     flake-root.url = "github:srid/flake-root";
 
+    # Development services (PostgreSQL, Redis, etc.)
+    process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
+    services-flake.url = "github:juspay/services-flake";
+
     # Wallpaper
     gruvbox-wallpaper = {
       url = "github:AngelJumbo/gruvbox-wallpapers";
@@ -124,6 +128,7 @@
         inputs.mission-control.flakeModule
         inputs.devshell.flakeModule
         inputs.flake-root.flakeModule
+        inputs.process-compose-flake.flakeModule
         ./flake-modules
       ];
 

@@ -8,5 +8,6 @@
     ./apps.nix
     ./checks.nix
     ./devshells.nix
+    ./services.nix
   ];
 }
