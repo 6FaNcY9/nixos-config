@@ -42,8 +42,8 @@
     # Development-friendly kernel parameters
     boot.kernel.sysctl = {
       # Allow more file watchers (for large projects)
-      "fs.inotify.max_user_watches" = lib.mkDefault 524288;
-      "fs.inotify.max_user_instances" = lib.mkDefault 1024;
+      "fs.inotify.max_user_watches" = lib.mkForce 524288;
+      "fs.inotify.max_user_instances" = lib.mkForce 1024;
     };
 
     # Enable direnv system-wide

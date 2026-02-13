@@ -26,16 +26,17 @@ in {
   networking.hostName = "bandit";
 
   roles = {
-    desktop = true;
-    laptop = true;
+    development = true; # Enable development tools (docker, direnv, build tools)
+    desktop = true; # Enable
+    laptop = true; # Enable laptop-specific behavior (bluetooth, power management)
   };
 
   desktop.variant = "i3-xfce";
 
   # Host-specific hibernate resume settings
   boot = {
-    resumeDevice = mainDisk;
-    kernelParams = ["resume_offset=1959063"];
+    resumeDevice = mainDisk; # UUID-based resume device for hibernation
+    kernelParams = ["resume_offset=1959063"]; # Calculated resume offset for swap partition (from `filefrag -v /swapfile`)
   };
 
   # Desktop Hardening - Enhanced security for desktop/laptop
