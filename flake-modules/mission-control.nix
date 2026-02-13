@@ -57,13 +57,16 @@
           category = "Git";
         };
         commit = {
-          description = "Commit staged changes with a message";
+          description = "Commit staged changes (opens editor for message)";
           exec = ''
+            if [ -z "$(git diff --cached --name-only)" ]; then
+              echo "Nothing staged. Stage files first: git add <file>"
+              exit 1
+            fi
             echo "Staged changes:"
             git diff --cached --stat
             echo ""
-            read -rp "Commit message: " msg
-            git commit -m "$msg"
+            git commit < /dev/tty
           '';
           category = "Git";
         };
