@@ -54,6 +54,8 @@ _: {
             yarn
             nodePackages.typescript
             nodePackages.typescript-language-server
+            bun
+            postgresql
           ]);
         devshell = {
           motd = cfgLib.mkDevshellMotd {
