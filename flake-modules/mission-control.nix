@@ -1,3 +1,6 @@
+# `, <command>` shortcuts available in every devshell via mission-control.
+# Run `, help` to list all commands. Each command is also available as
+# `nix run .#<name>` (defined in apps.nix) for use outside devshells.
 {
   primaryHost,
   username,
@@ -30,8 +33,16 @@
 
         # ── Services ──────────────────────────────────────────────
         services = {
-          description = "Start dev services (PostgreSQL + Redis)";
+          description = "Open dev services TUI (start with F7)";
           exec = config.packages.dev-services;
+          category = "Services";
+        };
+        db = {
+          description = "Start project-local PostgreSQL (data in ./data/pg1/)";
+          exec = ''
+            cd "''${ORIGINAL_PWD:-$PWD}"
+            exec ${config.packages.web-db}/bin/web-db
+          '';
           category = "Services";
         };
 
