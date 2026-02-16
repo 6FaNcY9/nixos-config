@@ -1,4 +1,14 @@
-# flake.nix (keep on SSD at: nixos-config/flake.nix)
+# NixOS system configuration for Framework 13 AMD.
+#
+# Layout:
+#   nixos-configurations/  NixOS host configs (auto-wired by ez-configs)
+#   home-configurations/   Home Manager user configs (auto-wired by ez-configs)
+#   nixos-modules/         Shared NixOS modules (imported by default.nix)
+#   home-modules/          Shared Home Manager modules (imported by default.nix)
+#   shared-modules/        Modules used by both NixOS and HM (e.g. Stylix)
+#   flake-modules/         perSystem devshells, apps, services, mission-control
+#   overlays/              Nixpkgs overlays (pkgs.stable, custom packages)
+#   lib/                   Pure helper functions (color, workspace, profile)
 {
   description = "Framework 13 AMD: NixOS unstable + i3 + XFCE services + Home Manager + Stylix Gruvbox";
 
@@ -99,6 +109,9 @@
     system = "x86_64-linux";
     primaryHost = "bandit";
     username = "vino";
+    # Absolute path to this repository on disk.  Must be a string (not a Nix
+    # path) because NixOS systemd units and nh need the literal runtime path;
+    # builtins.getEnv "HOME" is empty during pure evaluation.
     repoRoot = "/home/${username}/src/nixos-config";
 
     overlays = import ./overlays {inherit inputs;};
@@ -117,6 +130,7 @@
       # Keep false in normal builds to avoid "unknown flake output" warnings.
       debug = false;
 
+      # Available to all perSystem flake-modules (e.g. _common.nix, apps.nix).
       _module.args = {
         inherit primaryHost username repoRoot pkgsFor;
       };
@@ -132,6 +146,8 @@
         ./flake-modules
       ];
 
+      # ez-configs auto-discovers {nixos,home}-configurations/ and wires them.
+      # globalArgs become available in every NixOS and Home Manager module.
       ezConfigs = {
         root = ./.;
         globalArgs = {

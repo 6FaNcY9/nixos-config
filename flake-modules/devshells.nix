@@ -1,3 +1,6 @@
+# Devshells for different project types, activated via `nix develop .#<name>`.
+# Each shell gets common CLI tools + mission-control (`, `) + language-specific
+# packages. Enter via Fish abbreviation (e.g. `devweb`) or `, web` from any shell.
 _: {
   perSystem = {common, ...}: let
     inherit (common) pkgs cfgLib commonDevPackages missionControlPackages flakeToolsPackages devshellStartup opencodePkg;

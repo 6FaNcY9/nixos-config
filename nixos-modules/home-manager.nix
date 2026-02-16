@@ -1,3 +1,6 @@
+# Bridge NixOS-level args into Home Manager modules.
+# `extraSpecialArgs` makes these available as top-level args in every file
+# under home-modules/ (e.g. `{ repoRoot, username, inputs, ... }:`).
 {
   inputs,
   username,

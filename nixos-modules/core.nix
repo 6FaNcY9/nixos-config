@@ -115,6 +115,8 @@ in {
       enableSSHSupport = true;
     };
 
+    # nh: friendly NixOS rebuild wrapper; `flake` tells it where to find this config
+    # so `nh os switch` works without an explicit --flake path.
     nh = {
       enable = true;
       flake = repoRoot;

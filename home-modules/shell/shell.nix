@@ -49,6 +49,8 @@
         fzf_configure_bindings --directory=\ct --git_log=\cg --git_status=\cs --history=\cr --processes=\cp --variables=\cv
       '';
 
+      # Abbreviations use the full repoRoot path (not `.#`) so they resolve
+      # from any working directory, not only when cwd is inside the flake.
       shellAbbrs = {
         # System Management
         rebuild = "nh os switch -H ${hostname}";
