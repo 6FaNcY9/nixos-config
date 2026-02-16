@@ -1,6 +1,10 @@
 # Common devshell utilities exposed via _module.args for all perSystem modules.
 # Usage: receive `common` in perSystem args, e.g. `perSystem = {common, ...}:`
-{pkgsFor, ...}: {
+{
+  pkgsFor,
+  repoRoot,
+  ...
+}: {
   perSystem = {
     system,
     config,
@@ -11,7 +15,47 @@
     cfgLib = import ../lib {inherit lib;};
 
     opencodePkg = pkgs.opencode;
-    missionControlWrapper = config.mission-control.wrapper;
+    baseMissionControlWrapper = config.mission-control.wrapper;
+    # Make `,` usable from external project folders that use this flake shell via direnv.
+    missionControlWrapper = pkgs.writeShellApplication {
+      name = ",";
+      text = ''
+        set -euo pipefail
+
+        find_flake_root() {
+          local dir="$PWD"
+          while true; do
+            if [ -f "$dir/flake.nix" ]; then
+              return 0
+            fi
+            if [ "$dir" = "/" ]; then
+              return 1
+            fi
+            dir="''${dir%/*}"
+            if [ -z "$dir" ]; then
+              dir="/"
+            fi
+          done
+        }
+
+        # Support both ", --help" (native) and ", help" (common expectation).
+        if [ "''${1-}" = "help" ]; then
+          exec ${baseMissionControlWrapper}/bin/, --help
+        fi
+
+        # Preserve the caller's directory for CWD-sensitive commands
+        # (e.g. `, db` stores data relative to the project, not the flake root).
+        export ORIGINAL_PWD="$PWD"
+
+        # mission-control resolves FLAKE_ROOT via flake-root; when outside any flake,
+        # run commands from this repo root so scripts like ", services" still work.
+        if ! find_flake_root; then
+          cd ${repoRoot}
+        fi
+
+        exec ${baseMissionControlWrapper}/bin/, "$@"
+      '';
+    };
     maintenancePackages = [pkgs.pre-commit pkgs.nix missionControlWrapper] ++ config.pre-commit.settings.enabledPackages;
 
     # Common utilities for project devShells (CLI tools only, no flake management)
