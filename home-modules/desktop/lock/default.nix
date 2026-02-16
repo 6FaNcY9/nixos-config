@@ -5,7 +5,8 @@
   palette,
   cfgLib,
   ...
-}: let
+}:
+let
   # Strip the '#' prefix from palette colors for i3lock-color
   stripHash = color: builtins.substring 1 6 color;
 
@@ -45,8 +46,9 @@
       rm -f /tmp/lockscreen.png
     '';
   };
-in {
+in
+{
   config = lib.mkIf config.profiles.desktop {
-    home.packages = [lockScript];
+    home.packages = [ lockScript ];
   };
 }

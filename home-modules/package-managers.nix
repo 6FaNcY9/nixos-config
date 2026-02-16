@@ -1,7 +1,8 @@
 # Package manager and tool XDG configuration
 # Centralizes paths to follow XDG Base Directory spec
 # Prevents home directory bloat from npm, yarn, cargo, go, etc.
-{config, ...}: {
+{ config, ... }:
+{
   home.sessionVariables = {
     # ──────────────────────────────────────────────────────────────
     # Shell history (bash fallback)

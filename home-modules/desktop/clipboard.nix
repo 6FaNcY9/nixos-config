@@ -3,7 +3,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.clipboard = {
     enable = lib.mkOption {
       type = lib.types.bool;

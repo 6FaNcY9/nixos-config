@@ -6,7 +6,7 @@ _: {
   };
 
   networking.firewall = {
-    trustedInterfaces = ["tailscale0"];
-    allowedUDPPorts = [41641];
+    trustedInterfaces = [ "tailscale0" ];
+    allowedUDPPorts = [ 41641 ];
   };
 }

@@ -1,4 +1,5 @@
-{c, ...}: {
+{ c, ... }:
+{
   programs.nixvim = {
     # Custom highlight groups using native nixvim option
     highlight = {

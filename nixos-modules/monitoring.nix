@@ -4,7 +4,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.monitoring = {
     enable = lib.mkEnableOption "system monitoring with Prometheus and exporters";
 
@@ -102,7 +103,7 @@
             job_name = "node";
             static_configs = [
               {
-                targets = ["localhost:${toString config.monitoring.exporters.node.port}"];
+                targets = [ "localhost:${toString config.monitoring.exporters.node.port}" ];
               }
             ];
           }
@@ -110,7 +111,7 @@
       };
 
       # Open firewall for Prometheus (localhost only by default)
-      networking.firewall.interfaces.lo.allowedTCPPorts = [config.monitoring.prometheus.port];
+      networking.firewall.interfaces.lo.allowedTCPPorts = [ config.monitoring.prometheus.port ];
     })
 
     # Grafana configuration
@@ -122,9 +123,7 @@
             http_addr = "127.0.0.1";
             http_port = config.monitoring.grafana.port;
             domain =
-              if config.monitoring.grafana.domain != null
-              then config.monitoring.grafana.domain
-              else "localhost";
+              if config.monitoring.grafana.domain != null then config.monitoring.grafana.domain else "localhost";
           };
 
           analytics = {
@@ -148,7 +147,7 @@
       };
 
       # Open firewall for Grafana (localhost only by default)
-      networking.firewall.interfaces.lo.allowedTCPPorts = [config.monitoring.grafana.port];
+      networking.firewall.interfaces.lo.allowedTCPPorts = [ config.monitoring.grafana.port ];
     })
 
     # Enhanced journal logging

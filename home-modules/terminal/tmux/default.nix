@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   imports = [
     ./keybindings.nix
     ./plugins.nix

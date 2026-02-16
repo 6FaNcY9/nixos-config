@@ -3,7 +3,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   config = lib.mkIf (config.roles.desktop && config.desktop.variant == "i3-xfce") {
     services = {
       gvfs.enable = true;

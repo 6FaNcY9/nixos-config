@@ -2,7 +2,8 @@
 # Open TUI with: `, services` or `nix run .#dev-services`
 # Services start disabled; select a process and press F7 to start it.
 # Data stored in ./data/{pg1,redis1}/ (gitignored)
-{inputs, ...}: {
+{ inputs, ... }:
+{
   perSystem = _: {
     process-compose."dev-services" = {
       imports = [
@@ -14,7 +15,7 @@
         port = 5432;
         listen_addresses = "127.0.0.1";
         initialDatabases = [
-          {name = "devdb";}
+          { name = "devdb"; }
         ];
       };
 
@@ -45,7 +46,7 @@
         port = 5432;
         listen_addresses = "127.0.0.1";
         initialDatabases = [
-          {name = "devdb";}
+          { name = "devdb"; }
         ];
       };
     };

@@ -1,4 +1,5 @@
-{palette, ...}: {
+{ palette, ... }:
+{
   programs.yazi = {
     enable = true;
     enableFishIntegration = true;
@@ -14,7 +15,9 @@
 
     theme = {
       manager = {
-        cwd = {fg = "${palette.accent}";};
+        cwd = {
+          fg = "${palette.accent}";
+        };
         hovered = {
           fg = "${palette.bg}";
           bg = "${palette.accent}";

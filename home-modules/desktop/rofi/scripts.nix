@@ -5,7 +5,8 @@
   lib,
   cfgLib,
   ...
-}: let
+}:
+let
   rofi = "${pkgs.rofi}/bin/rofi";
   nmcli = "${pkgs.networkmanager}/bin/nmcli";
   notify = "${pkgs.libnotify}/bin/notify-send";
@@ -351,7 +352,8 @@
       esac
     '';
   };
-in {
+in
+{
   config = lib.mkIf config.profiles.desktop {
     home.packages = [
       powerMenu
@@ -373,9 +375,10 @@ in {
       };
     };
 
-    xsession.windowManager.i3.config.keybindings = let
-      mod = config.xsession.windowManager.i3.config.modifier;
-    in
+    xsession.windowManager.i3.config.keybindings =
+      let
+        mod = config.xsession.windowManager.i3.config.modifier;
+      in
       lib.mkOptionDefault {
         "${mod}+Shift+e" = "exec ${powerMenu}/bin/rofi-power-menu";
         "${mod}+Shift+v" = "exec ${clipboardMenu}/bin/rofi-clipboard-menu";

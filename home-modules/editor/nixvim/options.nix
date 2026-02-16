@@ -35,7 +35,11 @@ _: {
       swapfile = false;
 
       # Completion menu behavior
-      completeopt = ["menu" "menuone" "noselect"];
+      completeopt = [
+        "menu"
+        "menuone"
+        "noselect"
+      ];
     };
   };
 }

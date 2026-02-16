@@ -3,12 +3,15 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   mainDisk = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
 
   # Shared BTRFS mount options for SSD + battery optimization
-  mkBtrfsOpts = subvol:
-    lib.mkForce ([
+  mkBtrfsOpts =
+    subvol:
+    lib.mkForce (
+      [
         "subvol=${subvol}"
         "noatime"
         "nodiratime"
@@ -16,8 +19,10 @@
         "space_cache=v2"
         "discard=async"
       ]
-      ++ lib.optionals (subvol == "@nix") []);
-in {
+      ++ lib.optionals (subvol == "@nix") [ ]
+    );
+in
+{
   imports = [
     inputs.nixos-hardware.nixosModules.framework-13-7040-amd
     ./hardware-configuration.nix
@@ -36,7 +41,7 @@ in {
   # Host-specific hibernate resume settings
   boot = {
     resumeDevice = mainDisk; # UUID-based resume device for hibernation
-    kernelParams = ["resume_offset=1959063"]; # Calculated resume offset for swap partition (from `filefrag -v /swapfile`)
+    kernelParams = [ "resume_offset=1959063" ]; # Calculated resume offset for swap partition (from `filefrag -v /swapfile`)
   };
 
   # Desktop Hardening - Enhanced security for desktop/laptop
@@ -58,7 +63,7 @@ in {
       repository = "/mnt/backup/restic";
       passwordFile = config.sops.secrets.restic_password.path;
       initialize = true;
-      paths = ["/home"];
+      paths = [ "/home" ];
       exclude = [
         ".cache"
         "*.tmp"
@@ -78,7 +83,11 @@ in {
     "/mnt/backup" = {
       device = "/dev/disk/by-label/ResticBackup";
       fsType = "btrfs";
-      options = ["nofail" "noatime" "compress=zstd"];
+      options = [
+        "nofail"
+        "noatime"
+        "compress=zstd"
+      ];
     };
 
     "/" = {

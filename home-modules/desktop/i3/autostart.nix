@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   xsession.windowManager.i3.config.startup = [
     {
       command = "${pkgs.autotiling}/bin/autotiling";

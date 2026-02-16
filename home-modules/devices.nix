@@ -4,7 +4,8 @@
 # bars, power management, and display configuration.
 #
 # Set these in host-specific configuration for accurate hardware detection.
-{lib, ...}: {
+{ lib, ... }:
+{
   options.devices = {
     battery = lib.mkOption {
       type = lib.types.str;

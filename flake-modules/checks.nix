@@ -3,7 +3,8 @@
   primaryHost,
   username,
   ...
-}: {
+}:
+{
   perSystem = _: {
     # Maintenance: static checks + eval targets
     checks = {

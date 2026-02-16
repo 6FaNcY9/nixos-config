@@ -11,7 +11,10 @@ _: {
     autoCmd = [
       # Make the active window obvious (enable cursorline on active window)
       {
-        event = ["WinEnter" "BufEnter"];
+        event = [
+          "WinEnter"
+          "BufEnter"
+        ];
         group = "highlight_cursorline";
         callback.__raw = ''
           function()
@@ -20,7 +23,7 @@ _: {
         '';
       }
       {
-        event = ["WinLeave"];
+        event = [ "WinLeave" ];
         group = "highlight_cursorline";
         callback.__raw = ''
           function()

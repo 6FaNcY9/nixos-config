@@ -4,7 +4,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   config = lib.mkIf config.roles.development {
     # Virtualization (opt-in, disabled by default to save resources)
     virtualisation = {

@@ -5,7 +5,8 @@
   config,
   palette,
   ...
-}: {
+}:
+{
   config = lib.mkIf config.profiles.desktop {
     services = {
       network-manager-applet.enable = true;
@@ -60,11 +61,17 @@
         # Fade animations
         fade = false;
         fadeDelta = 4;
-        fadeSteps = [0.03 0.03];
+        fadeSteps = [
+          0.03
+          0.03
+        ];
 
         # Subtle shadows
         shadow = false;
-        shadowOffsets = [(-4) (-4)];
+        shadowOffsets = [
+          (-4)
+          (-4)
+        ];
         shadowOpacity = 0.25;
         shadowExclude = [
           "name = 'Notification'"

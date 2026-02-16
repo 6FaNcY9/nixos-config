@@ -6,19 +6,20 @@
   hostname,
   cfgLib,
   ...
-}: let
+}:
+let
   inherit (cfgLib) mkPolybarTwoTone mkPolybarTwoToneState;
   hasIcons = builtins.any (workspace: workspace.icon != "") workspaces;
   wsIconAttrs = lib.listToAttrs (
     map (workspace: {
       name = "ws-icon-${toString (workspace.number - 1)}";
       value = "${cfgLib.mkWorkspaceName workspace};${workspace.icon}";
-    })
-    workspaces
+    }) workspaces
   );
   hasBattery = config.devices.battery != "";
   hasNetwork = config.devices.networkInterface != "";
-in {
+in
+{
   services.polybar.settings = lib.mkMerge [
     {
       # ── MENU button (opens dropdown with brightness, now-playing, volume, autotiling) ──
@@ -31,41 +32,40 @@ in {
       };
 
       # ── i3 workspaces ──
-      "module/i3" =
-        {
-          type = "internal/i3";
-          enable-scroll = false;
-          pin-workspaces = true;
-          show-urgent = true;
-          strip-wsnumbers = hasIcons;
-          index-sort = true;
-          enable-click = true;
-          fuzzy-match = true;
-          ws-icon-default = "";
-          format = "<label-state><label-mode>";
-          label-mode = " %mode% ";
-          label-mode-padding = 1;
-          label-mode-background = "\${colors.red}";
-          label-mode-foreground = "\${colors.cream}";
-          label-focused = " %icon% ";
-          label-focused-foreground = "\${colors.black}";
-          label-focused-background = "\${colors.yellow-alt}";
-          label-focused-padding = 0;
-          label-unfocused = " %icon% ";
-          label-unfocused-foreground = "\${colors.yellow-alt}";
-          label-unfocused-padding = 0;
-          label-visible = " %icon% ";
-          label-visible-foreground = "\${colors.yellow-alt}";
-          label-visible-underline = "\${colors.red}";
-          label-visible-padding = 0;
-          label-urgent = " %icon% ";
-          label-urgent-foreground = "\${colors.black}";
-          label-urgent-background = "\${colors.red-alt}";
-          label-urgent-padding = 0;
-          label-separator = " ";
-          label-separator-padding = 0;
-        }
-        // wsIconAttrs;
+      "module/i3" = {
+        type = "internal/i3";
+        enable-scroll = false;
+        pin-workspaces = true;
+        show-urgent = true;
+        strip-wsnumbers = hasIcons;
+        index-sort = true;
+        enable-click = true;
+        fuzzy-match = true;
+        ws-icon-default = "";
+        format = "<label-state><label-mode>";
+        label-mode = " %mode% ";
+        label-mode-padding = 1;
+        label-mode-background = "\${colors.red}";
+        label-mode-foreground = "\${colors.cream}";
+        label-focused = " %icon% ";
+        label-focused-foreground = "\${colors.black}";
+        label-focused-background = "\${colors.yellow-alt}";
+        label-focused-padding = 0;
+        label-unfocused = " %icon% ";
+        label-unfocused-foreground = "\${colors.yellow-alt}";
+        label-unfocused-padding = 0;
+        label-visible = " %icon% ";
+        label-visible-foreground = "\${colors.yellow-alt}";
+        label-visible-underline = "\${colors.red}";
+        label-visible-padding = 0;
+        label-urgent = " %icon% ";
+        label-urgent-foreground = "\${colors.black}";
+        label-urgent-background = "\${colors.red-alt}";
+        label-urgent-padding = 0;
+        label-separator = " ";
+        label-separator-padding = 0;
+      }
+      // wsIconAttrs;
 
       # ── Tray ──
       "module/tray" = {
@@ -78,96 +78,89 @@ in {
       };
 
       # ── Window title (purple two-tone) ──
-      "module/xwindow" =
-        {
-          type = "internal/xwindow";
-          label = "%title:0:50:.....%";
-        }
-        // mkPolybarTwoTone {
-          icon = "󰇣 ";
-          color = "purple";
-        };
+      "module/xwindow" = {
+        type = "internal/xwindow";
+        label = "%title:0:50:.....%";
+      }
+      // mkPolybarTwoTone {
+        icon = "󰇣 ";
+        color = "purple";
+      };
 
       # ── Time + Date (center, yellow two-tone, merged block) ──
-      "module/time" =
-        {
-          type = "internal/date";
-          interval = 1;
-          time = "%H:%M:%S";
-          date = "%d-%m-%Y";
-          format = "<label>";
-          label = "%{A1:${pkgs.gsimplecal}/bin/gsimplecal &:}%time%  ||  %date%%{A}";
-        }
-        // mkPolybarTwoTone {
-          icon = "󰃭 ";
-          color = "yellow";
-        };
+      "module/time" = {
+        type = "internal/date";
+        interval = 1;
+        time = "%H:%M:%S";
+        date = "%d-%m-%Y";
+        format = "<label>";
+        label = "%{A1:${pkgs.gsimplecal}/bin/gsimplecal &:}%time%  ||  %date%%{A}";
+      }
+      // mkPolybarTwoTone {
+        icon = "󰃭 ";
+        color = "yellow";
+      };
 
       # ── Hostname (blue two-tone) ──
-      "module/host" =
-        {
-          type = "custom/script";
-          exec = "echo ${hostname}";
-          interval = 3600;
-        }
-        // mkPolybarTwoTone {
-          icon = "󱩊 ";
-          color = "blue";
-        };
+      "module/host" = {
+        type = "custom/script";
+        exec = "echo ${hostname}";
+        interval = 3600;
+      }
+      // mkPolybarTwoTone {
+        icon = "󱩊 ";
+        color = "blue";
+      };
 
       # ── CPU (green two-tone) ──
-      "module/cpu" =
-        {
-          type = "internal/cpu";
-          interval = 1;
-          label = "%percentage:2%%";
-        }
-        // mkPolybarTwoTone {
-          icon = " ";
-          color = "green";
-        };
+      "module/cpu" = {
+        type = "internal/cpu";
+        interval = 1;
+        label = "%percentage:2%%";
+      }
+      // mkPolybarTwoTone {
+        icon = " ";
+        color = "green";
+      };
 
       # ── Temperature (red two-tone) ──
-      "module/temp" =
-        {
-          type = "custom/script";
-          exec = "${pkgs.lm_sensors}/bin/sensors 2>/dev/null | ${pkgs.gawk}/bin/awk '/^edge/||/^Tctl/ {print $2; exit}' || echo N/A";
-          interval = 2;
-        }
-        // mkPolybarTwoTone {
-          icon = " ";
-          color = "red";
-        };
+      "module/temp" = {
+        type = "custom/script";
+        exec = "${pkgs.lm_sensors}/bin/sensors 2>/dev/null | ${pkgs.gawk}/bin/awk '/^edge/||/^Tctl/ {print $2; exit}' || echo N/A";
+        interval = 2;
+      }
+      // mkPolybarTwoTone {
+        icon = " ";
+        color = "red";
+      };
 
       # ── Memory (aqua two-tone) ──
-      "module/memory" =
-        {
-          type = "internal/memory";
-          interval = 1;
-          label = "%free%";
-        }
-        // mkPolybarTwoTone {
-          icon = "󰍛 ";
-          color = "orange";
-        };
+      "module/memory" = {
+        type = "internal/memory";
+        interval = 1;
+        label = "%free%";
+      }
+      // mkPolybarTwoTone {
+        icon = "󰍛 ";
+        color = "orange";
+      };
 
       # ── Audio (yellow two-tone, muted = red) ──
-      "module/pulseaudio" =
-        {
-          type = "internal/pulseaudio";
-          label-volume = "%percentage%%";
-          label-muted = "muted";
-        }
-        // mkPolybarTwoToneState {
-          state = "volume";
-          icon = "󰕾";
-          color = "yellow";
-        }
-        // mkPolybarTwoToneState {
-          state = "muted";
-          icon = "󰖁";
-          color = "red";
-        };
+      "module/pulseaudio" = {
+        type = "internal/pulseaudio";
+        label-volume = "%percentage%%";
+        label-muted = "muted";
+      }
+      // mkPolybarTwoToneState {
+        state = "volume";
+        icon = "󰕾";
+        color = "yellow";
+      }
+      // mkPolybarTwoToneState {
+        state = "muted";
+        icon = "󰖁";
+        color = "red";
+      };
 
       # ── Power button (yellow block) ──
       "module/power" = {
@@ -178,16 +171,15 @@ in {
       };
 
       # ── Brightness (purple two-tone) ──
-      "module/brightness" =
-        {
-          type = "internal/backlight";
-          card = "amdgpu_bl1";
-          enable-scroll = true;
-        }
-        // mkPolybarTwoTone {
-          icon = "";
-          color = "purple";
-        };
+      "module/brightness" = {
+        type = "internal/backlight";
+        card = "amdgpu_bl1";
+        enable-scroll = true;
+      }
+      // mkPolybarTwoTone {
+        icon = "";
+        color = "purple";
+      };
 
       # ── Now-Playing (custom script) ──
       "module/now-playing" = {
@@ -216,80 +208,77 @@ in {
       };
 
       # ── Autotiling Indicator (aqua two-tone) ──
-      "module/autotiling" =
-        {
-          type = "custom/script";
-          exec = "${pkgs.writeShellScript "polybar-autotiling" ''
-            if ${pkgs.procps}/bin/pgrep -f autotiling > /dev/null; then
-              echo "on"
-            else
-              echo "off"
-            fi
-          ''}";
-          interval = 5;
-          click-left = "${pkgs.writeShellScript "toggle-autotiling" ''
-            if ${pkgs.procps}/bin/pgrep -f autotiling > /dev/null; then
-              ${pkgs.procps}/bin/pkill -f autotiling
-            else
-              ${pkgs.autotiling}/bin/autotiling &
-            fi
-          ''}";
-        }
-        // mkPolybarTwoTone {
-          icon = "󰕭 ";
-          color = "aqua";
-        };
+      "module/autotiling" = {
+        type = "custom/script";
+        exec = "${pkgs.writeShellScript "polybar-autotiling" ''
+          if ${pkgs.procps}/bin/pgrep -f autotiling > /dev/null; then
+            echo "on"
+          else
+            echo "off"
+          fi
+        ''}";
+        interval = 5;
+        click-left = "${pkgs.writeShellScript "toggle-autotiling" ''
+          if ${pkgs.procps}/bin/pgrep -f autotiling > /dev/null; then
+            ${pkgs.procps}/bin/pkill -f autotiling
+          else
+            ${pkgs.autotiling}/bin/autotiling &
+          fi
+        ''}";
+      }
+      // mkPolybarTwoTone {
+        icon = "󰕭 ";
+        color = "aqua";
+      };
     }
 
     # ── Network / WiFi (green two-tone) ──
     (lib.optionalAttrs hasNetwork {
-      "module/network" =
-        {
-          type = "internal/network";
-          interface = "${config.devices.networkInterface}";
-          interval = 3;
-          label-connected = "%essid%";
-          label-disconnected = "off";
-          click-right = "${pkgs.networkmanagerapplet}/bin/nm-connection-editor &";
-        }
-        // mkPolybarTwoToneState {
-          state = "connected";
-          icon = "󰖩 ";
-          color = "green";
-        }
-        // mkPolybarTwoToneState {
-          state = "disconnected";
-          icon = "󰖪 ";
-          color = "red";
-        };
+      "module/network" = {
+        type = "internal/network";
+        interface = "${config.devices.networkInterface}";
+        interval = 3;
+        label-connected = "%essid%";
+        label-disconnected = "off";
+        click-right = "${pkgs.networkmanagerapplet}/bin/nm-connection-editor &";
+      }
+      // mkPolybarTwoToneState {
+        state = "connected";
+        icon = "󰖩 ";
+        color = "green";
+      }
+      // mkPolybarTwoToneState {
+        state = "disconnected";
+        icon = "󰖪 ";
+        color = "red";
+      };
     })
 
     # ── Battery (aqua two-tone) ──
     (lib.optionalAttrs hasBattery {
-      "module/battery" =
-        {
-          type = "internal/battery";
-          inherit (config.devices) battery;
-          full-at = 98;
-          label-charging = "%percentage%%";
-          label-discharging = "%percentage%%";
-          label-full = "100%";
-        }
-        // mkPolybarTwoToneState {
-          state = "charging";
-          icon = "󰂄";
-          color = "aqua";
-        }
-        // mkPolybarTwoToneState {
-          state = "discharging";
-          icon = "󰂎";
-          color = "aqua";
-        }
-        // mkPolybarTwoToneState {
-          state = "full";
-          icon = "󰁹";
-          color = "aqua";
-        };
+      "module/battery" = {
+        type = "internal/battery";
+        inherit (config.devices) battery;
+        full-at = 98;
+        label-charging = "%percentage%%";
+        label-discharging = "%percentage%%";
+        label-full = "100%";
+      }
+      // mkPolybarTwoToneState {
+        state = "charging";
+        icon = "󰂄";
+        color = "aqua";
+      }
+      // mkPolybarTwoToneState {
+        state = "discharging";
+        icon = "󰂎";
+        color = "aqua";
+      }
+      // mkPolybarTwoToneState {
+        state = "full";
+        icon = "󰁹";
+        color = "aqua";
+      };
     })
   ];
 }

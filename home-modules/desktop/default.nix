@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   imports = [
     ./clipboard.nix
     ./firefox.nix

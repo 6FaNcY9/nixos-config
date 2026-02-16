@@ -6,7 +6,8 @@
   config,
   cfgLib,
   ...
-}: {
+}:
+{
   config = lib.mkIf config.profiles.desktop {
     programs.firefox = {
       enable = true;
@@ -174,14 +175,13 @@
           };
         };
 
-        userChrome = let
-          themeTemplate = builtins.readFile ../../assets/firefox/userChrome.theme.css;
-          replaceColors = cfgLib.mkColorReplacer {colors = c;};
-        in
+        userChrome =
+          let
+            themeTemplate = builtins.readFile ../../assets/firefox/userChrome.theme.css;
+            replaceColors = cfgLib.mkColorReplacer { colors = c; };
+          in
           lib.mkAfter (
-            (builtins.readFile ../../assets/firefox/userChrome.css)
-            + "\n"
-            + replaceColors themeTemplate
+            (builtins.readFile ../../assets/firefox/userChrome.css) + "\n" + replaceColors themeTemplate
           );
 
         userContent = builtins.readFile ../../assets/firefox/userContent.css;

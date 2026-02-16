@@ -3,7 +3,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   config = lib.mkIf config.roles.laptop {
     services = {
       # Power management: power-profiles-daemon with native AMD amd-pstate-epp driver

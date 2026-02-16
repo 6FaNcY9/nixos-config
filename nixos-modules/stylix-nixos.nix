@@ -1,4 +1,5 @@
-{lib, ...}: {
+{ lib, ... }:
+{
   # NixOS-only Stylix knobs:
   # - GRUB theme target
   # - HM integration (follow system theme; HM module is imported explicitly)

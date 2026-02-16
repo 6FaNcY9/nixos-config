@@ -1,5 +1,6 @@
 # Starship prompt configuration
-{c, ...}: {
+{ c, ... }:
+{
   programs.starship = {
     enable = true;
     enableFishIntegration = true;

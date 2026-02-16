@@ -1,4 +1,5 @@
-{inputs}: {
+{ inputs }:
+{
   default = final: prev: {
     # Stable packages available as pkgs.stable.* (fallback when unstable breaks)
     stable = import inputs.nixpkgs-stable {
@@ -24,8 +25,8 @@
 
       cargoHash = "sha256-EU8kdG2NT3NvrZ1AqvaJPLpDQQwUhYG3Gj5TAjPYRsY=";
 
-      nativeBuildInputs = [prev.llvmPackages.libclang.lib];
-      buildInputs = [];
+      nativeBuildInputs = [ prev.llvmPackages.libclang.lib ];
+      buildInputs = [ ];
 
       # Disable tests (they fail when building just the CLI)
       doCheck = false;
@@ -45,40 +46,35 @@
     # The --linker=isolated flag ensures each package gets its own node_modules copy,
     # preventing the "cannot find module" errors that occur with hoisted dependencies.
     # See: https://bun.sh/docs/install/linker
-    opencode = let
-      opencodeSrc = inputs.opencode;
-      opencodeRev = opencodeSrc.shortRev or (opencodeSrc.rev or "dirty");
-      nodeModules = final.callPackage "${opencodeSrc}/nix/node_modules.nix" {
-        rev = opencodeRev;
-      };
-      nodeModulesPatched = nodeModules.overrideAttrs (old: {
-        buildPhase =
-          final.lib.replaceStrings
-          ["bun install \\\n"]
-          ["bun install \\\n      --linker=isolated \\\n"]
-          old.buildPhase;
-      });
-    in
+    opencode =
+      let
+        opencodeSrc = inputs.opencode;
+        opencodeRev = opencodeSrc.shortRev or (opencodeSrc.rev or "dirty");
+        nodeModules = final.callPackage "${opencodeSrc}/nix/node_modules.nix" {
+          rev = opencodeRev;
+        };
+        nodeModulesPatched = nodeModules.overrideAttrs (old: {
+          buildPhase =
+            final.lib.replaceStrings [ "bun install \\\n" ] [ "bun install \\\n      --linker=isolated \\\n" ]
+              old.buildPhase;
+        });
+      in
       (final.callPackage "${opencodeSrc}/nix/opencode.nix" {
         node_modules = nodeModulesPatched;
-      })
-      .overrideAttrs (old: {
-        postPatch =
-          (old.postPatch or "")
-          + ''
+      }).overrideAttrs
+        (old: {
+          postPatch = (old.postPatch or "") + ''
             substituteInPlace packages/opencode/script/build.ts \
               --replace "../../../node_modules/@opentui/solid/scripts/solid-plugin" \
                         "../node_modules/@opentui/solid/scripts/solid-plugin"
           '';
-        # The embedded Bun JS runtime's file watcher needs libstdc++.so.6 at runtime.
-        # The upstream installPhase already wraps with makeBinaryWrapper for PATH.
-        # We re-wrap to also add LD_LIBRARY_PATH for the native watcher binding.
-        postFixup =
-          (old.postFixup or "")
-          + ''
+          # The embedded Bun JS runtime's file watcher needs libstdc++.so.6 at runtime.
+          # The upstream installPhase already wraps with makeBinaryWrapper for PATH.
+          # We re-wrap to also add LD_LIBRARY_PATH for the native watcher binding.
+          postFixup = (old.postFixup or "") + ''
             wrapProgram $out/bin/opencode \
               --prefix LD_LIBRARY_PATH : "${final.stdenv.cc.cc.lib}/lib"
           '';
-      });
+        });
   };
 }

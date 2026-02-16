@@ -3,7 +3,8 @@
   i3Pkg,
   config,
   ...
-}: {
+}:
+{
   imports = [
     ./config.nix
     ./keybindings.nix

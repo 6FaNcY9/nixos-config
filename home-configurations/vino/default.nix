@@ -11,26 +11,30 @@
   username,
   hostname,
   ...
-}: let
+}:
+let
   inherit (pkgs.stdenv.hostPlatform) system;
   hostName = osConfig.networking.hostName or hostname;
   hostModulePath = ./hosts/${hostName}.nix;
-  hostModules = lib.optionals (builtins.pathExists hostModulePath) [hostModulePath];
+  hostModules = lib.optionals (builtins.pathExists hostModulePath) [ hostModulePath ];
 
   # Stylix fonts (with fallback)
-  stylixFonts =
-    lib.attrByPath ["stylix" "fonts"] {
-      sansSerif = {name = "Sans";};
-      monospace = {name = "Monospace";};
-    }
-    config;
+  stylixFonts = lib.attrByPath [ "stylix" "fonts" ] {
+    sansSerif = {
+      name = "Sans";
+    };
+    monospace = {
+      name = "Monospace";
+    };
+  } config;
 
   codexPkg = inputs.codex-cli-nix.packages.${system}.default;
   opencodePkg = pkgs.opencode;
 
   i3Pkg = pkgs.i3;
-in {
-  imports = [../../home-modules/default.nix] ++ hostModules;
+in
+{
+  imports = [ ../../home-modules/default.nix ] ++ hostModules;
 
   # Inject shared arguments available to ALL home-modules via function args.
   #
@@ -51,9 +55,14 @@ in {
     inherit (config.theme) palette;
     inherit (config) workspaces;
     c = config.theme.colors;
-    inherit stylixFonts i3Pkg codexPkg opencodePkg;
+    inherit
+      stylixFonts
+      i3Pkg
+      codexPkg
+      opencodePkg
+      ;
     hostname = hostName;
-    cfgLib = import ../../lib {inherit lib;};
+    cfgLib = import ../../lib { inherit lib; };
   };
 
   # ============================================================

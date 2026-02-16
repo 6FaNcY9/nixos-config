@@ -2,13 +2,14 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   # If nixpkgs already has tmuxPlugins.tmux-which-key (it usually does),
   # this will work as-is. If not, see the fallback snippet below.
   wkPlugin = pkgs.tmuxPlugins.tmux-which-key;
 
   # Helper: YAML config for tmux-which-key (XDG mode).
-  wkYaml = lib.generators.toYAML {} {
+  wkYaml = lib.generators.toYAML { } {
     command_alias_start_index = 200;
 
     # Default bindings (as upstream): prefix+Space and optionally Ctrl+Space.
@@ -114,7 +115,7 @@
           }
         ];
       }
-      {separator = true;}
+      { separator = true; }
       {
         name = "Reload tmux config";
         key = "r";
@@ -127,7 +128,8 @@
       }
     ];
   };
-in {
+in
+{
   programs.tmux = {
     # Plugins: Home Manager will append run-shell lines for them.
     # NOTE: tmux-continuum should be last because it hooks status-right and can be broken

@@ -4,7 +4,8 @@
   workspaces,
   cfgLib,
   ...
-}: let
+}:
+let
   mod = "Mod4";
 
   directionalFocus = {
@@ -53,9 +54,12 @@
 
     "Print" = "exec ${pkgs.flameshot}/bin/flameshot gui";
 
-    "XF86AudioRaiseVolume" = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
-    "XF86AudioLowerVolume" = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
-    "XF86AudioMute" = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
+    "XF86AudioRaiseVolume" =
+      "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
+    "XF86AudioLowerVolume" =
+      "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
+    "XF86AudioMute" =
+      "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
 
     "XF86MonBrightnessUp" = "exec --no-startup-id ${pkgs.brightnessctl}/bin/brightnessctl set +10%";
     "XF86MonBrightnessDown" = "exec --no-startup-id ${pkgs.brightnessctl}/bin/brightnessctl set 10%-";
@@ -80,7 +84,8 @@
     commandPrefix = "move container to workspace";
     shift = true;
   };
-in {
+in
+{
   xsession.windowManager.i3.config.keybindings = lib.mkOptionDefault (
     directionalFocus
     // directionalMove

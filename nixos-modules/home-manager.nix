@@ -6,7 +6,8 @@
   username,
   repoRoot,
   ...
-}: {
+}:
+{
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;

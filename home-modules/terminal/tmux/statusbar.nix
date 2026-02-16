@@ -1,4 +1,5 @@
-{palette, ...}: {
+{ palette, ... }:
+{
   programs.tmux.extraConfig = ''
     ##### Status line (enhanced for laptop use) #####
     set -g status on

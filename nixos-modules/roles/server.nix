@@ -3,19 +3,23 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.server = {
     hardening = lib.mkEnableOption "baseline server hardening (fail2ban, sysctl, nftables)";
 
     ssh.allowUsers = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [];
+      default = [ ];
       description = "Restrict SSH login to these users (empty = allow all).";
     };
 
     fail2ban.ignoreIP = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = ["127.0.0.1/8" "::1"];
+      default = [
+        "127.0.0.1/8"
+        "::1"
+      ];
       description = "IP ranges to ignore for fail2ban.";
     };
   };
@@ -40,8 +44,9 @@
         '';
       };
 
-      services.openssh.settings.AllowUsers =
-        lib.mkIf (config.server.ssh.allowUsers != []) config.server.ssh.allowUsers;
+      services.openssh.settings.AllowUsers = lib.mkIf (
+        config.server.ssh.allowUsers != [ ]
+      ) config.server.ssh.allowUsers;
 
       boot.kernel.sysctl = {
         "net.ipv4.conf.all.rp_filter" = 1;

@@ -1,4 +1,5 @@
-{inputs, ...}: {
+{ inputs, ... }:
+{
   imports = [
     # External modules
     inputs.stylix.nixosModules.stylix

@@ -5,7 +5,8 @@
   username,
   repoRoot,
   ...
-}: {
+}:
+{
   # ------------------------------------------------------------
   # Automated updates (flake inputs + rebuild)
   # ------------------------------------------------------------
@@ -17,9 +18,13 @@
     serviceConfig = {
       Type = "oneshot";
       WorkingDirectory = repoRoot;
-      Environment = ["HOME=/home/${username}"];
+      Environment = [ "HOME=/home/${username}" ];
     };
-    path = [pkgs.nix pkgs.git pkgs.util-linux];
+    path = [
+      pkgs.nix
+      pkgs.git
+      pkgs.util-linux
+    ];
     script = ''
       ${pkgs.util-linux}/bin/runuser -u ${username} -- nix flake update
       ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch --flake ${repoRoot}#${config.networking.hostName}

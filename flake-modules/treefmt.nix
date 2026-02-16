@@ -1,11 +1,13 @@
 _: {
-  perSystem = {config, ...}: {
-    treefmt = {
-      projectRootFile = "flake.nix";
-      programs.alejandra.enable = true;
-      flakeCheck = true;
-    };
+  perSystem =
+    { config, ... }:
+    {
+      treefmt = {
+        projectRootFile = "flake.nix";
+        programs.nixfmt.enable = true;
+        flakeCheck = true;
+      };
 
-    formatter = config.treefmt.build.wrapper;
-  };
+      formatter = config.treefmt.build.wrapper;
+    };
 }

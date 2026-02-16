@@ -3,7 +3,8 @@
   c,
   palette,
   ...
-}: {
+}:
+{
   xsession.windowManager.i3.config = {
     modifier = "Mod4";
     terminal = "alacritty";
@@ -56,24 +57,32 @@
     };
 
     workspaceAutoBackAndForth = true;
-    bars = lib.mkDefault [];
+    bars = lib.mkDefault [ ];
 
     window.commands = [
       {
         command = "floating enable";
-        criteria = {class = "Pavucontrol";};
+        criteria = {
+          class = "Pavucontrol";
+        };
       }
       {
         command = "floating enable";
-        criteria = {class = "Nm-connection-editor";};
+        criteria = {
+          class = "Nm-connection-editor";
+        };
       }
       {
         command = "floating enable";
-        criteria = {class = "Gsimplecal";};
+        criteria = {
+          class = "Gsimplecal";
+        };
       }
       {
         command = "floating enable";
-        criteria = {class = "Blueman-manager";};
+        criteria = {
+          class = "Blueman-manager";
+        };
       }
       {
         command = "floating enable, resize set 800 600";

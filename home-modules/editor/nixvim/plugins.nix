@@ -9,13 +9,13 @@ _: {
           enable = true;
           auto_trigger = true;
           debounce = 75;
-          keymaps = {};
+          keymaps = { };
         };
 
         panel = {
           enable = true;
           auto_refresh = false;
-          keymaps = {};
+          keymaps = { };
         };
       };
     };
@@ -27,8 +27,12 @@ _: {
         sorting_strategy = "ascending";
         layout_config = {
           prompt_position = "top";
-          horizontal = {preview_width = 0.55;};
-          vertical = {mirror = true;};
+          horizontal = {
+            preview_width = 0.55;
+          };
+          vertical = {
+            mirror = true;
+          };
         };
       };
     };
@@ -112,7 +116,7 @@ _: {
           enabled = true;
           show_start = false; # avoid heavy horizontal lines on braces
           show_end = false;
-          highlight = ["IblScope"];
+          highlight = [ "IblScope" ];
         };
       };
     };
@@ -155,10 +159,10 @@ _: {
         };
 
         sources = [
-          {name = "nvim_lsp";}
-          {name = "path";}
-          {name = "buffer";}
-          {name = "luasnip";}
+          { name = "nvim_lsp"; }
+          { name = "path"; }
+          { name = "buffer"; }
+          { name = "luasnip"; }
         ];
       };
 
@@ -167,22 +171,22 @@ _: {
         "/" = {
           mapping.__raw = "cmp.mapping.preset.cmdline()";
           sources = [
-            {name = "buffer";}
+            { name = "buffer"; }
           ];
         };
 
         "?" = {
           mapping.__raw = "cmp.mapping.preset.cmdline()";
           sources = [
-            {name = "buffer";}
+            { name = "buffer"; }
           ];
         };
 
         ":" = {
           mapping.__raw = "cmp.mapping.preset.cmdline()";
           sources = [
-            {name = "path";}
-            {name = "cmdline";}
+            { name = "path"; }
+            { name = "cmdline"; }
           ];
         };
       };

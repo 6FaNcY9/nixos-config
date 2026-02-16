@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   programs.nixvim = {
     extraPlugins = with pkgs.vimPlugins; [
       # Plugins without native nixvim modules

@@ -4,7 +4,8 @@
   config,
   inputs,
   ...
-}: {
+}:
+{
   # Wallpaper option - can be overridden per-host
   options.theme.wallpaper = lib.mkOption {
     type = lib.types.path;

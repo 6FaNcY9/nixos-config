@@ -2,11 +2,15 @@
   pkgs,
   username ? "vino",
   ...
-}: let
+}:
+let
   swapFile = "/swap/swapfile";
-  btrfsFileSystems = ["/" "/home"];
+  btrfsFileSystems = [
+    "/"
+    "/home"
+  ];
 
-  snapperUsers = [username];
+  snapperUsers = [ username ];
   snapperTimeline = {
     FSTYPE = "btrfs";
     # TIMELINE_CREATE is ignored by NixOS snapper module; timer disabled below
@@ -19,7 +23,8 @@
     NUMBER_CLEANUP = true;
     ALLOW_USERS = snapperUsers;
   };
-in {
+in
+{
   # ------------------------------------------------------------
   # Boot + power + storage
   # ------------------------------------------------------------
@@ -36,7 +41,7 @@ in {
   };
 
   # SwapFile
-  swapDevices = [{device = swapFile;}];
+  swapDevices = [ { device = swapFile; } ];
 
   services = {
     # SSD maintenance (fwupd is enabled in roles/laptop.nix)
@@ -44,13 +49,13 @@ in {
 
     # Filesystems + snapshots
     snapper.configs = {
-      root = snapperTimeline // {SUBVOLUME = "/";};
-      home =
-        snapperTimeline
-        // {
-          SUBVOLUME = "/home";
-          NUMBER_LIMIT = "50";
-        };
+      root = snapperTimeline // {
+        SUBVOLUME = "/";
+      };
+      home = snapperTimeline // {
+        SUBVOLUME = "/home";
+        NUMBER_LIMIT = "50";
+      };
     };
 
     btrfs.autoScrub = {

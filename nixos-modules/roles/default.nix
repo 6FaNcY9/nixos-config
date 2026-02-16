@@ -1,6 +1,7 @@
 # Role system - defines opt-in roles for different host types
 # Roles: desktop, laptop, server, development
-{lib, ...}: {
+{ lib, ... }:
+{
   imports = [
     ./laptop.nix
     ./server.nix
@@ -36,7 +37,7 @@
     };
 
     desktop.variant = lib.mkOption {
-      type = lib.types.enum ["i3-xfce"]; # sway removed - not implemented
+      type = lib.types.enum [ "i3-xfce" ]; # sway removed - not implemented
       default = "i3-xfce";
       description = "Desktop stack variant to use when roles.desktop = true.";
     };

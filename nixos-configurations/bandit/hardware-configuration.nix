@@ -6,65 +6,76 @@
   lib,
   modulesPath,
   ...
-}: {
+}:
+{
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "thunderbolt" "usb_storage" "uas" "sd_mod"];
-  boot.initrd.kernelModules = [];
-  boot.kernelModules = ["kvm-amd"];
-  boot.extraModulePackages = [];
+  boot.initrd.availableKernelModules = [
+    "nvme"
+    "xhci_pci"
+    "thunderbolt"
+    "usb_storage"
+    "uas"
+    "sd_mod"
+  ];
+  boot.initrd.kernelModules = [ ];
+  boot.kernelModules = [ "kvm-amd" ];
+  boot.extraModulePackages = [ ];
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
     fsType = "btrfs";
-    options = ["subvol=@"];
+    options = [ "subvol=@" ];
   };
 
   fileSystems."/home" = {
     device = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
     fsType = "btrfs";
-    options = ["subvol=@home"];
+    options = [ "subvol=@home" ];
   };
 
   fileSystems."/nix" = {
     device = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
     fsType = "btrfs";
-    options = ["subvol=@nix"];
+    options = [ "subvol=@nix" ];
   };
 
   fileSystems."/var" = {
     device = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
     fsType = "btrfs";
-    options = ["subvol=@var"];
+    options = [ "subvol=@var" ];
   };
 
   fileSystems."/swap" = {
     device = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
     fsType = "btrfs";
-    options = ["subvol=@swap"];
+    options = [ "subvol=@swap" ];
   };
 
   fileSystems."/.snapshots" = {
     device = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
     fsType = "btrfs";
-    options = ["subvol=@/.snapshots"];
+    options = [ "subvol=@/.snapshots" ];
   };
 
   fileSystems."/home/.snapshots" = {
     device = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
     fsType = "btrfs";
-    options = ["subvol=@home/.snapshots"];
+    options = [ "subvol=@home/.snapshots" ];
   };
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/CC4A-AF6B";
     fsType = "vfat";
-    options = ["fmask=0022" "dmask=0022"];
+    options = [
+      "fmask=0022"
+      "dmask=0022"
+    ];
   };
 
-  swapDevices = [];
+  swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

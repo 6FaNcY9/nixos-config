@@ -3,9 +3,11 @@
   palette,
   c,
   ...
-}: let
+}:
+let
   darken = cfgLib.darkenColor;
-in {
+in
+{
   services.polybar.settings."colors" = {
     # Base (from shared palette)
     background = palette.bg;
@@ -16,7 +18,13 @@ in {
     transparent = "#00000000";
 
     # Semantic (from shared palette)
-    inherit (palette) accent accent2 warn danger muted;
+    inherit (palette)
+      accent
+      accent2
+      warn
+      danger
+      muted
+      ;
     cream = c.base07;
 
     # Gruvbox two-tone module pairs (icon-bg / label-bg)

@@ -17,8 +17,11 @@ _: {
           theme = "auto";
         };
         sections = {
-          lualine_a = ["mode"];
-          lualine_b = ["branch" "diff"];
+          lualine_a = [ "mode" ];
+          lualine_b = [
+            "branch"
+            "diff"
+          ];
           lualine_c = [
             {
               __unkeyed-1 = "filename";
@@ -28,7 +31,7 @@ _: {
           lualine_x = [
             {
               __unkeyed-1 = "diagnostics";
-              sources = ["nvim_lsp"];
+              sources = [ "nvim_lsp" ];
               symbols = {
                 error = " ";
                 warn = " ";
@@ -40,8 +43,8 @@ _: {
             "fileformat"
             "filetype"
           ];
-          lualine_y = ["progress"];
-          lualine_z = ["location"];
+          lualine_y = [ "progress" ];
+          lualine_z = [ "location" ];
         };
       };
     };

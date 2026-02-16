@@ -3,7 +3,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   config = lib.mkIf config.profiles.desktop {
     xdg.configFile."xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml" = {
       text = ''

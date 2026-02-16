@@ -5,7 +5,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   options.desktop.hardening = {
     enable = lib.mkEnableOption "baseline desktop security hardening";
 
@@ -40,13 +41,13 @@
 
       allowedTCPPorts = lib.mkOption {
         type = lib.types.listOf lib.types.port;
-        default = [];
+        default = [ ];
         description = "Additional TCP ports to allow through firewall";
       };
 
       allowedUDPPorts = lib.mkOption {
         type = lib.types.listOf lib.types.port;
-        default = [];
+        default = [ ];
         description = "Additional UDP ports to allow through firewall";
       };
     };

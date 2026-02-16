@@ -5,7 +5,8 @@
   pkgs,
   cfgLib,
   ...
-}: let
+}:
+let
   # Secret file paths
   githubMcpSecretFile = "${inputs.self}/secrets/github-mcp.yaml";
   gpgSigningKeyFile = "${inputs.self}/secrets/gpg-signing-key.yaml";
@@ -23,7 +24,8 @@
     ];
     label = "Home";
   };
-in {
+in
+{
   inherit (secretValidation) assertions;
 
   # sops-nix Home Manager defaults (kept minimal)
@@ -62,7 +64,7 @@ in {
 
   # Import GPG key after sops-nix has decrypted secrets
   # Non-fatal: only imports if the secret exists
-  home.activation.importGpgKey = lib.hm.dag.entryAfter ["writeBoundary" "reloadSystemd"] ''
+  home.activation.importGpgKey = lib.hm.dag.entryAfter [ "writeBoundary" "reloadSystemd" ] ''
     SECRET_PATH="${config.sops.secrets.gpg_signing_key.path}"
     if [ -f "$SECRET_PATH" ]; then
       echo "Importing GPG signing key..."
