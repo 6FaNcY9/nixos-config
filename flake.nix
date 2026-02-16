@@ -6,7 +6,7 @@
 #   nixos-modules/         Shared NixOS modules (imported by default.nix)
 #   home-modules/          Shared Home Manager modules (imported by default.nix)
 #   shared-modules/        Modules used by both NixOS and HM (e.g. Stylix)
-#   flake-modules/         perSystem devshells, apps, services, mission-control
+#   flake-modules/         perSystem devshells, apps, services, checks
 #   overlays/              Nixpkgs overlays (pkgs.stable, custom packages)
 #   lib/                   Pure helper functions (color, workspace, profile)
 {
@@ -85,14 +85,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    mission-control.url = "github:Platonic-Systems/mission-control";
-
     devshell = {
       url = "github:numtide/devshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    flake-root.url = "github:srid/flake-root";
 
     # Development services (PostgreSQL, Redis, etc.)
     process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
@@ -105,60 +101,69 @@
     };
   };
 
-  outputs = inputs @ {flake-parts, ...}: let
-    system = "x86_64-linux";
-    primaryHost = "bandit";
-    username = "vino";
-    # Absolute path to this repository on disk.  Must be a string (not a Nix
-    # path) because NixOS systemd units and nh need the literal runtime path;
-    # builtins.getEnv "HOME" is empty during pure evaluation.
-    repoRoot = "/home/${username}/src/nixos-config";
+  outputs =
+    inputs@{ flake-parts, ... }:
+    let
+      system = "x86_64-linux";
+      primaryHost = "bandit";
+      username = "vino";
+      # Absolute path to this repository on disk.  Must be a string (not a Nix
+      # path) because NixOS systemd units and nh need the literal runtime path;
+      # builtins.getEnv "HOME" is empty during pure evaluation.
+      repoRoot = "/home/${username}/src/nixos-config";
 
-    overlays = import ./overlays {inherit inputs;};
+      overlays = import ./overlays { inherit inputs; };
 
-    pkgsFor = system:
-      import inputs.nixpkgs {
-        inherit system;
-        overlays = [overlays.default];
-        config.allowUnfree = true;
-      };
-  in
-    flake-parts.lib.mkFlake {inherit inputs;} ({...}: {
-      systems = [system];
+      pkgsFor =
+        system:
+        import inputs.nixpkgs {
+          inherit system;
+          overlays = [ overlays.default ];
+          config.allowUnfree = true;
+        };
+    in
+    flake-parts.lib.mkFlake { inherit inputs; } (
+      { ... }:
+      {
+        systems = [ system ];
 
-      # Enable flake-parts debug mode for development (adds allSystems/currentSystem outputs)
-      # Keep false in normal builds to avoid "unknown flake output" warnings.
-      debug = false;
+        # Enable flake-parts debug mode for development (adds allSystems/currentSystem outputs)
+        # Keep false in normal builds to avoid "unknown flake output" warnings.
+        debug = false;
 
-      # Available to all perSystem flake-modules (e.g. _common.nix, apps.nix).
-      _module.args = {
-        inherit primaryHost username repoRoot pkgsFor;
-      };
-
-      imports = [
-        inputs.ez-configs.flakeModule
-        inputs.pre-commit-hooks.flakeModule
-        inputs.treefmt-nix.flakeModule
-        inputs.mission-control.flakeModule
-        inputs.devshell.flakeModule
-        inputs.flake-root.flakeModule
-        inputs.process-compose-flake.flakeModule
-        ./flake-modules
-      ];
-
-      # ez-configs auto-discovers {nixos,home}-configurations/ and wires them.
-      # globalArgs become available in every NixOS and Home Manager module.
-      ezConfigs = {
-        root = ./.;
-        globalArgs = {
-          inherit inputs username repoRoot;
+        # Available to all perSystem flake-modules (e.g. _common.nix, apps.nix).
+        _module.args = {
+          inherit
+            primaryHost
+            username
+            repoRoot
+            pkgsFor
+            ;
         };
 
-        nixos.hosts.${primaryHost}.userHomeModules = ["vino"];
-      };
+        imports = [
+          inputs.ez-configs.flakeModule
+          inputs.pre-commit-hooks.flakeModule
+          inputs.treefmt-nix.flakeModule
+          inputs.devshell.flakeModule
+          inputs.process-compose-flake.flakeModule
+          ./flake-modules
+        ];
 
-      flake = {
-        inherit overlays;
-      };
-    });
+        # ez-configs auto-discovers {nixos,home}-configurations/ and wires them.
+        # globalArgs become available in every NixOS and Home Manager module.
+        ezConfigs = {
+          root = ./.;
+          globalArgs = {
+            inherit inputs username repoRoot;
+          };
+
+          nixos.hosts.${primaryHost}.userHomeModules = [ "vino" ];
+        };
+
+        flake = {
+          inherit overlays;
+        };
+      }
+    );
 }

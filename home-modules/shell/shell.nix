@@ -6,7 +6,8 @@
   hostname,
   username,
   ...
-}: {
+}:
+{
   programs = {
     fish = {
       enable = true;
@@ -72,9 +73,8 @@
         devweb = "nix develop ${repoRoot}#web";
         devrust = "nix develop ${repoRoot}#rust";
         devgo = "nix develop ${repoRoot}#go";
-        devflask = "nix develop ${repoRoot}#flask";
         devagents = "nix develop ${repoRoot}#agents";
-        devdb = "nix develop ${repoRoot}#database";
+        devnix = "nix develop ${repoRoot}#nix-debug";
 
         # Git Shortcuts
         gs = "git status";
@@ -158,7 +158,10 @@
     zoxide = {
       enable = true;
       enableFishIntegration = true;
-      options = ["--cmd" "z"];
+      options = [
+        "--cmd"
+        "z"
+      ];
     };
   };
 }
