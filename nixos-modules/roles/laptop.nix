@@ -1,10 +1,17 @@
-# Laptop role - bluetooth, power management
+# Laptop role - bluetooth, power management, Framework hardware tools
 {
   lib,
   config,
+  pkgs,
   ...
 }: {
   config = lib.mkIf config.roles.laptop {
+    # Framework-specific hardware tools
+    environment.systemPackages = with pkgs; [
+      framework-tool # Framework hardware control utility
+      fw-ectool # Embedded controller interface
+      auto-cpufreq # CPU frequency scaling for battery optimization
+    ];
     services = {
       # Power management: power-profiles-daemon with native AMD amd-pstate-epp driver
       # Framework 13 AMD (Ryzen 7040) uses amd-pstate-epp for optimal power management

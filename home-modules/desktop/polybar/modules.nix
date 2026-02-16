@@ -17,6 +17,7 @@
     workspaces
   );
   hasBattery = config.devices.battery != "";
+  hasBacklight = config.devices.backlight != "";
   hasNetwork = config.devices.networkInterface != "";
 in {
   services.polybar.settings = lib.mkMerge [
@@ -177,18 +178,6 @@ in {
         format-background = "\${colors.yellow}";
       };
 
-      # ── Brightness (purple two-tone) ──
-      "module/brightness" =
-        {
-          type = "internal/backlight";
-          card = "amdgpu_bl1";
-          enable-scroll = true;
-        }
-        // mkPolybarTwoTone {
-          icon = "";
-          color = "purple";
-        };
-
       # ── Now-Playing (custom script) ──
       "module/now-playing" = {
         type = "custom/script";
@@ -240,6 +229,20 @@ in {
           color = "aqua";
         };
     }
+
+    # ── Brightness (purple two-tone) ──
+    (lib.optionalAttrs hasBacklight {
+      "module/brightness" =
+        {
+          type = "internal/backlight";
+          card = config.devices.backlight;
+          enable-scroll = true;
+        }
+        // mkPolybarTwoTone {
+          icon = "";
+          color = "purple";
+        };
+    })
 
     # ── Network / WiFi (green two-tone) ──
     (lib.optionalAttrs hasNetwork {

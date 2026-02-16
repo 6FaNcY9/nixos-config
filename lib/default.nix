@@ -78,7 +78,6 @@
     body,
   }:
     pkgs.writeShellScriptBin name ''
-      #!${pkgs.bash}/bin/bash
       set -euo pipefail
       ${body}
     '';
@@ -140,6 +139,12 @@
       description = "Enable ${name} package set.";
     };
 
+  # Map workspace number to keyboard key (10 → 0, others unchanged)
+  wsKey = n:
+    if n == 10
+    then "0"
+    else toString n;
+
   # Polybar helpers
   # Two-tone module style: icon block (dark color) + label block (bright variant)
   mkPolybarTwoTone = {
@@ -191,7 +196,7 @@ in {
   in
     builtins.listToAttrs (
       map (ws: {
-        name = "${keyPrefix}${toString ws.number}";
+        name = "${keyPrefix}${wsKey ws.number}";
         value = "${commandPrefix} \"${mkWorkspaceName ws}\"";
       })
       workspaces

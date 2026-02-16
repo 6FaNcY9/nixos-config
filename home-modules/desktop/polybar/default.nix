@@ -5,11 +5,13 @@
   ...
 }: let
   hasBattery = config.devices.battery != "";
+  hasBacklight = config.devices.backlight != "";
   hasNetwork = config.devices.networkInterface != "";
   modulesLeft = "menu i3 xwindow tray";
   modulesCenter = "time";
   modulesRight = lib.concatStringsSep " " (
     ["host" "cpu" "temp" "memory"]
+    ++ lib.optionals hasBacklight ["brightness"]
     ++ lib.optionals hasNetwork ["network"]
     ++ lib.optionals hasBattery ["battery"]
     ++ ["power"]

@@ -32,13 +32,22 @@ _: {
         push.autoSetupRemote = true;
 
         core.editor = "nvim";
-        diff.colorMoved = "default";
+        diff = {
+          colorMoved = "default";
+          algorithm = "histogram"; # Better diff output than default myers
+        };
         merge.conflictstyle = "zdiff3";
         fetch.prune = true;
-        rebase.autoStash = true;
+        fetch.pruneTags = true;
+        rebase = {
+          autoStash = true;
+          autoSquash = true; # Auto-fixup commits marked with fixup!/squash!
+        };
         credential.helper = "libsecret";
         rerere.enabled = true;
         column.ui = "auto";
+        branch.sort = "-committerdate"; # Most recent branches first
+        tag.sort = "-version:refname"; # Semantic version sorting for tags
       };
     };
   };

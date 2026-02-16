@@ -31,11 +31,6 @@
     sops
     age
     ssh-to-age
-    # Framework-specific tools (only on Framework laptops)
-    framework-tool # Framework hardware control utility
-    fw-ectool # Embedded controller interface
-    auto-cpufreq # CPU frequency scaling for battery optimization
-    fprintd # Fingerprint authentication daemon
   ];
 in {
   # ------------------------------------------------------------

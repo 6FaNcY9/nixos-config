@@ -8,15 +8,14 @@
 
   # Shared BTRFS mount options for SSD + battery optimization
   mkBtrfsOpts = subvol:
-    lib.mkForce ([
-        "subvol=${subvol}"
-        "noatime"
-        "nodiratime"
-        "compress=zstd:3"
-        "space_cache=v2"
-        "discard=async"
-      ]
-      ++ lib.optionals (subvol == "@nix") []);
+    lib.mkForce [
+      "subvol=${subvol}"
+      "noatime"
+      "nodiratime"
+      "compress=zstd:3"
+      "space_cache=v2"
+      "discard=async"
+    ];
 in {
   imports = [
     inputs.nixos-hardware.nixosModules.framework-13-7040-amd
