@@ -3,6 +3,7 @@ _: {
   xdg.configFile."nixpkgs/config.nix".text = ''
     {
       allowUnfree = true;
+      allowAliases = false;
     }
   '';
 }

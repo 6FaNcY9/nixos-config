@@ -19,15 +19,15 @@
   codexPkg ? null,
   opencodePkg ? null,
   ...
-}: let
+}:
+let
   cfg = config.profiles;
 
-  claudeCodePkg = let
-    unstablePkg = lib.attrByPath ["unstable" "claude-code"] null pkgs;
-  in
-    if unstablePkg != null
-    then unstablePkg
-    else lib.attrByPath ["claude-code"] null pkgs;
+  claudeCodePkg =
+    let
+      unstablePkg = lib.attrByPath [ "unstable" "claude-code" ] null pkgs;
+    in
+    if unstablePkg != null then unstablePkg else lib.attrByPath [ "claude-code" ] null pkgs;
 
   aiPkgs = lib.filter (p: p != null) [
     claudeCodePkg
@@ -68,8 +68,7 @@
   devPkgs = with pkgs; [
     python3
     clang
-    gnumake
-    pkg-config
+    # gnumake and pkg-config are in nixos-modules/roles/development.nix (system-level)
     nodejs
     github-copilot-cli
     rustc
@@ -105,7 +104,8 @@
     chafa
     fastfetch # neofetch replacement (actively maintained)
   ];
-in {
+in
+{
   options.profiles = {
     core = cfgLib.mkProfile "core CLI tools" true;
     dev = cfgLib.mkProfile "development tools" true;

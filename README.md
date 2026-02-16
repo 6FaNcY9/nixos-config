@@ -9,11 +9,9 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 - `home-configurations/vino/default.nix` – Home Manager profile: Stylix targets (gtk, i3, xfce, rofi, starship, nixvim, firefox), Firefox userChrome override, package set (CLIs, dev tools, desktop utilities), fish setup with abbreviations, Atuin/Zoxide/direnv/fzf, i3 config, XFCE session XML, and detailed nixvim plugin stack.
 - `home-configurations/vino/hosts/<name>.nix` – host-specific Home Manager overrides (profiles, device names, etc.).
 - `shared-modules/` – shared stylix palette/fonts + i3 workspace list.
-- `nixos-modules/` – NixOS modules: `core.nix`, `storage.nix`, `services.nix`, `roles.nix`, `roles-laptop.nix`, `roles-server.nix`, `server-base.nix`, `desktop.nix`, `stylix-nixos.nix`.
+- `nixos-modules/` – NixOS modules: `core.nix`, `storage.nix`, `services.nix`, `desktop.nix`, `stylix-nixos.nix`, `tailscale.nix`, `monitoring.nix`, `backup.nix`, plus `roles/` (desktop, laptop, server, development, desktop-hardening).
 - `home-modules/` – Home Manager modules (i3, polybar, nixvim, firefox, etc.).
-- `overlays/` – overlays (includes `pkgs.unstable`).
-- `pkgs/` – optional custom packages (create `pkgs/default.nix` when needed; exposed via `nix build .#pkgname`).
-- `assets/firefox/` – userChrome.css + theme template.
+- `overlays/` – overlays (includes `pkgs.stable` from nixpkgs-stable).
 - `lib/` – helper functions shared across modules.
 
 ## Conventions
@@ -21,7 +19,7 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 - Shared NixOS tweaks go in `nixos-modules/` or `shared-modules/`; Home Manager modules live under `home-modules/`.
 - Home Manager modules should use `_module.args` from `home-configurations/vino/default.nix` for colors/fonts (`c`, `palette`, `stylixFonts`).
 - Avoid editing `hardware-configuration.nix` unless re-generated.
-- Run `nix fmt` (alejandra) after changes.
+- Run `nix fmt` (nixfmt-rfc-style) after changes.
 
 ## Host Matrix (intent)
 | Host | Roles | Desktop Variant | Notes |
@@ -34,7 +32,7 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 Where to add new config:
 - System packages: `nixos-modules/core.nix` → `environment.systemPackages`
 - System services: `nixos-modules/services.nix`
-- Server base: `nixos-modules/server-base.nix` (`server.base.enable`, `server.ssh.allowUsers`, `server.fail2ban.ignoreIP`)
+- Server base: `nixos-modules/roles/server.nix` (`server.hardening`, `server.ssh.allowUsers`, `server.fail2ban.ignoreIP`)
 - Desktop/X11/i3/XFCE: `nixos-modules/desktop.nix`
 - Roles are opt-in per host (`roles.desktop`, `roles.laptop`, `roles.server`).
 - Desktop toggle: `roles.desktop = true;` (enable GUI per host).
@@ -49,7 +47,7 @@ Where to add new config:
 - Shared helpers: `lib/default.nix`
 - Workspaces list: `shared-modules/workspaces.nix`
 - Overlays: `overlays/default.nix`
-- Custom packages: create `pkgs/default.nix` (optional)
+- Custom packages: `flake-modules/packages.nix` (exposed via flake outputs)
 
 How imports work (ez-configs):
 - `nixos-modules/default.nix` and `home-modules/default.nix` are module aggregators that set `imports = [ ... ]`.
@@ -66,7 +64,7 @@ Fish plugin src shorthand:
 - `inherit (fifc) src` == `src = fifc.src` (pulls the plugin source from `pkgs.fishPlugins.fifc`).
 
 Tooling:
-- `treefmt` runs Alejandra for Nix formatting (configured via treefmt-nix in `flake.nix`).
+- `treefmt` runs nixfmt-rfc-style for Nix formatting (configured via treefmt-nix in `flake-modules/treefmt.nix`).
 - `statix` lints Nix files (see `statix.toml`).
 - `deadnix` finds unused bindings.
 - Pre-commit hooks run via `nix flake check`.
@@ -88,7 +86,7 @@ Tooling:
 - Home-only switch (classic): `home-manager switch --flake .#vino@bandit`
 - Home-only switch (nh): `nh home switch -c vino@bandit`
 - Convenience apps: `nix run .#update`, `nix run .#clean`, `nix run .#qa`, `nix run .#commit`
-- Formatter: `nix fmt` (uses `alejandra`).
+- Formatter: `nix fmt` (uses `nixfmt-rfc-style`).
 - Dev shells: `nix develop` (maintenance), `nix develop .#flask`, `nix develop .#pentest`
 
 ## Package Profiles
@@ -106,7 +104,7 @@ Toggle package groups in `home-configurations/vino/default.nix` (or a host-speci
 
 ## Maintenance
 - Enter maintenance shell: `nix develop` (default) or `nix develop .#maintenance`
-- Format: `treefmt` (runs alejandra for .nix)
+- Format: `treefmt` (runs nixfmt-rfc-style for .nix)
 - Lint: `statix check .`
 - Dead code scan: `deadnix -f .`
 - Flake checks: `nix flake check` (includes pre-commit hooks)

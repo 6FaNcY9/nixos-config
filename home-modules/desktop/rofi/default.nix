@@ -5,9 +5,12 @@
   palette,
   c,
   cfgLib,
-  stylixFonts ? {monospace.name = "Monospace";},
+  stylixFonts ? {
+    monospace.name = "Monospace";
+  },
   ...
-}: let
+}:
+let
   fontBase = stylixFonts.monospace.name;
 
   replace = cfgLib.mkColorReplacer {
@@ -34,7 +37,7 @@
       "accent-green" = palette.accent; # clipboard accent
       "accent-blue" = palette.accent2; # network accent
       "purple" = c.base0E; # hibernate highlight
-      "surface" = "#2e2e2e"; # card bg between bg and bgAlt
+      "surface" = cfgLib.darkenColor 0.15 palette.bgAlt; # card bg between bg and bgAlt
       "green" = c.base0C; # connected indicator
     };
   };
@@ -46,8 +49,9 @@
   clipboardText = replace (builtins.readFile ./clipboard-theme.rasi);
   audioSwitcherText = replace (builtins.readFile ./audio-switcher-theme.rasi);
   dropdownText = replace (builtins.readFile ./dropdown-theme.rasi);
-in {
-  imports = [./scripts.nix];
+in
+{
+  imports = [ ./scripts.nix ];
   config = lib.mkIf config.profiles.desktop {
     # Disable Stylix theming for rofi; we manage it via palette-driven Rasi files.
     stylix.targets.rofi.enable = lib.mkDefault false;

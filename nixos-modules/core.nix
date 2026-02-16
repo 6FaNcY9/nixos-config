@@ -15,8 +15,14 @@
   username,
   repoRoot,
   ...
-}: let
-  userGroups = ["wheel" "networkmanager" "audio" "video"];
+}:
+let
+  userGroups = [
+    "wheel"
+    "networkmanager"
+    "audio"
+    "video"
+  ];
 
   systemPackages = with pkgs; [
     btrfs-progs
@@ -37,7 +43,8 @@
     auto-cpufreq # CPU frequency scaling for battery optimization
     fprintd # Fingerprint authentication daemon
   ];
-in {
+in
+{
   # ------------------------------------------------------------
   # Host + locale
   # ------------------------------------------------------------
@@ -55,7 +62,10 @@ in {
   # ------------------------------------------------------------
   nix = {
     settings = {
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       auto-optimise-store = false; # Disabled: runs inline on every build (adds latency). Run manually: sudo nix-store --optimise
       warn-dirty = true;
       # Optimize builds
@@ -85,10 +95,13 @@ in {
   # Pin nixpkgs for legacy commands and for `nix run nixpkgs#...`
   nix.registry.nixpkgs.flake = inputs.nixpkgs;
 
-  # Allow unfree and wire overlays (keeps pkgs.stable available as fallback).
+  # Allow unfree, catch deprecated aliases, wire overlays (keeps pkgs.stable available as fallback).
   nixpkgs = {
-    config.allowUnfree = true;
-    overlays = [(import ../overlays {inherit inputs;}).default];
+    config = {
+      allowUnfree = true;
+      allowAliases = false;
+    };
+    overlays = [ (import ../overlays { inherit inputs; }).default ];
   };
 
   # ------------------------------------------------------------
@@ -191,8 +204,8 @@ in {
 
   # Many third-party scripts use #!/bin/bash shebangs (e.g. Claude Code plugins).
   # NixOS doesn't provide /bin/bash by default — only /bin/sh.
-  environment.shells = [pkgs.bash];
-  system.activationScripts.binbash = lib.stringAfter ["stdio"] ''
+  environment.shells = [ pkgs.bash ];
+  system.activationScripts.binbash = lib.stringAfter [ "stdio" ] ''
     ln -sfn ${pkgs.bash}/bin/bash /bin/bash
   '';
 
