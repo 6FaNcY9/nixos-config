@@ -12,22 +12,33 @@
   # ------------------------------------------------------------
   systemd.services.nixos-config-update = {
     description = "Update nixos-config flake inputs and rebuild";
-    unitConfig = {
-      ConditionACPower = true;
-    };
-    serviceConfig = {
-      Type = "oneshot";
-      WorkingDirectory = repoRoot;
-      Environment = [ "HOME=/home/${username}" ];
-    };
+    unitConfig.ConditionACPower = true;
+
     path = [
       pkgs.nix
       pkgs.git
       pkgs.util-linux
     ];
+
+    serviceConfig = {
+      Type = "oneshot";
+      WorkingDirectory = repoRoot;
+    };
+
     script = ''
-      ${pkgs.util-linux}/bin/runuser -u ${username} -- nix flake update
-      ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch --flake ${repoRoot}#${config.networking.hostName}
+      set -euo pipefail
+
+      # Abort if repoRoot is dirty (KISS safety)
+      ${pkgs.util-linux}/bin/runuser -u ${username} -- \
+        ${pkgs.git}/bin/git -C ${repoRoot} diff --quiet
+
+      # Update flake.lock as the user
+      ${pkgs.util-linux}/bin/runuser -u ${username} -- \
+        ${pkgs.nix}/bin/nix flake update
+
+      # Switch as root
+      ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch \
+        --flake ${repoRoot}#${config.networking.hostName}
     '';
   };
 

@@ -99,6 +99,9 @@
       url = "github:AngelJumbo/gruvbox-wallpapers";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    #OpenCode
+    opencode-flake.url = "github:aodhanhayter/opencode-flake";
   };
 
   outputs =
