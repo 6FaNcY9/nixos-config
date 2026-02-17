@@ -8,19 +8,15 @@ let
   mainDisk = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
 
   # Shared BTRFS mount options for SSD + battery optimization
-  mkBtrfsOpts =
-    subvol:
-    lib.mkForce (
-      [
-        "subvol=${subvol}"
-        "noatime"
-        "nodiratime"
-        "compress=zstd:3"
-        "space_cache=v2"
-        "discard=async"
-      ]
-      ++ lib.optionals (subvol == "@nix") [ ]
-    );
+  mkBtrfsOpts = subvol: [
+    "subvol=${subvol}"
+    "noatime"
+    "nodiratime"
+    "compress=zstd:3"
+    "space_cache=v2"
+    "discard=async"
+  ];
+
 in
 {
   imports = [
@@ -93,22 +89,22 @@ in
     "/" = {
       device = mainDisk;
       fsType = "btrfs";
-      options = mkBtrfsOpts "@";
+      options = lib.mkForce (mkBtrfsOpts "@"); # Force options to override hardware-configuration.nix
     };
     "/home" = {
       device = mainDisk;
       fsType = "btrfs";
-      options = mkBtrfsOpts "@home";
+      options = lib.mkForce (mkBtrfsOpts "@home"); # Force options to override hardware-configuration.nix
     };
     "/nix" = {
       device = mainDisk;
       fsType = "btrfs";
-      options = mkBtrfsOpts "@nix";
+      options = lib.mkForce (mkBtrfsOpts "@nix"); # Force options to override hardware-configuration.nix
     };
     "/var" = {
       device = mainDisk;
       fsType = "btrfs";
-      options = mkBtrfsOpts "@var";
+      options = lib.mkForce (mkBtrfsOpts "@var"); # Force options to override hardware-configuration.nix
     };
   };
 }
