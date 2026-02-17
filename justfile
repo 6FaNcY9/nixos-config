@@ -86,4 +86,11 @@ generate-age-key:
 
 # Push current system build to Cachix
 cachix-push:
-    nix run .#cachix-push
+  nix run .#cachix-push
+
+# ── Git ────────────────────────────────────────────
+
+# Commit all changes
+commit:
+  nix run .#commit
+
