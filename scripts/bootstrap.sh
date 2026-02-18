@@ -11,18 +11,18 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 echo "Repository root: ${repo_root}"
 
 command -v nix >/dev/null 2>&1 || {
-  echo "nix command not found. Install Nix first." >&2
-  echo "See: https://nixos.org/download.html" >&2
-  echo "Example (non-interactive): curl -L https://nixos.org/nix/install | sh" >&2
-  exit 2
+	echo "nix command not found. Install Nix first." >&2
+	echo "See: https://nixos.org/download.html" >&2
+	echo "Example (non-interactive): curl -L https://nixos.org/nix/install | sh" >&2
+	exit 2
 }
 
 # Check flakes support
 if ! nix show-config | grep -q "experimental-features = .*flakes"; then
-  echo "Nix flakes does not appear to be enabled for this user." >&2
-  echo "Enable flakes by setting experimental-features = [ \"nix-command\" \"flakes\" ]" >&2
-  echo "For Nix < 2.4 you may need to set environment variables; see Nix docs." >&2
-  # continue, because some users may have system-level flakes enabled
+	echo "Nix flakes does not appear to be enabled for this user." >&2
+	echo 'Enable flakes by setting experimental-features = [ "nix-command" "flakes" ]' >&2
+	echo "For Nix < 2.4 you may need to set environment variables; see Nix docs." >&2
+	# continue, because some users may have system-level flakes enabled
 fi
 
 echo "Running: nix flake check --print-build-logs"
@@ -32,9 +32,9 @@ check_exit=$?
 popd >/dev/null
 
 if [ ${check_exit} -ne 0 ]; then
-  echo "Some flake checks failed (exit=${check_exit}). Fix issues before applying." >&2
+	echo "Some flake checks failed (exit=${check_exit}). Fix issues before applying." >&2
 else
-  echo "Flake checks passed." >&2
+	echo "Flake checks passed." >&2
 fi
 
 # Try to detect host for guidance

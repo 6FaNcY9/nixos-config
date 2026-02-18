@@ -76,6 +76,8 @@ in
 
   home.sessionVariables = {
     NH_NOM = "1";
+    SSL_CERT_FILE = "/etc/ssl/certs/ca-bundle.crt";
+    NIX_SSL_CERT_FILE = "/etc/ssl/certs/ca-bundle.crt";
   };
 
   news.display = "silent";
