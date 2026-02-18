@@ -118,6 +118,38 @@
             ''}";
             files = ".*";
           };
+
+          # Validate Cachix auth token format if present (non-blocking otherwise)
+          cachix-token-validate = {
+            enable = true;
+            name = "Validate Cachix auth token format";
+            entry = "${pkgs.writeShellScript "cachix-token-validate" ''
+              set -euo pipefail
+
+              # Prefer environment variable, fall back to file used by sops-nix
+              if [ -n "''${CACHIX_AUTH_TOKEN:-}" ]; then
+                TOKEN="''$CACHIX_AUTH_TOKEN"
+              elif [ -r "''$HOME/.config/sops-nix/secrets/cachix_auth_token" ]; then
+                # Read token from file without printing it
+                read -r TOKEN < "''$HOME/.config/sops-nix/secrets/cachix_auth_token"
+              else
+                # No token available for this contributor — do not block commit
+                exit 0
+              fi
+
+              # Validate: 20-150 characters, allowed characters A-Za-z0-9_.=:/-
+              if ! printf '%s' "''$TOKEN" | grep -qE '^[A-Za-z0-9_.=:/-]{20,150}$'; then
+                echo "❌ ERROR: Cachix auth token found but has invalid format."
+                echo "   Expected 20-150 characters using A-Za-z0-9_.=:/-"
+                echo "   The hook will not reveal the token value."
+                exit 1
+              fi
+
+              exit 0
+            ''}";
+            files = ".*";
+            pass_filenames = false;
+          };
         };
       };
     };
