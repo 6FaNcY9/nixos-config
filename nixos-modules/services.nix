@@ -36,6 +36,12 @@
       ${pkgs.util-linux}/bin/runuser -u ${username} -- \
         ${pkgs.nix}/bin/nix flake update
 
+        # Auto-commit the updated flake.lock to avoid dirty tree on next run
+        ${pkgs.util-linux}/bin/runuser -u ${username} -- \
+          ${pkgs.git}/bin/git -C ${repoRoot} add flake.lock
+        ${pkgs.util-linux}/bin/runuser -u ${username} -- \
+          ${pkgs.git}/bin/git -C ${repoRoot} commit -m "chore: automated flake update [skip ci]"
+
       # Switch as root
       ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch \
         --flake ${repoRoot}#${config.networking.hostName}
