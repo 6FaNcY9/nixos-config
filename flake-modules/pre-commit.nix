@@ -130,19 +130,18 @@
               if [ -n "''${CACHIX_AUTH_TOKEN:-}" ]; then
                 TOKEN="''$CACHIX_AUTH_TOKEN"
               elif [ -r "''$HOME/.config/sops-nix/secrets/cachix_auth_token" ]; then
-                # Read token from file without printing it
-                read -r TOKEN < "''$HOME/.config/sops-nix/secrets/cachix_auth_token"
-                # Strip trailing newlines/carriage returns (some secret tools add them)
-                TOKEN="$(printf '%s' "''$TOKEN" | tr -d '\n\r')"
+                # Use $(<file) instead of read: avoids exit code 1 on files without trailing newline.
+                # Command substitution always exits 0 and strips trailing newlines automatically.
+                TOKEN=$(< "''$HOME/.config/sops-nix/secrets/cachix_auth_token")
               else
                 # No token available for this contributor — do not block commit
                 exit 0
               fi
 
-              # Validate: 20-150 characters, allowed characters A-Za-z0-9_.=:/-
-              if ! printf '%s' "''$TOKEN" | grep -qE '^[A-Za-z0-9_.=:/-]{20,150}$'; then
+              # Validate: minimum 20 characters, allowed characters A-Za-z0-9_.=:/-
+              if ! printf '%s' "''$TOKEN" | grep -qE '^[A-Za-z0-9_.=:/-]{20,}$'; then
                 echo "❌ ERROR: Cachix auth token found but has invalid format."
-                echo "   Expected 20-150 characters using A-Za-z0-9_.=:/-"
+                echo "   Expected at least 20 characters using A-Za-z0-9_.=:/-"
                 echo "   The hook will not reveal the token value."
                 exit 1
               fi
