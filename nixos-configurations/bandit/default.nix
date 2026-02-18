@@ -33,9 +33,36 @@ in
   };
 
   # NEW: Feature modules
-  features.services.tailscale = {
-    enable = true;
-    useRoutingFeatures = "client";
+  features = {
+    services = {
+      tailscale = {
+        enable = true;
+        useRoutingFeatures = "client";
+      };
+
+      backup = {
+        enable = false; # Currently disabled
+        repositories.home = {
+          repository = "/mnt/backup/restic";
+          passwordFile = config.sops.secrets.restic_password.path;
+          initialize = true;
+          paths = [ "/home" ];
+          exclude = [
+            ".cache"
+            "*.tmp"
+            "*/node_modules"
+            "*/.direnv"
+            "*/target"
+            "*/dist"
+            "*/build"
+            "*/.local/share/Trash"
+            "*/.snapshots"
+          ];
+        };
+      };
+    };
+
+    security.secrets.enable = true;
   };
 
   desktop.variant = "i3-xfce";

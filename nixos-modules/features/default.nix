@@ -10,10 +10,10 @@
     # Hardware features (will add during migration)
     # ./hardware
 
-    # Security features (will add during migration)
-    # ./security
+    # Security features
+    ./security
 
-    # Service features (will add during migration)
+    # Service features
     ./services
   ];
 }

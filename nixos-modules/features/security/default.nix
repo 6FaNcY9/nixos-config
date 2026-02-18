@@ -2,6 +2,7 @@
 { ... }:
 {
   imports = [
-    # Will add: hardening.nix, secrets.nix in Phase 3
+    ./secrets.nix
+    # Will add: hardening.nix in Phase 3
   ];
 }

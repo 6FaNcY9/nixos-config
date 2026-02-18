@@ -3,6 +3,7 @@
 {
   imports = [
     ./tailscale.nix
-    # Will add: backup.nix, monitoring.nix in subsequent tasks
+    ./backup.nix
+    # Will add: monitoring.nix in subsequent tasks
   ];
 }
