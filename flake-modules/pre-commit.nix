@@ -132,6 +132,8 @@
               elif [ -r "''$HOME/.config/sops-nix/secrets/cachix_auth_token" ]; then
                 # Read token from file without printing it
                 read -r TOKEN < "''$HOME/.config/sops-nix/secrets/cachix_auth_token"
+                # Strip trailing newlines/carriage returns (some secret tools add them)
+                TOKEN="$(printf '%s' "''$TOKEN" | tr -d '\n\r')"
               else
                 # No token available for this contributor — do not block commit
                 exit 0
