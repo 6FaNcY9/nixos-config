@@ -13,7 +13,7 @@
     ./storage.nix
     ./services.nix
     ./secrets.nix
-    ./monitoring.nix
+    # ./monitoring.nix # MIGRATED to features/services/monitoring.nix
     ./backup.nix
     ./tailscale.nix
 

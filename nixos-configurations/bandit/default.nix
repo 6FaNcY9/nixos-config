@@ -60,6 +60,13 @@ in
           ];
         };
       };
+
+      # Monitoring (currently disabled for battery life)
+      monitoring = {
+        enable = false;
+        grafana.enable = false;
+        logging.enhancedJournal = true; # Keep enhanced logging (minimal overhead)
+      };
     };
 
     security.secrets.enable = true;
@@ -75,37 +82,6 @@ in
 
   # Desktop Hardening - Enhanced security for desktop/laptop
   desktop.hardening.enable = true;
-
-  # System Monitoring - Prometheus, Grafana, and enhanced logging
-  # DISABLED: Power-hungry on laptop (5-8% battery drain, 344MB RAM)
-  monitoring = {
-    enable = false;
-    grafana.enable = false;
-    logging.enhancedJournal = true; # Keep enhanced logging (minimal overhead)
-  };
-
-  # Automated Backups - Encrypted incremental backups with Restic
-  # External 128GB USB drive (BTRFS), labeled "ResticBackup"
-  backup = {
-    enable = false;
-    repositories.home = {
-      repository = "/mnt/backup/restic";
-      passwordFile = config.sops.secrets.restic_password.path;
-      initialize = true;
-      paths = [ "/home" ];
-      exclude = [
-        ".cache"
-        "*.tmp"
-        "*/node_modules"
-        "*/.direnv"
-        "*/target"
-        "*/dist"
-        "*/build"
-        "*/.local/share/Trash"
-        "*/.snapshots"
-      ];
-    };
-  };
 
   # Filesystem optimizations (override hardware-configuration.nix)
   fileSystems = {
