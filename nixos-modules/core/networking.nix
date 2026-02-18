@@ -1,6 +1,4 @@
-# Core: Basic networking
-# Always enabled (no option)
-{ config, lib, pkgs, ... }:
-{
+# Networking configuration - placeholder
+_: {
   # Placeholder - will be populated in Phase 3
 }

@@ -1,6 +1,4 @@
-# Core: User accounts
-# Always enabled (no option)
-{ config, lib, pkgs, ... }:
-{
+# Users configuration - placeholder
+_: {
   # Placeholder - will be populated in Phase 3
 }

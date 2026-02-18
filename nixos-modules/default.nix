@@ -8,7 +8,7 @@
     # Shared modules
     ../shared-modules/stylix-common.nix
 
-    # Core system
+    # ===== OLD MODULES (keep during migration) =====
     ./core.nix
     ./storage.nix
     ./services.nix
@@ -26,5 +26,10 @@
 
     # Home Manager integration
     ./home-manager.nix
+
+    # ===== NEW MODULES (being built) =====
+    ./core # Core system modules (empty placeholders)
+    ./features # Optional feature modules (empty templates)
+    ./profiles # Feature bundles (will add in Phase 3)
   ];
 }
