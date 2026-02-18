@@ -85,7 +85,6 @@ let
       body,
     }:
     pkgs.writeShellScriptBin name ''
-      #!${pkgs.bash}/bin/bash
       set -euo pipefail
       ${body}
     '';

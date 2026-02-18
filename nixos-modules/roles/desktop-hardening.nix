@@ -121,14 +121,16 @@
       "net.ipv6.conf.all.forwarding" = 0;
 
       # Enable reverse path filtering (prevent IP spoofing)
-      "net.ipv4.conf.all.rp_filter" = 1;
-      "net.ipv4.conf.default.rp_filter" = 1;
+      # mkDefault: yields to server.nix when both roles active
+      "net.ipv4.conf.all.rp_filter" = lib.mkDefault 1;
+      "net.ipv4.conf.default.rp_filter" = lib.mkDefault 1;
 
       # Disable ICMP redirects
-      "net.ipv4.conf.all.accept_redirects" = 0;
-      "net.ipv4.conf.default.accept_redirects" = 0;
-      "net.ipv6.conf.all.accept_redirects" = 0;
-      "net.ipv6.conf.default.accept_redirects" = 0;
+      # mkDefault: yields to server.nix when both roles active
+      "net.ipv4.conf.all.accept_redirects" = lib.mkDefault 0;
+      "net.ipv4.conf.default.accept_redirects" = lib.mkDefault 0;
+      "net.ipv6.conf.all.accept_redirects" = lib.mkDefault 0;
+      "net.ipv6.conf.default.accept_redirects" = lib.mkDefault 0;
 
       # Disable source routing
       "net.ipv4.conf.all.accept_source_route" = 0;
@@ -137,7 +139,8 @@
       "net.ipv6.conf.default.accept_source_route" = 0;
 
       # Enable SYN cookies (DDoS protection)
-      "net.ipv4.tcp_syncookies" = 1;
+      # mkDefault: yields to server.nix when both roles active
+      "net.ipv4.tcp_syncookies" = lib.mkDefault 1;
 
       # Log martian packets (packets with impossible source addresses)
       "net.ipv4.conf.all.log_martians" = lib.mkDefault true;

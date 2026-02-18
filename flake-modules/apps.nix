@@ -11,6 +11,16 @@
     }:
     let
       repoRootCmd = ''repo_root="$(git rev-parse --show-toplevel 2>/dev/null || echo ".")"'';
+      qaBody = ''
+        set -euo pipefail
+        ${repoRootCmd}
+        cd "$repo_root"
+        treefmt --no-cache
+        statix check .
+        deadnix -f .
+        pre-commit run --all-files --config ${config.pre-commit.settings.configFile}
+        nix flake check --option warn-dirty false
+      '';
     in
     {
       apps = {
@@ -28,28 +38,15 @@
           rm -f result result-*
         '';
 
-        qa =
-          mkApp "qa"
-            [
-              pkgs.coreutils
-              pkgs.deadnix
-              pkgs.git
-              pkgs.nix
-              pkgs.pre-commit
-              pkgs.statix
-              config.treefmt.build.wrapper
-            ]
-            "Format, lint, and run flake checks"
-            ''
-              set -euo pipefail
-              ${repoRootCmd}
-              cd "$repo_root"
-              treefmt --no-cache
-              statix check .
-              deadnix -f .
-              pre-commit run --all-files --config ${config.pre-commit.settings.configFile}
-              nix flake check --option warn-dirty false
-            '';
+        qa = mkApp "qa" [
+          pkgs.coreutils
+          pkgs.deadnix
+          pkgs.git
+          pkgs.nix
+          pkgs.pre-commit
+          pkgs.statix
+          config.treefmt.build.wrapper
+        ] "Format, lint, and run flake checks" qaBody;
 
         commit =
           mkApp "commit"
@@ -64,14 +61,7 @@
             ]
             "Run QA, stage, and commit with editor"
             ''
-              set -euo pipefail
-              ${repoRootCmd}
-              cd "$repo_root"
-              treefmt --no-cache
-              statix check .
-              deadnix -f .
-              pre-commit run --all-files --config ${config.pre-commit.settings.configFile}
-              nix flake check --option warn-dirty false
+              ${qaBody}
 
               git add -A
 

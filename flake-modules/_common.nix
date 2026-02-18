@@ -42,12 +42,14 @@
       opencodePkg = inputs'.opencode.packages.default;
 
       # mkApp name runtimeInputs description text
-      # description is for documentation only (not used at runtime).
-      mkApp = name: runtimeInputs: _description: text: {
+      mkApp = name: runtimeInputs: description: text: {
         type = "app";
         program = pkgs.lib.getExe (
           pkgs.writeShellApplication {
             inherit name text runtimeInputs;
+            meta = {
+              inherit description;
+            };
           }
         );
       };

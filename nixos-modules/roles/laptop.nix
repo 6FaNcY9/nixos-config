@@ -2,6 +2,7 @@
 {
   lib,
   config,
+  pkgs,
   ...
 }:
 {
@@ -58,6 +59,12 @@
       algorithm = "zstd";
       memoryPercent = 25;
     };
+
+    # Framework-specific tools
+    environment.systemPackages = with pkgs; [
+      framework-tool # Framework hardware control utility
+      fw-ectool # Embedded controller interface
+    ];
 
     # Framework 13 AMD kernel parameters
     boot.kernelParams = [

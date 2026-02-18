@@ -14,38 +14,38 @@
         enable = true;
         settings = {
           global = {
-            font = lib.mkForce "IosevkaTerm Nerd Font 10";
-            frame_width = lib.mkForce 2;
+            font = "IosevkaTerm Nerd Font 10";
+            frame_width = 2;
             frame_color = lib.mkForce palette.accent;
-            corner_radius = lib.mkForce 10;
-            offset = lib.mkForce "10x40";
-            origin = lib.mkForce "top-right";
+            corner_radius = 10;
+            offset = "10x40";
+            origin = "top-right";
             separator_color = lib.mkForce "frame";
-            padding = lib.mkForce 8;
-            horizontal_padding = lib.mkForce 12;
-            icon_position = lib.mkForce "left";
-            max_icon_size = lib.mkForce 32;
+            padding = 8;
+            horizontal_padding = 12;
+            icon_position = "left";
+            max_icon_size = 32;
 
-            show_indicators = lib.mkForce true;
-            history_length = lib.mkForce 20;
+            show_indicators = true;
+            history_length = 20;
           };
           urgency_low = {
             background = lib.mkForce palette.bg;
             foreground = lib.mkForce palette.text;
             frame_color = lib.mkForce palette.muted;
-            timeout = lib.mkForce 5;
+            timeout = 5;
           };
           urgency_normal = {
             background = lib.mkForce palette.bg;
             foreground = lib.mkForce palette.text;
             frame_color = lib.mkForce palette.accent;
-            timeout = lib.mkForce 10;
+            timeout = 10;
           };
           urgency_critical = {
             background = lib.mkForce palette.bg;
             foreground = lib.mkForce palette.text;
             frame_color = lib.mkForce palette.danger;
-            timeout = lib.mkForce 0;
+            timeout = 0;
           };
         };
       };

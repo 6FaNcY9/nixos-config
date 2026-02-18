@@ -18,7 +18,7 @@
         DisableTelemetry = true;
         DisableFirefoxStudies = true;
         DisableFirefoxAccounts = true;
-        DisablePocket = true; # deprecated but still hides UI
+        DisablePocket = true;
         DNSOverHTTPS = {
           Enabled = false;
         };
