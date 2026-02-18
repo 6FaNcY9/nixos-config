@@ -76,11 +76,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771369907,
-        "narHash": "sha256-qhoU0EvdLQ6jLjJXBWrqfwV8E7xAi8ZOLFg20Xs0sio=",
+        "lastModified": 1771399619,
+        "narHash": "sha256-N6EixHow33gRNkAhHr7ySRBXPxtS1Eg2PZGcL1Me/cI=",
         "owner": "sadjow",
         "repo": "codex-cli-nix",
-        "rev": "aaa67a5325a0b05058b97f219eeb5ccf08d4d2c9",
+        "rev": "002b92b5bc5ff930e5071b275d20453515a495a9",
         "type": "github"
       },
       "original": {
@@ -327,11 +327,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771269455,
-        "narHash": "sha256-BZ31eN5F99YH6vkc4AhzKGE+tJgJ52kl8f01K7wCs8w=",
+        "lastModified": 1771411804,
+        "narHash": "sha256-bWHN38fKAbuyrIm6MzTVMOU93rCxFUOKumlWvtwUzLs=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "5f1d42a97b19803041434f66681d5c44c9ae62e3",
+        "rev": "77c47a454236cede268990eb3e457f062014f414",
         "type": "github"
       },
       "original": {
@@ -342,11 +342,11 @@
     },
     "nixos-hardware": {
       "locked": {
-        "lastModified": 1771257191,
-        "narHash": "sha256-H1l+zHq+ZinWH7F1IidpJ2farmbfHXjaxAm1RKWE1KI=",
+        "lastModified": 1771405934,
+        "narHash": "sha256-qRLfXgxSpHjEja40/PXwNMeWOUc4MNTE1B09sLV4NbQ=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "66e1a090ded57a0f88e2b381a7d4daf4a5722c3f",
+        "rev": "0d58bcd2ce85879252fe47375063ccc98f7de0f8",
         "type": "github"
       },
       "original": {
@@ -457,11 +457,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771381015,
-        "narHash": "sha256-rTO1h/G5WB7/tdo3P7f0PCbPKOIUCJscXlDmTjIlwqU=",
+        "lastModified": 1771420374,
+        "narHash": "sha256-bU18vQm3phAOVzqBmkqxttwjGhdPJOB2rqxujiVaNWE=",
         "owner": "anomalyco",
         "repo": "opencode",
-        "rev": "25f3eef9570267d3368a74556a830ca62be0f231",
+        "rev": "c34ad7223afff318cffef97cf84b8ec579ac352d",
         "type": "github"
       },
       "original": {
