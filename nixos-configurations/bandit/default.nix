@@ -32,6 +32,12 @@ in
     laptop = true; # Enable laptop-specific behavior (bluetooth, power management)
   };
 
+  # NEW: Feature modules
+  features.services.tailscale = {
+    enable = true;
+    useRoutingFeatures = "client";
+  };
+
   desktop.variant = "i3-xfce";
 
   # Host-specific hibernate resume settings

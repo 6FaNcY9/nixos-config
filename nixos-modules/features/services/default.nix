@@ -2,6 +2,7 @@
 { ... }:
 {
   imports = [
-    # Will add: backup.nix, monitoring.nix, tailscale.nix in Phase 3
+    ./tailscale.nix
+    # Will add: backup.nix, monitoring.nix in subsequent tasks
   ];
 }

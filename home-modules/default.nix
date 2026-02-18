@@ -26,7 +26,7 @@
     ./secrets.nix
 
     # ===== NEW MODULES (being built) =====
-    ./core           # Core user modules (empty)
-    ./features       # Optional user features (empty)
+    ./core # Core user modules (empty)
+    ./features # Optional user features (empty)
   ];
 }

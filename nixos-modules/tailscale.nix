@@ -1,12 +1,6 @@
-# Tailscale VPN — zero-config mesh networking
+# DEPRECATED: Migrated to features/services/tailscale.nix
+# This file will be deleted in Phase 4
+# For now, kept for reference
 _: {
-  services.tailscale = {
-    enable = true;
-    useRoutingFeatures = "client";
-  };
-
-  networking.firewall = {
-    trustedInterfaces = [ "tailscale0" ];
-    allowedUDPPorts = [ 41641 ];
-  };
+  # All configuration moved to features/services/tailscale.nix
 }
