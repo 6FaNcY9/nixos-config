@@ -1,8 +1,10 @@
 # NixOS Config — task runner (replaces mission-control)
 # Run `just` to see all available recipes.
 
-host := "bandit"
-user := "vino"
+# Derive host and user from environment for portability. Falls back to hostname/USER.
+# Use NIXOS_CONFIG_HOST / NIXOS_CONFIG_USER to override.
+host := `sh -c 'printf "%s" "${NIXOS_CONFIG_HOST:-$(hostname)}"'`
+user := `sh -c 'printf "%s" "${NIXOS_CONFIG_USER:-${USER}}"'`
 
 # ── Dev Tools ────────────────────────────────────────────
 
@@ -94,3 +96,7 @@ cachix-push:
 commit:
   nix run .#commit
 
+# Bootstrap local setup
+# Runs the repository bootstrap script to verify prerequisites and run flake checks
+bootstrap:
+  bash ./scripts/bootstrap.sh
