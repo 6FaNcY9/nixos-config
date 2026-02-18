@@ -1,6 +1,6 @@
 {
   pkgs,
-  username ? "vino",
+  username,
   ...
 }:
 let

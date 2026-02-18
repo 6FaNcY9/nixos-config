@@ -4,7 +4,7 @@
     # Stable packages available as pkgs.stable.* (fallback when unstable breaks)
     stable = import inputs.nixpkgs-stable {
       inherit (prev.stdenv.hostPlatform) system;
-      config.allowUnfree = true;
+      inherit (prev) config;
     };
 
     # Build tree-sitter CLI v0.26.5 separately (for neovim checkhealth)
@@ -34,10 +34,10 @@
       LIBCLANG_PATH = "${prev.llvmPackages.libclang.lib}/lib";
       BINDGEN_EXTRA_CLANG_ARGS = "-isystem ${prev.llvmPackages.libclang.lib}/lib/clang/${prev.llvmPackages.libclang.version}/include -isystem ${prev.stdenv.cc.libc.dev}/include";
 
-      meta = with prev.lib; {
+      meta = {
         description = "Tree-sitter CLI tool for parser generation and testing";
         homepage = "https://tree-sitter.github.io/tree-sitter/";
-        license = licenses.mit;
+        license = prev.lib.licenses.mit;
       };
     };
 

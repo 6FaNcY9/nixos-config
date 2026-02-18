@@ -14,6 +14,7 @@
   inputs,
   username,
   repoRoot,
+  nixpkgsConfig,
   ...
 }:
 let
@@ -24,21 +25,25 @@ let
     "video"
   ];
 
-  systemPackages = with pkgs; [
-    btrfs-progs
-    cachix # Binary cache management
-    curl
-    efibootmgr
-    git
-    snapper
-    vim
-    wget
-    gnupg
-    sops
-    age
-    ssh-to-age
+  systemPackages =
+    let
+      p = pkgs;
+    in
+    [
+      p.btrfs-progs
+      p.cachix # Binary cache management
+      p.curl
+      p.efibootmgr
+      p.git
+      p.snapper
+      p.vim
+      p.wget
+      p.gnupg
+      p.sops
+      p.age
+      p.ssh-to-age
 
-  ];
+    ];
 in
 {
   # ------------------------------------------------------------
@@ -93,10 +98,7 @@ in
 
   # Allow unfree, catch deprecated aliases, wire overlays (keeps pkgs.stable available as fallback).
   nixpkgs = {
-    config = {
-      allowUnfree = true;
-      allowAliases = false;
-    };
+    config = nixpkgsConfig;
     overlays = [ (import ../overlays { inherit inputs; }).default ];
   };
 
@@ -145,35 +147,39 @@ in
     # Allow running non‑Nix dynamic binaries (bunx/AppImage/vendor CLIs)
     nix-ld = {
       enable = true;
-      libraries = with pkgs; [
-        # Default/core libs (NixOS wiki baseline)
-        zlib
-        zstd
-        stdenv.cc.cc
-        curl
-        openssl
-        attr
-        libssh
-        bzip2
-        libxml2
-        acl
-        libsodium
-        util-linux
-        xz
-        systemd
+      libraries =
+        let
+          p = pkgs;
+        in
+        [
+          # Default/core libs (NixOS wiki baseline)
+          p.zlib
+          p.zstd
+          p.stdenv.cc.cc
+          p.curl
+          p.openssl
+          p.attr
+          p.libssh
+          p.bzip2
+          p.libxml2
+          p.acl
+          p.libsodium
+          p.util-linux
+          p.xz
+          p.systemd
 
-        # Common desktop/runtime additions
-        glib
-        gtk3
-        libGL
-        libva
-        pipewire
-        libx11
-        libxext
-        libxrandr
-        libxrender
-        libxcb
-      ];
+          # Common desktop/runtime additions
+          p.glib
+          p.gtk3
+          p.libGL
+          p.libva
+          p.pipewire
+          p.libx11
+          p.libxext
+          p.libxrandr
+          p.libxrender
+          p.libxcb
+        ];
     };
   };
 
@@ -200,6 +206,7 @@ in
 
   # Many third-party scripts use #!/bin/bash shebangs (e.g. Claude Code plugins).
   # NixOS doesn't provide /bin/bash by default — only /bin/sh.
+  # See docs/bin-bash.md for rationale, alternatives, and when the symlink is justified.
   environment.shells = [ pkgs.bash ];
   system.activationScripts.binbash = lib.stringAfter [ "stdio" ] ''
     ln -sfn ${pkgs.bash}/bin/bash /bin/bash
@@ -210,10 +217,14 @@ in
   # ------------------------------------------------------------
   fonts = {
     fontconfig.useEmbeddedBitmaps = true;
-    packages = with pkgs; [
-      nerd-fonts.symbols-only # Symbols Nerd Font Mono — monospaced icons for polybar
-      iosevka-bin # Plain Iosevka Term for polybar text
-    ];
+    packages =
+      let
+        p = pkgs;
+      in
+      [
+        p.nerd-fonts.symbols-only # Symbols Nerd Font Mono — monospaced icons for polybar
+        p.iosevka-bin # Plain Iosevka Term for polybar text
+      ];
   };
 
   system.stateVersion = "25.11";

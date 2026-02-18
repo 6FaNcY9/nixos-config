@@ -109,11 +109,26 @@
     let
       system = "x86_64-linux";
       primaryHost = "bandit";
-      username = "vino";
+      # Auto-derive username from single directory under home-configurations/
+      homeUsers = builtins.attrNames (builtins.readDir ./home-configurations);
+      username =
+        if builtins.length homeUsers == 1 then
+          builtins.elemAt homeUsers 0
+        else
+          throw "Expected exactly 1 user directory under home-configurations/, found ${toString (builtins.length homeUsers)}";
       # Absolute path to this repository on disk.  Must be a string (not a Nix
       # path) because NixOS systemd units and nh need the literal runtime path;
       # builtins.getEnv "HOME" is empty during pure evaluation.
-      repoRoot = "/home/${username}/src/nixos-config";
+      # Override per-host in nixos-configurations/<host>/default.nix by setting:
+      #   environment.variables.NIXOS_CONFIG_ROOT = "/custom/path";
+      # or simply clone to the default location below.
+      repoRoot = "/home/${username}/src/nixos-config"; # Default location
+
+      # Single source of truth for nixpkgs configuration
+      nixpkgsConfig = {
+        allowUnfree = true;
+        allowAliases = false;
+      };
 
       overlays = import ./overlays { inherit inputs; };
 
@@ -122,7 +137,7 @@
         import inputs.nixpkgs {
           inherit system;
           overlays = [ overlays.default ];
-          config.allowUnfree = true;
+          config = nixpkgsConfig;
         };
     in
     flake-parts.lib.mkFlake { inherit inputs; } (
@@ -141,6 +156,7 @@
             username
             repoRoot
             pkgsFor
+            nixpkgsConfig
             ;
         };
 
@@ -158,10 +174,15 @@
         ezConfigs = {
           root = ./.;
           globalArgs = {
-            inherit inputs username repoRoot;
+            inherit
+              inputs
+              username
+              repoRoot
+              nixpkgsConfig
+              ;
           };
 
-          nixos.hosts.${primaryHost}.userHomeModules = [ "vino" ];
+          nixos.hosts.${primaryHost}.userHomeModules = [ username ];
         };
 
         flake = {

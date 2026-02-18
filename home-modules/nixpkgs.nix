@@ -1,9 +1,6 @@
-_: {
+{ lib, nixpkgsConfig, ... }:
+{
   # Ensure CLI nix commands can evaluate unfree packages too.
-  xdg.configFile."nixpkgs/config.nix".text = ''
-    {
-      allowUnfree = true;
-      allowAliases = false;
-    }
-  '';
+  # Generate config.nix from the same nixpkgsConfig used in flake.nix
+  xdg.configFile."nixpkgs/config.nix".text = lib.generators.toPretty { } nixpkgsConfig;
 }

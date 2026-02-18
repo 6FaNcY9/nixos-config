@@ -1,6 +1,6 @@
 # Apps are for `nix run .#<name>` from outside devshells (standalone, self-contained).
 # For in-shell equivalents, use `just <recipe>` (see justfile).
-{ primaryHost, ... }:
+{ primaryHost, username, ... }:
 {
   perSystem =
     {
@@ -67,6 +67,10 @@
 
               # Use git commit with editor (like normal git workflow)
               # This properly handles multi-line messages
+              # IMPORTANT: --no-verify bypasses pre-commit hooks intentionally.
+              # This is necessary because the commit app runs QA checks before committing.
+              # Pre-commit hooks would be redundant and slow (double-run of checks).
+              # If you need hooks, run: git commit (without this app)
               git commit --no-verify
 
               rm -f result result-*
@@ -96,17 +100,9 @@
                 echo "Current public key:"
                 grep "public key:" "$KEY_FILE" || echo "(Could not read public key)"
                 echo ""
-                read -p "Generate a new key anyway? This will backup the old one. [y/N] " -n 1 -r
-                echo
-                if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-                  echo "Aborted."
-                  exit 0
-                fi
-                # Backup existing key
-                BACKUP="$KEY_FILE.backup.$(date +%Y%m%d-%H%M%S)"
-                cp "$KEY_FILE" "$BACKUP"
-                echo "Backed up existing key to: $BACKUP"
-                echo ""
+                echo "To regenerate, backup the existing key manually and delete it, or pass --force."
+                echo "This script does not prompt in non-interactive environments."
+                exit 1
               fi
 
               # Create directory
@@ -335,7 +331,7 @@
             ''
               set -euo pipefail
 
-              CACHE_NAME="vino-nixos-config"
+              CACHE_NAME="${username}-nixos-config"
               TOKEN_PATH="$HOME/.config/sops-nix/secrets/cachix_auth_token"
 
               echo "Cachix Push Utility"
