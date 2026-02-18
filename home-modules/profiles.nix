@@ -74,6 +74,7 @@ let
       p = pkgs;
     in
     [
+      p.sqlite
       p.python3
       p.clang
       # gnumake and pkg-config are in nixos-modules/roles/development.nix (system-level)
