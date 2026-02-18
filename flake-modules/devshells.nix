@@ -30,14 +30,19 @@
           motd = "{202}web{reset} devshell\n";
           packages =
             projectShellPackages
-            ++ (with pkgs; [
-              nodejs
-              pnpm
-              yarn
-              typescript
-              bun
-              postgresql
-            ]);
+            ++ (
+              let
+                p = pkgs;
+              in
+              [
+                p.nodejs
+                p.pnpm
+                p.yarn
+                p.typescript
+                p.bun
+                p.postgresql
+              ]
+            );
         };
 
         # ── Rust ───────────────────────────────────────────
@@ -46,13 +51,18 @@
           motd = "{202}rust{reset} devshell\n";
           packages =
             projectShellPackages
-            ++ (with pkgs; [
-              rustc
-              cargo
-              rust-analyzer
-              cargo-watch
-              cargo-edit
-            ]);
+            ++ (
+              let
+                p = pkgs;
+              in
+              [
+                p.rustc
+                p.cargo
+                p.rust-analyzer
+                p.cargo-watch
+                p.cargo-edit
+              ]
+            );
         };
 
         # ── Go ─────────────────────────────────────────────
@@ -61,13 +71,18 @@
           motd = "{202}go{reset} devshell\n";
           packages =
             projectShellPackages
-            ++ (with pkgs; [
-              go
-              gopls
-              delve
-              go-tools
-              gotools
-            ]);
+            ++ (
+              let
+                p = pkgs;
+              in
+              [
+                p.go
+                p.gopls
+                p.delve
+                p.go-tools
+                p.gotools
+              ]
+            );
         };
 
         # ── Agents ─────────────────────────────────────────
@@ -79,11 +94,16 @@
             ++ [
               opencodePkg
             ]
-            ++ (with pkgs; [
-              nodejs
-              pnpm
-              bun
-            ]);
+            ++ (
+              let
+                p = pkgs;
+              in
+              [
+                p.nodejs
+                p.pnpm
+                p.bun
+              ]
+            );
         };
 
         # ── Nix Debug ──────────────────────────────────────
@@ -92,16 +112,21 @@
           motd = "{202}nix-debug{reset} devshell\n";
           packages =
             projectShellPackages
-            ++ (with pkgs; [
-              nix-tree
-              nix-diff
-              nix-output-monitor
-              manix
-              nurl
-              nix-prefetch-github
-              nixpkgs-review
-              nixd
-            ]);
+            ++ (
+              let
+                p = pkgs;
+              in
+              [
+                p.nix-tree
+                p.nix-diff
+                p.nix-output-monitor
+                p.manix
+                p.nurl
+                p.nix-prefetch-github
+                p.nixpkgs-review
+                p.nixd
+              ]
+            );
         };
       };
     };

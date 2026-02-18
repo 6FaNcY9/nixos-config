@@ -7,28 +7,36 @@
       ...
     }:
     let
-      cfgLib = import ../lib { inherit pkgs; };
+      cfgLib = import ../lib { inherit (pkgs) lib; };
 
       # ── Package sets ──────────────────────────────────────
       # Essential CLI tools included in every devshell.
-      commonDevPackages = with pkgs; [
-        git
-        gh
-        jq
-        curl
-        ripgrep
-        fd
-        fzf
-        bat
-        eza
-        tree
-      ];
+      commonDevPackages =
+        let
+          p = pkgs;
+        in
+        [
+          p.git
+          p.gh
+          p.jq
+          p.curl
+          p.ripgrep
+          p.fd
+          p.fzf
+          p.bat
+          p.eza
+          p.tree
+        ];
 
       # Pre-commit + Nix tooling for the default (maintenance) shell.
-      maintenancePackages = with pkgs; [
-        pre-commit
-        nix
-      ];
+      maintenancePackages =
+        let
+          p = pkgs;
+        in
+        [
+          p.pre-commit
+          p.nix
+        ];
 
       # Everything needed for the default devshell.
       flakeToolsPackages =

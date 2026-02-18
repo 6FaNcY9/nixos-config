@@ -35,75 +35,91 @@ let
     opencodePkg
   ];
 
-  corePkgs = with pkgs; [
-    delta
-    direnv # Auto-load/unload environments per directory
-    lazygit
-    gh
-    eza
-    tree
-    nix-tree
-    ripgrep
-    fd
-    fzf
-    jq
-    bat
-    broot
-    gdu
-    zoxide
-    tmux
-    zellij
-    procs
-    hexyl
-    yq-go
-    unzip
-    zip
-    man-pages
-    man-pages-posix
-    nh
-    nix-output-monitor
-    nvd
-  ];
+  corePkgs =
+    let
+      p = pkgs;
+    in
+    [
+      p.delta
+      p.direnv # Auto-load/unload environments per directory
+      p.lazygit
+      p.gh
+      p.eza
+      p.tree
+      p.nix-tree
+      p.ripgrep
+      p.fd
+      p.fzf
+      p.jq
+      p.bat
+      p.broot
+      p.gdu
+      p.zoxide
+      p.tmux
+      p.zellij
+      p.procs
+      p.hexyl
+      p.yq-go
+      p.unzip
+      p.zip
+      p.man-pages
+      p.man-pages-posix
+      p.nh
+      p.nix-output-monitor
+      p.nvd
+    ];
 
-  devPkgs = with pkgs; [
-    python3
-    clang
-    # gnumake and pkg-config are in nixos-modules/roles/development.nix (system-level)
-    nodejs
-    github-copilot-cli
-    rustc
-    cargo
-    rustfmt
-    clippy
-    uv
-    devenv
-    tree-sitter-cli # v0.26.5 CLI tool (separate from tree-sitter library for neovim)
-  ];
+  devPkgs =
+    let
+      p = pkgs;
+    in
+    [
+      p.python3
+      p.clang
+      # gnumake and pkg-config are in nixos-modules/roles/development.nix (system-level)
+      p.nodejs
+      p.github-copilot-cli
+      p.rustc
+      p.cargo
+      p.rustfmt
+      p.clippy
+      p.uv
+      p.devenv
+      p.tree-sitter-cli # v0.26.5 CLI tool (separate from tree-sitter library for neovim)
+    ];
 
-  desktopPkgs = with pkgs; [
-    alacritty
-    autotiling
-    rofi
-    thunar # Moved to top-level in unstable
-    networkmanagerapplet
-    blueman
-    btop
-    brightnessctl
-    dunst
-    flameshot
-    picom
-    playerctl
-    polkit_gnome
-    feh
-    killall
-    xclip
-    gsimplecal
-  ];
+  desktopPkgs =
+    let
+      p = pkgs;
+    in
+    [
+      p.alacritty
+      p.autotiling
+      p.rofi
+      p.thunar # Moved to top-level in unstable
+      p.networkmanagerapplet
+      p.blueman
+      p.btop
+      p.brightnessctl
+      p.dunst
+      p.flameshot
+      p.picom
+      p.playerctl
+      p.polkit_gnome
+      p.feh
+      p.killall
+      p.xclip
+      p.gsimplecal
+    ];
 
-  extrasPkgs = with pkgs; [
-    chafa
-    fastfetch # neofetch replacement (actively maintained)
-  ];
+  extrasPkgs =
+    let
+      p = pkgs;
+    in
+    [
+      p.chafa
+      p.fastfetch # neofetch replacement (actively maintained)
+    ];
 in
 {
   options.profiles = {

@@ -14,7 +14,7 @@
 }:
 let
   inherit (pkgs.stdenv.hostPlatform) system;
-  hostName = osConfig.networking.hostName or hostname;
+  hostName = if osConfig != null then osConfig.networking.hostName else hostname; # Fallback when using standalone home-manager
   hostModulePath = ./hosts/${hostName}.nix;
   hostModules = lib.optionals (builtins.pathExists hostModulePath) [ hostModulePath ];
 

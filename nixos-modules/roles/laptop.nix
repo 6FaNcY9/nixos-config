@@ -61,10 +61,14 @@
     };
 
     # Framework-specific tools
-    environment.systemPackages = with pkgs; [
-      framework-tool # Framework hardware control utility
-      fw-ectool # Embedded controller interface
-    ];
+    environment.systemPackages =
+      let
+        p = pkgs;
+      in
+      [
+        p.framework-tool # Framework hardware control utility
+        p.fw-ectool # Embedded controller interface
+      ];
 
     # Framework 13 AMD kernel parameters
     boot.kernelParams = [

@@ -157,9 +157,13 @@
     };
 
     # Additional security packages
-    environment.systemPackages = with pkgs; [
-      # Firewall management tool
-      nftables
-    ];
+    environment.systemPackages =
+      let
+        p = pkgs;
+      in
+      [
+        # Firewall management tool
+        p.nftables
+      ];
   };
 }

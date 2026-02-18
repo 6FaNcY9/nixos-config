@@ -113,24 +113,28 @@
         "...." = "cd ../../..";
       };
 
-      plugins = with pkgs.fishPlugins; [
-        {
-          name = "plugin-git";
-          inherit (plugin-git) src;
-        }
-        {
-          name = "fzf-fish";
-          inherit (fzf-fish) src;
-        }
-        {
-          name = "sponge";
-          inherit (sponge) src;
-        }
-        {
-          name = "fifc";
-          inherit (fifc) src;
-        }
-      ];
+      plugins =
+        let
+          fp = pkgs.fishPlugins;
+        in
+        [
+          {
+            name = "plugin-git";
+            inherit (fp.plugin-git) src;
+          }
+          {
+            name = "fzf-fish";
+            inherit (fp.fzf-fish) src;
+          }
+          {
+            name = "sponge";
+            inherit (fp.sponge) src;
+          }
+          {
+            name = "fifc";
+            inherit (fp.fifc) src;
+          }
+        ];
     };
 
     atuin = {

@@ -25,20 +25,24 @@
     };
 
     # Development-focused system packages
-    environment.systemPackages = with pkgs; [
-      # Build essentials
-      gnumake
-      cmake
-      pkg-config
-      gcc
-      binutils
+    environment.systemPackages =
+      let
+        p = pkgs;
+      in
+      [
+        # Build essentials
+        p.gnumake
+        p.cmake
+        p.pkg-config
+        p.gcc
+        p.binutils
 
-      # Debug tools
-      gdb
-      strace
-      ltrace
-      # Note: man-pages and man-pages-posix are in home-modules/profiles.nix corePkgs
-    ];
+        # Debug tools
+        p.gdb
+        p.strace
+        p.ltrace
+        # Note: man-pages and man-pages-posix are in home-modules/profiles.nix corePkgs
+      ];
 
     # Development-friendly kernel parameters
     boot.kernel.sysctl = {

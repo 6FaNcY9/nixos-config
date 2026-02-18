@@ -1,15 +1,23 @@
 { pkgs, ... }:
 {
   programs.nixvim = {
-    extraPlugins = with pkgs.vimPlugins; [
-      # Plugins without native nixvim modules
-      vim-matchup # Enhanced % matching
-      cheatsheet-nvim # Searchable keymaps/commands help
-    ];
+    extraPlugins =
+      let
+        vp = pkgs.vimPlugins;
+      in
+      [
+        # Plugins without native nixvim modules
+        vp.vim-matchup # Enhanced % matching
+        vp.cheatsheet-nvim # Searchable keymaps/commands help
+      ];
 
-    extraPackages = with pkgs; [
-      tree-sitter-cli
-    ];
+    extraPackages =
+      let
+        p = pkgs;
+      in
+      [
+        p.tree-sitter-cli
+      ];
 
     extraConfigLua = ''
       -- Fix tree-sitter query errors by prepending nvim-treesitter runtime path
