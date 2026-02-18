@@ -11,6 +11,7 @@
     ../shared-modules/workspaces.nix
     ../shared-modules/palette.nix
 
+    # ===== OLD MODULES (keep during migration) =====
     # Categories
     ./desktop
     ./editor
@@ -23,5 +24,9 @@
     ./package-managers.nix
     ./profiles.nix
     ./secrets.nix
+
+    # ===== NEW MODULES (being built) =====
+    ./core           # Core user modules (empty)
+    ./features       # Optional user features (empty)
   ];
 }
