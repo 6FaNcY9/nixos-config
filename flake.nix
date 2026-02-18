@@ -119,10 +119,9 @@
       # Absolute path to this repository on disk.  Must be a string (not a Nix
       # path) because NixOS systemd units and nh need the literal runtime path;
       # builtins.getEnv "HOME" is empty during pure evaluation.
-      # Override per-host in nixos-configurations/<host>/default.nix by setting:
+      # Default repo location. Override per-host in nixos-configurations/<host>/default.nix:
       #   environment.variables.NIXOS_CONFIG_ROOT = "/custom/path";
-      # or simply clone to the default location below.
-      repoRoot = "/home/${username}/src/nixos-config"; # Default location
+      repoRoot = inputs.nixpkgs.lib.mkDefault "/home/${username}/src/nixos-config";
 
       # Single source of truth for nixpkgs configuration
       nixpkgsConfig = {
