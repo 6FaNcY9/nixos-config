@@ -44,6 +44,10 @@ let
   };
 
   systemBindings = {
+    # Scratchpad
+    "${mod}+m" = "move scratchpad";
+    "${mod}+Shift+m" = "scratchpad show";
+
     "${mod}+Return" = "exec alacritty";
     "${mod}+d" = "exec rofi -show drun";
     "${mod}+Shift+q" = "kill";
