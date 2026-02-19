@@ -4,16 +4,19 @@ This document provides context for Claude/Copilot when working on this refactore
 
 ## 🎯 Project Status
 
-**Current Branch**: `refactor/explicit-modules`  
-**Status**: Phase 3 in progress (4/15 modules migrated)  
+**Current Branch**: `refactor/explicit-modules`
+**Status**: Phase 3 in progress (7/15 modules migrated)
 **Working Directory**: `/home/vino/src/nixos-config-refactor` (isolated git worktree)
 
 ## ✅ Completed Migrations
 
 ### Service Features
 - ✅ **Tailscale** → `features.services.tailscale`
-- ✅ **Backup** → `features.services.backup`  
+- ✅ **Backup** → `features.services.backup`
 - ✅ **Monitoring** → `features.services.monitoring`
+- ✅ **Auto-update** → `features.services.auto-update`
+- ✅ **OpenSSH** → `features.services.openssh`
+- ✅ **Trezord** → `features.services.trezord`
 
 ### Security Features
 - ✅ **Secrets** → `features.security.secrets`
@@ -27,7 +30,10 @@ nixos-modules/
 │   ├── services/       # Service features
 │   │   ├── tailscale.nix
 │   │   ├── backup.nix
-│   │   └── monitoring.nix
+│   │   ├── monitoring.nix
+│   │   ├── auto-update.nix
+│   │   ├── openssh.nix
+│   │   └── trezord.nix
 │   ├── security/       # Security features
 │   │   └── secrets.nix
 │   └── ...
@@ -43,6 +49,12 @@ features = {
     tailscale.enable = true;
     backup.enable = false;
     monitoring.enable = false;
+    auto-update = {
+      enable = true;
+      timer.enable = false; # Disabled for battery
+    };
+    openssh.enable = false;
+    trezord.enable = true;
   };
   security.secrets.enable = true;
 };
@@ -147,6 +159,6 @@ The `./verify.sh` script runs:
 
 ---
 
-**Last Updated**: 2026-02-19  
-**Commits**: 17  
+**Last Updated**: 2026-02-19
+**Commits**: 20
 **Status**: 🟢 Excellent Progress!

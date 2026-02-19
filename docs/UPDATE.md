@@ -26,7 +26,7 @@
 - Created home-modules core and features placeholders
 - All new modules coexist with old modules (zero conflicts)
 
-### ✅ Phase 3: Module Migrations (3 services migrated!)
+### ✅ Phase 3: Module Migrations (7 modules migrated!)
 #### 3.1: Tailscale Service ✅
 - Created `features.services.tailscale` with enable option
 - Standalone service (no dependencies)
@@ -48,14 +48,36 @@
 - Resource usage warnings
 - Old module deprecated
 
+#### 3.4: Auto-Update Service ✅
+- Created `features.services.auto-update` for automated system updates
+- Systemd service + optional timer configuration
+- Automated flake update + rebuild workflow
+- Battery-conscious defaults (timer disabled, AC power required)
+- Auto-commit support for flake.lock
+- Configurable update schedule (monthly default)
+- Warning when timer is disabled
+
+#### 3.5: OpenSSH Service ✅
+- Created `features.services.openssh` with secure hardened defaults
+- No password authentication (key-based only)
+- No root login, no keyboard-interactive auth
+- Simple wrapper around NixOS openssh service
+- Typically enabled via roles.server
+
+#### 3.6: Trezord Service ✅
+- Created `features.services.trezord` for hardware wallet support
+- Simple wrapper around NixOS trezord service
+- Typically enabled via roles.desktop
+- services.nix fully deprecated (all three services migrated)
+
 ## 📊 Statistics
 
-**Commits**: 15 clean, atomic commits  
-**Files Modified**: 30+ files across phases  
-**Code Removed**: ~350 lines (deprecated modules)  
-**Code Added**: ~800 lines (new feature modules)  
-**Breaking Changes**: 0 (100% backward compatible)  
-**Build Verification**: ✅ All phases pass  
+**Commits**: 20 clean, atomic commits
+**Files Modified**: 40+ files across phases
+**Code Removed**: ~500 lines (deprecated modules)
+**Code Added**: ~1200 lines (new feature modules)
+**Breaking Changes**: 0 (100% backward compatible)
+**Build Verification**: ✅ All phases pass
 **Package Count**: 2691 (unchanged from baseline)
 
 ## 🏗️ Architecture Changes
@@ -64,9 +86,11 @@
 ```
 nixos-modules/
 ├── core.nix (monolithic)
+├── services.nix (auto-update, openssh, trezord)
 ├── backup.nix
 ├── monitoring.nix
 ├── tailscale.nix
+├── secrets.nix
 └── ...
 ```
 
@@ -75,11 +99,14 @@ nixos-modules/
 nixos-modules/
 ├── features/
 │   ├── services/
-│   │   ├── tailscale.nix  ✅ Migrated
-│   │   ├── backup.nix     ✅ Migrated
-│   │   └── monitoring.nix ✅ Migrated
+│   │   ├── tailscale.nix   ✅ Migrated
+│   │   ├── backup.nix      ✅ Migrated
+│   │   ├── monitoring.nix  ✅ Migrated
+│   │   ├── auto-update.nix ✅ Migrated
+│   │   ├── openssh.nix     ✅ Migrated
+│   │   └── trezord.nix     ✅ Migrated
 │   ├── security/
-│   │   └── secrets.nix    ✅ Created
+│   │   └── secrets.nix     ✅ Migrated
 │   └── ...
 ├── core/ (placeholders)
 └── profiles/ (future)
@@ -103,6 +130,13 @@ features = {
       grafana.enable = false;
       logging.enhancedJournal = true;
     };
+    auto-update = {
+      enable = true;
+      timer.enable = false; # Disabled for battery
+      timer.calendar = "monthly";
+    };
+    openssh.enable = false; # Not a server
+    trezord.enable = true; # Hardware wallet support
   };
   security.secrets.enable = true;
 };
@@ -170,6 +204,6 @@ When ready to merge to main:
 
 ---
 
-**Generated**: 2026-02-19  
-**Last Updated**: After Phase 3.3 (Monitoring Migration)  
+**Generated**: 2026-02-19
+**Last Updated**: After Phase 3.6 (All Service Migrations Complete!)
 **Status**: 🟢 Excellent Progress!
