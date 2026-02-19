@@ -12,7 +12,7 @@
     ./core.nix
     ./storage.nix
     ./services.nix
-    ./secrets.nix
+    # ./secrets.nix # MIGRATED to features/security/secrets.nix
     # ./monitoring.nix # MIGRATED to features/services/monitoring.nix
     # ./backup.nix # MIGRATED to features/services/backup.nix
     ./tailscale.nix
