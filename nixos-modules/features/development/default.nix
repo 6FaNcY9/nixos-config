@@ -2,6 +2,6 @@
 { ... }:
 {
   imports = [
-    # Will add: base.nix, containers.nix in Phase 3
+    ./base.nix
   ];
 }

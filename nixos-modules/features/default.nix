@@ -4,11 +4,11 @@
     # Desktop features
     ./desktop
 
-    # Development features (will add during migration)
-    # ./development
+    # Development features
+    ./development
 
-    # Hardware features (will add during migration)
-    # ./hardware
+    # Hardware features
+    ./hardware
 
     # Security features
     ./security

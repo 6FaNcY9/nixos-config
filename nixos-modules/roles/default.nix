@@ -3,9 +3,9 @@
 { lib, ... }:
 {
   imports = [
-    ./laptop.nix
+    # ./laptop.nix # MIGRATED to features/hardware/laptop.nix
     ./server.nix
-    ./development.nix
+    # ./development.nix # MIGRATED to features/development/base.nix
     ./desktop-hardening.nix
   ];
 

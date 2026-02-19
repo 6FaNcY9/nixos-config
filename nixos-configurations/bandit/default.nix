@@ -134,6 +134,21 @@ in
       targets.lightdm.enable = true;
     };
 
+    hardware.laptop = {
+      enable = config.roles.laptop; # Enable when laptop role is active
+      cpu.vendor = "amd";
+      framework = {
+        enable = true;
+        model = "framework-13-amd";
+      };
+    };
+
+    development.base = {
+      enable = config.roles.development; # Enable when development role is active
+      virtualization.docker.enable = false; # Disabled by default
+      virtualization.podman.enable = false; # Disabled by default
+    };
+
     security.secrets.enable = true;
   };
 
