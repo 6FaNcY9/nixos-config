@@ -15,7 +15,7 @@
     # ./secrets.nix # MIGRATED to features/security/secrets.nix
     # ./monitoring.nix # MIGRATED to features/services/monitoring.nix
     # ./backup.nix # MIGRATED to features/services/backup.nix
-    ./tailscale.nix
+    # ./tailscale.nix # MIGRATED to features/services/tailscale.nix
 
     # Role system (desktop, laptop, server)
     ./roles
