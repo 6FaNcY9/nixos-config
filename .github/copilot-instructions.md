@@ -5,7 +5,7 @@ This document provides context for Claude/Copilot when working on this refactore
 ## 🎯 Project Status
 
 **Current Branch**: `refactor/explicit-modules`
-**Status**: Phase 3 in progress (8/15 modules migrated)
+**Status**: Phase 3 in progress (12/15 modules migrated)
 **Working Directory**: `/home/vino/src/nixos-config-refactor` (isolated git worktree)
 
 ## ✅ Completed Migrations
@@ -20,6 +20,12 @@ This document provides context for Claude/Copilot when working on this refactore
 
 ### Desktop Features
 - ✅ **i3-XFCE** → `features.desktop.i3-xfce`
+
+### Storage Features
+- ✅ **Boot** → `features.storage.boot`
+- ✅ **Swap** → `features.storage.swap`
+- ✅ **BTRFS** → `features.storage.btrfs`
+- ✅ **Snapper** → `features.storage.snapper`
 
 ### Security Features
 - ✅ **Secrets** → `features.security.secrets`
@@ -39,6 +45,11 @@ nixos-modules/
 │   │   └── trezord.nix
 │   ├── desktop/        # Desktop features
 │   │   └── i3-xfce.nix
+│   ├── storage/        # Storage features
+│   │   ├── boot.nix
+│   │   ├── swap.nix
+│   │   ├── btrfs.nix
+│   │   └── snapper.nix
 │   ├── security/       # Security features
 │   │   └── secrets.nix
 │   └── ...
@@ -165,5 +176,5 @@ The `./verify.sh` script runs:
 ---
 
 **Last Updated**: 2026-02-19
-**Commits**: 22
+**Commits**: 24
 **Status**: 🟢 Excellent Progress!
