@@ -10,7 +10,7 @@
 
     # ===== OLD MODULES (keep during migration) =====
     ./core.nix
-    ./storage.nix
+    # ./storage.nix # MIGRATED to features/storage/{boot,swap,btrfs,snapper}.nix
     # ./services.nix # MIGRATED to features/services/{auto-update,openssh,trezord}.nix
     # ./secrets.nix # MIGRATED to features/security/secrets.nix
     # ./monitoring.nix # MIGRATED to features/services/monitoring.nix

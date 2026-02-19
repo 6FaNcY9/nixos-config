@@ -15,5 +15,8 @@
 
     # Service features
     ./services
+
+    # Storage features
+    ./storage
   ];
 }

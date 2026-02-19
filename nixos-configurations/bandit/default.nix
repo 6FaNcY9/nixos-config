@@ -87,6 +87,47 @@ in
       keyboardLayout = "at"; # Austrian keyboard
     };
 
+    storage = {
+      boot = {
+        enable = true;
+        bootloader = "grub";
+        kernelPackage = "latest";
+      };
+
+      swap = {
+        enable = true;
+        devices = [ { device = "/swap/swapfile"; } ];
+      };
+
+      btrfs = {
+        enable = true;
+        fstrim.enable = true;
+        autoScrub = {
+          enable = true;
+          fileSystems = [
+            "/"
+            "/home"
+          ];
+          interval = "monthly";
+        };
+      };
+
+      snapper = {
+        enable = true;
+        enableTimeline = false; # Disabled for I/O reduction
+        configs = {
+          root = {
+            subvolume = "/";
+            numberLimit = "50";
+          };
+          home = {
+            subvolume = "/home";
+            numberLimit = "50";
+          };
+        };
+      };
+    };
+
     security.secrets.enable = true;
   };
 
