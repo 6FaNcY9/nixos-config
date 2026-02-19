@@ -2,6 +2,6 @@
 { ... }:
 {
   imports = [
-    # Will add: base.nix, i3.nix, compositor.nix in Phase 3
+    ./i3-xfce.nix
   ];
 }

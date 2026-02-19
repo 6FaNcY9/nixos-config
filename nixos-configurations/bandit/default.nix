@@ -82,6 +82,11 @@ in
       trezord.enable = config.roles.desktop; # Hardware wallet support
     };
 
+    desktop.i3-xfce = {
+      enable = config.roles.desktop; # Enable when desktop role is active
+      keyboardLayout = "at"; # Austrian keyboard
+    };
+
     security.secrets.enable = true;
   };
 

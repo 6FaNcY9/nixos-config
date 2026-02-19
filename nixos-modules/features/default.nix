@@ -1,8 +1,8 @@
 # Feature modules aggregator
 {
   imports = [
-    # Desktop features (will add during migration)
-    # ./desktop
+    # Desktop features
+    ./desktop
 
     # Development features (will add during migration)
     # ./development

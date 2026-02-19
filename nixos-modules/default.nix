@@ -21,7 +21,7 @@
     ./roles
 
     # Desktop environment
-    ./desktop.nix
+    # ./desktop.nix # MIGRATED to features/desktop/i3-xfce.nix
     ./stylix-nixos.nix
 
     # Home Manager integration
