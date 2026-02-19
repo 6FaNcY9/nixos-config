@@ -22,7 +22,7 @@
 
     # Desktop environment
     # ./desktop.nix # MIGRATED to features/desktop/i3-xfce.nix
-    ./stylix-nixos.nix
+    # ./stylix-nixos.nix # MIGRATED to features/theme/stylix.nix
 
     # Home Manager integration
     ./home-manager.nix

@@ -128,6 +128,12 @@ in
       };
     };
 
+    theme.stylix = {
+      enable = true;
+      targets.grub.enable = true;
+      targets.lightdm.enable = true;
+    };
+
     security.secrets.enable = true;
   };
 

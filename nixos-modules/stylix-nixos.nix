@@ -1,16 +1,6 @@
-{ lib, ... }:
-{
-  # NixOS-only Stylix knobs:
-  # - GRUB theme target
-  # - HM integration (follow system theme; HM module is imported explicitly)
-  stylix = {
-    targets.grub.enable = lib.mkDefault true;
-
-    targets.lightdm.enable = true;
-
-    homeManagerIntegration = {
-      autoImport = lib.mkDefault false;
-      followSystem = lib.mkDefault true;
-    };
-  };
+# DEPRECATED: Migrated to features/theme/stylix.nix
+# This file will be deleted in Phase 4
+# For now, kept for reference
+_: {
+  # All configuration moved to features/theme/stylix.nix
 }

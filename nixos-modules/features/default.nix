@@ -18,5 +18,8 @@
 
     # Storage features
     ./storage
+
+    # Theme features
+    ./theme
   ];
 }
