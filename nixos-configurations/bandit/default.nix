@@ -67,6 +67,19 @@ in
         grafana.enable = false;
         logging.enhancedJournal = true; # Keep enhanced logging (minimal overhead)
       };
+
+      # Automated updates (timer disabled for battery life)
+      auto-update = {
+        enable = true; # Service available for manual triggering
+        timer.enable = false; # Disabled for battery (2-4% per update, 10-15min CPU)
+        timer.calendar = "monthly"; # When enabled, run monthly
+      };
+
+      # OpenSSH server (disabled on desktop/laptop)
+      openssh.enable = false; # Enable on servers via roles.server
+
+      # Trezor hardware wallet (enabled on desktop)
+      trezord.enable = config.roles.desktop; # Hardware wallet support
     };
 
     security.secrets.enable = true;

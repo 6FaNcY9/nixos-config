@@ -1,78 +1,11 @@
-{
-  lib,
-  pkgs,
-  config,
-  username,
-  repoRoot,
-  ...
-}:
-{
-  # ------------------------------------------------------------
-  # Automated updates (flake inputs + rebuild)
-  # ------------------------------------------------------------
-  systemd.services.nixos-config-update = {
-    description = "Update nixos-config flake inputs and rebuild";
-    unitConfig.ConditionACPower = true;
-
-    path = [
-      pkgs.nix
-      pkgs.git
-      pkgs.util-linux
-    ];
-
-    serviceConfig = {
-      Type = "oneshot";
-      WorkingDirectory = repoRoot;
-    };
-
-    script = ''
-      set -euo pipefail
-
-      # Abort if repoRoot is dirty (KISS safety)
-      ${pkgs.util-linux}/bin/runuser -u ${username} -- \
-        ${pkgs.git}/bin/git -C ${repoRoot} diff --quiet
-
-      # Update flake.lock as the user
-      ${pkgs.util-linux}/bin/runuser -u ${username} -- \
-        ${pkgs.nix}/bin/nix flake update
-
-        # Auto-commit the updated flake.lock to avoid dirty tree on next run
-        ${pkgs.util-linux}/bin/runuser -u ${username} -- \
-          ${pkgs.git}/bin/git -C ${repoRoot} add flake.lock
-        ${pkgs.util-linux}/bin/runuser -u ${username} -- \
-          ${pkgs.git}/bin/git -C ${repoRoot} commit -m "chore: automated flake update [skip ci]"
-
-      # Switch as root
-      ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch \
-        --flake ${repoRoot}#${config.networking.hostName}
-    '';
-  };
-
-  # Auto-update timer: DISABLED for battery life (manual updates preferred)
-  # Battery impact: 2-4% per update (flake update + rebuild = 10-15min CPU)
-  # Re-enable by uncommenting wantedBy line
-  systemd.timers.nixos-config-update = {
-    # wantedBy = ["timers.target"];  # ← DISABLED for battery
-    timerConfig = {
-      OnCalendar = "monthly"; # Changed from weekly (if re-enabled)
-      RandomizedDelaySec = "2h";
-      Persistent = true;
-    };
-  };
-
-  services = {
-    openssh = {
-      enable = lib.mkDefault config.roles.server;
-      settings = {
-        PasswordAuthentication = false;
-        PermitRootLogin = "no";
-        KbdInteractiveAuthentication = false;
-      };
-    };
-
-    trezord.enable = lib.mkDefault config.roles.desktop;
-
-    # journald settings are managed by monitoring.nix (monitoring.logging.*)
-    # to avoid duplicate directives in extraConfig
-  };
+# DEPRECATED: Migrated to features/services/
+# This file will be deleted in Phase 4
+# For now, kept for reference
+#
+# Migrations:
+# - Auto-update → features/services/auto-update.nix
+# - OpenSSH → features/services/openssh.nix
+# - Trezord → features/services/trezord.nix
+_: {
+  # All configuration moved to features/services/
 }
