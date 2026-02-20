@@ -57,6 +57,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+
+    # Prebuilt nix-index database (prevents 12GB evaluation)
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Secrets management (sops)
     sops-nix = {
       url = "github:Mic92/sops-nix";

@@ -50,6 +50,6 @@
   # Allow unfree, catch deprecated aliases, wire overlays (keeps pkgs.stable available as fallback).
   nixpkgs = {
     config = nixpkgsConfig;
-    overlays = [ (import ../../overlays { inherit inputs; }).default ];
+    overlays = [ inputs.self.overlays.default ];
   };
 }

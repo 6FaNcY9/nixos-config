@@ -45,6 +45,10 @@
       enableFishIntegration = true;
     };
 
+
+    # Use prebuilt nix-index database (prevents 12GB evaluation)
+    nix-index-database.comma.enable = true;
+
     # Allow running non‑Nix dynamic binaries (bunx/AppImage/vendor CLIs)
     nix-ld = {
       enable = true;

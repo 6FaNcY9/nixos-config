@@ -97,7 +97,6 @@
 
       flameshot = {
         enable = true;
-        package = pkgs.flameshot;
         settings = {
           General = {
             uiColor = palette.bgAlt;
