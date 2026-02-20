@@ -121,7 +121,7 @@
       # builtins.getEnv "HOME" is empty during pure evaluation.
       # Default repo location. Override per-host in nixos-configurations/<host>/default.nix:
       #   environment.variables.NIXOS_CONFIG_ROOT = "/custom/path";
-      repoRoot = inputs.nixpkgs.lib.mkDefault "/home/${username}/src/nixos-config-refactor";
+      repoRoot = inputs.nixpkgs.lib.mkDefault "/home/${username}/src/nixos-config";
 
       # Single source of truth for nixpkgs configuration
       nixpkgsConfig = {
