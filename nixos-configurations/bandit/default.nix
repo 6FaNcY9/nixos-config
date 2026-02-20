@@ -26,13 +26,7 @@ in
 
   networking.hostName = "bandit";
 
-  roles = {
-    development = true; # Enable development tools (docker, direnv, build tools)
-    desktop = true; # Enable
-    laptop = true; # Enable laptop-specific behavior (bluetooth, power management)
-  };
-
-  # NEW: Feature modules
+  # Feature modules
   features = {
     services = {
       tailscale = {
@@ -79,11 +73,11 @@ in
       openssh.enable = false; # Enable on servers via roles.server
 
       # Trezor hardware wallet (enabled on desktop)
-      trezord.enable = config.roles.desktop; # Hardware wallet support
+      trezord.enable = true; # Hardware wallet support
     };
 
     desktop.i3-xfce = {
-      enable = config.roles.desktop; # Enable when desktop role is active
+      enable = true;
       keyboardLayout = "at"; # Austrian keyboard
     };
 
@@ -135,7 +129,7 @@ in
     };
 
     hardware.laptop = {
-      enable = config.roles.laptop; # Enable when laptop role is active
+      enable = true;
       cpu.vendor = "amd";
       framework = {
         enable = true;
@@ -144,24 +138,24 @@ in
     };
 
     development.base = {
-      enable = config.roles.development; # Enable when development role is active
+      enable = true;
       virtualization.docker.enable = false; # Disabled by default
       virtualization.podman.enable = false; # Disabled by default
     };
 
-    security.secrets.enable = true;
-  };
+    security = {
+      secrets.enable = true;
 
-  desktop.variant = "i3-xfce";
+      # Desktop security hardening
+      desktop-hardening.enable = true;
+    };
+  };
 
   # Host-specific hibernate resume settings
   boot = {
     resumeDevice = mainDisk; # UUID-based resume device for hibernation
     kernelParams = [ "resume_offset=1959063" ]; # Calculated resume offset for swap partition (from `filefrag -v /swapfile`)
   };
-
-  # Desktop Hardening - Enhanced security for desktop/laptop
-  desktop.hardening.enable = true;
 
   # Filesystem optimizations (override hardware-configuration.nix)
   fileSystems = {

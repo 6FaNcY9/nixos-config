@@ -16,13 +16,9 @@
     # ./monitoring.nix # MIGRATED to features/services/monitoring.nix
     # ./backup.nix # MIGRATED to features/services/backup.nix
     # ./tailscale.nix # MIGRATED to features/services/tailscale.nix
-
-    # Role system (desktop, laptop, server) - TO BE MIGRATED
-    ./roles
-
-    # Desktop environment
     # ./desktop.nix # MIGRATED to features/desktop/i3-xfce.nix
     # ./stylix-nixos.nix # MIGRATED to features/theme/stylix.nix
+    # ./roles # MIGRATED to features/security/{server-hardening,desktop-hardening}.nix
 
     # Home Manager integration
     ./home-manager.nix

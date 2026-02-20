@@ -3,6 +3,7 @@
 {
   imports = [
     ./secrets.nix
-    # Will add: hardening.nix in Phase 3
+    ./server-hardening.nix
+    ./desktop-hardening.nix
   ];
 }
