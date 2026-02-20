@@ -1,7 +1,6 @@
 # Core: Basic networking and locale
 # Always enabled (no option)
-{ ... }:
-{
+_: {
   # Networking
   networking = {
     networkmanager.enable = true;

@@ -2,7 +2,6 @@
 # Always enabled (no option)
 {
   lib,
-  pkgs,
   inputs,
   nixpkgsConfig,
   ...
