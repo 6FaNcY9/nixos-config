@@ -90,7 +90,7 @@ in
   config = lib.mkIf cfg.enable {
     # Configure snapper for each specified subvolume
     services.snapper.configs = lib.mapAttrs (
-      name: snapCfg:
+      _name: snapCfg:
       defaultSnapperConfig
       // {
         SUBVOLUME = snapCfg.subvolume;

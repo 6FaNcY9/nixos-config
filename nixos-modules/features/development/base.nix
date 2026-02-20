@@ -103,14 +103,13 @@ in
       docker = lib.mkIf cfg.virtualization.docker.enable {
         enable = true;
         autoPrune = {
-          enable = cfg.virtualization.docker.autoPrune.enable;
-          dates = cfg.virtualization.docker.autoPrune.dates;
+          inherit (cfg.virtualization.docker.autoPrune) enable dates;
         };
       };
 
       podman = lib.mkIf cfg.virtualization.podman.enable {
         enable = true;
-        dockerCompat = cfg.virtualization.podman.dockerCompat;
+        inherit (cfg.virtualization.podman) dockerCompat;
       };
     };
 

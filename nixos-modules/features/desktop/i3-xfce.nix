@@ -89,7 +89,7 @@ in
           enable = true;
           greeters.gtk = {
             enable = true;
-            indicators = cfg.displayManager.lightdm.indicators;
+            inherit (cfg.displayManager.lightdm) indicators;
           };
         };
 

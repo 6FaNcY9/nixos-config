@@ -53,10 +53,10 @@ in
     swapDevices = map (
       swap:
       {
-        device = swap.device;
+        inherit (swap) device;
       }
-      // lib.optionalAttrs (swap.size != null) { size = swap.size; }
-      // lib.optionalAttrs (swap.priority != null) { priority = swap.priority; }
+      // lib.optionalAttrs (swap.size != null) { inherit (swap) size; }
+      // lib.optionalAttrs (swap.priority != null) { inherit (swap) priority; }
     ) cfg.devices;
   };
 }

@@ -146,44 +146,43 @@ in
 
   config = lib.mkIf cfg.enable {
     # Power management
-    services.power-profiles-daemon.enable = cfg.powerManagement.enablePowerProfilesDaemon;
     powerManagement.enable = cfg.powerManagement.enableGeneralPowerManagement;
 
-    # Fingerprint authentication
-    services.fprintd.enable = cfg.fingerprint.enable;
-
-    # Bluetooth
-    services.blueman.enable = cfg.bluetooth.enableBlueman;
-    hardware.bluetooth = {
-      enable = lib.mkDefault cfg.bluetooth.enable;
-      powerOnBoot = lib.mkDefault cfg.bluetooth.powerOnBoot;
+    # Services configuration
+    services = {
+      power-profiles-daemon.enable = cfg.powerManagement.enablePowerProfilesDaemon;
+      fprintd.enable = cfg.fingerprint.enable;
+      blueman.enable = cfg.bluetooth.enableBlueman;
+      hardware.bolt.enable = cfg.thunderbolt.enable;
+      fwupd.enable = cfg.firmwareUpdates.enable;
     };
 
-    # Thunderbolt/USB-C docks
-    services.hardware.bolt.enable = cfg.thunderbolt.enable;
+    # Hardware configuration
+    hardware = {
+      bluetooth = {
+        enable = lib.mkDefault cfg.bluetooth.enable;
+        powerOnBoot = lib.mkDefault cfg.bluetooth.powerOnBoot;
+      };
 
-    # Firmware updates
-    services.fwupd.enable = cfg.firmwareUpdates.enable;
+      # CPU microcode
+      cpu.amd.updateMicrocode = lib.mkIf (cfg.cpu.vendor == "amd" && cfg.cpu.enableMicrocodeUpdates) (
+        lib.mkDefault true
+      );
+      cpu.intel.updateMicrocode = lib.mkIf (cfg.cpu.vendor == "intel" && cfg.cpu.enableMicrocodeUpdates) (
+        lib.mkDefault true
+      );
 
-    # CPU microcode
-    hardware.cpu.amd.updateMicrocode = lib.mkIf (
-      cfg.cpu.vendor == "amd" && cfg.cpu.enableMicrocodeUpdates
-    ) (lib.mkDefault true);
-    hardware.cpu.intel.updateMicrocode = lib.mkIf (
-      cfg.cpu.vendor == "intel" && cfg.cpu.enableMicrocodeUpdates
-    ) (lib.mkDefault true);
+      # Sensors
+      sensor.iio.enable = !cfg.sensors.disableIIO;
 
-    # Sensors
-    hardware.sensor.iio.enable = !cfg.sensors.disableIIO;
-
-    # Wireless regulatory database
-    hardware.wirelessRegulatoryDatabase = cfg.wireless.enableRegulatoryDatabase;
+      # Wireless regulatory database
+      wirelessRegulatoryDatabase = cfg.wireless.enableRegulatoryDatabase;
+    };
 
     # zram compressed swap
     zramSwap = lib.mkIf cfg.zram.enable {
       enable = true;
-      algorithm = cfg.zram.algorithm;
-      memoryPercent = cfg.zram.memoryPercent;
+      inherit (cfg.zram) algorithm memoryPercent;
     };
 
     # Framework-specific configuration

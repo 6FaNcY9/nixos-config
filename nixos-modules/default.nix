@@ -8,8 +8,8 @@
     # Shared modules
     ../shared-modules/stylix-common.nix
 
-    # ===== OLD MODULES (keep during migration) =====
-    ./core.nix
+    # ===== OLD MODULES (deprecated, will be deleted in Phase 4) =====
+    # ./core.nix # MIGRATED to core/{nix,users,networking,programs,packages,fonts,system}.nix
     # ./storage.nix # MIGRATED to features/storage/{boot,swap,btrfs,snapper}.nix
     # ./services.nix # MIGRATED to features/services/{auto-update,openssh,trezord}.nix
     # ./secrets.nix # MIGRATED to features/security/secrets.nix
@@ -17,7 +17,7 @@
     # ./backup.nix # MIGRATED to features/services/backup.nix
     # ./tailscale.nix # MIGRATED to features/services/tailscale.nix
 
-    # Role system (desktop, laptop, server)
+    # Role system (desktop, laptop, server) - TO BE MIGRATED
     ./roles
 
     # Desktop environment
@@ -27,9 +27,9 @@
     # Home Manager integration
     ./home-manager.nix
 
-    # ===== NEW MODULES (being built) =====
-    ./core # Core system modules (empty placeholders)
-    ./features # Optional feature modules (empty templates)
-    ./profiles # Feature bundles (will add in Phase 3)
+    # ===== NEW MODULES (active) =====
+    ./core # Core system modules (nix, users, networking, programs, packages, fonts)
+    ./features # Optional feature modules
+    ./profiles # Feature bundles
   ];
 }

@@ -56,14 +56,13 @@ in
     # SSD maintenance via fstrim
     services.fstrim = lib.mkIf cfg.fstrim.enable {
       enable = true;
-      interval = cfg.fstrim.interval;
+      inherit (cfg.fstrim) interval;
     };
 
     # BTRFS scrubbing for data integrity
     services.btrfs.autoScrub = lib.mkIf cfg.autoScrub.enable {
       enable = true;
-      fileSystems = cfg.autoScrub.fileSystems;
-      interval = cfg.autoScrub.interval;
+      inherit (cfg.autoScrub) fileSystems interval;
     };
 
     # Warning if autoScrub enabled but no filesystems specified

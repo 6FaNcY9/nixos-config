@@ -1,4 +1,15 @@
-# Networking configuration - placeholder
-_: {
-  # Placeholder - will be populated in Phase 3
+# Core: Basic networking and locale
+# Always enabled (no option)
+{ ... }:
+{
+  # Networking
+  networking = {
+    networkmanager.enable = true;
+    firewall.enable = true;
+  };
+
+  # Locale and timezone
+  time.timeZone = "Europe/Vienna";
+  i18n.defaultLocale = "en_US.UTF-8";
+  console.keyMap = "de-latin1-nodeadkeys";
 }

@@ -53,19 +53,21 @@ in
 
   config = lib.mkIf cfg.enable {
     boot = {
-      # GRUB configuration
-      loader.grub = lib.mkIf (cfg.bootloader == "grub") {
-        enable = true;
-        efiSupport = cfg.efiSupport;
-        device = if cfg.efiSupport then "nodev" else "/dev/sda";
-        useOSProber = cfg.useOSProber;
+      # Bootloader configuration
+      loader = {
+        # GRUB configuration
+        grub = lib.mkIf (cfg.bootloader == "grub") {
+          enable = true;
+          inherit (cfg) efiSupport useOSProber;
+          device = if cfg.efiSupport then "nodev" else "/dev/sda";
+        };
+
+        # systemd-boot configuration
+        systemd-boot.enable = lib.mkIf (cfg.bootloader == "systemd-boot") true;
+
+        # EFI variables
+        efi.canTouchEfiVariables = cfg.canTouchEfiVariables;
       };
-
-      # systemd-boot configuration
-      loader.systemd-boot.enable = lib.mkIf (cfg.bootloader == "systemd-boot") true;
-
-      # EFI variables
-      loader.efi.canTouchEfiVariables = cfg.canTouchEfiVariables;
 
       # Kernel selection
       kernelPackages =
