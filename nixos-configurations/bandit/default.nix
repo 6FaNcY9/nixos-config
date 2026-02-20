@@ -108,7 +108,7 @@ in
 
       snapper = {
         enable = true;
-        enableTimeline = false; # Disabled for I/O reduction
+        enableTimeline = true; # Disabled for I/O reduction
         configs = {
           root = {
             subvolume = "/";
