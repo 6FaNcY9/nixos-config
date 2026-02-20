@@ -86,8 +86,7 @@ let
     pkgs.autotiling
     pkgs.rofi
     pkgs.thunar # Moved to top-level in unstable
-    pkgs.networkmanagerapplet
-    pkgs.blueman
+    # applets managed by HM services (services.network-manager-applet, services.blueman-applet)
     pkgs.btop
     pkgs.brightnessctl
     pkgs.dunst

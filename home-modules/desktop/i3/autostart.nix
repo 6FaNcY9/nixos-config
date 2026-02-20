@@ -20,9 +20,5 @@
       always = false;
       notification = false;
     }
-    {
-      command = "${pkgs.blueman}/bin/blueman-applet";
-      notification = false;
-    }
   ];
 }

@@ -10,6 +10,7 @@
   config = lib.mkIf config.profiles.desktop {
     services = {
       network-manager-applet.enable = true;
+      blueman-applet.enable = true;
       dunst = {
         enable = true;
         settings = {
