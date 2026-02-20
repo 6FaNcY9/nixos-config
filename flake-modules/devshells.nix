@@ -120,13 +120,42 @@
                 p.nix-tree
                 p.nix-diff
                 p.nix-output-monitor
-                p.manix
+                p.nix-index # Fast package search (nix-locate)
+                p.manix # Nix documentation search
+                p.nvd # NixOS generation diff
                 p.nurl
                 p.nix-prefetch-github
                 p.nixpkgs-review
                 p.nixd
               ]
             );
+          commands = [
+            {
+              name = "nix-locate";
+              help = "Search for packages by file path (e.g., nix-locate bin/hello)";
+              category = "search";
+            }
+            {
+              name = "manix";
+              help = "Search Nix documentation (e.g., manix mkIf)";
+              category = "search";
+            }
+            {
+              name = "nvd";
+              help = "Diff NixOS generations (e.g., nvd diff /run/booted-system /run/current-system)";
+              category = "comparison";
+            }
+            {
+              name = "nix-tree";
+              help = "Browse dependency tree interactively";
+              category = "inspection";
+            }
+            {
+              name = "nix-diff";
+              help = "Diff two derivations to see what changed";
+              category = "comparison";
+            }
+          ];
         };
       };
     };
