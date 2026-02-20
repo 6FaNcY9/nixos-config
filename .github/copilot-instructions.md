@@ -5,7 +5,7 @@ This document provides context for Claude/Copilot when working on this refactore
 ## 🎯 Project Status
 
 **Current Branch**: `refactor/explicit-modules`
-**Status**: Phase 3 nearly complete (15/15 modules migrated!)
+**Status**: ✅ **REFACTOR COMPLETE!** All phases finished.
 **Working Directory**: `/home/vino/src/nixos-config-refactor` (isolated git worktree)
 
 ## ✅ Completed Migrations
@@ -38,37 +38,47 @@ This document provides context for Claude/Copilot when working on this refactore
 
 ### Security Features
 - ✅ **Secrets** → `features.security.secrets`
+- ✅ **Server Hardening** → `features.security.server-hardening`
+- ✅ **Desktop Hardening** → `features.security.desktop-hardening`
 
 ## 🏗️ New Architecture
 
 ### Module Organization
 ```
 nixos-modules/
-├── features/           # New feature-based modules
-│   ├── services/       # Service features
+├── core/              # Core system (always enabled)
+│   ├── nix.nix        # Nix configuration
+│   ├── users.nix      # User accounts
+│   ├── networking.nix # Networking & locale
+│   ├── programs.nix   # System programs
+│   ├── packages.nix   # System packages
+│   ├── fonts.nix      # System fonts
+│   └── system.nix     # State version
+├── features/          # Feature-based modules (explicit enable)
+│   ├── services/      # Service features
 │   │   ├── tailscale.nix
 │   │   ├── backup.nix
 │   │   ├── monitoring.nix
 │   │   ├── auto-update.nix
 │   │   ├── openssh.nix
 │   │   └── trezord.nix
-│   ├── desktop/        # Desktop features
+│   ├── desktop/       # Desktop features
 │   │   └── i3-xfce.nix
-│   ├── storage/        # Storage features
+│   ├── storage/       # Storage features
 │   │   ├── boot.nix
 │   │   ├── swap.nix
 │   │   ├── btrfs.nix
 │   │   └── snapper.nix
-│   ├── theme/          # Theme features
+│   ├── theme/         # Theme features
 │   │   └── stylix.nix
-│   ├── hardware/       # Hardware features
+│   ├── hardware/      # Hardware features
 │   │   └── laptop.nix
-│   ├── development/    # Development features
+│   ├── development/   # Development features
 │   │   └── base.nix
-│   ├── security/       # Security features
-│   │   └── secrets.nix
-│   └── ...
-├── core/              # Core system (remaining)
+│   └── security/      # Security features
+│       ├── secrets.nix
+│       ├── server-hardening.nix
+│       └── desktop-hardening.nix
 └── profiles/          # Feature bundles (future)
 ```
 
@@ -166,20 +176,22 @@ The `./verify.sh` script runs:
 
 **Expected**: All phases pass, package count = 2691
 
-## 🔜 Remaining Work
+## ✅ Completed Phases
 
-### Nixos Modules to Migrate
-- Hardware features (laptop, printing)
-- Development features
-- Desktop features (i3, picom)
-- Core system modules
-- Storage/boot configuration
+- **Phase 3**: All modules migrated to features/* structure (15+ modules)
+- **Phase 4**: Deprecated modules and roles system deleted
+- **Phase 5**: Documentation and polish complete
+  - Created `docs/FEATURE_MODULES.md` - comprehensive feature module guide
+  - Created `docs/DEVELOPMENT_SERVICES.md` - development services guide
+  - Updated `README.md` with new architecture
+  - Enhanced `nix-debug` devshell with ecosystem tools
 
-### Home Modules to Migrate
-- Editor (nixvim)
-- Shell (git, starship, fish)
-- Terminal (alacritty, tmux, yazi)
-- Desktop (polybar, rofi, i3 config)
+## 🚀 Next Steps (Optional)
+
+### Home Modules Migration (Not Urgent)
+- Home modules work fine as-is
+- Can be migrated to features.* structure later
+- Would follow same pattern as NixOS modules
 
 ## 📚 Resources
 
@@ -190,6 +202,6 @@ The `./verify.sh` script runs:
 
 ---
 
-**Last Updated**: 2026-02-19
-**Commits**: 27
-**Status**: 🎉 Phase 3 Nearly Complete!
+**Last Updated**: 2026-02-20
+**Commits**: 30+
+**Status**: ✅ Refactor Complete! Ready for merge to main.
