@@ -10,6 +10,10 @@
   # Nix settings (flakes, binary caches, GC)
   nix = {
     settings = {
+      trusted-users = [
+        "root"
+        "@wheel"
+      ]; # Allow running nix commands without sudo
       experimental-features = [
         "nix-command"
         "flakes"
