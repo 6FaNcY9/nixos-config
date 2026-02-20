@@ -3,14 +3,17 @@
 Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager (`vino`). The system layers i3 on top of XFCE services, themed via Stylix (Gruvbox dark), and ships a Nixvim-based editor setup.
 
 ## Layout
-- `flake.nix` – uses flake-parts + ez-configs to wire inputs and exports `nixosConfigurations.bandit`, `homeConfigurations."vino@bandit"`, formatter, and optional dev shells (maintenance, flask, pentest).
+- `flake.nix` – uses flake-parts + ez-configs to wire inputs and exports `nixosConfigurations.bandit`, `homeConfigurations."vino@bandit"`, formatter, and optional dev shells.
 - `nixos-configurations/bandit/` – host entrypoint and hardware profile (`hardware-configuration.nix`).
 - `nixos-configurations/README.md` – quick guide for adding hosts.
 - `home-configurations/vino/default.nix` – Home Manager profile: Stylix targets (gtk, i3, xfce, rofi, starship, nixvim, firefox), Firefox userChrome override, package set (CLIs, dev tools, desktop utilities), fish setup with abbreviations, Atuin/Zoxide/direnv/fzf, i3 config, XFCE session XML, and detailed nixvim plugin stack.
 - `home-configurations/vino/hosts/<name>.nix` – host-specific Home Manager overrides (profiles, device names, etc.).
 - `shared-modules/` – shared stylix palette/fonts + i3 workspace list.
-- `nixos-modules/` – NixOS modules: `core.nix`, `storage.nix`, `services.nix`, `desktop.nix`, `stylix-nixos.nix`, `tailscale.nix`, `monitoring.nix`, `backup.nix`, plus `roles/` (desktop, laptop, server, development, desktop-hardening).
-- `home-modules/` – Home Manager modules (i3, polybar, nixvim, firefox, etc.).
+- `nixos-modules/` – NixOS modules organized as:
+  - `core/` – Core system (always enabled): nix, users, networking, programs, packages, fonts
+  - `features/` – Optional features (explicit enable): services, storage, desktop, hardware, security, theme, development
+  - `profiles/` – Feature bundles (future use)
+- `home-modules/` – Home Manager modules (desktop, editor, shell, terminal, profiles).
 - `overlays/` – overlays (includes `pkgs.stable` from nixpkgs-stable).
 - `lib/` – helper functions shared across modules.
 
@@ -22,32 +25,56 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 - Run `nix fmt` (nixfmt-rfc-style) after changes.
 
 ## Host Matrix (intent)
-| Host | Roles | Desktop Variant | Notes |
+| Host | Features | Desktop | Notes |
 | --- | --- | --- | --- |
-| bandit | desktop, laptop | i3-xfce | Framework 13 AMD laptop |
-| server-<name> | server | (none) | Headless/server host example |
+| bandit | desktop, laptop, dev, storage | i3-xfce | Framework 13 AMD laptop |
+| server-<name> | server-hardening | (none) | Headless/server host example |
 | droid-<name> | (nix-on-droid) | (none) | Termux/nix-on-droid host example |
 
+## 🎯 Feature Modules
+
+This configuration uses explicit feature modules for discoverability and clear dependencies.
+
+**Discover features**:
+```bash
+nix repl
+> :lf .
+> :t config.features  # Shows all available features
+```
+
+**Enable features** in `nixos-configurations/<host>/default.nix`:
+```nix
+features = {
+  desktop.i3-xfce.enable = true;
+  hardware.laptop.enable = true;
+  security.desktop-hardening.enable = true;
+  storage.btrfs.enable = true;
+};
+```
+
+See **[docs/FEATURE_MODULES.md](docs/FEATURE_MODULES.md)** for full guide.
+
 ## Editing Guide
+
 Where to add new config:
-- System packages: `nixos-modules/core.nix` → `environment.systemPackages`
-- System services: `nixos-modules/services.nix`
-- Server base: `nixos-modules/roles/server.nix` (`server.hardening`, `server.ssh.allowUsers`, `server.fail2ban.ignoreIP`)
-- Desktop/X11/i3/XFCE: `nixos-modules/desktop.nix`
-- Roles are opt-in per host (`roles.desktop`, `roles.laptop`, `roles.server`).
-- Desktop toggle: `roles.desktop = true;` (enable GUI per host).
-- Desktop variant: `desktop.variant = "i3-xfce";` (per host)
-- Boot/storage/swap: `nixos-modules/storage.nix`
-- Theme (system): `nixos-modules/stylix-nixos.nix` + `shared-modules/stylix-common.nix`
-- User packages: `home-configurations/vino/default.nix` → `home.packages`
-- Package groups: `home-modules/profiles.nix` (toggle with `profiles.*` flags)
-- Device names: `home-modules/devices.nix` (override via `devices.*` in host HM module)
-- User programs: `home-configurations/vino/default.nix` → `programs = { ... }`
-- User modules: `home-modules/<name>.nix` (add to `home-modules/default.nix`)
-- Shared helpers: `lib/default.nix`
-- Workspaces list: `shared-modules/workspaces.nix`
-- Overlays: `overlays/default.nix`
-- Custom packages: `flake-modules/packages.nix` (exposed via flake outputs)
+- **System packages**: `nixos-modules/core/packages.nix` → `environment.systemPackages`
+- **Desktop (i3/XFCE)**: `features.desktop.i3-xfce.*` in host config
+- **Development tools**: `features.development.base.*` in host config
+- **Laptop hardware**: `features.hardware.laptop.*` in host config
+- **Server hardening**: `features.security.server-hardening.*` in host config
+- **Desktop hardening**: `features.security.desktop-hardening.*` in host config
+- **Boot/storage**: `features.storage.{boot,swap,btrfs,snapper}.*` in host config
+- **Theme (system)**: `features.theme.stylix.*` + `shared-modules/stylix-common.nix`
+- **Services**: `features.services.{tailscale,backup,monitoring,auto-update,openssh,trezord}.*`
+- **User packages**: `home-configurations/vino/default.nix` → `home.packages`
+- **Package groups**: `home-modules/profiles.nix` (toggle with `profiles.*` flags)
+- **Device names**: `home-modules/devices.nix` (override via `devices.*` in host HM module)
+- **User programs**: `home-configurations/vino/default.nix` → `programs = { ... }`
+- **User modules**: `home-modules/<name>.nix` (add to `home-modules/default.nix`)
+- **Shared helpers**: `lib/default.nix`
+- **Workspaces list**: `shared-modules/workspaces.nix`
+- **Overlays**: `overlays/default.nix`
+- **Custom packages**: `flake-modules/packages.nix` (exposed via flake outputs)
 
 How imports work (ez-configs):
 - `nixos-modules/default.nix` and `home-modules/default.nix` are module aggregators that set `imports = [ ... ]`.
@@ -74,8 +101,14 @@ Tooling:
 - `qa`/`commit` run pre-commit using the generated config from the Nix store (no local `.pre-commit-config.yaml` file needed).
 - If you previously installed git hooks, use `nix run .#commit` (it runs pre-commit manually and commits with `--no-verify`). If you prefer plain `git commit`, reinstall hooks or run `pre-commit uninstall`.
 
+## 📖 Documentation
+
+- **[Feature Modules Guide](docs/FEATURE_MODULES.md)** - How to use and create features
+- **[Development Services](docs/DEVELOPMENT_SERVICES.md)** - PostgreSQL, Redis, etc.
+- **[Architecture](docs/architecture/)** - System design and components
+
 ## Secrets (sops-nix)
-- Config lives in `nixos-modules/secrets.nix` and `home-modules/secrets.nix`.
+- Config lives in `features.security.secrets.*` and `home-modules/secrets.nix`.
 - Template config: `.sops.yaml` (replace the placeholder age key).
 - Secrets live under `secrets/` and should be encrypted with `sops`.
 - See `secrets/README.md` for the exact workflow.
