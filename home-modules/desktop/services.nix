@@ -1,7 +1,6 @@
 # Desktop session services: dunst, picom, flameshot, network-manager-applet
 {
   lib,
-  pkgs,
   config,
   palette,
   ...

@@ -11,7 +11,7 @@
     {
       packages = {
         gruvboxWallpaperOutPath = pkgs.writeText "gruvbox-wallpaper-path" (
-          builtins.toString inputs'.gruvbox-wallpaper.packages.default
+          toString inputs'.gruvbox-wallpaper.packages.default
         );
 
         update = pkgs.writeShellApplication {
@@ -81,6 +81,7 @@
           name = "sysinfo";
           runtimeInputs = [
             pkgs.coreutils
+            pkgs.findutils
             pkgs.gawk
             pkgs.git
             pkgs.gnugrep

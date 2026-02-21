@@ -45,7 +45,6 @@
       enableFishIntegration = true;
     };
 
-
     # Use prebuilt nix-index database (prevents 12GB evaluation)
     nix-index-database.comma.enable = true;
 

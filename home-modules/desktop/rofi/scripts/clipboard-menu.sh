@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -euo pipefail
 export CM_LAUNCHER=rofi
 export CM_HISTLENGTH=20

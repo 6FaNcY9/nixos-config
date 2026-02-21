@@ -57,7 +57,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-
     # Prebuilt nix-index database (prevents 12GB evaluation)
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
