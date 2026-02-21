@@ -6,7 +6,7 @@ This document provides context for Claude/Copilot when working on this refactore
 
 **Current Branch**: `refactor/explicit-modules`
 **Status**: ✅ **REFACTOR COMPLETE!** All phases finished.
-**Working Directory**: `/home/vino/src/nixos-config-refactor` (isolated git worktree)
+**Working Directory**: `/home/vino/src/nixos-config`
 
 ## ✅ Completed Migrations
 
@@ -79,7 +79,7 @@ nixos-modules/
 │       ├── secrets.nix
 │       ├── server-hardening.nix
 │       └── desktop-hardening.nix
-└── profiles/          # Feature bundles (future)
+└── # profiles/          # Feature bundles (deferred - stub removed)
 ```
 
 ### Host Configuration Pattern

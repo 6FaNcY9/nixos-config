@@ -5,7 +5,7 @@ _: {
   boot.kernel.sysctl = {
     # Reduce swap usage (default: 60)
     # Only swap when memory is critically low
-    "vm.swappiness" = 10;
+    "vm.swappiness" = 80;
 
     # Reduce inode/dentry cache pressure (default: 100)
     # Keeps application memory prioritized over filesystem caches

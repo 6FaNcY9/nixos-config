@@ -14,6 +14,6 @@
     # ===== NEW MODULES (active) =====
     ./core # Core system modules (nix, users, networking, programs, packages, fonts)
     ./features # Optional feature modules
-    ./profiles # Feature bundles
+    # ./profiles # Removed: empty stub, will be added when bundles are created
   ];
 }

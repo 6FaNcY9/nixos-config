@@ -91,7 +91,12 @@ in
 
       swap = {
         enable = true;
-        devices = [ { device = "/swap/swapfile"; } ];
+        devices = [
+          {
+            device = "/swap/swapfile";
+            priority = 1; # Lower priority - use as backup after zram is full
+          }
+        ];
       };
 
       btrfs = {
@@ -132,6 +137,9 @@ in
     hardware.laptop = {
       enable = true;
       cpu.vendor = "amd";
+      zram = {
+        memoryPercent = 50; # Increase from 25% to 50% for better memory headroom
+      };
       framework = {
         enable = true;
         model = "framework-13-amd";

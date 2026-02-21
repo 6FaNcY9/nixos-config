@@ -182,6 +182,7 @@ in
     # zram compressed swap
     zramSwap = lib.mkIf cfg.zram.enable {
       enable = true;
+      priority = 100; # Higher priority - use zram first before disk swap
       inherit (cfg.zram) algorithm memoryPercent;
     };
 
