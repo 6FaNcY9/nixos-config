@@ -57,7 +57,7 @@ let
             "${label}: one or more secret files are missing or unencrypted."
             + lib.optionalString (
               missing != [ ]
-            ) " Missing: ${builtins.concatStringsSep ", " (map toString missing)}";
+            ) " Missing: ${lib.concatStringsSep ", " (map toString missing)}";
         }
       ];
     };

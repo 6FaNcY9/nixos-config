@@ -45,10 +45,8 @@ in
 
     exporters = {
       node = {
-        enable = lib.mkOption {
-          type = lib.types.bool;
+        enable = lib.mkEnableOption "node_exporter for system metrics" // {
           default = true;
-          description = "Enable node_exporter for system metrics";
         };
 
         port = lib.mkOption {

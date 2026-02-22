@@ -9,67 +9,43 @@
 }:
 let
   cfg = config.features.hardware.laptop;
+  mkBoolOpt =
+    default: desc:
+    lib.mkOption {
+      type = lib.types.bool;
+      inherit default;
+      description = desc;
+    };
+  isFramework13Amd = cfg.framework.enable && cfg.framework.model == "framework-13-amd";
 in
 {
   options.features.hardware.laptop = {
     enable = lib.mkEnableOption "laptop hardware support and optimizations";
 
     powerManagement = {
-      enablePowerProfilesDaemon = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enable power-profiles-daemon for power management";
-      };
+      enablePowerProfilesDaemon = mkBoolOpt true "Enable power-profiles-daemon for power management";
 
-      enableGeneralPowerManagement = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enable general power management features";
-      };
+      enableGeneralPowerManagement = mkBoolOpt true "Enable general power management features";
     };
 
     bluetooth = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enable Bluetooth support";
-      };
+      enable = mkBoolOpt true "Enable Bluetooth support";
 
-      powerOnBoot = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Power on Bluetooth adapter on boot";
-      };
+      powerOnBoot = mkBoolOpt false "Power on Bluetooth adapter on boot";
 
-      enableBlueman = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enable Blueman GUI (requires desktop environment)";
-      };
+      enableBlueman = mkBoolOpt true "Enable Blueman GUI (requires desktop environment)";
     };
 
     fingerprint = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enable fingerprint reader support (fprintd)";
-      };
+      enable = mkBoolOpt true "Enable fingerprint reader support (fprintd)";
     };
 
     thunderbolt = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enable Thunderbolt/USB-C dock support";
-      };
+      enable = mkBoolOpt true "Enable Thunderbolt/USB-C dock support";
     };
 
     firmwareUpdates = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enable firmware updates via fwupd";
-      };
+      enable = mkBoolOpt true "Enable firmware updates via fwupd";
     };
 
     cpu = {
@@ -82,35 +58,19 @@ in
         description = "CPU vendor for microcode updates";
       };
 
-      enableMicrocodeUpdates = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enable CPU microcode updates";
-      };
+      enableMicrocodeUpdates = mkBoolOpt true "Enable CPU microcode updates";
     };
 
     sensors = {
-      disableIIO = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Disable IIO sensors (light, accelerometer) to save battery";
-      };
+      disableIIO = mkBoolOpt true "Disable IIO sensors (light, accelerometer) to save battery";
     };
 
     wireless = {
-      enableRegulatoryDatabase = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enable wireless regulatory database for WiFi compliance";
-      };
+      enableRegulatoryDatabase = mkBoolOpt true "Enable wireless regulatory database for WiFi compliance";
     };
 
     zram = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enable zram compressed swap in RAM";
-      };
+      enable = mkBoolOpt true "Enable zram compressed swap in RAM";
 
       algorithm = lib.mkOption {
         type = lib.types.str;
@@ -126,11 +86,7 @@ in
     };
 
     framework = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Enable Framework laptop-specific tools and optimizations";
-      };
+      enable = mkBoolOpt false "Enable Framework laptop-specific tools and optimizations";
 
       model = lib.mkOption {
         type = lib.types.enum [
@@ -187,25 +143,18 @@ in
     };
 
     # Framework-specific configuration
-    environment.systemPackages = lib.mkIf cfg.framework.enable (
-      let
-        p = pkgs;
-      in
-      [
-        p.framework-tool
-        p.fw-ectool
-      ]
-    );
+    environment.systemPackages = lib.mkIf cfg.framework.enable [
+      pkgs.framework-tool
+      pkgs.fw-ectool
+    ];
 
     # Framework 13 AMD specific optimizations
-    services.udev.extraRules =
-      lib.mkIf (cfg.framework.enable && cfg.framework.model == "framework-13-amd")
-        ''
-          # Framework USB-C - prevent suspend issues
-          ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="32ac", ATTR{power/autosuspend}="-1"
-        '';
+    services.udev.extraRules = lib.mkIf isFramework13Amd ''
+      # Framework USB-C - prevent suspend issues
+      ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="32ac", ATTR{power/autosuspend}="-1"
+    '';
 
-    boot.kernelParams = lib.mkIf (cfg.framework.enable && cfg.framework.model == "framework-13-amd") [
+    boot.kernelParams = lib.mkIf isFramework13Amd [
       # MediaTek WiFi suspend/resume fix
       "rtw89_pci.disable_aspm_l1=1"
       "rtw89_pci.disable_aspm_l1ss=1"

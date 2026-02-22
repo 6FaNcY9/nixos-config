@@ -6,24 +6,20 @@
   ...
 }:
 let
-  systemPackages =
-    let
-      p = pkgs;
-    in
-    [
-      p.btrfs-progs
-      p.cachix # Binary cache management
-      p.curl
-      p.efibootmgr
-      p.git
-      p.snapper
-      p.vim
-      p.wget
-      p.gnupg
-      p.sops
-      p.age
-      p.ssh-to-age
-    ];
+  systemPackages = with pkgs; [
+    btrfs-progs
+    cachix # Binary cache management
+    curl
+    efibootmgr
+    git
+    snapper
+    vim
+    wget
+    gnupg
+    sops
+    age
+    ssh-to-age
+  ];
 in
 {
   environment.systemPackages = systemPackages;

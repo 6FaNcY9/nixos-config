@@ -9,6 +9,13 @@
 }:
 let
   cfg = config.features.development.base;
+  mkBoolOpt =
+    default: desc:
+    lib.mkOption {
+      type = lib.types.bool;
+      inherit default;
+      description = desc;
+    };
 in
 {
   options.features.development.base = {
@@ -16,18 +23,10 @@ in
 
     virtualization = {
       docker = {
-        enable = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          description = "Enable Docker container runtime";
-        };
+        enable = mkBoolOpt false "Enable Docker container runtime";
 
         autoPrune = {
-          enable = lib.mkOption {
-            type = lib.types.bool;
-            default = true;
-            description = "Enable automatic Docker resource cleanup";
-          };
+          enable = mkBoolOpt true "Enable automatic Docker resource cleanup";
 
           dates = lib.mkOption {
             type = lib.types.str;
@@ -38,48 +37,24 @@ in
       };
 
       podman = {
-        enable = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          description = "Enable Podman container runtime";
-        };
+        enable = mkBoolOpt false "Enable Podman container runtime";
 
-        dockerCompat = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          description = "Enable Docker CLI compatibility for Podman";
-        };
+        dockerCompat = mkBoolOpt false "Enable Docker CLI compatibility for Podman";
       };
     };
 
     buildEssentials = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Install build essentials (make, cmake, gcc, etc)";
-      };
+      enable = mkBoolOpt true "Install build essentials (make, cmake, gcc, etc)";
     };
 
     debugTools = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Install debugging tools (gdb, strace, ltrace)";
-      };
+      enable = mkBoolOpt true "Install debugging tools (gdb, strace, ltrace)";
     };
 
     direnv = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enable direnv for automatic environment loading";
-      };
+      enable = mkBoolOpt true "Enable direnv for automatic environment loading";
 
-      enableNixDirenv = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enable nix-direnv integration";
-      };
+      enableNixDirenv = mkBoolOpt true "Enable nix-direnv integration";
     };
 
     fileWatchers = {
@@ -115,22 +90,18 @@ in
 
     # Build essentials
     environment.systemPackages =
-      let
-        p = pkgs;
-        buildPkgs = lib.optionals cfg.buildEssentials.enable [
-          p.gnumake
-          p.cmake
-          p.pkg-config
-          p.gcc
-          p.binutils
-        ];
-        debugPkgs = lib.optionals cfg.debugTools.enable [
-          p.gdb
-          p.strace
-          p.ltrace
-        ];
-      in
-      buildPkgs ++ debugPkgs;
+      lib.optionals cfg.buildEssentials.enable [
+        pkgs.gnumake
+        pkgs.cmake
+        pkgs.pkg-config
+        pkgs.gcc
+        pkgs.binutils
+      ]
+      ++ lib.optionals cfg.debugTools.enable [
+        pkgs.gdb
+        pkgs.strace
+        pkgs.ltrace
+      ];
 
     # File watcher limits for large projects
     boot.kernel.sysctl = {
