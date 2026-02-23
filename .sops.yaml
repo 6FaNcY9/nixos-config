@@ -4,7 +4,7 @@
 keys:
   - &user  age134u5vtdts98pnept0k9v0uy4m6guthggfguw0ycvzn0evjeqgemsgl0krt
   - &host age1r6cncetmt3xx9mv2hedvwm8dwc2nhy9rmekhah747kxeguzygplq6a875l
-  - &gpg_user FC8B68693AF4E0D9DC84A4D3B872E229ADE55151
+  - &gpg_user 4D8770567A65FE1369E2BCC1611871842A8C1619  
 creation_rules:
   - path_regex: secrets/.*\.ya?ml
     key_groups:

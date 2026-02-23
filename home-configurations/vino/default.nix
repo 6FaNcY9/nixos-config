@@ -157,8 +157,8 @@ in
     # Import if missing: gpg --import /path/to/private-key.asc
     git.settings.user = {
       name = "6FaNcY9";
-      email = "maxwein01@gmail.com";
-      signingkey = "FC8B68693AF4E0D9DC84A4D3B872E229ADE55151";
+      email = "29282675+6FaNcY9@users.noreply.github.com";
+      signingkey = "4D8770567A65FE1369E2BCC1611871842A8C1619";
     };
     git.settings.commit.gpgsign = true;
 
