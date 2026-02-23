@@ -11,6 +11,8 @@ _: {
     networkInterface = "wlp1s0";
   };
 
+  features.shell.git.enable = true;
+
   # Workspaces use shared defaults from shared-modules/workspaces.nix
   # Override here only if host-specific icons are needed
 }
