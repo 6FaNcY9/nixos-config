@@ -2,7 +2,7 @@
 {
   imports = [
     # migrated: # ./git.nix
-    ./shell.nix
+    # migrated: # ./shell.nix
     ./starship.nix
   ];
 }
