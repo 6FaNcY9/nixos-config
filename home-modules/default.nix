@@ -26,7 +26,7 @@
     ./secrets.nix
 
     # ===== NEW MODULES (future) =====
-    # ./core # Removed: empty stub
-    # ./features # Removed: empty stubs
+    ./core
+    ./features
   ];
 }
