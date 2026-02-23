@@ -19,11 +19,7 @@
     ./terminal
 
     # Infrastructure (flat)
-    ./devices.nix
-    ./nixpkgs.nix
-    ./package-managers.nix
     ./profiles.nix
-    ./secrets.nix
 
     # ===== NEW MODULES (future) =====
     ./core
