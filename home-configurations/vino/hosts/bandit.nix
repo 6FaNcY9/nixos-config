@@ -17,6 +17,7 @@ _: {
   features.editor.nixvim.enable = true;
   features.terminal.alacritty.enable = true;
   features.terminal.tmux.enable = true;
+  features.terminal.yazi.enable = true;
 
 
   # Workspaces use shared defaults from shared-modules/workspaces.nix

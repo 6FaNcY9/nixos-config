@@ -3,6 +3,6 @@
   imports = [
     # migrated: # ./alacritty.nix
     # migrated: # ./tmux
-    ./yazi
+    # migrated: # ./yazi
   ];
 }
