@@ -13,6 +13,7 @@ let
   cachixSecretFile = "${inputs.self}/secrets/cachix.yaml";
   exaApiSecretFile = "${inputs.self}/secrets/exa-api.yaml";
   context7SecretFile = "${inputs.self}/secrets/context7-api.yaml";
+  mistralSecretFile = "${inputs.self}/secrets/mistral.yaml";
 
   secretValidation = cfgLib.mkSecretValidation {
     secrets = [
@@ -21,6 +22,7 @@ let
       cachixSecretFile
       exaApiSecretFile
       context7SecretFile
+      mistralSecretFile
     ];
     label = "Home";
   };
@@ -57,6 +59,11 @@ in
 
       context7_api_key = {
         sopsFile = context7SecretFile;
+        format = "yaml";
+      };
+
+      mistral_api_key = {
+        sopsFile = mistralSecretFile;
         format = "yaml";
       };
     };

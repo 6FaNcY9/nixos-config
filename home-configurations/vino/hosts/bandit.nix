@@ -16,6 +16,7 @@ _: {
       git.enable = true;
       fish.enable = true;
       starship.enable = true;
+      vibe.enable = true;
     };
     editor.nixvim.enable = true;
     terminal = {
