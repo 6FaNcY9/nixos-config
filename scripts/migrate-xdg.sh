@@ -24,9 +24,9 @@ error() { echo -e "${RED}[ERROR]${NC} $1"; }
 success() { echo -e "${GREEN}[OK]${NC} $1"; }
 
 dry_run=false
-if [[ "${1:-}" == "--dry-run" ]]; then
-    dry_run=true
-    warn "DRY RUN MODE - No changes will be made"
+if [[ ${1:-} == "--dry-run" ]]; then
+	dry_run=true
+	warn "DRY RUN MODE - No changes will be made"
 fi
 
 echo ""
@@ -37,73 +37,73 @@ echo ""
 
 # Ensure target directories exist
 ensure_dir() {
-    if [[ "$dry_run" == false ]]; then
-        mkdir -p "$1"
-    fi
+	if [[ $dry_run == false ]]; then
+		mkdir -p "$1"
+	fi
 }
 
 # Move directory if source exists and target doesn't
 migrate_dir() {
-    local src="$1"
-    local dst="$2"
-    local name="$3"
+	local src="$1"
+	local dst="$2"
+	local name="$3"
 
-    if [[ -d "$src" ]]; then
-        if [[ -d "$dst" && "$(ls -A "$dst" 2>/dev/null)" ]]; then
-            warn "$name: Target exists and not empty, merging..."
-            if [[ "$dry_run" == false ]]; then
-                cp -rn "$src"/* "$dst"/ 2>/dev/null || true
-                rm -rf "$src"
-            else
-                echo "  Would merge: $src -> $dst"
-            fi
-        elif [[ ! -e "$dst" ]]; then
-            log "$name: Moving $src -> $dst"
-            if [[ "$dry_run" == false ]]; then
-                ensure_dir "$(dirname "$dst")"
-                mv "$src" "$dst"
-            fi
-            success "$name migrated"
-        else
-            warn "$name: Target exists, skipping"
-        fi
-    else
-        log "$name: Source doesn't exist, skipping"
-    fi
+	if [[ -d $src ]]; then
+		if [[ -d $dst && "$(ls -A "$dst" 2>/dev/null)" ]]; then
+			warn "$name: Target exists and not empty, merging..."
+			if [[ $dry_run == false ]]; then
+				cp -rn "$src"/* "$dst"/ 2>/dev/null || true
+				rm -rf "$src"
+			else
+				echo "  Would merge: $src -> $dst"
+			fi
+		elif [[ ! -e $dst ]]; then
+			log "$name: Moving $src -> $dst"
+			if [[ $dry_run == false ]]; then
+				ensure_dir "$(dirname "$dst")"
+				mv "$src" "$dst"
+			fi
+			success "$name migrated"
+		else
+			warn "$name: Target exists, skipping"
+		fi
+	else
+		log "$name: Source doesn't exist, skipping"
+	fi
 }
 
 # Move file with directory creation
 migrate_file() {
-    local src="$1"
-    local dst="$2"
-    local name="$3"
+	local src="$1"
+	local dst="$2"
+	local name="$3"
 
-    if [[ -f "$src" ]]; then
-        if [[ -f "$dst" ]]; then
-            warn "$name: Target exists, skipping"
-        else
-            log "$name: Moving $src -> $dst"
-            if [[ "$dry_run" == false ]]; then
-                ensure_dir "$(dirname "$dst")"
-                mv "$src" "$dst"
-            fi
-            success "$name migrated"
-        fi
-    fi
+	if [[ -f $src ]]; then
+		if [[ -f $dst ]]; then
+			warn "$name: Target exists, skipping"
+		else
+			log "$name: Moving $src -> $dst"
+			if [[ $dry_run == false ]]; then
+				ensure_dir "$(dirname "$dst")"
+				mv "$src" "$dst"
+			fi
+			success "$name migrated"
+		fi
+	fi
 }
 
 # Delete file/directory
 cleanup() {
-    local path="$1"
-    local name="$2"
+	local path="$1"
+	local name="$2"
 
-    if [[ -e "$path" ]]; then
-        log "$name: Removing $path"
-        if [[ "$dry_run" == false ]]; then
-            rm -rf "$path"
-        fi
-        success "$name cleaned"
-    fi
+	if [[ -e $path ]]; then
+		log "$name: Removing $path"
+		if [[ $dry_run == false ]]; then
+			rm -rf "$path"
+		fi
+		success "$name cleaned"
+	fi
 }
 
 echo "Step 1: Package Manager Migrations"
@@ -157,7 +157,7 @@ echo "-----------------------------"
 
 # Claude backup files
 for f in "$HOME"/.claude.json.backup.*; do
-    [[ -e "$f" ]] && cleanup "$f" "claude backup"
+	[[ -e $f ]] && cleanup "$f" "claude backup"
 done
 
 # Stray log/debug files
@@ -188,8 +188,9 @@ echo "  - ~/.gnupg (requires careful reconfiguration)"
 echo "  - ~/.ssh (must stay for security)"
 echo ""
 echo "Add these to shell config for full XDG compliance:"
-echo "  export HISTFILE=\"\$XDG_STATE_HOME/bash/history\""
+# shellcheck disable=SC2016
+echo '  export HISTFILE="$XDG_STATE_HOME/bash/history"'
 echo ""
-if [[ "$dry_run" == true ]]; then
-    warn "This was a dry run. Run without --dry-run to apply changes."
+if [[ $dry_run == true ]]; then
+	warn "This was a dry run. Run without --dry-run to apply changes."
 fi

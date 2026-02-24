@@ -22,8 +22,19 @@ fail() {
 skip() { echo -e "${YELLOW}–${NC} $* (skipped)"; }
 step() { echo -e "\n${BOLD}=== $* ===${NC}"; }
 
+# Run a nix command and report pass/fail with a label.
+nix_check() {
+	local label="$1"
+	shift
+	if "$@"; then
+		ok "${label} passed"
+	else
+		fail "${label} failed"
+	fi
+}
+
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "${repo_root}"
+cd "${repo_root}" || fail "Cannot cd to repo root: ${repo_root}"
 echo "Repository root: ${repo_root}"
 
 BUILD_NIXOS=false
@@ -35,70 +46,37 @@ for arg in "$@"; do
 		BUILD_NIXOS=true
 		BUILD_ALL=true
 		;;
+	*) fail "Unknown argument: ${arg}" ;;
 	esac
 done
 
 step "Home Manager build (vino@bandit)"
-if nix build .#homeConfigurations."vino@bandit".activationPackage --no-link; then
-	ok "HM build passed"
-else
-	fail "HM build failed"
-fi
+nix_check "HM build" \
+	nix build .#homeConfigurations."vino@bandit".activationPackage --no-link
 
 step "NixOS build (bandit)"
 if $BUILD_NIXOS; then
-	if nix build .#nixosConfigurations.bandit.config.system.build.toplevel --no-link; then
-		ok "NixOS build passed"
-	else
-		fail "NixOS build failed"
-	fi
+	nix_check "NixOS build" \
+		nix build .#nixosConfigurations.bandit.config.system.build.toplevel --no-link
 else
 	skip "pass --nixos or --all to include NixOS build"
 fi
 
 step "Packages"
 if $BUILD_ALL; then
-	if nix build .#packages.x86_64-linux.dev-services --no-link; then
-		ok "dev-services passed"
-	else
-		fail "dev-services failed"
-	fi
-	if nix build .#packages.x86_64-linux.web-db --no-link; then
-		ok "web-db passed"
-	else
-		fail "web-db failed"
-	fi
-	if nix build .#packages.x86_64-linux.gruvboxWallpaperOutPath --no-link; then
-		ok "gruvboxWallpaperOutPath passed"
-	else
-		fail "gruvboxWallpaperOutPath failed"
-	fi
+	for pkg in dev-services web-db gruvboxWallpaperOutPath; do
+		nix_check "${pkg}" nix build ".#packages.x86_64-linux.${pkg}" --no-link
+	done
 else
 	skip "pass --all to include package builds"
 fi
 
 step "Dev shells"
 if $BUILD_ALL; then
-	if nix develop .#web --command echo "web shell OK"; then
-		ok "web devshell passed"
-	else
-		fail "web devshell failed"
-	fi
-	if nix develop .#rust --command echo "rust shell OK"; then
-		ok "rust devshell passed"
-	else
-		fail "rust devshell failed"
-	fi
-	if nix develop .#go --command echo "go shell OK"; then
-		ok "go devshell passed"
-	else
-		fail "go devshell failed"
-	fi
-	if nix develop .#agents --command echo "agents shell OK"; then
-		ok "agents devshell passed"
-	else
-		fail "agents devshell failed"
-	fi
+	for shell in web rust go agents; do
+		nix_check "${shell} devshell" \
+			nix develop ".#${shell}" --command echo "${shell} shell OK"
+	done
 else
 	skip "pass --all to include devshell checks"
 fi
