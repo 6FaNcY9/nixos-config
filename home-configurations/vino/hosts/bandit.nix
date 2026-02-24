@@ -16,6 +16,7 @@ _: {
   features.shell.starship.enable = true;
   features.editor.nixvim.enable = true;
   features.terminal.alacritty.enable = true;
+  features.terminal.tmux.enable = true;
 
 
   # Workspaces use shared defaults from shared-modules/workspaces.nix

@@ -2,7 +2,7 @@
 {
   imports = [
     # migrated: # ./alacritty.nix
-    ./tmux
+    # migrated: # ./tmux
     ./yazi
   ];
 }
