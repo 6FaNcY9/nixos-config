@@ -27,14 +27,14 @@ in
         '';
 
         directory = {
-          format = "[   $path ]($style)";
+          format = "[ 󰉋  $path ]($style)";
           style = "fg:${c.base05} bg:${c.base01}";
           truncation_length = 4;
           truncation_symbol = "…/";
         };
 
         git_branch = {
-          format = "[  $branch ]($style)";
+          format = "[  $branch ]($style)";
           style = "fg:${c.base0B} bg:${c.base01}";
         };
 
@@ -45,7 +45,7 @@ in
         };
 
         nix_shell = {
-          format = "[  $state ]($style)";
+          format = "[  $state ]($style)";
           style = "fg:${c.base0D} bg:${c.base01}";
         };
 
@@ -56,15 +56,15 @@ in
         };
 
         cmd_duration = {
-          format = "[  $duration ]($style)";
+          format = "[  $duration ]($style)";
           style = "fg:${c.base0E} bg:${c.base01}";
           min_time = 500;
         };
 
         character = {
-          success_symbol = " [](fg:${c.base0B})";
-          error_symbol = " [](fg:${c.base08})";
-          vimcmd_symbol = " [](fg:${c.base0A})";
+          success_symbol = " [](fg:${c.base0B})";
+          error_symbol = " [](fg:${c.base08})";
+          vimcmd_symbol = " [](fg:${c.base0A})";
         };
       };
     };
