@@ -13,7 +13,10 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
   - `core/` – Core system (always enabled): nix, users, networking, programs, packages, fonts
   - `features/` – Optional features (explicit enable): services, storage, desktop, hardware, security, theme, development
   - `profiles/` – Feature bundles (future use)
-- `home-modules/` – Home Manager modules (desktop, editor, shell, terminal, profiles).
+- `home-modules/` – Home Manager modules organized as:
+  - `core/` – Always-on infrastructure: devices, nixpkgs, package managers, secrets
+  - `features/` – Optional modules (explicit enable): shell, editor, terminal, desktop
+  - `profiles.nix` – Package bundles (toggle with `profiles.*` flags)
 - `overlays/` – overlays (includes `pkgs.stable` from nixpkgs-stable).
 - `lib/` – helper functions shared across modules.
 
@@ -68,9 +71,9 @@ Where to add new config:
 - **Services**: `features.services.{tailscale,backup,monitoring,auto-update,openssh,trezord}.*`
 - **User packages**: `home-configurations/vino/default.nix` → `home.packages`
 - **Package groups**: `home-modules/profiles.nix` (toggle with `profiles.*` flags)
-- **Device names**: `home-modules/devices.nix` (override via `devices.*` in host HM module)
+- **Device names**: `home-modules/core/devices.nix` (override via `devices.*` in host HM config)
 - **User programs**: `home-configurations/vino/default.nix` → `programs = { ... }`
-- **User modules**: `home-modules/<name>.nix` (add to `home-modules/default.nix`)
+- **User features**: `home-modules/features/<category>/<name>.nix` (enable with `features.<category>.<name>.enable = true` in host HM config)
 - **Shared helpers**: `lib/default.nix`
 - **Workspaces list**: `shared-modules/workspaces.nix`
 - **Overlays**: `overlays/default.nix`
@@ -108,7 +111,7 @@ Tooling:
 - **[Architecture](docs/architecture/)** - System design and components
 
 ## Secrets (sops-nix)
-- Config lives in `features.security.secrets.*` and `home-modules/secrets.nix`.
+- Config lives in `features.security.secrets.*` and `home-modules/core/secrets.nix`.
 - Template config: `.sops.yaml` (replace the placeholder age key).
 - Secrets live under `secrets/` and should be encrypted with `sops`.
 - See `secrets/README.md` for the exact workflow.
@@ -152,7 +155,6 @@ Toggle package groups in `home-configurations/vino/default.nix` (or a host-speci
 Notes
 - `allowUnfree = true` is enabled for packages like VS Code.
 - Stylix auto-enables Gruvbox; Home Manager targets follow system theme (see `nixos-modules/stylix-nixos.nix`).
-- `programs.i3blocks` is currently disabled in `home-modules/i3blocks.nix`.
 - Hibernate/suspend rely on the swap device/offset in `nixos-configurations/<host>/default.nix`—keep in sync if storage changes.
 - If you want to suppress the dirty-tree warning for QA/commit, use the fish abbreviations `qa` / `gcommit` (they pass `--option warn-dirty false`).
 - Bluetooth is only enabled when `roles.laptop = true` (defaults to off on new hosts).

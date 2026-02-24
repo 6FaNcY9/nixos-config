@@ -11,6 +11,23 @@ _: {
     networkInterface = "wlp1s0";
   };
 
+  features.shell.git.enable = true;
+  features.shell.fish.enable = true;
+  features.shell.starship.enable = true;
+  features.editor.nixvim.enable = true;
+  features.terminal.alacritty.enable = true;
+  features.terminal.tmux.enable = true;
+  features.terminal.yazi.enable = true;
+  features.desktop.services.enable = true;
+  features.desktop.clipboard.enable = true;
+  features.desktop.lock.enable = true;
+  features.desktop.firefox.enable = true;
+  features.desktop.xfce-session.enable = true;
+  features.desktop.i3.enable = true;
+  features.desktop.polybar.enable = true;
+  features.desktop.rofi.enable = true;
+
+
   # Workspaces use shared defaults from shared-modules/workspaces.nix
   # Override here only if host-specific icons are needed
 }

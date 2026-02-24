@@ -316,3 +316,72 @@ features.security.desktop-hardening.enable = true;
 ```
 
 Benefits: More explicit, better discoverability, clearer dependencies.
+
+---
+
+## Home Manager Features
+
+The same explicit feature-module pattern is used on the Home Manager side in `home-modules/`.
+
+### Architecture
+
+```
+home-modules/
+  core/        - Always enabled: devices, nixpkgs, package-managers, secrets
+  features/    - Optional HM capabilities (explicit enable)
+    shell/     - shell.{git, fish, starship}
+    editor/    - editor.nixvim
+    terminal/  - terminal.{alacritty, tmux, yazi}
+    desktop/   - desktop.{services, clipboard, lock, firefox, xfce-session, i3, polybar, rofi}
+  profiles.nix - Package bundles (profiles.{core,dev,desktop,extras,ai})
+```
+
+### Enabling Home Manager Features
+
+In `home-configurations/vino/hosts/<host>.nix`:
+
+```nix
+{
+  features.shell.git.enable = true;
+  features.shell.fish.enable = true;
+  features.shell.starship.enable = true;
+
+  features.editor.nixvim.enable = true;
+
+  features.terminal.alacritty.enable = true;
+  features.terminal.tmux.enable = true;
+  features.terminal.yazi.enable = true;
+
+  features.desktop.services.enable = true;
+  features.desktop.clipboard.enable = true;
+  features.desktop.lock.enable = true;
+  features.desktop.firefox.enable = true;
+  features.desktop.xfce-session.enable = true;
+  features.desktop.i3.enable = true;
+  features.desktop.polybar.enable = true;
+  features.desktop.rofi.enable = true;
+}
+```
+
+### Adding a New Home Manager Feature
+
+1. Create `home-modules/features/<category>/<name>.nix` using the canonical pattern:
+
+```nix
+{ lib, config, ... }:
+let
+  cfg = config.features.<category>.<name>;
+in
+{
+  options.features.<category>.<name> = {
+    enable = lib.mkEnableOption "<description>";
+  };
+
+  config = lib.mkIf cfg.enable {
+    # HM configuration here
+  };
+}
+```
+
+2. Import it in `home-modules/features/<category>/default.nix`
+3. Enable it in your host's HM override file

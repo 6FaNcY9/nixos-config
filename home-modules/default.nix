@@ -11,22 +11,10 @@
     ../shared-modules/workspaces.nix
     ../shared-modules/palette.nix
 
-    # ===== OLD MODULES (keep during migration) =====
-    # Categories
-    ./desktop
-    ./editor
-    ./shell
-    ./terminal
-
-    # Infrastructure (flat)
-    ./devices.nix
-    ./nixpkgs.nix
-    ./package-managers.nix
+    # Infrastructure
     ./profiles.nix
-    ./secrets.nix
-
-    # ===== NEW MODULES (future) =====
-    # ./core # Removed: empty stub
-    # ./features # Removed: empty stubs
+    # Modules
+    ./core
+    ./features
   ];
 }
