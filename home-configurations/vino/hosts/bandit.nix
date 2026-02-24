@@ -25,6 +25,7 @@ _: {
   features.desktop.xfce-session.enable = true;
   features.desktop.i3.enable = true;
   features.desktop.polybar.enable = true;
+  features.desktop.rofi.enable = true;
 
 
   # Workspaces use shared defaults from shared-modules/workspaces.nix

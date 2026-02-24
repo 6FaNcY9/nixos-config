@@ -6,7 +6,7 @@
     # ./i3
     # ./lock
     # ./polybar
-    ./rofi
+    # ./rofi
     # ./services.nix
     # ./xfce-session.nix
   ];
