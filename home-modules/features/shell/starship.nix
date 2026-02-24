@@ -54,18 +54,18 @@ in
         };
 
         nix_shell = {
-          format = "[   $state ]($style)";
+          format = "[  $state ]($style)";
           style = "fg:${c.base0D} bg:${c.base01}";
         };
 
         direnv = {
           disabled = false;
-          format = "[   direnv ]($style)";
+          format = "[  direnv ]($style)";
           style = "fg:${c.base08} bg:${c.base01}";
         };
 
         cmd_duration = {
-          format = "[   $duration ]($style)";
+          format = "[  $duration ]($style)";
           style = "fg:${c.base0E} bg:${c.base01}";
           min_time = 500;
         };
