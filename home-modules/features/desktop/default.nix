@@ -1,1 +1,1 @@
-{ imports = []; }
+{ imports = [ ./services.nix ]; }

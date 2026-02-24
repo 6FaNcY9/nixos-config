@@ -7,7 +7,7 @@
     ./lock
     ./polybar
     ./rofi
-    ./services.nix
+    # ./services.nix
     ./xfce-session.nix
   ];
 }
