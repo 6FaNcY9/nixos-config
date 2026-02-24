@@ -1,1 +1,1 @@
-{ imports = [ ./services.nix ./clipboard.nix ./lock ]; }
+{ imports = [ ./services.nix ./clipboard.nix ./lock ./firefox.nix ]; }

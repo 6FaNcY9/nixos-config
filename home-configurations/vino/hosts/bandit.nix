@@ -21,6 +21,7 @@ _: {
   features.desktop.services.enable = true;
   features.desktop.clipboard.enable = true;
   features.desktop.lock.enable = true;
+  features.desktop.firefox.enable = true;
 
 
   # Workspaces use shared defaults from shared-modules/workspaces.nix
