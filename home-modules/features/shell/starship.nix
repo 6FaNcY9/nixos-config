@@ -42,15 +42,15 @@ in
           format = "([ $all_status$ahead_behind ]($style))";
           style = "fg:${c.base0A} bg:${c.base01}";
           # Show presence without counts for cleaner display
-          staged    = "+";
-          modified  = "!";
+          staged = "+";
+          modified = "!";
           untracked = "?";
-          deleted   = "✘";
+          deleted = "✘";
           conflicted = "⚡";
-          stashed   = "≡";
-          ahead     = "⇡";
-          behind    = "⇣";
-          diverged  = "⇡⇣";
+          stashed = "≡";
+          ahead = "⇡";
+          behind = "⇣";
+          diverged = "⇡⇣";
         };
 
         nix_shell = {

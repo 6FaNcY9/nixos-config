@@ -111,6 +111,7 @@ in
       qt.enable = true;
       gtk = {
         enable = true;
+        colors.enable = true;
         flatpakSupport.enable = true;
       };
 
