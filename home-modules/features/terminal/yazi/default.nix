@@ -1,4 +1,9 @@
-{ lib, config, palette, ... }:
+{
+  lib,
+  config,
+  palette,
+  ...
+}:
 let
   cfg = config.features.terminal.yazi;
 in

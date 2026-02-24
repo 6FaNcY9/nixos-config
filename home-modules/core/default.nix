@@ -1,6 +1,8 @@
-{ imports = [
-  ./devices.nix
-  ./nixpkgs.nix
-  ./package-managers.nix
-  ./secrets.nix
-]; }
+{
+  imports = [
+    ./devices.nix
+    ./nixpkgs.nix
+    ./package-managers.nix
+    ./secrets.nix
+  ];
+}

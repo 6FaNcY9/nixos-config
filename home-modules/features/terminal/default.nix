@@ -1,5 +1,7 @@
-{ imports = [
-  ./alacritty.nix
-  ./tmux
-  ./yazi
-]; }
+{
+  imports = [
+    ./alacritty.nix
+    ./tmux
+    ./yazi
+  ];
+}

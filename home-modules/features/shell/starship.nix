@@ -1,5 +1,10 @@
 # Starship prompt configuration
-{ lib, config, c, ... }:
+{
+  lib,
+  config,
+  c,
+  ...
+}:
 let
   cfg = config.features.shell.starship;
 in

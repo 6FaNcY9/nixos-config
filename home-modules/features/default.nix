@@ -1,6 +1,8 @@
-{ imports = [
-  ./shell
-  ./editor
-  ./terminal
-  ./desktop
-]; }
+{
+  imports = [
+    ./shell
+    ./editor
+    ./terminal
+    ./desktop
+  ];
+}
