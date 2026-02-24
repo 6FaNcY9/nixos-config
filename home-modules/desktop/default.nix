@@ -4,7 +4,7 @@
     # ./clipboard.nix
     ./firefox.nix
     ./i3
-    ./lock
+    # ./lock
     ./polybar
     ./rofi
     # ./services.nix
