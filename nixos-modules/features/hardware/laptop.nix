@@ -9,13 +9,8 @@
 }:
 let
   cfg = config.features.hardware.laptop;
-  mkBoolOpt =
-    default: desc:
-    lib.mkOption {
-      type = lib.types.bool;
-      inherit default;
-      description = desc;
-    };
+  cfgLib = import ../../../lib { inherit lib; };
+  inherit (cfgLib) mkBoolOpt;
   isFramework13Amd = cfg.framework.enable && cfg.framework.model == "framework-13-amd";
 in
 {

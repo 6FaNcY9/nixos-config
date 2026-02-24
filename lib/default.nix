@@ -150,6 +150,16 @@ let
     in
     builtins.replaceStrings oldStrs newStrs;
 
+  # Option helpers
+  # Boolean option shorthand used by NixOS feature modules
+  mkBoolOpt =
+    default: desc:
+    lib.mkOption {
+      type = lib.types.bool;
+      inherit default;
+      description = desc;
+    };
+
   # Profile helpers
   mkProfile =
     name: default:
@@ -232,8 +242,8 @@ in
   # Color helpers
   inherit darkenColor mkColorReplacer;
 
-  # Profile helpers
-  inherit mkProfile;
+  # Option + profile helpers
+  inherit mkBoolOpt mkProfile;
 
   # Polybar helpers
   inherit mkPolybarTwoTone mkPolybarTwoToneState;

@@ -9,13 +9,8 @@
 }:
 let
   cfg = config.features.development.base;
-  mkBoolOpt =
-    default: desc:
-    lib.mkOption {
-      type = lib.types.bool;
-      inherit default;
-      description = desc;
-    };
+  cfgLib = import ../../../lib { inherit lib; };
+  inherit (cfgLib) mkBoolOpt;
 in
 {
   options.features.development.base = {
