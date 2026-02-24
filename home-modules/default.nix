@@ -11,17 +11,9 @@
     ../shared-modules/workspaces.nix
     ../shared-modules/palette.nix
 
-    # ===== OLD MODULES (keep during migration) =====
-    # Categories
-    ./desktop
-    ./editor
-    ./shell
-    ./terminal
-
-    # Infrastructure (flat)
+    # Infrastructure
     ./profiles.nix
-
-    # ===== NEW MODULES (future) =====
+    # Modules
     ./core
     ./features
   ];
