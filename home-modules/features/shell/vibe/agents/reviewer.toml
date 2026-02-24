@@ -1,0 +1,6 @@
+display_name = "Code Reviewer"
+description = "Read-only code review agent that audits changes without modifying files"
+safety = "safe"
+auto_approve = true
+enabled_tools = ["read_file", "grep", "context7_resolve_library_id", "context7_get_library_docs"]
+disabled_tools = ["write_file", "search_replace", "bash"]

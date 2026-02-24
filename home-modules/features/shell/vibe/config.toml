@@ -1,0 +1,76 @@
+active_model = "devstral-2"
+vim_keybindings = true
+enable_telemetry = false
+system_prompt_id = "nixdev"
+
+[[providers]]
+name = "mistral"
+api_base = "https://api.mistral.ai/v1"
+api_key_env_var = "MISTRAL_API_KEY"
+backend = "MISTRAL"
+
+[[models]]
+name = "mistral-vibe-cli-latest"
+provider = "mistral"
+alias = "devstral-2"
+temperature = 0.2
+input_price = 0.4
+output_price = 2.0
+
+[project_context]
+max_chars = 40000
+default_commit_count = 5
+
+[tools.bash]
+permission = "ask"
+[tools.write_file]
+permission = "ask"
+[tools.read_file]
+permission = "always"
+[tools.grep]
+permission = "always"
+
+[[mcp_servers]]
+name = "github"
+transport = "stdio"
+command = "docker"
+args = ["run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "ghcr.io/github/github-mcp-server"]
+
+[[mcp_servers]]
+name = "git"
+transport = "stdio"
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-git"]
+
+[[mcp_servers]]
+name = "context7"
+transport = "stdio"
+command = "npx"
+args = ["-y", "@upstash/context7-mcp"]
+
+[[mcp_servers]]
+name = "fetch"
+transport = "stdio"
+command = "uvx"
+args = ["mcp-server-fetch"]
+
+[[mcp_servers]]
+name = "nixos"
+transport = "stdio"
+command = "uvx"
+args = ["mcp-nixos"]
+
+[[mcp_servers]]
+name = "packages"
+transport = "stdio"
+command = "npx"
+args = ["-y", "package-registry-mcp"]
+
+[tools.fetch_fetch]
+permission = "always"
+[tools.context7_resolve_library_id]
+permission = "always"
+[tools.context7_get_library_docs]
+permission = "always"
+[tools.nixos_nix]
+permission = "always"
