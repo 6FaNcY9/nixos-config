@@ -8,6 +8,6 @@
     ./polybar
     ./rofi
     # ./services.nix
-    ./xfce-session.nix
+    # ./xfce-session.nix
   ];
 }

@@ -22,6 +22,7 @@ _: {
   features.desktop.clipboard.enable = true;
   features.desktop.lock.enable = true;
   features.desktop.firefox.enable = true;
+  features.desktop.xfce-session.enable = true;
 
 
   # Workspaces use shared defaults from shared-modules/workspaces.nix
