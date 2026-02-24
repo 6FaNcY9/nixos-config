@@ -19,6 +19,7 @@ _: {
   features.terminal.tmux.enable = true;
   features.terminal.yazi.enable = true;
   features.desktop.services.enable = true;
+  features.desktop.clipboard.enable = true;
 
 
   # Workspaces use shared defaults from shared-modules/workspaces.nix

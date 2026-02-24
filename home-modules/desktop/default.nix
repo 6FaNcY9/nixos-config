@@ -1,7 +1,7 @@
 { ... }:
 {
   imports = [
-    ./clipboard.nix
+    # ./clipboard.nix
     ./firefox.nix
     ./i3
     ./lock
