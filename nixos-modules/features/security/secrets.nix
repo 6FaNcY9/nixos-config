@@ -10,6 +10,7 @@
 }:
 let
   cfg = config.features.security.secrets;
+  userHome = config.users.users.${username}.home;
   cfgLib = import ../../../lib { inherit lib; };
 
   # Secret file paths
@@ -44,7 +45,7 @@ in
         sopsFile = githubSecretFile;
         owner = username;
         mode = "0600";
-        path = "/home/${username}/.ssh/github";
+        path = "${userHome}/.ssh/github";
       };
 
       secrets."restic_password" = {
@@ -57,7 +58,7 @@ in
 
     systemd.tmpfiles.rules = [
       "d /var/lib/sops-nix 0700 root root -"
-      "d /home/${username}/.ssh 0700 ${username} users -"
+      "d ${userHome}/.ssh 0700 ${username} users -"
     ];
   };
 }
