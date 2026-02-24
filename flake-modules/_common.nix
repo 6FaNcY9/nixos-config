@@ -3,7 +3,6 @@
   perSystem =
     {
       pkgs,
-      inputs',
       ...
     }:
     let
@@ -47,7 +46,7 @@
         ];
 
       # ── Helpers ───────────────────────────────────────────
-      opencodePkg = inputs'.opencode.packages.default;
+      opencodePkg = pkgs.opencode;
 
       # mkApp name runtimeInputs description text
       mkApp = name: runtimeInputs: description: text: {
