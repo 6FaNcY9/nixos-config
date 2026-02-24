@@ -71,7 +71,7 @@ in
       };
 
       # OpenSSH server (disabled on desktop/laptop)
-      openssh.enable = false; # Enable on servers via roles.server
+      openssh.enable = false; # Enable on servers via features.services.openssh.enable
 
       # Trezor hardware wallet (enabled on desktop)
       trezord.enable = true; # Hardware wallet support
