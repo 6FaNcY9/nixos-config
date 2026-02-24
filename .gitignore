@@ -97,11 +97,6 @@ obj/
 *.ear
 
 #--------------------------------
-#Scripts (negated for Nix builtins.readFile dirs)
-#--------------------------------
-scripts/
-!flake-modules/scripts/
-!home-modules/desktop/rofi/scripts/
 
 # -------------------------------
 # Documentation
