@@ -19,11 +19,10 @@ in
   config = mkIf cfg.enable {
     home.packages = [ pkgs.mistral-vibe ];
 
-    home.sessionVariables = {
-      VIBE_HOME = "${config.xdg.configHome}/vibe";
-    };
+
 
     programs.fish.interactiveShellInit = ''
+      set -gx VIBE_HOME "${config.xdg.configHome}/vibe"
       if test -r ${config.sops.secrets.mistral_api_key.path}
         set -x MISTRAL_API_KEY (cat ${config.sops.secrets.mistral_api_key.path})
       end
