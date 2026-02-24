@@ -23,6 +23,7 @@ _: {
   features.desktop.lock.enable = true;
   features.desktop.firefox.enable = true;
   features.desktop.xfce-session.enable = true;
+  features.desktop.i3.enable = true;
 
 
   # Workspaces use shared defaults from shared-modules/workspaces.nix

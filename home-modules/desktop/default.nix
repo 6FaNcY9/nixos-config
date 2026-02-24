@@ -3,7 +3,7 @@
   imports = [
     # ./clipboard.nix
     # ./firefox.nix
-    ./i3
+    # ./i3
     # ./lock
     ./polybar
     ./rofi
