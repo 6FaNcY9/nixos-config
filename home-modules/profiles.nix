@@ -36,40 +36,47 @@ let
   ];
 
   corePkgs = [
-    pkgs.delta
-    pkgs.direnv # Auto-load/unload environments per directory
+    # VCS + GitHub
     pkgs.lazygit
     pkgs.gh
-    pkgs.eza
-    pkgs.tree
-    pkgs.nix-tree
+    # Search + file traversal
     pkgs.ripgrep
     pkgs.fd
-    pkgs.fzf
-    pkgs.jq
-    pkgs.bat
-    pkgs.broot
-    pkgs.gdu
-    pkgs.zoxide
-    pkgs.tmux
-    pkgs.zellij
-    pkgs.procs
-    pkgs.hexyl
-    pkgs.yq-go
-    pkgs.unzip
-    pkgs.zip
-    pkgs.man-pages
-    pkgs.man-pages-posix
-    pkgs.nh
+    pkgs.eza
+    pkgs.tree
+    # Nix tooling
+    pkgs.nix-tree
     pkgs.nix-output-monitor
     pkgs.nvd
+    pkgs.nh
+    # Data wrangling
+    pkgs.jq
+    pkgs.yq-go
+    pkgs.bat
+    pkgs.hexyl
+    # Disk usage
+    pkgs.gdu
+    pkgs.dust # Intuitive du replacement with tree view
+    pkgs.duf # Modern df replacement
+    # TUI utilities
+    pkgs.broot
+    pkgs.zellij
+    pkgs.procs
+    # Archives
+    pkgs.unzip
+    pkgs.zip
+    # Man pages
+    pkgs.man-pages
+    pkgs.man-pages-posix
+    # Quick reference
+    pkgs.tealdeer # Fast tldr client
   ];
 
   devPkgs = [
     pkgs.sqlite
     pkgs.python3
     pkgs.clang
-    # gnumake and pkg-config are in nixos-modules/roles/development.nix (system-level)
+    # gnumake and pkg-config are in nixos-modules/features/development/base.nix (system-level)
     pkgs.nodejs
     pkgs.github-copilot-cli
     pkgs.rustc

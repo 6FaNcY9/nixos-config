@@ -11,6 +11,9 @@ in
 
   config = lib.mkIf cfg.enable {
     programs = {
+      # AST-aware structural diff (use manually: GIT_EXTERNAL_DIFF=difft git diff)
+      difftastic.enable = true;
+
       delta = {
         enable = true;
         enableGitIntegration = true;
