@@ -39,9 +39,18 @@ in
         };
 
         git_status = {
-          # Hide module entirely when there is no status to show
           format = "([ $all_status$ahead_behind ]($style))";
           style = "fg:${c.base0A} bg:${c.base01}";
+          # Show counts so "++" becomes "+2", "!!!" becomes "!3", etc.
+          staged    = "+$count";
+          modified  = "!$count";
+          untracked = "?$count";
+          deleted   = "✘$count";
+          conflicted = "⚡$count";
+          stashed   = "≡";
+          ahead     = "⇡$count";
+          behind    = "⇣$count";
+          diverged  = "⇡$ahead_count⇣$behind_count";
         };
 
         nix_shell = {
@@ -51,7 +60,7 @@ in
 
         direnv = {
           disabled = false;
-          format = "[ direnv ]($style)";
+          format = "[  direnv ]($style)";
           style = "fg:${c.base08} bg:${c.base01}";
         };
 
