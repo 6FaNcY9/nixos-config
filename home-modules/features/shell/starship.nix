@@ -48,9 +48,9 @@ in
           deleted   = "✘$count";
           conflicted = "⚡$count";
           stashed   = "≡";
-          ahead     = "⇡$count";
-          behind    = "⇣$count";
-          diverged  = "⇡$ahead_count⇣$behind_count";
+          ahead     = "⇡";
+          behind    = "⇣";
+          diverged  = "⇡⇣";
         };
 
         nix_shell = {
