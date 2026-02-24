@@ -41,12 +41,12 @@ in
         git_status = {
           format = "([ $all_status$ahead_behind ]($style))";
           style = "fg:${c.base0A} bg:${c.base01}";
-          # Show counts so "++" becomes "+2", "!!!" becomes "!3", etc.
-          staged    = "+$count";
-          modified  = "!$count";
-          untracked = "?$count";
-          deleted   = "✘$count";
-          conflicted = "⚡$count";
+          # Show presence without counts for cleaner display
+          staged    = "+";
+          modified  = "!";
+          untracked = "?";
+          deleted   = "✘";
+          conflicted = "⚡";
           stashed   = "≡";
           ahead     = "⇡";
           behind    = "⇣";
@@ -54,18 +54,18 @@ in
         };
 
         nix_shell = {
-          format = "[  $state ]($style)";
+          format = "[   $state ]($style)";
           style = "fg:${c.base0D} bg:${c.base01}";
         };
 
         direnv = {
           disabled = false;
-          format = "[  direnv ]($style)";
+          format = "[   direnv ]($style)";
           style = "fg:${c.base08} bg:${c.base01}";
         };
 
         cmd_duration = {
-          format = "[  $duration ]($style)";
+          format = "[   $duration ]($style)";
           style = "fg:${c.base0E} bg:${c.base01}";
           min_time = 500;
         };
