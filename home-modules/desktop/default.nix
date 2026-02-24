@@ -5,7 +5,7 @@
     # ./firefox.nix
     # ./i3
     # ./lock
-    ./polybar
+    # ./polybar
     ./rofi
     # ./services.nix
     # ./xfce-session.nix
