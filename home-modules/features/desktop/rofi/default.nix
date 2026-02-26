@@ -42,14 +42,6 @@ let
       "green" = c.base0C; # connected indicator
     };
   };
-
-  themeText = replace (builtins.readFile ./theme.rasi);
-  configText = replace (builtins.readFile ./config.rasi);
-  powermenuText = replace (builtins.readFile ./powermenu-theme.rasi);
-  networkText = replace (builtins.readFile ./network-theme.rasi);
-  clipboardText = replace (builtins.readFile ./clipboard-theme.rasi);
-  audioSwitcherText = replace (builtins.readFile ./audio-switcher-theme.rasi);
-  dropdownText = replace (builtins.readFile ./dropdown-theme.rasi);
 in
 {
   imports = [ ./scripts.nix ];
@@ -62,16 +54,21 @@ in
     # Disable Stylix theming for rofi; we manage it via palette-driven Rasi files.
     stylix.targets.rofi.enable = lib.mkDefault false;
 
-    xdg = {
-      configFile = {
-        "rofi/theme.rasi".text = themeText;
-        "rofi/config.rasi".text = configText;
-        "rofi/powermenu-theme.rasi".text = powermenuText;
-        "rofi/network-theme.rasi".text = networkText;
-        "rofi/clipboard-theme.rasi".text = clipboardText;
-        "rofi/audio-switcher-theme.rasi".text = audioSwitcherText;
-        "rofi/dropdown-theme.rasi".text = dropdownText;
-      };
-    };
+    xdg.configFile = builtins.listToAttrs (
+      map
+        (name: {
+          name = "rofi/${name}.rasi";
+          value.text = replace (builtins.readFile ./${name}.rasi);
+        })
+        [
+          "theme"
+          "config"
+          "powermenu-theme"
+          "network-theme"
+          "clipboard-theme"
+          "audio-switcher-theme"
+          "dropdown-theme"
+        ]
+    );
   };
 }
