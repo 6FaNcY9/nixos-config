@@ -17,9 +17,7 @@ in
     enable = lib.mkEnableOption "automated NixOS flake updates and rebuilds";
 
     timer = {
-      enable = lib.mkEnableOption "systemd timer for automatic updates" // {
-        default = false;
-      };
+      enable = lib.mkEnableOption "systemd timer for automatic updates";
 
       calendar = lib.mkOption {
         type = lib.types.str;

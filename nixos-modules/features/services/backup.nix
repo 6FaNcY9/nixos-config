@@ -26,7 +26,8 @@ in
             };
 
             passwordFile = lib.mkOption {
-              type = lib.types.path;
+              type = lib.types.nullOr lib.types.path;
+              default = null;
               description = "Path to file containing repository password";
             };
 
@@ -123,6 +124,14 @@ in
         lib.optional (!(config.features.security.secrets.enable or false))
           "features.services.backup is enabled without features.security.secrets - password files should be managed via sops-nix";
 
+    assertions = lib.concatLists (
+      lib.mapAttrsToList (name: repoCfg: [
+        {
+          assertion = repoCfg.passwordFile != null;
+          message = ''features.services.backup: repository "${name}" requires passwordFile to be set'';
+        }
+      ]) cfg.repositories
+    );
     # Install Restic
     environment.systemPackages = [ pkgs.restic ];
 

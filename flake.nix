@@ -128,7 +128,7 @@
       #   - nh needs the literal path for flake operations
       #   - builtins.getEnv "HOME" is empty during pure evaluation
       # Override per-host via: environment.variables.NIXOS_CONFIG_ROOT = "/custom/path";
-      repoRoot = inputs.nixpkgs.lib.mkDefault "/home/${username}/src/nixos-config";
+      repoRoot = "/home/${username}/src/nixos-config";
 
       # nixpkgsConfig: Shared configuration for all nixpkgs instances.
       # allowAliases=false reduces deprecation noise and enforces use of canonical package names.

@@ -12,7 +12,6 @@ let
     curl
     efibootmgr
     git
-    snapper
     vim
     wget
     gnupg
