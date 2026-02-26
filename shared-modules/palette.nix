@@ -1,16 +1,15 @@
-# Shared color palette - derives semantic colors from Stylix base16 scheme.
+# Theme color palette — provides theme.colors (base16 from stylix) and theme.palette (semantic colors).
 #
-# Two color systems are exposed via _module.args:
+# This module exports two color systems via _module.args:
 #
-#   c (config.theme.colors)   — raw base16 slots (base00..base0F).
-#     Use when you need a specific base16 hue by slot number, e.g. c.base0D
-#     for "blue".  These are positional and theme-dependent.
+#   c (config.theme.colors)   — Raw base16 slots (base00..base0F) from Stylix.
+#     Use when you need a specific base16 hue by slot number, e.g. c.base0D for "blue".
+#     Fallback: Gruvbox Dark Pale hardcoded colors.
 #
-#   palette (config.theme.palette) — semantic names (bg, text, accent, warn, ...).
-#     Prefer this for most UI code.  Meaning stays stable across themes.
+#   palette (config.theme.palette) — Semantic names (bg, bgAlt, text, accent, accent2, warn, danger, muted).
+#     Prefer this for most UI code. Meaning stays stable across themes.
 #
-# Rule of thumb: reach for `palette` first; use `c` only when the semantic
-# name doesn't exist (e.g. c.base07 for "cream", c.base0F for "orange").
+# Rule of thumb: use `palette` first; use `c` only when the semantic name doesn't exist.
 {
   lib,
   config,
