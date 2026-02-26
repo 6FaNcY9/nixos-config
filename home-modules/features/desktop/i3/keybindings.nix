@@ -7,6 +7,10 @@
 }:
 let
   mod = "Mod4";
+  execMediaKey = cmd: "exec --no-startup-id ${cmd}";
+  pactl = "${pkgs.pulseaudio}/bin/pactl";
+  brightnessctl = "${pkgs.brightnessctl}/bin/brightnessctl";
+  playerctl = "${pkgs.playerctl}/bin/playerctl";
 
   directionalFocus = {
     "${mod}+j" = "focus left";
@@ -58,24 +62,21 @@ let
 
     "Print" = "exec ${pkgs.flameshot}/bin/flameshot gui";
 
-    "XF86AudioRaiseVolume" =
-      "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
-    "XF86AudioLowerVolume" =
-      "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
-    "XF86AudioMute" =
-      "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
-
-    "XF86MonBrightnessUp" = "exec --no-startup-id ${pkgs.brightnessctl}/bin/brightnessctl set +10%";
-    "XF86MonBrightnessDown" = "exec --no-startup-id ${pkgs.brightnessctl}/bin/brightnessctl set 10%-";
-
-    "XF86AudioPlay" = "exec --no-startup-id ${pkgs.playerctl}/bin/playerctl play-pause";
-    "XF86AudioNext" = "exec --no-startup-id ${pkgs.playerctl}/bin/playerctl next";
-    "XF86AudioPrev" = "exec --no-startup-id ${pkgs.playerctl}/bin/playerctl previous";
-
     # Dunst notification controls
     "${mod}+grave" = "exec ${pkgs.dunst}/bin/dunstctl history-pop";
     "${mod}+Shift+d" = "exec ${pkgs.dunst}/bin/dunstctl set-paused toggle";
     "${mod}+Shift+period" = "exec ${pkgs.dunst}/bin/dunstctl close-all";
+  };
+
+  mediaKeys = {
+    "XF86AudioRaiseVolume" = execMediaKey "${pactl} set-sink-volume @DEFAULT_SINK@ +5%";
+    "XF86AudioLowerVolume" = execMediaKey "${pactl} set-sink-volume @DEFAULT_SINK@ -5%";
+    "XF86AudioMute" = execMediaKey "${pactl} set-sink-mute @DEFAULT_SINK@ toggle";
+    "XF86MonBrightnessUp" = execMediaKey "${brightnessctl} set +10%";
+    "XF86MonBrightnessDown" = execMediaKey "${brightnessctl} set 10%-";
+    "XF86AudioPlay" = execMediaKey "${playerctl} play-pause";
+    "XF86AudioNext" = execMediaKey "${playerctl} next";
+    "XF86AudioPrev" = execMediaKey "${playerctl} previous";
   };
 
   workspaceSwitch = cfgLib.mkWorkspaceBindings {
@@ -95,6 +96,7 @@ in
     // directionalMove
     // layoutBindings
     // systemBindings
+    // mediaKeys
     // workspaceSwitch
     // workspaceMove
   );
