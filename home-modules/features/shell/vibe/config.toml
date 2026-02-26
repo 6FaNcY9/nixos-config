@@ -57,8 +57,8 @@ args = ["mcp-server-fetch"]
 [[mcp_servers]]
 name = "nixos"
 transport = "stdio"
-command = "uvx"
-args = ["mcp-nixos"]
+command = "nix"
+args = ["run", "github:utensils/mcp-nixos", "--"]
 
 [[mcp_servers]]
 name = "packages"

@@ -1,3 +1,7 @@
+# sops-nix Home Manager secret management
+# Manages encrypted secrets for: GitHub MCP PAT, GPG signing key, Cachix auth, Exa API, Context7 API, Mistral API
+# GPG signing key is auto-imported via home.activation hook after decryption
+#
 {
   config,
   lib,

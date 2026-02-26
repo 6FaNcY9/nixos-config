@@ -29,10 +29,13 @@ let
     in
     if unstablePkg != null then unstablePkg else lib.attrByPath [ "claude-code" ] null pkgs;
 
+  githubCopilotPkg = lib.attrByPath [ "github-copilot-cli" ] null pkgs;
+
   aiPkgs = lib.filter (p: p != null) [
     claudeCodePkg
     codexPkg
     opencodePkg
+    githubCopilotPkg
   ];
 
   corePkgs = [
@@ -78,7 +81,6 @@ let
     pkgs.clang
     # gnumake and pkg-config are in nixos-modules/features/development/base.nix (system-level)
     pkgs.nodejs
-    pkgs.github-copilot-cli
     pkgs.rustc
     pkgs.cargo
     pkgs.rustfmt
@@ -114,11 +116,11 @@ let
 in
 {
   options.profiles = {
-    core = cfgLib.mkProfile "core CLI tools" true;
-    dev = cfgLib.mkProfile "development tools" true;
-    desktop = cfgLib.mkProfile "desktop apps" true;
-    extras = cfgLib.mkProfile "nice-to-have extras" false;
-    ai = cfgLib.mkProfile "AI tools" false;
+    core = cfgLib.mkProfile "core CLI tools" true; # Essential CLI: git, ripgrep, fd, eza, bat, jq, zellij, nix-tree, lazygit, etc.
+    dev = cfgLib.mkProfile "development tools" true; # Programming: sqlite, python3, clang, nodejs, rust, cargo, uv, devenv, tree-sitter
+    desktop = cfgLib.mkProfile "desktop apps" true; # GUI apps: alacritty, rofi, thunar, btop, dunst, flameshot, picom, etc.
+    extras = cfgLib.mkProfile "nice-to-have extras" false; # Extras: chafa, fastfetch
+    ai = cfgLib.mkProfile "AI tools" false; # AI/LLM: claude-code, codex, opencode, github-copilot-cli
   };
 
   config.home.packages = lib.concatLists [

@@ -1,3 +1,6 @@
+# Home Manager module entry point
+# Imports: nixvim, sops-nix, stylix (external), shared-modules, profiles.nix, ./core, ./features
+#
 { inputs, ... }:
 {
   imports = [

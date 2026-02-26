@@ -1,3 +1,6 @@
+# Core Home Manager modules
+# Imports: device identifiers, nixpkgs config, package manager XDG paths, sops-nix secrets
+#
 {
   imports = [
     ./devices.nix
