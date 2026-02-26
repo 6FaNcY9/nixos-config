@@ -35,6 +35,15 @@ final: prev: {
     };
   };
 
+  # Override mistral-vibe to skip cryptography version check
+  # Upstream requires: cryptography<=46.0.3,>=44.0.0
+  # nixpkgs now has 46.0.4 (compatible patch version bump)
+  mistral-vibe = prev.mistral-vibe.overridePythonAttrs (_: {
+    # Disable runtime dependency version checking entirely
+    # The pythonRuntimeDepsCheckHook phase enforces strict version constraints
+    dontCheckRuntimeDeps = true;
+  });
+
   # OpenCode override: force bun isolated installs
   # Required because bun's default hoisting behavior breaks symlinks in the nix store.
   # The --linker=isolated flag ensures each package gets its own node_modules copy,
