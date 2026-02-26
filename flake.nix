@@ -1,14 +1,16 @@
-# NixOS system configuration for Framework 13 AMD.
+# NixOS configuration for Framework 13 AMD.
+#
+# Features: NixOS unstable + i3 + XFCE services + Home Manager + Stylix Gruvbox theming.
 #
 # Layout:
-#   nixos-configurations/  NixOS host configs (auto-wired by ez-configs)
-#   home-configurations/   Home Manager user configs (auto-wired by ez-configs)
-#   nixos-modules/         Shared NixOS modules (imported by default.nix)
-#   home-modules/          Shared Home Manager modules (imported by default.nix)
-#   shared-modules/        Modules used by both NixOS and HM (e.g. Stylix)
-#   flake-modules/         perSystem devshells, apps, services, checks
-#   overlays/              Nixpkgs overlays (pkgs.stable, custom packages)
-#   lib/                   Pure helper functions (color, workspace, profile)
+#   nixos-configurations/  - NixOS host configs (auto-discovered by ez-configs)
+#   home-configurations/   - Home Manager user configs (auto-discovered by ez-configs)
+#   nixos-modules/         - Shared NixOS modules (core/ and features/)
+#   home-modules/          - Shared Home Manager modules
+#   shared-modules/        - Modules used by both NixOS and HM (Stylix, palette, workspaces)
+#   flake-modules/         - perSystem devshells, apps, services, checks
+#   overlays/              - Nixpkgs overlays (custom packages)
+#   lib/                   - Pure helper functions (color, workspace, validation)
 {
   description = "Framework 13 AMD: NixOS unstable + i3 + XFCE services + Home Manager + Stylix Gruvbox";
 
@@ -17,41 +19,41 @@
   };
 
   inputs = {
-    # Primary: Unstable (latest packages, community standard pattern)
+    # Primary: Unstable (latest packages, recommended for most users)
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     # Fallback: Stable 25.11 (when unstable breaks)
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.11";
 
-    # Codex (always up-to-date flake)
+    # Codex CLI (always up-to-date)
     codex-cli-nix = {
       url = "github:sadjow/codex-cli-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # OpenCode (track upstream; update via `nix flake update opencode`)
+    # OpenCode (upstream tracking; update via `nix flake update opencode`)
     opencode = {
       url = "github:anomalyco/opencode";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Hardware quirks for Framework
+    # Hardware quirks for Framework laptops
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware";
     };
-    # Home Manager follows unstable (community pattern)
+    # Home Manager (follows unstable for consistency)
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # NixVim (Home Manager module) - use unstable for latest features
+    # NixVim (Home Manager module) - follows unstable for latest features
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Stylix theming - use unstable
+    # Stylix theming - follows unstable
     stylix = {
       url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -75,7 +77,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Flake composition
+    # Flake composition framework
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
@@ -119,14 +121,17 @@
           builtins.elemAt homeUsers 0
         else
           throw "Expected exactly 1 user directory under home-configurations/, found ${toString (builtins.length homeUsers)}";
-      # Absolute path to this repository on disk.  Must be a string (not a Nix
-      # path) because NixOS systemd units and nh need the literal runtime path;
-      # builtins.getEnv "HOME" is empty during pure evaluation.
-      # Default repo location. Override per-host in nixos-configurations/<host>/default.nix:
-      #   environment.variables.NIXOS_CONFIG_ROOT = "/custom/path";
+
+      # repoRoot: Absolute path to this repository on disk.
+      # Must be a string (not a Nix path) because:
+      #   - NixOS systemd units need the literal runtime path
+      #   - nh needs the literal path for flake operations
+      #   - builtins.getEnv "HOME" is empty during pure evaluation
+      # Override per-host via: environment.variables.NIXOS_CONFIG_ROOT = "/custom/path";
       repoRoot = inputs.nixpkgs.lib.mkDefault "/home/${username}/src/nixos-config";
 
-      # Single source of truth for nixpkgs configuration
+      # nixpkgsConfig: Shared configuration for all nixpkgs instances.
+      # allowAliases=false reduces deprecation noise and enforces use of canonical package names.
       nixpkgsConfig = {
         allowUnfree = true;
         allowAliases = false;
@@ -151,7 +156,8 @@
         # Keep false in normal builds to avoid "unknown flake output" warnings.
         debug = false;
 
-        # Available to all perSystem flake-modules (e.g. _common.nix, apps.nix).
+        # globalArgs: Available to all perSystem flake-modules (e.g. _common.nix, apps.nix).
+        # Contains: primaryHost, username, repoRoot, pkgsFor, nixpkgsConfig
         _module.args = {
           inherit
             primaryHost
@@ -171,7 +177,7 @@
           ./flake-modules
         ];
 
-        # ez-configs auto-discovers {nixos,home}-configurations/ and wires them.
+        # ez-configs: Auto-discovers {nixos,home}-configurations/ and wires them.
         # globalArgs become available in every NixOS and Home Manager module.
         ezConfigs = {
           root = ./.;

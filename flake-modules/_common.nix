@@ -48,7 +48,8 @@
       # ── Helpers ───────────────────────────────────────────
       opencodePkg = pkgs.opencode;
 
-      # mkApp name runtimeInputs description text
+      # Create a flake app from a shell script.
+      # Usage: mkApp "update" [pkgs.git pkgs.nix] "Update flake" ''#!/usr/bin/env bash\necho "hi"''
       mkApp = name: runtimeInputs: description: text: {
         type = "app";
         program = pkgs.lib.getExe (

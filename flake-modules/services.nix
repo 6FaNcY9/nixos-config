@@ -1,14 +1,21 @@
 # Development service infrastructure via process-compose + services-flake.
-# Open TUI with: `, services` or `nix run .#dev-services`
-# Services start disabled; select a process and press F7 to start it.
-# Data stored in ./data/{pg1,redis1}/ (gitignored)
+#
+# Services:
+#   dev-services — PostgreSQL + Redis (disabled by default, start via TUI with F7)
+#   web-db       — PostgreSQL only (auto-starts)
+#
+# Usage:
+#   TUI:  nix run .#dev-services  (or `, services`)
+#   DB:   nix run .#web-db        (or `, db`)
+#
+# Data stored in: ./data/{pg1,redis1}/ (gitignored)
 { inputs, ... }:
 {
   perSystem =
     _:
     let
-      # Shared PostgreSQL configuration template
-      # Used by both dev-services and web-db
+      # Shared PostgreSQL configuration template.
+      # Used by both dev-services and web-db process-compose services.
       pg1 = {
         enable = true;
         port = 5432;

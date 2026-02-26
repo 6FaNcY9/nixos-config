@@ -1,4 +1,14 @@
 # Custom packages exported via flake outputs.
+#
+# Packages:
+#   gruvboxWallpaperOutPath — Path to Gruvbox wallpaper from input
+#   update                  — Update flake inputs script
+#   clean                   — Remove result symlinks script
+#   qa                      — Format, lint, and run checks script
+#   commit-tool             — Interactive commit helper with QA
+#   generate-age-key        — Generate age key for sops-nix encryption
+#   sysinfo                 — System diagnostics and configuration status
+#   cachix-push             — Push build results to Cachix binary cache
 { primaryHost, username, ... }:
 {
   perSystem =
@@ -10,10 +20,12 @@
     }:
     {
       packages = {
+        # Path to Gruvbox wallpaper from flake input
         gruvboxWallpaperOutPath = pkgs.writeText "gruvbox-wallpaper-path" (
           toString inputs'.gruvbox-wallpaper.packages.default
         );
 
+        # Update flake inputs
         update = pkgs.writeShellApplication {
           name = "update";
           runtimeInputs = [
@@ -25,6 +37,7 @@
           text = builtins.readFile ./scripts/update.sh;
         };
 
+        # Clean build artifacts and result symlinks
         clean = pkgs.writeShellApplication {
           name = "clean";
           runtimeInputs = [
@@ -35,6 +48,7 @@
           text = builtins.readFile ./scripts/clean.sh;
         };
 
+        # Quality assurance (format, lint, flake checks)
         qa = pkgs.writeShellApplication {
           name = "qa";
           runtimeInputs = [
@@ -51,6 +65,7 @@
           text = builtins.readFile ./scripts/qa.sh;
         };
 
+        # Interactive commit helper with QA checks
         commit-tool = pkgs.writeShellApplication {
           name = "commit";
           runtimeInputs = [
@@ -67,6 +82,7 @@
           text = builtins.readFile ./scripts/commit.sh;
         };
 
+        # Generate age encryption key pair for sops-nix
         generate-age-key = pkgs.writeShellApplication {
           name = "generate-age-key";
           runtimeInputs = [
@@ -77,6 +93,7 @@
           text = builtins.readFile ./scripts/generate-age-key.sh;
         };
 
+        # System diagnostics and configuration status
         sysinfo = pkgs.writeShellApplication {
           name = "sysinfo";
           runtimeInputs = [
@@ -92,6 +109,7 @@
           text = builtins.readFile ./scripts/sysinfo.sh;
         };
 
+        # Push current system build to Cachix binary cache
         cachix-push = pkgs.writeShellApplication {
           name = "cachix-push";
           runtimeInputs = [
