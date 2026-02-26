@@ -1,3 +1,11 @@
+# Extra Configuration
+# Additional plugins and Lua config that don't have native nixvim modules
+#
+# Includes:
+#   - vim-matchup: Enhanced % matching for brackets/tags
+#   - cheatsheet-nvim: Searchable keymaps and commands help
+#   - Treesitter runtime path fix for complete query files
+
 { pkgs, ... }:
 {
   programs.nixvim = {

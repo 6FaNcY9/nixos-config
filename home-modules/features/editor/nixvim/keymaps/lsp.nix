@@ -1,3 +1,12 @@
+# LSP Keymaps
+# Trouble.nvim integration for better diagnostic UX
+#
+# Bindings:
+#   <leader>xx - Trouble diagnostics toggle (workspace-wide)
+#   <leader>xd - Trouble diagnostics for current buffer
+#   <leader>xl - Trouble location list
+#   <leader>xq - Trouble quickfix list
+
 _: {
   programs.nixvim.keymaps = [
     # Trouble diagnostics

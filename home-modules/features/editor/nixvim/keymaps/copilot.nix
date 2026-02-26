@@ -1,3 +1,17 @@
+# Copilot Keymaps
+# GitHub Copilot AI completion controls
+#
+# Bindings (insert mode):
+#   M-l  - Accept suggestion
+#   M-w  - Accept word
+#   M-j  - Accept line
+#   M-[  - Next suggestion
+#   M-]  - Previous suggestion
+#   M-\  - Dismiss suggestion
+#
+# Panel:
+#   <leader>ap - Open Copilot panel (view all suggestions)
+
 _: {
   programs.nixvim.keymaps = [
     {

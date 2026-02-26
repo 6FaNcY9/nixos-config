@@ -1,3 +1,7 @@
+# Custom Highlight Groups
+# These override Stylix base16 colors for specific UI elements
+# Used to customize indent guides, cursor line, and dashboard styling
+
 { c, ... }:
 {
   programs.nixvim = {

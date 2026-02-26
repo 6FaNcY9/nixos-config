@@ -1,5 +1,9 @@
+# Plugin Ecosystem Configuration
+# All plugins with their settings: LSP, completion, AI assistance, fuzzy finder, etc.
+
 _: {
   programs.nixvim.plugins = {
+    # GitHub Copilot: AI-powered code completion with auto-triggered suggestions
     copilot-lua = {
       enable = true;
       autoLoad = true;
@@ -20,6 +24,7 @@ _: {
       };
     };
 
+    # Telescope: Fuzzy finder for files, text, buffers, help (ascending layout)
     telescope = {
       enable = true;
       extensions.fzf-native.enable = true;
@@ -37,6 +42,7 @@ _: {
       };
     };
 
+    # Treesitter: Advanced syntax highlighting and AST-based features
     treesitter = {
       enable = true;
       nixGrammars = true;
@@ -58,7 +64,9 @@ _: {
       };
     };
 
+    # Git integration
     web-devicons.enable = true;
+    # Gitsigns: Git changes in the gutter (uses number column tint instead of sign column)
     gitsigns = {
       enable = true;
       settings = {
@@ -67,6 +75,7 @@ _: {
       };
     };
 
+    # Neo-tree: Modern file tree with current file tracking and hidden file support
     "neo-tree" = {
       enable = true;
       settings = {
@@ -83,6 +92,7 @@ _: {
       };
     };
 
+    # Which-key: Show available keybindings in popup (defines keymap groups)
     which-key = {
       enable = true;
       settings = {
@@ -98,8 +108,10 @@ _: {
       '';
     };
 
+    # Comment.nvim: Smart comment toggling
     comment.enable = true;
 
+    # ToggleTerm: Floating terminal with C-\ toggle
     toggleterm = {
       enable = true;
       settings = {
@@ -108,6 +120,7 @@ _: {
       };
     };
 
+    # Indent guides with scope highlighting
     indent-blankline = {
       enable = true;
       settings = {
@@ -121,14 +134,17 @@ _: {
       };
     };
 
+    # Markview: Rich markdown rendering in buffer
     markview = {
       enable = true;
       autoLoad = true;
     };
 
-    nvim-autopairs.enable = true;
-    luasnip.enable = true;
+    # Text automation
+    nvim-autopairs.enable = true; # Auto-close brackets, quotes
+    luasnip.enable = true; # Snippet engine for code templates
 
+    # Colorizer: Show hex colors as text foreground (mode=foreground)
     colorizer = {
       enable = true;
       settings.user_default_options = {
@@ -140,6 +156,8 @@ _: {
       };
     };
 
+    # nvim-cmp: Autocompletion with LSP, path, buffer, and snippet sources
+    # Keybinds: Tab/S-Tab=navigate, CR=confirm, C-Space=trigger
     cmp = {
       enable = true;
       autoEnableSources = true;
@@ -192,6 +210,8 @@ _: {
       };
     };
 
+    # Language Server Protocol: pyright, lua_ls, nixd, bashls, jsonls, yamlls,
+    # rust_analyzer, clangd, gopls, ts_ls, marksman
     lsp = {
       enable = true;
 

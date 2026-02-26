@@ -1,3 +1,12 @@
+# Navigation Keymaps
+# BufferLine integration for buffer management
+#
+# Bindings:
+#   Tab       - Next buffer
+#   S-Tab     - Previous buffer
+#   <leader>bd - Delete buffer
+#   <leader>bp - Pick buffer (interactive selection)
+
 _: {
   programs.nixvim.keymaps = [
     # Bufferline navigation

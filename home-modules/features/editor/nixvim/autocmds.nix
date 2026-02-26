@@ -1,3 +1,6 @@
+# Auto-commands Configuration
+# Automatic behaviors triggered by events (window focus, buffer changes, etc.)
+
 _: {
   programs.nixvim = {
     # Auto-groups for organizing related autocmds

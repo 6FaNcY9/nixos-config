@@ -1,6 +1,10 @@
+# UI Plugins Configuration
+# Status line, buffer tabs, notifications, diagnostics, and startup dashboard
+
 _: {
   programs.nixvim.plugins = {
-    # Enhanced statusline with clean, minimal design
+    # Lualine: Enhanced statusline with clean, minimal design
+    # Shows mode, git branch, file path, LSP diagnostics, and cursor position
     lualine = {
       enable = true;
       settings = {
@@ -49,8 +53,10 @@ _: {
       };
     };
 
-    # Buffer tabs with LSP diagnostics
+    # Bufferline: Buffer tabs with LSP diagnostics
+    # Slant style, integrates with neo-tree offset, shows diagnostic icons
     bufferline = {
+
       enable = true;
       settings = {
         options = {
@@ -77,8 +83,10 @@ _: {
       };
     };
 
-    # Modern notification system
+    # Notify: Modern notification system
+    # Compact fade-in notifications with 3s timeout
     notify = {
+
       enable = true;
       settings = {
         timeout = 3000;
@@ -88,8 +96,10 @@ _: {
       };
     };
 
-    # Better diagnostic UI
+    # Trouble: Better diagnostic UI
+    # Enhanced quickfix/location list with auto-close
     trouble = {
+
       enable = true;
       settings = {
         auto_close = true;
@@ -98,8 +108,15 @@ _: {
       };
     };
 
-    # Start screen with modern dashboard layout
+    # Alpha: Start screen with modern dashboard layout
+    # NIXVIM ASCII art dashboard with quick actions:
+    #   f - Find files (Telescope)
+    #   r - Recent files (oldfiles)
+    #   g - Live grep (text search)
+    #   q - Quit Neovim
+    # The dashboard uses box-drawing characters for visual structure
     alpha = {
+
       enable = true;
       settings.layout = [
         {

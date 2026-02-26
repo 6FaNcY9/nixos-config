@@ -1,3 +1,14 @@
+# Telescope Keymaps
+# Fuzzy finder for files, text, buffers, help, and more
+#
+# Bindings:
+#   <leader>ff - Find files
+#   <leader>fg - Live grep (search text in workspace)
+#   <leader>fb - Buffers picker
+#   <leader>fh - Help tags (vim help search)
+#   <leader>fk - Keymaps (dropdown picker for all keybindings)
+#   <leader>fc - Commands picker
+
 _: {
   programs.nixvim.keymaps = [
     {

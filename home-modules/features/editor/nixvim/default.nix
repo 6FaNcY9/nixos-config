@@ -1,3 +1,15 @@
+# NixVim Main Configuration
+# Provides a complete Neovim setup with LSP, plugins, and modern UI
+#
+# Sub-modules:
+#   options.nix       - Core vim options (leader key, tabs, scrolling, etc.)
+#   autocmds.nix      - Auto-commands for behavior customization
+#   highlights.nix    - Custom syntax highlighting overrides
+#   ui.nix            - Status line, bufferline, notifications, dashboard
+#   plugins.nix       - Plugin ecosystem (LSP, Treesitter, Telescope, etc.)
+#   keymaps/          - Organized keybindings by category
+#   extra-config.nix  - Additional plugins and Lua configuration
+
 { lib, config, ... }:
 let
   cfg = config.features.editor.nixvim;
@@ -8,6 +20,7 @@ in
   };
 
   imports = [
+    # Sub-module files for nixvim configuration
     ./options.nix
     ./autocmds.nix
     ./highlights.nix
