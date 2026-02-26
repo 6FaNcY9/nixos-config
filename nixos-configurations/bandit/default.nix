@@ -1,3 +1,9 @@
+# NixOS configuration for host: bandit
+#
+# Hardware: Framework 13 AMD (7040 series)
+# Storage:  BTRFS with subvolumes (@, @home, @nix, @var, @swap)
+# Features: Desktop (i3+XFCE), Laptop optimizations, Stylix theming
+
 {
   inputs,
   config,
@@ -7,7 +13,9 @@
 let
   mainDisk = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
 
-  # Shared BTRFS mount options for SSD + battery optimization
+  # Generate BTRFS mount options for SSD + battery optimization.
+  # Includes: subvolume selection, noatime (reduce writes), zstd compression,
+  #           space_cache=v2 (faster mounts), discard=async (SSD TRIM).
   mkBtrfsOpts = subvol: [
     "subvol=${subvol}"
     "noatime"
@@ -160,19 +168,24 @@ in
     };
   };
 
-  # Host-specific hibernate resume settings
+  # Hibernation support (swapfile on BTRFS).
+  # resumeDevice:  UUID of the BTRFS partition containing the swapfile.
+  # resume_offset: Physical offset of the swapfile (obtained via `filefrag -v /swap/swapfile`).
+  #                Required for kernel to resume from hibernation.
   boot = {
-    resumeDevice = mainDisk; # UUID-based resume device for hibernation
-    kernelParams = [ "resume_offset=1959063" ]; # Calculated resume offset for swap partition (from `filefrag -v /swapfile`)
+    resumeDevice = mainDisk;
+    kernelParams = [ "resume_offset=1959063" ];
   };
 
-  # Filesystem optimizations (override hardware-configuration.nix)
+  # Filesystem mounts — optimized BTRFS options override hardware-configuration.nix.
+  # Main disk uses mkBtrfsOpts for consistent SSD + battery optimization.
   fileSystems = {
+    # Backup drive mount (external ResticBackup volume)
     "/mnt/backup" = {
       device = "/dev/disk/by-label/ResticBackup";
       fsType = "btrfs";
       options = [
-        "nofail"
+        "nofail" # Don't fail boot if drive missing
         "noatime"
         "compress=zstd"
       ];
