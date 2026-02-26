@@ -6,7 +6,6 @@
     ./nix.nix
     ./memory.nix
     ./oomd.nix
-    ./boot.nix
     ./networking.nix
     ./users.nix
     ./programs.nix
