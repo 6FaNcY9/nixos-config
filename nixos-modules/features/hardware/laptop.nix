@@ -130,10 +130,10 @@ in
       wirelessRegulatoryDatabase = cfg.wireless.enableRegulatoryDatabase;
     };
 
-    # zram compressed swap
+    # zram compressed swap - compresses memory in RAM for better performance than disk swap
     zramSwap = lib.mkIf cfg.zram.enable {
       enable = true;
-      priority = 100; # Higher priority - use zram first before disk swap
+      priority = 100; # Higher priority than disk swap - use zram first for faster access
       inherit (cfg.zram) algorithm memoryPercent;
     };
 
@@ -150,14 +150,23 @@ in
     '';
 
     boot.kernelParams = lib.mkIf isFramework13Amd [
-      # MediaTek WiFi suspend/resume fix
+      # Framework 13 AMD specific kernel parameters for optimal hardware compatibility
+
+      # MediaTek WiFi suspend/resume fix - disables ASPM L1/L1SS power states
+      # Prevents WiFi disconnections and instability after suspend on RTL8852AE chips
       "rtw89_pci.disable_aspm_l1=1"
       "rtw89_pci.disable_aspm_l1ss=1"
-      # Sleep/suspend optimization for AMD
+
+      # Sleep/suspend optimization for AMD - uses s2idle (modern standby)
+      # Better battery life and compatibility than S3 suspend on Ryzen mobile
       "mem_sleep_default=s2idle"
-      # AMD GPU stability fix
+
+      # AMD GPU stability fix - enables DC debug mask for better display compatibility
+      # Resolves screen flickering and display power management issues
       "amdgpu.dcdebugmask=0x10"
-      # Dock suspend compatibility
+
+      # Dock suspend compatibility - disables PCIe ASPM power management
+      # Prevents USB-C dock disconnection issues during suspend/resume cycles
       "pcie_aspm=off"
     ];
   };

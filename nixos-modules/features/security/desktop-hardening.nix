@@ -124,39 +124,39 @@ in
       "net.ipv4.ip_forward" = 0;
       "net.ipv6.conf.all.forwarding" = 0;
 
-      # Enable reverse path filtering (prevent IP spoofing)
+      # Enable reverse path filtering - validates source addresses (prevents IP spoofing attacks)
       # mkDefault: yields to server hardening when both enabled
       "net.ipv4.conf.all.rp_filter" = lib.mkDefault 1;
       "net.ipv4.conf.default.rp_filter" = lib.mkDefault 1;
 
-      # Disable ICMP redirects
+      # Disable ICMP redirects - prevents MITM attacks via malicious route injection
       # mkDefault: yields to server hardening when both enabled
       "net.ipv4.conf.all.accept_redirects" = lib.mkDefault 0;
       "net.ipv4.conf.default.accept_redirects" = lib.mkDefault 0;
       "net.ipv6.conf.all.accept_redirects" = lib.mkDefault 0;
       "net.ipv6.conf.default.accept_redirects" = lib.mkDefault 0;
 
-      # Disable source routing
+      # Disable source routing - prevents attackers from controlling packet routes
       "net.ipv4.conf.all.accept_source_route" = 0;
       "net.ipv4.conf.default.accept_source_route" = 0;
       "net.ipv6.conf.all.accept_source_route" = 0;
       "net.ipv6.conf.default.accept_source_route" = 0;
 
-      # Enable SYN cookies (DDoS protection)
+      # Enable SYN cookies - protects against SYN flood DoS attacks
       # mkDefault: yields to server hardening when both enabled
       "net.ipv4.tcp_syncookies" = lib.mkDefault 1;
 
-      # Log martian packets (packets with impossible source addresses)
+      # Log martian packets (packets with impossible source addresses) for debugging
       "net.ipv4.conf.all.log_martians" = lib.mkDefault true;
       "net.ipv4.conf.default.log_martians" = lib.mkDefault true;
 
-      # Restrict dmesg access to root only
+      # Restrict dmesg access to root only (prevents information disclosure)
       "kernel.dmesg_restrict" = 1;
 
-      # Restrict access to kernel pointers
+      # Restrict access to kernel pointers in /proc (prevents kernel ASLR bypass)
+      # 0 = no restrictions, 1 = restrict to root, 2 = always hide (most secure)
       "kernel.kptr_restrict" = 2;
-
-      # Disable kexec (prevents replacing running kernel)
+      # Disable kexec (prevents kernel replacement without reboot - mitigates certain rootkits)
       "kernel.kexec_load_disabled" = lib.mkDefault 1;
     };
 

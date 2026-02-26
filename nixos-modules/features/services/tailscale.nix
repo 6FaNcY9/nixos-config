@@ -33,11 +33,11 @@ in
       inherit (cfg) useRoutingFeatures;
     };
 
-    # Firewall: Allow Tailscale
+    # Firewall: Allow Tailscale traffic
     networking.firewall = {
-      trustedInterfaces = [ "tailscale0" ];
-      allowedUDPPorts = [ 41641 ]; # Tailscale port
-      checkReversePath = "loose"; # Required for Tailscale
+      trustedInterfaces = [ "tailscale0" ]; # Trust all traffic from Tailscale network
+      allowedUDPPorts = [ 41641 ]; # Tailscale default UDP port for NAT traversal
+      checkReversePath = "loose"; # Required for Tailscale routing - allows asymmetric routing
     };
 
     # Persistence (if needed)

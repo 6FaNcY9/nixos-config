@@ -45,18 +45,18 @@ in
 
     # Kernel hardening via sysctl
     boot.kernel.sysctl = {
-      # Enable reverse path filtering (prevent IP spoofing)
+      # Enable reverse path filtering - validates source addresses (prevents IP spoofing attacks)
       "net.ipv4.conf.all.rp_filter" = 1;
       "net.ipv4.conf.default.rp_filter" = 1;
 
-      # Enable SYN cookies (DDoS protection)
+      # Enable SYN cookies - protects against SYN flood DoS attacks
       "net.ipv4.tcp_syncookies" = 1;
 
-      # Disable ICMP redirects
+      # Disable ICMP redirects - prevents MITM attacks via malicious route injection
       "net.ipv4.conf.all.accept_redirects" = 0;
       "net.ipv4.conf.default.accept_redirects" = 0;
 
-      # Disable sending ICMP redirects
+      # Disable sending ICMP redirects (server should not suggest alternate routes)
       "net.ipv4.conf.all.send_redirects" = 0;
       "net.ipv4.conf.default.send_redirects" = 0;
     };

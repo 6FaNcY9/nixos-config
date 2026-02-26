@@ -10,17 +10,19 @@
 let
   cfg = config.features.storage.snapper;
 
-  # Default snapper configuration
+  # Default snapper configuration template
+  # Defines base snapshot retention policy and timeline settings that apply
+  # to all configured subvolumes unless overridden in extraConfig.
   defaultSnapperConfig = {
     FSTYPE = "btrfs";
-    TIMELINE_CLEANUP = true;
-    TIMELINE_LIMIT_HOURLY = "10";
-    TIMELINE_LIMIT_DAILY = "7";
-    TIMELINE_LIMIT_WEEKLY = "0";
-    TIMELINE_LIMIT_MONTHLY = "0";
-    TIMELINE_LIMIT_YEARLY = "0";
-    NUMBER_CLEANUP = true;
-    ALLOW_USERS = [ username ];
+    TIMELINE_CLEANUP = true; # Automatically delete old snapshots based on timeline limits
+    TIMELINE_LIMIT_HOURLY = "10"; # Keep last 10 hourly snapshots
+    TIMELINE_LIMIT_DAILY = "7"; # Keep last 7 daily snapshots
+    TIMELINE_LIMIT_WEEKLY = "0"; # No weekly snapshots (would use too much space)
+    TIMELINE_LIMIT_MONTHLY = "0"; # No monthly snapshots
+    TIMELINE_LIMIT_YEARLY = "0"; # No yearly snapshots
+    NUMBER_CLEANUP = true; # Delete snapshots when total count exceeds limit
+    ALLOW_USERS = [ username ]; # Users allowed to create/delete snapshots
   };
 in
 {

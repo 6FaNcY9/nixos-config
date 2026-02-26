@@ -153,10 +153,10 @@ in
         echo "Running prune to clean old backups..."
       '';
 
-      # Additional restic options
+      # Additional restic options for better performance and visibility
       extraOptions = [
-        "verbose=2" # Show more detailed progress (files being processed)
-        "compression=auto"
+        "verbose=2" # Show detailed progress (which files are being backed up)
+        "compression=auto" # Auto-detect and compress suitable files for space savings
       ];
     }) cfg.repositories;
 

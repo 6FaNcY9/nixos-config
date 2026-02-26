@@ -33,12 +33,12 @@ in
   config = lib.mkIf cfg.enable {
     inherit (secretValidation) assertions;
 
-    # sops-nix system defaults (safe even without secrets defined)
+    # sops-nix system defaults - configures age-based encryption for secrets
     sops = {
       age = {
-        keyFile = lib.mkDefault "/var/lib/sops-nix/key.txt";
-        sshKeyPaths = lib.mkDefault [ "/etc/ssh/ssh_host_ed25519_key" ];
-        generateKey = lib.mkDefault true;
+        keyFile = lib.mkDefault "/var/lib/sops-nix/key.txt"; # age encryption key location
+        sshKeyPaths = lib.mkDefault [ "/etc/ssh/ssh_host_ed25519_key" ]; # Fallback SSH key
+        generateKey = lib.mkDefault true; # Auto-generate age key if missing
       };
 
       secrets."github_ssh_key" = {

@@ -98,9 +98,11 @@ in
         pkgs.ltrace
       ];
 
-    # File watcher limits for large projects
+    # File watcher limits - required for large projects (VSCode, webpack, etc.)
     boot.kernel.sysctl = {
+      # Default is 8192 - increase to 524288 for large monorepos and node_modules
       "fs.inotify.max_user_watches" = lib.mkForce cfg.fileWatchers.maxUserWatches;
+      # Default is 128 - increase to 1024 for multiple concurrent dev environments
       "fs.inotify.max_user_instances" = lib.mkForce cfg.fileWatchers.maxUserInstances;
     };
 

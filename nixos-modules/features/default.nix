@@ -1,4 +1,9 @@
-# Feature modules aggregator
+# Feature Modules - Top-level Aggregator
+#
+# This module serves as the central import point for all feature categories.
+# Features are organized into logical groups (desktop, development, hardware,
+# security, services, storage, theme) and must be explicitly enabled via
+# options in host configurations (features.<category>.<feature>.enable = true).
 {
   imports = [
     # Desktop features

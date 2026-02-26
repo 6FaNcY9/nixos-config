@@ -59,7 +59,7 @@ in
         grub = lib.mkIf (cfg.bootloader == "grub") {
           enable = true;
           inherit (cfg) efiSupport useOSProber;
-          device = if cfg.efiSupport then "nodev" else "/dev/sda";
+          device = if cfg.efiSupport then "nodev" else "/dev/sda"; # EFI uses nodev
         };
 
         # systemd-boot configuration
@@ -69,7 +69,7 @@ in
         efi.canTouchEfiVariables = cfg.canTouchEfiVariables;
       };
 
-      # Kernel selection
+      # Kernel selection - latest provides newest features, stable provides better tested releases
       kernelPackages =
         if cfg.kernelPackage == "latest" then pkgs.linuxPackages_latest else pkgs.linuxPackages;
     };
