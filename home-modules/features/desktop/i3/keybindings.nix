@@ -1,3 +1,6 @@
+# i3 keybindings - All keyboard shortcuts organized by category
+# Categories: directional focus/move, layout, system, media keys, workspaces
+
 {
   lib,
   pkgs,
@@ -12,6 +15,7 @@ let
   brightnessctl = "${pkgs.brightnessctl}/bin/brightnessctl";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
 
+  # ── DIRECTIONAL FOCUS (vim-style + arrows) ──
   directionalFocus = {
     "${mod}+j" = "focus left";
     "${mod}+k" = "focus down";
@@ -23,6 +27,7 @@ let
     "${mod}+Right" = "focus right";
   };
 
+  # ── DIRECTIONAL MOVE (vim-style + arrows with Shift) ──
   directionalMove = {
     "${mod}+Shift+j" = "move left";
     "${mod}+Shift+k" = "move down";
@@ -34,6 +39,7 @@ let
     "${mod}+Shift+Right" = "move right";
   };
 
+  # ── LAYOUT BINDINGS (split, fullscreen, floating, stacking, tabbed) ──
   layoutBindings = {
     "${mod}+h" = "split horizontal";
     "${mod}+v" = "split vertical";
@@ -47,6 +53,7 @@ let
     "${mod}+Shift+a" = "focus child";
   };
 
+  # ── SYSTEM BINDINGS (launch apps, screenshots, lock, reload i3) ──
   systemBindings = {
     # Scratchpad
     "${mod}+m" = "move scratchpad";
@@ -68,6 +75,7 @@ let
     "${mod}+Shift+period" = "exec ${pkgs.dunst}/bin/dunstctl close-all";
   };
 
+  # ── MEDIA KEYS (volume, brightness, playback) ──
   mediaKeys = {
     "XF86AudioRaiseVolume" = execMediaKey "${pactl} set-sink-volume @DEFAULT_SINK@ +5%";
     "XF86AudioLowerVolume" = execMediaKey "${pactl} set-sink-volume @DEFAULT_SINK@ -5%";
@@ -79,11 +87,13 @@ let
     "XF86AudioPrev" = execMediaKey "${playerctl} previous";
   };
 
+  # ── WORKSPACE SWITCH (Mod+1-9,0) ──
   workspaceSwitch = cfgLib.mkWorkspaceBindings {
     inherit mod workspaces;
     commandPrefix = "workspace";
   };
 
+  # ── WORKSPACE MOVE (Mod+Shift+1-9,0) ──
   workspaceMove = cfgLib.mkWorkspaceBindings {
     inherit mod workspaces;
     commandPrefix = "move container to workspace";

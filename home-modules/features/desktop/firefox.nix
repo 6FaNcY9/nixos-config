@@ -1,3 +1,10 @@
+# Firefox web browser with privacy-focused configuration
+# Features:
+# - Enterprise policies to disable telemetry, studies, Pocket, Firefox Accounts
+# - Privacy settings: tracking protection, strict cookie isolation, no prefetch
+# - Performance: VA-API hardware acceleration, memory cache (no disk cache for SSD longevity)
+# - Custom theme: mkColorReplacer applies base16 colors to userChrome.theme.css template
+
 {
   lib,
   pkgs,
@@ -182,6 +189,8 @@ in
           };
         };
 
+        # Custom CSS theme using mkColorReplacer to inject base16 colors into template
+        # The template file contains placeholder variables replaced at build time
         userChrome =
           let
             themeTemplate = builtins.readFile ../../../assets/firefox/userChrome.theme.css;

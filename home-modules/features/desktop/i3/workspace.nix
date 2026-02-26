@@ -1,3 +1,7 @@
+# i3 workspace assignments - Assign applications to specific workspaces
+# Uses mkWorkspaceName helper to format workspace names with icons
+# assignRules maps workspace numbers to window criteria (class names)
+
 {
   workspaces,
   cfgLib,

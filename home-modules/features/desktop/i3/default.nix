@@ -1,3 +1,9 @@
+# i3 window manager module - Entry point for i3 configuration
+# Imports: config.nix (colors, gaps, floating rules)
+#          keybindings.nix (all keyboard shortcuts)
+#          autostart.nix (startup programs)
+#          workspace.nix (workspace assignments)
+
 {
   lib,
   i3Pkg,

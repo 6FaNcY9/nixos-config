@@ -1,3 +1,9 @@
+# Screen lock module - i3lock-color with blurred screenshot background
+# Creates lock-screen command that:
+# 1. Takes screenshot with maim
+# 2. Blurs it with ImageMagick
+# 3. Displays i3lock-color with palette-colored ring indicators and clock
+
 {
   config,
   lib,
@@ -18,6 +24,10 @@ let
     body = ''
       ${pkgs.maim}/bin/maim /tmp/lockscreen.png
       ${pkgs.imagemagick}/bin/convert /tmp/lockscreen.png -blur 0x8 /tmp/lockscreen.png
+      # i3lock-color configuration:
+      # - Transparent inside, colored ring (muted), accent keypress highlight, red backspace
+      # - Clock centered with time above, date below
+      # - Media/screen keys pass through to allow emergency volume/brightness adjustments
       ${pkgs.i3lock-color}/bin/i3lock-color \
         --image=/tmp/lockscreen.png \
         --inside-color=00000000 \

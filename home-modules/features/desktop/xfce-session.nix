@@ -1,4 +1,11 @@
-# XFCE4 session configuration for i3-xfce desktop variant
+# XFCE4 session configuration for i3-XFCE hybrid desktop
+# Custom XML session that combines i3 window manager with XFCE components:
+# - xfsettingsd: XFCE settings daemon for theme/font/display management
+# - i3: Tiling window manager
+# - xfce4-panel: System tray and panel (used for systray icons)
+# - xfce4-power-manager: Battery/power management
+# - thunar: File manager daemon for desktop icons and automount
+# This XML overrides the default XFCE session to launch i3 instead of xfwm4
 {
   lib,
   config,

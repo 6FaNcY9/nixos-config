@@ -1,4 +1,8 @@
-# Desktop session services: dunst, picom, flameshot, network-manager-applet
+# Desktop session services module
+# Notification daemon (dunst), compositor (picom), screenshot tool (flameshot), system tray applets
+# - Dunst provides desktop notifications with palette-colored urgency levels
+# - Picom provides compositing with subtle transparency and rounded corners
+# - Flameshot provides screenshot capabilities with annotation tools
 {
   lib,
   config,
@@ -60,7 +64,7 @@ in
         enable = true;
         backend = "glx";
 
-        # Subtle transparency for depth
+        # Subtle inactive window dimming for visual depth without distraction
         activeOpacity = 1.0;
         inactiveOpacity = 0.98;
         menuOpacity = 0.99;
@@ -90,7 +94,7 @@ in
         vSync = true;
 
         settings = {
-          # Rounded corners on windows
+          # Rounded corners (8px radius) for modern aesthetics
           corner-radius = 8;
           rounded-corners-exclude = [
             "window_type = 'dock'"

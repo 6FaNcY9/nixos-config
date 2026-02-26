@@ -1,3 +1,5 @@
+# i3 window manager configuration - Core settings, colors, gaps, floating rules
+
 {
   lib,
   c,
@@ -10,6 +12,7 @@
     terminal = "alacritty";
     menu = "rofi -show drun";
 
+    # Inner gap between windows, outer=0, smart gaps/borders collapse when single window
     gaps = {
       inner = 8;
       outer = 0;
@@ -22,7 +25,10 @@
       titlebar = false;
     };
 
+    # Color scheme: focused=warn (orange), unfocused=gray, urgent=danger (red)
+    # Maps to base16 palette for consistent theming with dunst/polybar/rofi
     colors = lib.mkDefault {
+      # Active window: orange border/indicator, dark background, cream text
       focused = {
         border = palette.warn;
         background = c.base01;
@@ -31,6 +37,7 @@
         childBorder = palette.warn;
       };
 
+      # Inactive window on focused output: subtle gray
       focusedInactive = {
         border = c.base03;
         background = c.base00;
@@ -39,6 +46,7 @@
         childBorder = c.base03;
       };
 
+      # Unfocused window: darker gray
       unfocused = {
         border = c.base02;
         background = c.base00;
@@ -47,6 +55,7 @@
         childBorder = c.base02;
       };
 
+      # Urgent window: red border to draw attention
       urgent = {
         border = palette.danger;
         background = c.base00;

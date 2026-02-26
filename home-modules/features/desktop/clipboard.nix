@@ -1,4 +1,5 @@
-# Clipboard manager for desktop
+# Clipboard manager - Persistent clipboard history with rofi integration
+# Uses clipmenu to store clipboard history, rofi as the selection interface
 {
   lib,
   config,
