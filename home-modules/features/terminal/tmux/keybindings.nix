@@ -1,3 +1,19 @@
+# Tmux Keybindings Configuration
+# Ergonomic prefix and vim-style navigation
+#
+# Prefix: C-Space (replaces default C-b for easier reach)
+#
+# Key bindings:
+#   r         - Reload tmux config
+#   |         - Split window horizontally (keeps current path)
+#   -         - Split window vertically (keeps current path)
+#   h/j/k/l   - Navigate panes (vim-style)
+#   H/J/K/L   - Resize panes (repeatable with -r flag)
+#
+# Vi copy mode:
+#   v         - Begin selection
+#   y         - Copy selection and cancel
+
 _: {
   programs.tmux.extraConfig = ''
     ##### Core ergonomics #####

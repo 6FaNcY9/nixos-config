@@ -1,3 +1,16 @@
+# Yazi File Manager Configuration
+# Modern terminal file manager with vim-like navigation and rich theme integration
+#
+# Features:
+#   - Sort by modified time (newest first), directories first
+#   - Show hidden files by default
+#   - Fish shell integration with 'yy' wrapper command
+#
+# Theme:
+#   - Integrates with palette.* for consistent colors
+#   - Mode indicators: normal (accent), select (warn), unset (danger)
+#   - File type colors: images (accent2), videos (warn), audio (danger), .nix files (accent)
+
 {
   lib,
   config,

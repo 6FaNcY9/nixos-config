@@ -1,3 +1,11 @@
+# Tmux Status Bar Configuration
+# Enhanced status line optimized for laptop use with battery, load, hostname, and time
+#
+# Layout:
+#   Left:  Session name (accent, bold) | window indicator
+#   Right: Battery (warn) | Load average (accent2) | Hostname (accent2) | Date/Time (accent)
+#
+# Color scheme uses palette.* for consistency with overall theme
 { palette, ... }:
 {
   programs.tmux.extraConfig = ''

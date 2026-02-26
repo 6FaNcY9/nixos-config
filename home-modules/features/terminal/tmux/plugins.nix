@@ -1,3 +1,14 @@
+# Tmux Plugins Configuration
+# Plugin ecosystem for enhanced tmux functionality
+#
+# Plugins:
+#   sensible      - Sensible tmux defaults
+#   tmux-which-key - Which-key style popup menu for keybinding discovery (XDG config)
+#   battery       - Battery status with emoji indicators (🔋/🪫/🔌/⚡)
+#   yank          - Clipboard integration in copy mode
+#   resurrect     - Session save/restore
+#   continuum     - Automatic session save with auto-restore on startup
+
 {
   lib,
   pkgs,

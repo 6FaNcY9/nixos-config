@@ -1,4 +1,11 @@
-# Alacritty terminal emulator configuration
+# Alacritty Terminal Emulator Configuration
+# Modern, GPU-accelerated terminal with vi mode for text selection and search
+#
+# Features:
+#   - Vi mode for vim-like text selection (C-S-Space to toggle)
+#   - Search forward/backward in scrollback (C-S-F / C-S-B)
+#   - 10k line scrollback history
+#   - Dynamic padding and minimal decorations
 { lib, config, ... }:
 let
   cfg = config.features.terminal.alacritty;
@@ -20,6 +27,7 @@ in
         scrolling.history = 10000;
 
         keyboard.bindings = [
+          # Vi mode: Enable vim-like text selection and navigation in terminal scrollback
           # Enter/leave Vi mode (selection/search)
           {
             key = "Space";
