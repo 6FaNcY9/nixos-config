@@ -38,18 +38,18 @@ in
 
   # Inject shared arguments available to ALL home-modules via function args.
   #
-  # Available args and their sources:
-  #   palette   — semantic colors (bg, text, accent, ...) from shared-modules/palette.nix
-  #   c         — raw base16 colors (base00..base0F) from config.theme.colors
-  #   workspaces — i3 workspace definitions [{number, icon}] from shared-modules/workspaces.nix
-  #   stylixFonts — {sansSerif, monospace} from Stylix config (with fallback)
-  #   i3Pkg     — the i3 package (pkgs.i3)
-  #   codexPkg  — codex CLI from flake input
-  #   opencodePkg — opencode from overlay
-  #   hostname  — current host name (from NixOS or ez-configs)
-  #   cfgLib    — helper library from lib/ (mkShellScript, mkColorReplacer, etc.)
+  # Available arguments:
+  #   palette     — Semantic colors (bg, text, accent, warn, danger) from theme.palette
+  #   c           — Raw base16 colors (base00..base0F) from theme.colors
+  #   workspaces  — i3 workspace definitions [{number, icon}]
+  #   cfgLib      — Helper library from ../../lib (mkShellScript, mkColorReplacer, etc.)
+  #   stylixFonts — Font configuration {sansSerif, monospace} from Stylix
+  #   i3Pkg       — i3 window manager package
+  #   codexPkg    — Codex CLI from flake input
+  #   opencodePkg — OpenCode from overlay
+  #   hostname    — Current host name
   #
-  # Usage: add the arg name to any home-module's function args, e.g.
+  # Usage in home-modules: Add arg name to function signature, e.g.
   #   {pkgs, palette, cfgLib, ...}:
   _module.args = {
     inherit (config.theme) palette;
@@ -111,6 +111,7 @@ in
       qt.enable = true;
       gtk = {
         enable = true;
+        colors.enable = true;
         flatpakSupport.enable = true;
       };
 

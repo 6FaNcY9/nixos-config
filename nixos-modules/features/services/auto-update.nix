@@ -17,9 +17,7 @@ in
     enable = lib.mkEnableOption "automated NixOS flake updates and rebuilds";
 
     timer = {
-      enable = lib.mkEnableOption "systemd timer for automatic updates" // {
-        default = false;
-      };
+      enable = lib.mkEnableOption "systemd timer for automatic updates";
 
       calendar = lib.mkOption {
         type = lib.types.str;
@@ -82,23 +80,23 @@ in
       script = ''
         set -euo pipefail
 
-        # Abort if repoRoot is dirty (KISS safety)
+        # Abort if repoRoot is dirty - prevents data loss from uncommitted changes
         ${pkgs.util-linux}/bin/runuser -u ${username} -- \
           ${pkgs.git}/bin/git -C ${repoRoot} diff --quiet
 
-        # Update flake.lock as the user
+        # Update flake.lock as the user (preserves file ownership)
         ${pkgs.util-linux}/bin/runuser -u ${username} -- \
           ${pkgs.nix}/bin/nix flake update
 
         ${lib.optionalString cfg.autoCommit ''
-          # Auto-commit the updated flake.lock to avoid dirty tree on next run
+          # Auto-commit the updated flake.lock to prevent dirty tree on subsequent runs
           ${pkgs.util-linux}/bin/runuser -u ${username} -- \
             ${pkgs.git}/bin/git -C ${repoRoot} add flake.lock
           ${pkgs.util-linux}/bin/runuser -u ${username} -- \
             ${pkgs.git}/bin/git -C ${repoRoot} commit -m "${cfg.commitMessage}"
         ''}
 
-        # Switch as root
+        # Switch as root (requires elevated permissions for system changes)
         ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch \
           --flake ${repoRoot}#${config.networking.hostName}
       '';

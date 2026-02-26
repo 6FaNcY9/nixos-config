@@ -1,4 +1,10 @@
-# i3 workspace definitions - shared between NixOS and Home Manager
+# i3 workspace definitions — number:icon mapping used by i3 and polybar.
+#
+# Provides 10 workspaces with Font Awesome 6 icons:
+#   1:  (Firefox), 2:  (Window), 3:  (Code), 4:  (Folder), 5:  (Music),
+#   6:  (Image), 7:  (Video), 8:  (Chat), 9:  (Settings), 10:  (File).
+#
+# Shared between NixOS and Home Manager via _module.args.
 { lib, ... }:
 {
   options.workspaces = lib.mkOption {

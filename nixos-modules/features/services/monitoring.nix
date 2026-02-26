@@ -88,11 +88,13 @@ in
         enable = true;
         inherit (cfg.prometheus) port retentionTime;
 
+        # Prometheus exporters - collect system metrics for monitoring
         exporters = lib.mkIf cfg.exporters.node.enable {
           node = {
             enable = true;
             inherit (cfg.exporters.node) port;
             enabledCollectors = [
+              # Metrics to collect from the system
               "cpu"
               "diskstats"
               "filesystem"

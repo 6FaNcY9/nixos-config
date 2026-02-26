@@ -1,6 +1,11 @@
+# Library functions for nixos-config.
+#
+# Provides helper functions for workspaces, validation, devshells, colors, options, and polybar.
+
 { lib }:
 let
-  # Workspace helpers
+  # mkWorkspaceName :: { number :: Int, icon :: Str } -> Str
+  # Format workspace as "number:icon" (or just "number" if icon is empty).
   mkWorkspaceName =
     ws:
     let
@@ -9,24 +14,22 @@ let
     in
     if icon == "" then number else "${number}:${icon}";
 
-  # Validation helpers
-  # Validate that a secret file exists
+  # validateSecretExists :: Path -> Bool
+  # Assert that a secret file exists at the given path. Throws if missing.
   validateSecretExists =
     secretPath:
     assert builtins.pathExists secretPath || throw "Secret file not found: ${toString secretPath}";
     true;
 
-  # Validate that a secret file is encrypted (basic check: not plaintext YAML/JSON)
+  # validateSecretEncrypted :: Path -> Bool
+  # Assert that a secret file is encrypted by sops (checks for sops metadata). Throws if unencrypted.
   validateSecretEncrypted =
     secretPath:
     let
       exists = builtins.pathExists secretPath;
       content = if exists then builtins.readFile secretPath else "";
-      # Check if file contains sops metadata (encrypted files have this)
-      isEncrypted =
-        exists
-        && (lib.hasInfix "sops" content)
-        && (lib.hasInfix "mac" content || lib.hasInfix "enc" content);
+      # Check if file is SOPS-encrypted (AES256-GCM marker present)
+      isEncrypted = exists && (lib.hasInfix "ENC[AES256_GCM" content);
     in
     assert
       isEncrypted
@@ -37,8 +40,9 @@ let
       '';
     true;
 
-  # Validate a list of secret files: all must exist and be encrypted
-  # Returns { valid = bool; assertions = [{ assertion, message }]; }
+  # mkSecretValidation :: { secrets :: [Path], label :: Str? } -> { valid :: Bool, assertions :: [Assertion] }
+  # Validate a list of secret files: all must exist and be encrypted.
+  # Returns a structure suitable for NixOS assertions.
   mkSecretValidation =
     {
       secrets,
@@ -62,8 +66,8 @@ let
       ];
     };
 
-  # Devshell helpers
-  # Create a formatted MOTD (message of the day) for devshells
+  # mkDevshellMotd :: { title :: Str, emoji :: Str?, description :: Str? } -> Str
+  # Create a formatted MOTD (message of the day) for devshells with color codes.
   mkDevshellMotd =
     {
       title,
@@ -75,9 +79,9 @@ let
       ${description}
     '';
 
-  # Shell script helpers
-  # Create a shell script with standard error handling
-  # Note: For scripts with runtime dependencies, use pkgs.writeShellApplication instead
+  # mkShellScript :: { pkgs :: Pkgs, name :: Str, body :: Str } -> Derivation
+  # Create a shell script with standard error handling (set -euo pipefail).
+  # Note: For scripts with runtime dependencies, use pkgs.writeShellApplication instead.
   mkShellScript =
     {
       pkgs,
@@ -89,9 +93,9 @@ let
       ${body}
     '';
 
-  # Color helpers
-  # Darken a "#rrggbb" hex color by a fraction (0.0 – 1.0).
-  # darkenColor 0.30 "#ff8700" => "#b25e00"
+  # darkenColor :: Float -> Str -> Str
+  # Darken a #rrggbb hex color by a fraction (0.0 - 1.0).
+  # Example: darkenColor 0.30 "#ff8700" => "#b25e00"
   darkenColor =
     fraction: hex:
     let
@@ -135,8 +139,9 @@ let
     in
     "#${toHex newR}${toHex newG}${toHex newB}";
 
-  # Replace color placeholders in a string with actual color values
-  # Example: mkColorReplacer {colors = {base00 = "#282828"; base01 = "#3c3836";}} "@@base00@@"
+  # mkColorReplacer :: { colors :: AttrSet, prefix :: Str?, suffix :: Str? } -> (Str -> Str)
+  # Replace color placeholders (@@key@@) in strings with actual color values.
+  # Example: mkColorReplacer {colors = {base00 = "#282828";}} "@@base00@@" => "#282828"
   mkColorReplacer =
     {
       colors,
@@ -150,7 +155,18 @@ let
     in
     builtins.replaceStrings oldStrs newStrs;
 
-  # Profile helpers
+  # mkBoolOpt :: Bool -> Str -> Option
+  # Boolean option shorthand used by NixOS feature modules.
+  mkBoolOpt =
+    default: desc:
+    lib.mkOption {
+      type = lib.types.bool;
+      inherit default;
+      description = desc;
+    };
+
+  # mkProfile :: Str -> Bool -> Option
+  # Profile option shorthand for enabling package sets.
   mkProfile =
     name: default:
     lib.mkOption {
@@ -159,8 +175,8 @@ let
       description = "Enable ${name} package set.";
     };
 
-  # Polybar helpers
-  # Two-tone module style: icon block (dark color) + label block (bright variant)
+  # mkPolybarTwoTone :: { icon :: Str, color :: Str, colorAlt :: Str?, fg :: Str? } -> AttrSet
+  # Two-tone polybar module style: icon block (dark color) + label block (bright variant).
   mkPolybarTwoTone =
     {
       icon,
@@ -178,7 +194,8 @@ let
       label-padding-right = 1;
     };
 
-  # Two-tone style for a named state (e.g. format-volume, format-charging)
+  # mkPolybarTwoToneState :: { state :: Str, icon :: Str, color :: Str, colorAlt :: Str?, fg :: Str? } -> AttrSet
+  # Two-tone style for a named state (e.g. format-volume, format-charging).
   mkPolybarTwoToneState =
     {
       state,
@@ -202,6 +219,8 @@ in
   # Workspace helpers
   inherit mkWorkspaceName;
 
+  # mkWorkspaceBindings :: { mod :: Str, workspaces :: [Workspace], commandPrefix :: Str, shift :: Bool? } -> AttrSet
+  # Generate i3 keybindings for workspace switching/moving.
   mkWorkspaceBindings =
     {
       mod,
@@ -232,8 +251,8 @@ in
   # Color helpers
   inherit darkenColor mkColorReplacer;
 
-  # Profile helpers
-  inherit mkProfile;
+  # Option + profile helpers
+  inherit mkBoolOpt mkProfile;
 
   # Polybar helpers
   inherit mkPolybarTwoTone mkPolybarTwoToneState;

@@ -108,8 +108,8 @@ in
         };
       };
 
-      # Audio configuration
-      pulseaudio.enable = false; # Disabled in favor of PipeWire
+      # Audio configuration - PipeWire is modern replacement for PulseAudio
+      pulseaudio.enable = false; # Disabled in favor of PipeWire (better latency and JACK support)
       pipewire = lib.mkIf cfg.audio.enablePipewire {
         enable = true;
         alsa.enable = true;
@@ -122,15 +122,15 @@ in
 
     # Desktop programs
     programs = {
-      dconf.enable = true; # Required for GTK settings
+      dconf.enable = true; # Required for GTK settings and XFCE components to persist preferences
       i3lock.enable = true; # Screen locker
     };
 
     # Security settings
     security = {
-      polkit.enable = true; # Policy kit for privilege escalation
+      polkit.enable = true; # Policy kit for privilege escalation (mounting drives, NetworkManager, etc.)
       pam.services.i3lock.enable = true; # PAM support for i3lock
-      rtkit.enable = true; # RealtimeKit for audio
+      rtkit.enable = true; # RealtimeKit for audio - grants realtime scheduling to audio processes
     };
 
     # Warnings

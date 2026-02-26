@@ -1,3 +1,16 @@
+# Git pre-commit hooks configuration.
+#
+# Hooks:
+#   treefmt                      — Auto-format code (nixfmt, etc.)
+#   statix                       — Nix anti-pattern linter
+#   deadnix                      — Dead code detector
+#   shellcheck                   — Shell script linter
+#   shfmt                        — Shell script formatter
+#   detect-unencrypted-secrets   — Prevent unencrypted secrets/*.yaml commits
+#   detect-secrets               — Detect hardcoded credentials (password, api_key, secret, token, AWS keys, GitHub PATs)
+#   check-large-files            — Warn about files >500KB
+#   cachix-token-validate        — Validate Cachix auth token format
+
 { pkgsFor, ... }:
 {
   perSystem =
@@ -13,16 +26,18 @@
       pre-commit = {
         check.enable = true;
         settings.hooks = {
+          # Code formatting and linting
           treefmt = {
             enable = true;
             package = config.treefmt.build.wrapper;
           };
-          statix.enable = true;
-          deadnix.enable = true;
-          shellcheck.enable = true;
-          shfmt.enable = true;
+          statix.enable = true; # Nix linter
+          deadnix.enable = true; # Dead code detector
+          shellcheck.enable = true; # Shell script linter
+          shfmt.enable = true; # Shell script formatter
 
           # Security: Prevent committing unencrypted secrets
+          # Checks secrets/*.yaml files for sops encryption markers
           detect-unencrypted-secrets = {
             enable = true;
             name = "Detect unencrypted secrets";
@@ -46,6 +61,7 @@
           };
 
           # Security: Detect hardcoded credentials and tokens
+          # Patterns: password, api_key, secret, token, AWS keys (AKIA*), GitHub PATs (ghp_*)
           detect-secrets = {
             enable = true;
             name = "Detect hardcoded secrets";
@@ -87,7 +103,8 @@
             files = ".*";
           };
 
-          # Performance: Warn about large binary files
+          # Performance: Warn about large binary files (>500KB)
+          # Suggests Git LFS or .gitignore for large files
           check-large-files = {
             enable = true;
             name = "Check for large files";
@@ -119,7 +136,8 @@
             files = ".*";
           };
 
-          # Validate Cachix auth token format if present (non-blocking otherwise)
+          # Validate Cachix auth token format if present
+          # Non-blocking if token not found (optional for contributors)
           cachix-token-validate = {
             enable = true;
             name = "Validate Cachix auth token format";

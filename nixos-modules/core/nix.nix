@@ -35,6 +35,9 @@
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "vino-nixos-config.cachix.org-1:8LFVkzmO/+crLWO0Q3bqWOOamVjScT3v1/PCHPiTiUU=" # Personal cache key
       ];
+
+      # Skip global flake registry lookup — self-contained with pinned nixpkgs
+      flake-registry = "";
     };
 
     # Use nh's cleaner to avoid double GC scheduling.
@@ -42,6 +45,7 @@
 
     # Store optimisation disabled (run manually: sudo nix-store --optimise)
     optimise.automatic = false;
+
   };
 
   # Pin nixpkgs for legacy commands and for `nix run nixpkgs#...`

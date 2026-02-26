@@ -6,12 +6,11 @@ Comprehensive architectural analysis of the nixos-config repository.
 
 | Document | Purpose | Lines | Size |
 |----------|---------|-------|------|
-| **[components.md](./components.md)** | Complete inventory of all 83 .nix files organized by architectural layer | 289 | 18KB |
+| **[components.md](./components.md)** | Complete inventory of all .nix files organized by architectural layer | 289 | 18KB |
 | **[diagram.md](./diagram.md)** | Visual architecture diagram (Mermaid + ASCII) showing system wiring and data flow | 380 | 22KB |
 | **[patterns.md](./patterns.md)** | Documentation of 6 major architectural patterns with examples and anti-patterns | 521 | 17KB |
-| **[issues.md](./issues.md)** | Analysis of 15 issues with severity ratings, evidence, and actionable recommendations | 668 | 22KB |
 
-**Total:** 1,858 lines, 79KB of comprehensive documentation
+**Total:** 1,190 lines, 57KB of comprehensive documentation
 
 ---
 
@@ -23,9 +22,6 @@ Comprehensive architectural analysis of the nixos-config repository.
 3. Consult **[components.md](./components.md)** when you need to find specific functionality
 
 ### For Maintainers
-1. Check **[issues.md](./issues.md)** for prioritized improvement opportunities
-2. Review the "Top 5" issues for quick wins
-3. Use the best-practices comparison to guide refactoring decisions
 
 ### For System Understanding
 1. **[diagram.md](./diagram.md)** → High-level system flow
@@ -37,12 +33,12 @@ Comprehensive architectural analysis of the nixos-config repository.
 ## 📊 Repository Overview
 
 ### Statistics
-- **Total Files:** 83 .nix files
+- **Total Files:** All .nix files in the repository
 - **Layers:** 7 architectural layers (Flake → NixOS → Home Manager)
 - **Modules:** 16 NixOS modules, 48 Home Manager modules, 3 shared modules
 - **Configurations:** 1 host (bandit), 1 user (vino)
 - **Patterns:** 6 major architectural patterns documented
-- **Issues:** 15 identified (2 Critical, 3 High, 3 Medium, 7 Low)
+- **Issues:** Previously tracked issues have been resolved or are obsolete
 
 ### Architecture Highlights
 - **Flake-based** using flake-parts + ez-configs for auto-discovery
@@ -97,7 +93,6 @@ Comprehensive architectural analysis of the nixos-config repository.
 | Understand overall structure | [diagram.md](./diagram.md) |
 | Find where X is configured | [components.md](./components.md) + search for keyword |
 | Learn the design conventions | [patterns.md](./patterns.md) |
-| Fix/improve something | [issues.md](./issues.md) |
 | Add a new NixOS module | [patterns.md](./patterns.md) → "Module Aggregator Topology" |
 | Add a new user package | [components.md](./components.md) → `home-modules/profiles.nix` |
 | Change theme colors | [patterns.md](./patterns.md) → "Theming System" |
@@ -155,22 +150,6 @@ sops-nix + validation helpers ensure safe secret handling.
 
 **See:** [patterns.md § Secrets Management](./patterns.md)
 
----
-
-## ⚠️ Known Issues
-
-### Top 5 Priority Issues
-
-| # | Issue | Severity | Effort | File |
-|---|-------|----------|--------|------|
-| 1 | Hardcoded `repoRoot` breaks portability | 🔴 Critical | 2h | `flake.nix:116` |
-| 2 | Update automation creates dirty tree | 🔴 Critical | 1h | `nixos-modules/services.nix` |
-| 3 | Non-interactive hazards in apps | 🟠 High | 1h | `flake-modules/apps.nix` |
-| 4 | Home Manager isolation fragility | 🟠 High | 2h | `home-configurations/vino/default.nix:17` |
-| 5 | GPG key configuration split | 🟡 Medium | 1h | `home-*/secrets.nix`, `home-*/vino/default.nix:159` |
-
-**See:** [issues.md](./issues.md) for full analysis with recommendations
-
 **Quick Wins:** 5 low-effort fixes (~3.5 hours total) available in [issues.md § Quick Wins](./issues.md)
 
 ---
@@ -197,17 +176,17 @@ sops-nix + validation helpers ensure safe secret handling.
 
 ## ✅ Verification Results
 
-**Analysis Date:** 2026-02-18
+**Analysis Date:** 2026-02-26
 
 ### Coverage Verification
-- ✅ **All 83 .nix files** documented in components.md
+- ✅ **All .nix files** documented in components.md
 - ✅ **Flake evaluation** successful (`nix flake show`)
 - ✅ **Outputs validated:**
   - 1 nixosConfigurations (bandit)
   - 1 homeConfigurations (vino@bandit)
-  - 12 nixosModules
+  - 13 nixosModules
   - 7 apps
-  - 6 devShells
+  - 8 devShells
   - 2 checks (pre-commit, treefmt)
 
 ### Documentation Quality
@@ -239,7 +218,6 @@ sops-nix + validation helpers ensure safe secret handling.
 ### For Maintenance
 1. Update documentation when architectural changes are made
 2. Re-run verification checks periodically
-3. Track issue resolution progress
 
 ---
 
@@ -254,7 +232,6 @@ sops-nix + validation helpers ensure safe secret handling.
 ### Keeping It Current
 - Update [components.md](./components.md) when adding/removing .nix files
 - Update [patterns.md](./patterns.md) when introducing new conventions
-- Update [issues.md](./issues.md) as issues are resolved
 - Re-generate [diagram.md](./diagram.md) if major architectural changes occur
 
 ### Regeneration
@@ -265,6 +242,6 @@ To regenerate this analysis:
 
 ---
 
-**Last Updated:** 2026-02-18  
-**Repository State:** commit 920b622 (main branch)  
-**Analysis Completeness:** 100% (83/83 files documented)
+**Last Updated:** 2026-02-26
+**Repository State:** main branch
+**Documentation Completeness:** Comprehensive inline documentation added to all .nix files

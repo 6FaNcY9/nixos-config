@@ -1,0 +1,7 @@
+display_name = "NixOS Developer"
+description = "Agent specialized for Nix, flakes, and NixOS system configuration"
+safety = "neutral"
+auto_approve = false
+active_model = "devstral-2"
+system_prompt_id = "nixdev"
+enabled_tools = ["read_file", "grep", "bash", "write_file", "search_replace", "nixos_nix", "context7_resolve_library_id", "context7_get_library_docs", "packages_*", "git_*"]

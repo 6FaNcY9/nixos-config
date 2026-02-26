@@ -3,8 +3,8 @@ _: {
   # Optimize for interactive desktop usage
   # Lower swappiness prevents system lag during memory pressure
   boot.kernel.sysctl = {
-    # Reduce swap usage (default: 60)
-    # Only swap when memory is critically low
+    # High swappiness with zram: prefer compressed RAM swap over disk I/O (default: 60)
+    # With zram enabled, this reduces disk writes and improves interactive responsiveness
     "vm.swappiness" = 80;
 
     # Reduce inode/dentry cache pressure (default: 100)

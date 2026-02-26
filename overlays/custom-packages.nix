@@ -1,10 +1,10 @@
-# Custom package definitions
+# Custom package overlays — package overrides and custom builds.
 { inputs }:
 final: prev: {
-  # Build tree-sitter CLI v0.26.5 separately (for neovim checkhealth)
-  # Note: This is separate from the tree-sitter library that neovim links against.
+  # tree-sitter-cli: Pinned to 0.26.5 for nixvim treesitter compatibility.
+  # Note: Separate from the tree-sitter library that neovim links against.
   # Neovim 0.11.6 requires tree-sitter library 0.25.x (API compatibility),
-  # but checkhealth wants tree-sitter CLI 0.26.1+ for parsing features.
+  # but neovim checkhealth wants tree-sitter CLI 0.26.1+ for parsing features.
   tree-sitter-cli = prev.rustPlatform.buildRustPackage rec {
     pname = "tree-sitter-cli";
     version = "0.26.5";
@@ -35,10 +35,17 @@ final: prev: {
     };
   };
 
-  # OpenCode override: force bun isolated installs
-  # Required because bun's default hoisting behavior breaks symlinks in the nix store.
+  # mistral-vibe: Skip runtime dependency version check for cryptography.
+  # Upstream requires cryptography<=46.0.3,>=44.0.0, but nixpkgs has 46.0.4 (compatible patch bump).
+  mistral-vibe = prev.mistral-vibe.overridePythonAttrs (_: {
+    # Disable runtime dependency version checking entirely
+    # The pythonRuntimeDepsCheckHook phase enforces strict version constraints
+    dontCheckRuntimeDeps = true;
+  });
+
+  # opencode: Force bun isolated installs to prevent symlink issues in nix store.
   # The --linker=isolated flag ensures each package gets its own node_modules copy,
-  # preventing the "cannot find module" errors that occur with hoisted dependencies.
+  # preventing "cannot find module" errors with hoisted dependencies.
   # See: https://bun.sh/docs/install/linker
   opencode =
     let

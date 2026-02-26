@@ -10,6 +10,7 @@
 }:
 let
   cfg = config.features.security.secrets;
+  userHome = config.users.users.${username}.home;
   cfgLib = import ../../../lib { inherit lib; };
 
   # Secret file paths
@@ -32,19 +33,19 @@ in
   config = lib.mkIf cfg.enable {
     inherit (secretValidation) assertions;
 
-    # sops-nix system defaults (safe even without secrets defined)
+    # sops-nix system defaults - configures age-based encryption for secrets
     sops = {
       age = {
-        keyFile = lib.mkDefault "/var/lib/sops-nix/key.txt";
-        sshKeyPaths = lib.mkDefault [ "/etc/ssh/ssh_host_ed25519_key" ];
-        generateKey = lib.mkDefault true;
+        keyFile = lib.mkDefault "/var/lib/sops-nix/key.txt"; # age encryption key location
+        sshKeyPaths = lib.mkDefault [ "/etc/ssh/ssh_host_ed25519_key" ]; # Fallback SSH key
+        generateKey = lib.mkDefault true; # Auto-generate age key if missing
       };
 
       secrets."github_ssh_key" = {
         sopsFile = githubSecretFile;
         owner = username;
         mode = "0600";
-        path = "/home/${username}/.ssh/github";
+        path = "${userHome}/.ssh/github";
       };
 
       secrets."restic_password" = {
@@ -57,7 +58,7 @@ in
 
     systemd.tmpfiles.rules = [
       "d /var/lib/sops-nix 0700 root root -"
-      "d /home/${username}/.ssh 0700 ${username} users -"
+      "d ${userHome}/.ssh 0700 ${username} users -"
     ];
   };
 }

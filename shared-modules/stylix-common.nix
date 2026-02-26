@@ -1,3 +1,13 @@
+# Stylix theming — shared between NixOS and Home Manager.
+#
+# Sets global theme configuration:
+#   - Base16 scheme: Gruvbox Dark Pale (base16-schemes/gruvbox-dark-pale.yaml)
+#   - Wallpaper: gruvbox-rainbow-nix.png (overridable via theme.wallpaper)
+#   - Icon theme: Papirus (Dark/Light variants)
+#   - Fonts: Iosevka Term Nerd Font (all styles), Noto Color Emoji
+#
+# This module is imported by both NixOS and Home Manager configurations to ensure consistent theming.
+
 {
   pkgs,
   lib,

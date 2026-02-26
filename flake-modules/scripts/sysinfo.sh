@@ -62,7 +62,7 @@ else
 fi
 
 # GPG key check
-GPG_KEY="FC8B68693AF4E0D9DC84A4D3B872E229ADE55151"
+GPG_KEY="4D8770567A65FE1369E2BCC1611871842A8C1619"
 if gpg --list-secret-keys "$GPG_KEY" >/dev/null 2>&1; then
 	echo -e "${GREEN}OK${NC} GPG signing key: Imported ($GPG_KEY)"
 else

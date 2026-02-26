@@ -4,6 +4,25 @@ All notable changes to this NixOS configuration will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-02-26] - Comprehensive Documentation Pass
+
+### Added
+- File-level headers and inline comments to all 88 .nix files across the entire repository
+- Documentation explains purpose, configuration options, and usage for each module
+
+### Changed
+- Improved code readability with consistent header format and explanatory comments
+- Enhanced maintainability through comprehensive inline documentation
+
+### Removed
+- `nixos-modules/core/boot.nix` - Empty placeholder file deleted
+
+### Verification
+- `nix flake check` passes successfully
+- All modules build and evaluate correctly
+
+---
+
 ## [Unreleased]
 
 _Nothing yet._
