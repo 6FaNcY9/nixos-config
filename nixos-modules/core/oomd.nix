@@ -1,3 +1,5 @@
+# Core: Out-of-memory daemon (systemd-oomd)
+# Prevents system freeze by killing memory-hungry processes before RAM exhaustion
 _:
 
 {
