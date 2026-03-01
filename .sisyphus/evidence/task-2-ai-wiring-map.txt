@@ -1,0 +1,34 @@
+OpenCode:
+- source: flake input `opencode` declared in `flake.nix` (inputs.opencode)
+- enable path: not a feature flag; installed via `home-modules/profiles.nix` when `profiles.ai = true` (aiPkgs includes opencodePkg)
+- consuming modules/profiles: `home-modules/profiles.nix` -> `config.home.packages` (profiles.ai) and overlay packaging in `overlays/custom-packages.nix` (opencode overlay/patches)
+- exact file refs: `flake.nix` (lines: inputs.opencode), `home-configurations/vino/default.nix` (line: opencodePkg assignment), `home-modules/profiles.nix` (lines: aiPkgs includes opencodePkg), `overlays/custom-packages.nix` (opencode package override)
+
+Codex (codex-cli):
+- source: flake input `codex-cli-nix` declared in `flake.nix` (inputs.codex-cli-nix)
+- enable path: injected into home modules via `_module.args` as `codexPkg` from `home-configurations/vino/default.nix`; included in `profiles.ai` (aiPkgs includes codexPkg)
+- consuming modules/profiles: `home-modules/profiles.nix` (aiPkgs), and available to any home-module via `_module.args` (see `home-configurations/vino/default.nix` _module.args)
+- exact file refs: `flake.nix` (inputs.codex-cli-nix), `home-configurations/vino/default.nix` (line: codexPkg), `home-modules/profiles.nix` (aiPkgs includes codexPkg)
+
+Claude (claude-code):
+- source: resolved from `pkgs` (attempts `lib.attrByPath [ "unstable" "claude-code" ]` or fallback to `claude-code` in `home-modules/profiles.nix`); no separate flake input observed
+- enable path: included in `profiles.ai` via `aiPkgs` in `home-modules/profiles.nix`; packaged from nixpkgs attrs
+- consuming modules/profiles: `home-modules/profiles.nix` (aiPkgs includes claudeCodePkg)
+- exact file refs: `home-modules/profiles.nix` (claudeCodePkg definition and aiPkgs inclusion), `home-configurations/vino/default.nix` (mentions `claude` in comments/plan but not as an input)
+
+GitHub Copilot (github-copilot-cli / nixvim keymaps):
+- source: referenced in `home-modules/profiles.nix` as `githubCopilotPkg = lib.attrByPath [ "github-copilot-cli" ] null pkgs` and in overlays/plugins; also keymaps and copilot usage in `home-modules/features/editor/nixvim/keymaps/copilot.nix`
+- enable path: included in `profiles.ai` via `aiPkgs` in `home-modules/profiles.nix`; editor-level enable uses `home-modules/features/editor/nixvim` feature modules (host enables `editor.nixvim` in bandit.nix)
+- consuming modules/profiles: `home-modules/profiles.nix` (aiPkgs includes githubCopilotPkg), `home-modules/features/editor/nixvim/keymaps/copilot.nix` (keybindings referencing copilot plugin), host enables `editor.nixvim` in `home-configurations/vino/hosts/bandit.nix`
+- exact file refs: `home-modules/profiles.nix` (githubCopilotPkg), `home-modules/features/editor/nixvim/keymaps/copilot.nix` (keymaps), `home-configurations/vino/hosts/bandit.nix` (enables editor.nixvim)
+
+Mistral Vibe (mistral-vibe / vibe):
+- source: flake input `mistral-vibe` declared in `flake.nix` (inputs.mistral-vibe) and overlay package `mistral-vibe` referenced in `overlays/custom-packages.nix`
+- enable path: feature flag `features.shell.vibe.enable` (see `home-modules/features/shell/vibe.nix`) and host enables `features.shell.vibe.enable` via `home-configurations/vino/hosts/bandit.nix` (`vibe.enable = true`)
+- consuming modules/profiles: `home-modules/features/shell/vibe.nix` (installs pkgs.mistral-vibe, configures xdg files, fish env var); host enables via `bandit.nix` features.shell.vibe.enable
+- exact file refs: `flake.nix` (inputs.mistral-vibe), `home-modules/features/shell/vibe.nix` (feature definition and xdg config), `overlays/custom-packages.nix` (mistral-vibe override), `home-configurations/vino/hosts/bandit.nix` (vibe.enable = true), `.sisyphus/plans/ai-tools-simplification.md` references
+
+Notes:
+- The primary AI bundle is wired via `home-modules/profiles.nix`'s `profiles.ai` which aggregates claude, codex, opencode, github-copilot into `aiPkgs`. Hosts enable `profiles.ai` in `hosts/*` (e.g., `bandit.nix` sets `profiles.ai = true`).
+- `home-configurations/vino/default.nix` injects `codexPkg`, `opencodePkg`, and `mistralVibePkg` into `_module.args` for consumption by home-modules.
+
