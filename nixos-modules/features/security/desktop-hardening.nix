@@ -115,7 +115,7 @@ in
       # Log refused connections (useful for debugging)
       logRefusedConnections = lib.mkDefault true;
       # Reject instead of drop (more user-friendly)
-      rejectPackets = lib.mkDefault true;
+      rejectPackets = lib.mkDefault false;
     };
 
     # Kernel hardening
@@ -158,6 +158,8 @@ in
       "kernel.kptr_restrict" = 2;
       # Disable kexec (prevents kernel replacement without reboot - mitigates certain rootkits)
       "kernel.kexec_load_disabled" = lib.mkDefault 1;
+      # Restrict ptrace to parent processes only (prevents process injection attacks)
+      "kernel.yama.ptrace_scope" = 1;
     };
 
     # Additional security packages
