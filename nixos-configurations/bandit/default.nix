@@ -6,7 +6,6 @@
 
 {
   inputs,
-  config,
   lib,
   ...
 }:
