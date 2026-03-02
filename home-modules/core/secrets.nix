@@ -18,6 +18,7 @@ let
   exaApiSecretFile = "${inputs.self}/secrets/exa-api.yaml";
   context7SecretFile = "${inputs.self}/secrets/context7-api.yaml";
   mistralSecretFile = "${inputs.self}/secrets/mistral.yaml";
+  heliconeSecretFile = "${inputs.self}/secrets/helicone.yaml";
 
   secretValidation = cfgLib.mkSecretValidation {
     secrets = [
@@ -27,6 +28,7 @@ let
       exaApiSecretFile
       context7SecretFile
       mistralSecretFile
+      heliconeSecretFile
     ];
     label = "Home";
   };
@@ -68,6 +70,11 @@ in
 
       mistral_api_key = {
         sopsFile = mistralSecretFile;
+        format = "yaml";
+      };
+
+      helicone_api_key = {
+        sopsFile = heliconeSecretFile;
         format = "yaml";
       };
     };
