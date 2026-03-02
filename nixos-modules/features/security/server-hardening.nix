@@ -30,6 +30,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = config.features.services.openssh.enable;
+        message = "features.security.server-hardening requires features.services.openssh.enable = true (fail2ban sshd jail needs sshd running)";
+      }
+    ];
+
     # Fail2ban for brute force protection
     services.fail2ban = {
       enable = true;
@@ -37,6 +44,9 @@ in
       jails.sshd = ''
         enabled = true
         mode = aggressive
+        maxretry = 3
+        bantime = 3600
+        findtime = 600
       '';
     };
 
@@ -55,6 +65,10 @@ in
       # Disable ICMP redirects - prevents MITM attacks via malicious route injection
       "net.ipv4.conf.all.accept_redirects" = 0;
       "net.ipv4.conf.default.accept_redirects" = 0;
+
+      # Disable IPv6 ICMP redirects - prevents MITM attacks via route injection
+      "net.ipv6.conf.all.accept_redirects" = 0;
+      "net.ipv6.conf.default.accept_redirects" = 0;
 
       # Disable sending ICMP redirects (server should not suggest alternate routes)
       "net.ipv4.conf.all.send_redirects" = 0;
