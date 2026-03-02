@@ -25,7 +25,7 @@ in
         enable = true;
         settings = {
           global = {
-            font = "IosevkaTerm Nerd Font 10";
+            font = "IosevkaTerm Nerd Font 12";
             frame_width = 2;
             frame_color = lib.mkForce palette.accent;
             corner_radius = 10;
