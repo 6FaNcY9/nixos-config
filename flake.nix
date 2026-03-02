@@ -37,6 +37,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Mistral Vibe (AI assistant)
+    mistral-vibe = {
+      url = "github:mistralai/mistral-vibe";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Hardware quirks for Framework laptops
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware";

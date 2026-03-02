@@ -35,13 +35,10 @@ final: prev: {
     };
   };
 
-  # mistral-vibe: Skip runtime dependency version check for cryptography.
-  # Upstream requires cryptography<=46.0.3,>=44.0.0, but nixpkgs has 46.0.4 (compatible patch bump).
-  mistral-vibe = prev.mistral-vibe.overridePythonAttrs (_: {
-    # Disable runtime dependency version checking entirely
-    # The pythonRuntimeDepsCheckHook phase enforces strict version constraints
-    dontCheckRuntimeDeps = true;
-  });
+  # mistral-vibe: Official flake package (uv2nix Python venv wrapper).
+  # Source: inputs.mistral-vibe.packages.${system}.default
+  # Exposed in home-modules via mistralVibePkg, but also available as pkgs.mistral-vibe.
+  mistral-vibe = inputs.mistral-vibe.packages.${final.system}.default;
 
   # opencode: Force bun isolated installs to prevent symlink issues in nix store.
   # The --linker=isolated flag ensures each package gets its own node_modules copy,
