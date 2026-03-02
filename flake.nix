@@ -105,8 +105,14 @@
     };
 
     # Development services (PostgreSQL, Redis, etc.)
-    process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
-    services-flake.url = "github:juspay/services-flake";
+    process-compose-flake = {
+      url = "github:Platonic-Systems/process-compose-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    services-flake = {
+      url = "github:juspay/services-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Wallpaper
     gruvbox-wallpaper = {
