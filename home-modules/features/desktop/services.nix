@@ -66,8 +66,8 @@ in
 
         # Subtle inactive window dimming for visual depth without distraction
         activeOpacity = 1.0;
-        inactiveOpacity = 0.98;
-        menuOpacity = 0.99;
+        inactiveOpacity = 1.0;
+        menuOpacity = 1.0;
 
         # Fade animations
         fade = false;
