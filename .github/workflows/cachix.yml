@@ -50,7 +50,6 @@ jobs:
             --fallback
           # Clean up build artifacts to save space
           rm -f result
-          nix-collect-garbage
 
       - name: Build Home Manager configuration
         run: |
@@ -59,7 +58,6 @@ jobs:
             --print-build-logs \
             --fallback
           rm -f result
-          nix-collect-garbage
 
       - name: Build devshells
         run: |
@@ -70,7 +68,6 @@ jobs:
             nix build .#devShells.x86_64-linux.$shell --fallback
             rm -f result
           done
-          nix-collect-garbage
 
       - name: Cache Summary
         run: |
