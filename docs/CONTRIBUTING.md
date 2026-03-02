@@ -20,7 +20,10 @@ Forking and personalization
 To make the repository work with your own system after forking:
 
 1. Add a new host configuration
-   - Create a new directory under `home-configurations/` named after your host.
+   - Create a new directory under `nixos-configurations/` named after your host.
+     For example: `nixos-configurations/my-laptop/`.
+   - Copy `nixos-configurations/bandit/` as a starting point and edit as needed.
+   - Create a matching directory under `home-configurations/` named after your host.
      For example: `home-configurations/my-laptop/`.
    - Copy an existing host's configuration as a starting point and edit as
      needed.
