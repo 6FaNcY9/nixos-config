@@ -33,6 +33,7 @@ final: prev: {
       homepage = "https://tree-sitter.github.io/tree-sitter/";
       license = prev.lib.licenses.mit;
       mainProgram = "tree-sitter";
+    };
   };
 
   # mistral-vibe: Official flake package (uv2nix Python venv wrapper).
