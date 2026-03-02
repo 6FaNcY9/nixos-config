@@ -33,7 +33,7 @@ get_wifi_info() {
 
 	if [ -n "$ssid" ]; then
 		local icon
-		icon=$(signal_icon "$signal")
+		icon=$(signal_icon "${signal:-0}")
 		echo "$icon $ssid ($signal%) - $ip"
 	else
 		echo "󰤭 Not connected"
