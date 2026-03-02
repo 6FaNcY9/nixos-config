@@ -31,8 +31,7 @@ let
       # Check if file contains sops metadata (encrypted files have this)
       isEncrypted =
         exists
-        && (lib.hasInfix "sops" content)
-        && (lib.hasInfix "mac" content || lib.hasInfix "enc" content);
+        && lib.hasInfix "ENC[AES256_GCM" content;
     in
     assert
       isEncrypted
