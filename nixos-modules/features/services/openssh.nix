@@ -20,7 +20,12 @@ in
     };
 
     permitRootLogin = lib.mkOption {
-      type = lib.types.str;
+      type = lib.types.enum [
+        "yes"
+        "no"
+        "prohibit-password"
+        "forced-commands-only"
+      ];
       default = "no";
       description = "Whether to allow root login";
       example = "prohibit-password";
@@ -40,7 +45,12 @@ in
         PasswordAuthentication = cfg.passwordAuthentication;
         PermitRootLogin = cfg.permitRootLogin;
         KbdInteractiveAuthentication = cfg.keyboardInteractiveAuthentication;
-      };
+        MaxAuthTries = 3;
+        LoginGraceTime = 30;
+        ClientAliveInterval = 300;
+        ClientAliveCountMax = 2;
+        AllowTcpForwarding = "no";
+        LogLevel = "VERBOSE";
     };
   };
 }
