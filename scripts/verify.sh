@@ -50,14 +50,14 @@ for arg in "$@"; do
 	esac
 done
 
-step "Home Manager build (vino@bandit)"
+step "Home Manager build (${NIXOS_CONFIG_USER:-vino}@${NIXOS_CONFIG_HOST:-bandit})"
 nix_check "HM build" \
-	nix build .#homeConfigurations."vino@bandit".activationPackage --no-link
+	nix build .#homeConfigurations."${NIXOS_CONFIG_USER:-vino}@${NIXOS_CONFIG_HOST:-bandit}".activationPackage --no-link
 
-step "NixOS build (bandit)"
+step "NixOS build (${NIXOS_CONFIG_HOST:-bandit})"
 if $BUILD_NIXOS; then
 	nix_check "NixOS build" \
-		nix build .#nixosConfigurations.bandit.config.system.build.toplevel --no-link
+		nix build .#nixosConfigurations."${NIXOS_CONFIG_HOST:-bandit}".config.system.build.toplevel --no-link
 else
 	skip "pass --nixos or --all to include NixOS build"
 fi
