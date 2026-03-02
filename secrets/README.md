@@ -76,7 +76,7 @@ nano .sops.yaml
 keys:
   - &user age134u5v...  # existing
   - &host age1r6cn...   # existing
-  - &gpg_user FC8B68... # existing
+  - &gpg_user 4D8770... # existing
   - &new_machine age1newmachine123...  # ADD THIS
 
 creation_rules:
@@ -205,7 +205,7 @@ sops --decrypt secrets/gpg-signing-key.yaml | \
   gpg --import
 
 # Trust the key
-gpg --edit-key FC8B68693AF4E0D9DC84A4D3B872E229ADE55151
+gpg --edit-key 4D8770567A65FE1369E2BCC1611871842A8C1619
 # In GPG prompt: trust → 5 (ultimate) → quit
 
 # Now you can decrypt with GPG
