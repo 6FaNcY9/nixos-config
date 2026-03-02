@@ -48,6 +48,14 @@ final: prev: {
     let
       opencodeSrc = inputs.opencode;
       opencodeRev = opencodeSrc.shortRev or (opencodeSrc.rev or "dirty");
+      # opencode 1.2.15+ requires bun ≥1.3.10; nixpkgs ships 1.3.9
+      bun_1_3_10 = prev.bun.overrideAttrs (_: {
+        version = "1.3.10";
+        src = prev.fetchurl {
+          url = "https://github.com/oven-sh/bun/releases/download/bun-v1.3.10/bun-linux-x64.zip";
+          hash = "sha256-9XvAGH45Yj3nFro6OJ/aVIay175xMamAulTce3M9Lgg=";
+        };
+      });
       nodeModules = final.callPackage "${opencodeSrc}/nix/node_modules.nix" {
         rev = opencodeRev;
       };
@@ -59,6 +67,7 @@ final: prev: {
     in
     (final.callPackage "${opencodeSrc}/nix/opencode.nix" {
       node_modules = nodeModulesPatched;
+      bun = bun_1_3_10;
     }).overrideAttrs
       (old: {
         postPatch = (old.postPatch or "") + ''
