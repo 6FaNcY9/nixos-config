@@ -15,12 +15,10 @@ let
 
   # Secret file paths
   githubSecretFile = "${inputs.self}/secrets/github.yaml";
-  resticSecretFile = "${inputs.self}/secrets/restic.yaml";
 
   secretValidation = cfgLib.mkSecretValidation {
     secrets = [
       githubSecretFile
-      resticSecretFile
     ];
     label = "System";
   };
@@ -37,7 +35,7 @@ in
     sops = {
       age = {
         keyFile = lib.mkDefault "/var/lib/sops-nix/key.txt"; # age encryption key location
-        sshKeyPaths = lib.mkDefault [ "/etc/ssh/ssh_host_ed25519_key" ]; # Fallback SSH key
+        sshKeyPaths = [ ]; # Explicit empty: do not derive age key from SSH host key (avoids coupling secret decryption to host key rotation)
         generateKey = lib.mkDefault true; # Auto-generate age key if missing
       };
 
@@ -46,13 +44,6 @@ in
         owner = username;
         mode = "0600";
         path = "${userHome}/.ssh/github";
-      };
-
-      secrets."restic_password" = {
-        sopsFile = resticSecretFile;
-        key = "password";
-        owner = "root";
-        mode = "0400";
       };
     };
 

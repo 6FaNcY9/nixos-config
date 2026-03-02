@@ -43,27 +43,6 @@ in
         useRoutingFeatures = "client";
       };
 
-      backup = {
-        enable = false; # Currently disabled
-        repositories.home = {
-          repository = "/mnt/backup/restic";
-          passwordFile = config.sops.secrets.restic_password.path;
-          initialize = true;
-          paths = [ "/home" ];
-          exclude = [
-            ".cache"
-            "*.tmp"
-            "*/node_modules"
-            "*/.direnv"
-            "*/target"
-            "*/dist"
-            "*/build"
-            "*/.local/share/Trash"
-            "*/.snapshots"
-          ];
-        };
-      };
-
       # Monitoring (currently disabled for battery life)
       monitoring = {
         enable = false;
@@ -180,17 +159,6 @@ in
   # Filesystem mounts — optimized BTRFS options override hardware-configuration.nix.
   # Main disk uses mkBtrfsOpts for consistent SSD + battery optimization.
   fileSystems = {
-    # Backup drive mount (external ResticBackup volume)
-    "/mnt/backup" = {
-      device = "/dev/disk/by-label/ResticBackup";
-      fsType = "btrfs";
-      options = [
-        "nofail" # Don't fail boot if drive missing
-        "noatime"
-        "compress=zstd"
-      ];
-    };
-
     "/" = {
       device = mainDisk;
       fsType = "btrfs";
