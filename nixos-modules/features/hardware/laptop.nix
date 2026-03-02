@@ -165,6 +165,11 @@ in
       # Resolves screen flickering and display power management issues
       "amdgpu.dcdebugmask=0x10"
 
+      # Disable ABM (Adaptive Backlight Modulation / Vari-Bright)
+      # Prevents display from appearing grayed-out/washed-out on battery.
+      # Confirmed fix for Framework 13 AMD: https://community.frame.work/t/56535
+      "amdgpu.abmlevel=0"
+
       # Dock suspend compatibility - disables PCIe ASPM power management
       # Prevents USB-C dock disconnection issues during suspend/resume cycles
       "pcie_aspm=off"
