@@ -18,6 +18,7 @@
   cfgLib,
   codexPkg ? null,
   opencodePkg ? null,
+  mistralVibePkg ? null,
   ...
 }:
 let
@@ -36,6 +37,7 @@ let
     codexPkg
     opencodePkg
     githubCopilotPkg
+    mistralVibePkg
   ];
 
   corePkgs = [

@@ -30,6 +30,7 @@ let
 
   codexPkg = inputs.codex-cli-nix.packages.${system}.default;
   opencodePkg = pkgs.opencode;
+  mistralVibePkg = inputs.mistral-vibe.packages.${system}.default;
 
   i3Pkg = pkgs.i3;
 in
@@ -47,6 +48,7 @@ in
   #   i3Pkg       — i3 window manager package
   #   codexPkg    — Codex CLI from flake input
   #   opencodePkg — OpenCode from overlay
+  #   mistralVibePkg — Mistral Vibe from flake input
   #   hostname    — Current host name
   #
   # Usage in home-modules: Add arg name to function signature, e.g.
@@ -60,6 +62,7 @@ in
       i3Pkg
       codexPkg
       opencodePkg
+      mistralVibePkg
       ;
     hostname = hostName;
     cfgLib = import ../../lib { inherit lib; };

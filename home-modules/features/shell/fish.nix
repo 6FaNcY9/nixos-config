@@ -41,6 +41,7 @@ in
           ${loadSecret config.sops.secrets.github_mcp_pat.path "GITHUB_MCP_PAT"}
           ${loadSecret config.sops.secrets.exa_api_key.path "EXA_API_KEY"}
           ${loadSecret config.sops.secrets.context7_api_key.path "CONTEXT7_API_KEY"}
+          ${loadSecret config.sops.secrets.helicone_api_key.path "HELICONE_API_KEY"}
 
           set -g fzf_fd_opts --hidden --follow --exclude .git
           set -g fzf_preview_dir_cmd 'eza --all --color=always --group-directories-first'
