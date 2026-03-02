@@ -105,3 +105,4 @@ docs/archive/
 
 # Git worktrees (isolated workspaces)
 .worktrees/
+.aider*
