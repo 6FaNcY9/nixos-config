@@ -5,10 +5,11 @@
 {
   workspaces,
   cfgLib,
+  lib,
   ...
 }:
 let
-  wsName = n: cfgLib.mkWorkspaceName (builtins.elemAt workspaces (n - 1));
+  wsName = n: cfgLib.mkWorkspaceName (lib.findFirst (ws: ws.number == n) (throw "workspace ${toString n} not found") workspaces);
 
   assignRules = [
     {

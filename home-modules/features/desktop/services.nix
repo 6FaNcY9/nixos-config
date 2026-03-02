@@ -7,6 +7,7 @@
   lib,
   config,
   palette,
+  stylixFonts ? { monospace.name = "Monospace"; },
   ...
 }:
 let
@@ -25,7 +26,7 @@ in
         enable = true;
         settings = {
           global = {
-            font = "IosevkaTerm Nerd Font 12";
+            font = "${stylixFonts.monospace.name} 12";
             frame_width = 2;
             frame_color = lib.mkForce palette.accent;
             corner_radius = 10;
