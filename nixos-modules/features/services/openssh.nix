@@ -51,6 +51,7 @@ in
         ClientAliveCountMax = 2;
         AllowTcpForwarding = "no";
         LogLevel = "VERBOSE";
+      };
     };
   };
 }
