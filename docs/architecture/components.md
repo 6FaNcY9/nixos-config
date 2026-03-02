@@ -76,7 +76,7 @@ Reusable system-level configuration modules (auto-imported by ez-configs).
 | `nixos-modules/core.nix` | Base system: user accounts, nix settings, essential packages, binary caches, registry | `nixos-modules/default.nix` |
 | `nixos-modules/storage.nix` | Storage & boot: GRUB, swap, btrfs snapshots (snapper), kernel packages | `nixos-modules/default.nix` |
 | `nixos-modules/services.nix` | System services: acpid, logind, printing (CUPS), sound (pipewire) | `nixos-modules/default.nix` |
-| `nixos-modules/secrets.nix` | sops-nix secrets: github_ssh_key, restic_password, key generation, validation | `nixos-modules/default.nix` |
+| `nixos-modules/secrets.nix` | sops-nix secrets: github_ssh_key, gpg-signing-key, key generation, validation | `nixos-modules/default.nix` |
 | `nixos-modules/desktop.nix` | Desktop environment: i3-xfce stack (lightdm, xserver, pipewire, polkit) | `nixos-modules/default.nix` |
 | `nixos-modules/home-manager.nix` | Home Manager bridge: extraSpecialArgs injection (inputs, username, repoRoot) | `nixos-modules/default.nix` |
 
@@ -85,7 +85,6 @@ Reusable system-level configuration modules (auto-imported by ez-configs).
 | File | Purpose | Imported By |
 |------|---------|-------------|
 | `nixos-modules/monitoring.nix` | Observability: Prometheus, Grafana, exporters, enhanced journald (opt-in) | `nixos-modules/default.nix` |
-| `nixos-modules/backup.nix` | Restic automated backups: systemd timers, pruning, encryption (opt-in) | `nixos-modules/default.nix` |
 | `nixos-modules/tailscale.nix` | Tailscale VPN configuration (opt-in) | `nixos-modules/default.nix` |
 | `nixos-modules/stylix-nixos.nix` | NixOS-specific Stylix targets: GRUB theme, lightdm theme | `nixos-modules/default.nix` |
 

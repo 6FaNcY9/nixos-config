@@ -318,7 +318,7 @@ options.theme.palette = lib.mkOption {
 **Why:** Secrets must never be committed in plaintext, but they need to be versioned and available during system builds. sops-nix handles encryption/decryption, while validation helpers prevent deploying a system with missing or corrupted secrets.
 
 **Where:**
-- `secrets/` — encrypted YAML files (github.yaml, restic.yaml, etc.)
+- `secrets/` — encrypted YAML files (github.yaml, gpg-signing-key.yaml, etc.)
 - `nixos-modules/secrets.nix` — system-level secret definitions and validation
 - `home-modules/secrets.nix` — user-level secret definitions and validation
 - `lib/default.nix` — `validateSecretExists`, `validateSecretEncrypted`, `mkSecretValidation`

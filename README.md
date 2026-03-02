@@ -123,7 +123,7 @@ Tooling:
 - Home-only switch (nh): `nh home switch -c vino@bandit`
 - Convenience apps: `nix run .#update`, `nix run .#clean`, `nix run .#qa`, `nix run .#commit`
 - Formatter: `nix fmt` (uses `nixfmt-rfc-style`).
-- Dev shells: `nix develop` (maintenance), `nix develop .#flask`, `nix develop .#pentest`
+- Dev shells: `nix develop` (default), `nix develop .#web`, `nix develop .#rust`, `nix develop .#go`, `nix develop .#agents`, `nix develop .#nix-debug`
 
 ## Package Profiles
 Toggle package groups in `home-configurations/vino/default.nix` (or a host-specific HM override) by setting:
@@ -139,7 +139,7 @@ Toggle package groups in `home-configurations/vino/default.nix` (or a host-speci
 - Apps: `update`, `clean`, `qa`, `commit`
 
 ## Maintenance
-- Enter maintenance shell: `nix develop` (default) or `nix develop .#maintenance`
+- Enter maintenance shell: `nix develop` (default)
 - Format: `treefmt` (runs nixfmt-rfc-style for .nix)
 - Lint: `statix check .`
 - Dead code scan: `deadnix -f .`

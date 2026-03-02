@@ -12,7 +12,6 @@ This document provides context for Claude/Copilot when working on this refactore
 
 ### Service Features
 - ✅ **Tailscale** → `features.services.tailscale`
-- ✅ **Backup** → `features.services.backup`
 - ✅ **Monitoring** → `features.services.monitoring`
 - ✅ **Auto-update** → `features.services.auto-update`
 - ✅ **OpenSSH** → `features.services.openssh`

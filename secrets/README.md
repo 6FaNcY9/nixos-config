@@ -11,7 +11,6 @@ Secrets are encrypted using **Age** and **GPG** keys defined in `.sops.yaml` at 
 - `github-mcp.yaml` - GitHub MCP Personal Access Token
 - `github.yaml` - GitHub SSH private key
 - `gpg-signing-key.yaml` - GPG private key for commit signing
-- `restic.yaml` - Restic backup password
 
 ## 🔐 How Encryption Works
 
@@ -49,7 +48,7 @@ Private Key (secret!)       → Only YOU can DECRYPT
   - Used for: System-level decryption (auto-generated per host)
 
 ### GPG Key:
-- **Signing Key:** `FC8B68693AF4E0D9DC84A4D3B872E229ADE55151`
+- **Signing Key:** `4D8770567A65FE1369E2BCC1611871842A8C1619`
   - Private key: `~/.gnupg/`
   - Used for: Git commit signing + backup decryption
 

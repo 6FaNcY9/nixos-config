@@ -446,27 +446,6 @@ mount -o subvol=/.snapshots/123/snapshot /mnt  # Mount snapshot
 
 ---
 
-## 10. Restic Backup
-
-### NixOS Module
-
-```nix
-services.restic.backups.daily = {
-  repository = "s3:s3.amazonaws.com/bucket";
-  passwordFile = config.sops.secrets.restic-password.path;
-  environmentFile = config.sops.secrets.restic-env.path;
-  paths = ["/home" "/etc" "/var/lib"];
-  exclude = ["/nix" "/tmp" "**/.cache" "**/node_modules"];
-  timerConfig = {
-    OnCalendar = "daily";
-    RandomizedDelaySec = "1h";
-    Persistent = true;
-  };
-  pruneOpts = ["--keep-daily 7" "--keep-weekly 5" "--keep-monthly 12"];
-  createWrapper = true;  # Adds restic-daily to PATH
-  initialize = true;
-};
-```
 
 ---
 
