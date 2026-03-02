@@ -32,12 +32,19 @@ let
 
   githubCopilotPkg = lib.attrByPath [ "github-copilot-cli" ] null pkgs;
 
+  vibeWrapper =
+    if mistralVibePkg != null then
+      pkgs.writeShellScriptBin "vibe" ''
+        exec ${pkgs.direnv}/bin/direnv exec /home/vino/.vibe ${mistralVibePkg}/bin/vibe "$@"
+      ''
+    else null;
+
   aiPkgs = lib.filter (p: p != null) [
     claudeCodePkg
     codexPkg
     opencodePkg
     githubCopilotPkg
-    mistralVibePkg
+    vibeWrapper
     pkgs.agentsys
   ];
 
