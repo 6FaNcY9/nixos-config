@@ -40,6 +40,27 @@ final: prev: {
   # Exposed in home-modules via mistralVibePkg, but also available as pkgs.mistral-vibe.
   mistral-vibe = inputs.mistral-vibe.packages.${final.system}.default;
 
+  # strip-json-comments-cli: CLI tool to strip JSON comments (used by some dev tools).
+  # Upstream has no package-lock.json; we vendor a generated one in overlays/npm-locks/.
+  strip-json-comments-cli = prev.buildNpmPackage rec {
+    pname = "strip-json-comments-cli";
+    version = "3.0.0";
+    src = prev.fetchFromGitHub {
+      owner = "sindresorhus";
+      repo = "strip-json-comments-cli";
+      rev = "v${version}";
+      hash = "sha256-aMp/1/TpEed6eHU7FCXMjAkX/2EcOyhR1cPDHek4Noc=";
+    };
+    npmDepsHash = "sha256-XVUiaKWGX6ucnSq4G2puSjKLZukIpHscaMoVSiKvXtA=";
+    dontNpmBuild = true;
+    dontNpmPrune = true;
+    # Upstream ships no package-lock.json; inject our vendored one.
+    postPatch = ''
+      cp ${./npm-locks/strip-json-comments-cli-3.0.0-lock.json} ./package-lock.json
+    '';
+    meta.mainProgram = "strip-json-comments";
+  };
+
   # opencode: Force bun isolated installs to prevent symlink issues in nix store.
   # The --linker=isolated flag ensures each package gets its own node_modules copy,
   # preventing "cannot find module" errors with hoisted dependencies.
