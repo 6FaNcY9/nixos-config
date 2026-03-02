@@ -13,7 +13,7 @@ get_sinks() {
 	done
 }
 
-chosen=$(get_sinks | rofi -dmenu -p " 󰓃  Audio" -theme ~/.config/rofi/audio-switcher-theme.rasi)
+chosen=$(get_sinks | rofi -dmenu -p " 󰓃  Audio" -theme audio-switcher-theme)
 
 if [ -z "$chosen" ]; then
 	exit 0

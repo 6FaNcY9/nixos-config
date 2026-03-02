@@ -42,7 +42,7 @@ $vol_icon  Volume: $vol_label
 $auto_icon  Autotiling: $auto_state"
 
 chosen=$(echo -e "$entries" | sed 's/^[[:space:]]*//' | rofi -dmenu \
-	-theme ~/.config/rofi/dropdown-theme.rasi \
+	-theme dropdown-theme \
 	-selected-row 0)
 
 [ -z "$chosen" ] && exit 0
@@ -51,7 +51,7 @@ case "$chosen" in
 *Brightness*)
 	options="󰃞  100%\n󰃞  75%\n󰃝  50%\n󰃜  25%\n󰃛  10%"
 	level=$(echo -e "$options" | rofi -dmenu \
-		-theme ~/.config/rofi/dropdown-theme.rasi \
+		-theme dropdown-theme \
 		-theme-str 'listview { lines: 5; }' \
 		-selected-row 0)
 	if [ -n "$level" ]; then
@@ -68,7 +68,7 @@ case "$chosen" in
 	fi
 	vol_options="󰕾  100%\n󰕾  75%\n󰕾  50%\n󰕾  25%\n󰕾  10%\n$mute_label\n󰓃  Switch Output"
 	vol_choice=$(echo -e "$vol_options" | rofi -dmenu \
-		-theme ~/.config/rofi/dropdown-theme.rasi \
+		-theme dropdown-theme \
 		-theme-str 'listview { lines: 7; }' \
 		-selected-row 0)
 	if [ -n "$vol_choice" ]; then
