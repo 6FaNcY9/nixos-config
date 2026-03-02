@@ -16,8 +16,6 @@
 
   nixConfig = {
     extra-experimental-features = "nix-command flakes";
-    extra-substituters = "https://vino-nixos-config.cachix.org";
-    extra-trusted-public-keys = "vino-nixos-config.cachix.org-1:8LFVkzmO/+crLWO0Q3bqWOOamVjScT3v1/PCHPiTiUU=";
   };
 
   inputs = {
