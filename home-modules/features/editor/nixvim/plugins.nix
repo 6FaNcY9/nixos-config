@@ -229,8 +229,8 @@ _: {
         # Systems programming
         rust_analyzer = {
           enable = true;
-          installCargo = true;
-          installRustc = true;
+          installCargo = false;
+          installRustc = false;
         };
         clangd.enable = true; # C/C++
         gopls.enable = true; # Go
