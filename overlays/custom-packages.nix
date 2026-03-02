@@ -48,14 +48,18 @@ final: prev: {
     let
       opencodeSrc = inputs.opencode;
       opencodeRev = opencodeSrc.shortRev or (opencodeSrc.rev or "dirty");
-      # opencode 1.2.15+ requires bun ≥1.3.10; nixpkgs ships 1.3.9
-      bun_1_3_10 = prev.bun.overrideAttrs (_: {
-        version = "1.3.10";
-        src = prev.fetchurl {
-          url = "https://github.com/oven-sh/bun/releases/download/bun-v1.3.10/bun-linux-x64.zip";
-          hash = "sha256-9XvAGH45Yj3nFro6OJ/aVIay175xMamAulTce3M9Lgg=";
-        };
-      });
+      # opencode 1.2.15+ requires bun ≥1.3.10; fall back to pinned build only if nixpkgs is older.
+      bun_1_3_10 =
+        if prev.lib.versionAtLeast prev.bun.version "1.3.10" then
+          prev.bun
+        else
+          prev.bun.overrideAttrs (_: {
+            version = "1.3.10";
+            src = prev.fetchurl {
+              url = "https://github.com/oven-sh/bun/releases/download/bun-v1.3.10/bun-linux-x64.zip";
+              hash = "sha256-9XvAGH45Yj3nFro6OJ/aVIay175xMamAulTce3M9Lgg=";
+            };
+          });
       nodeModules = final.callPackage "${opencodeSrc}/nix/node_modules.nix" {
         rev = opencodeRev;
       };
@@ -74,6 +78,10 @@ final: prev: {
           substituteInPlace packages/opencode/script/build.ts \
             --replace "../../../node_modules/@opentui/solid/scripts/solid-plugin" \
                       "../node_modules/@opentui/solid/scripts/solid-plugin"
+          # packages/script/src/index.ts reads .github/TEAM_MEMBERS at module init.
+          # The nix source fileset excludes .github/, so we create an empty stub.
+          mkdir -p .github
+          touch .github/TEAM_MEMBERS
         '';
         # The embedded Bun JS runtime's file watcher needs libstdc++.so.6 at runtime.
         # The upstream installPhase already wraps with makeBinaryWrapper for PATH.
