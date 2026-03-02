@@ -38,6 +38,7 @@ let
     opencodePkg
     githubCopilotPkg
     mistralVibePkg
+    pkgs.agentsys
   ];
 
   corePkgs = [
@@ -89,6 +90,7 @@ let
     pkgs.clippy
     pkgs.uv
     pkgs.devenv
+    pkgs.strip-json-comments-cli
     pkgs.tree-sitter-cli # v0.26.5 CLI tool (separate from tree-sitter library for neovim)
   ];
 

@@ -61,6 +61,27 @@ final: prev: {
     meta.mainProgram = "strip-json-comments";
   };
 
+  # agentsys: AI agent orchestration CLI (used with Claude).
+  # Upstream has no package-lock.json; we vendor a generated one in overlays/npm-locks/.
+  agentsys = prev.buildNpmPackage rec {
+    pname = "agentsys";
+    version = "5.1.0";
+    src = prev.fetchFromGitHub {
+      owner = "avifenesh";
+      repo = "agentsys";
+      rev = "v${version}";
+      hash = "sha256-Ms58KSlCa1zee4yUQzXqwEmdYLjV+wYPy0Dg4jXEwB8=";
+    };
+    npmDepsHash = "sha256-Au15dCG96Ond/y7XisnuN9nKo/5COsdJ4feBW8fe7z0=";
+    dontNpmBuild = true;
+    dontNpmPrune = true;
+    # Upstream ships no package-lock.json; inject our vendored one.
+    postPatch = ''
+      cp ${./npm-locks/agentsys-5.1.0-lock.json} ./package-lock.json
+    '';
+    meta.mainProgram = "agentsys";
+  };
+
   # opencode: Force bun isolated installs to prevent symlink issues in nix store.
   # The --linker=isolated flag ensures each package gets its own node_modules copy,
   # preventing "cannot find module" errors with hoisted dependencies.
