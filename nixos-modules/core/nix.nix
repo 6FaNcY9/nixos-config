@@ -18,8 +18,11 @@
         "nix-command"
         "flakes"
       ];
+      sandbox = true; # Lock sandbox on — prevents per-build override by trusted-users
       auto-optimise-store = false; # Disabled: runs inline on every build (adds latency). Run manually: sudo nix-store --optimise
       warn-dirty = true;
+      keep-outputs = true; # Preserve intermediate build artifacts for faster incremental rebuilds
+      keep-derivations = true;
       # Optimize builds
       max-jobs = "auto";
       cores = 0;
