@@ -2,16 +2,15 @@
 # Provides: sops-nix integration for encrypted secrets
 # Dependencies: None
 {
-  config,
-  lib,
-  inputs,
-  username,
-  ...
+config,
+lib,
+inputs,
+  username, cfgLib,
+...
 }:
 let
   cfg = config.features.security.secrets;
   userHome = config.users.users.${username}.home;
-  cfgLib = import ../../../lib { inherit lib; };
 
   # Secret file paths
   githubSecretFile = "${inputs.self}/secrets/github.yaml";

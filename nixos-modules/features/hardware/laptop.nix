@@ -2,14 +2,13 @@
 # Provides: Laptop-specific hardware configuration (power, bluetooth, etc)
 # Dependencies: None (but optimized for Framework 13 AMD)
 {
-  lib,
-  config,
-  pkgs,
-  ...
+lib,
+config,
+  pkgs, cfgLib,
+...
 }:
 let
   cfg = config.features.hardware.laptop;
-  cfgLib = import ../../../lib { inherit lib; };
   inherit (cfgLib) mkBoolOpt;
   isFramework13Amd = cfg.framework.enable && cfg.framework.model == "framework-13-amd";
 in

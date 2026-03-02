@@ -2,14 +2,13 @@
 # Provides: Development tools, virtualization, and build essentials
 # Dependencies: None
 {
-  lib,
-  config,
-  pkgs,
-  ...
+lib,
+config,
+  pkgs, cfgLib,
+...
 }:
 let
   cfg = config.features.development.base;
-  cfgLib = import ../../../lib { inherit lib; };
   inherit (cfgLib) mkBoolOpt;
 in
 {

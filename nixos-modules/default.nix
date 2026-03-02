@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 {
   imports = [
     # External modules
@@ -16,4 +16,6 @@
     ./features # Optional feature modules
     # ./profiles # Removed: empty stub, will be added when bundles are created
   ];
+
+  _module.args.cfgLib = import ../lib { inherit lib; };
 }
