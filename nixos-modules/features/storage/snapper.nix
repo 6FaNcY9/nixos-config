@@ -4,6 +4,7 @@
 {
   lib,
   config,
+  pkgs,
   username,
   ...
 }:
@@ -90,6 +91,9 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+
+    environment.systemPackages = [ pkgs.snapper ];
+
     # Configure snapper for each specified subvolume
     services.snapper.configs = lib.mapAttrs (
       _name: snapCfg:
