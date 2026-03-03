@@ -29,9 +29,7 @@ let
       exists = builtins.pathExists secretPath;
       content = if exists then builtins.readFile secretPath else "";
       # Check if file contains sops metadata (encrypted files have this)
-      isEncrypted =
-        exists
-        && lib.hasInfix "ENC[AES256_GCM" content;
+      isEncrypted = exists && lib.hasInfix "ENC[AES256_GCM" content;
     in
     assert
       isEncrypted

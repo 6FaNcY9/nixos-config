@@ -7,7 +7,9 @@
   lib,
   config,
   palette,
-  stylixFonts ? { monospace.name = "Monospace"; },
+  stylixFonts ? {
+    monospace.name = "Monospace";
+  },
   ...
 }:
 let

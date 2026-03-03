@@ -2,10 +2,11 @@
 # Provides: Development tools, virtualization, and build essentials
 # Dependencies: None
 {
-lib,
-config,
-  pkgs, cfgLib,
-...
+  lib,
+  config,
+  pkgs,
+  cfgLib,
+  ...
 }:
 let
   cfg = config.features.development.base;

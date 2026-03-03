@@ -9,7 +9,11 @@
   ...
 }:
 let
-  wsName = n: cfgLib.mkWorkspaceName (lib.findFirst (ws: ws.number == n) (throw "workspace ${toString n} not found") workspaces);
+  wsName =
+    n:
+    cfgLib.mkWorkspaceName (
+      lib.findFirst (ws: ws.number == n) (throw "workspace ${toString n} not found") workspaces
+    );
 
   assignRules = [
     {

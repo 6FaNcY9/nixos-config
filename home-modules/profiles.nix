@@ -37,7 +37,8 @@ let
       pkgs.writeShellScriptBin "vibe" ''
         exec ${pkgs.direnv}/bin/direnv exec /home/vino/.vibe ${mistralVibePkg}/bin/vibe "$@"
       ''
-    else null;
+    else
+      null;
 
   aiPkgs = lib.filter (p: p != null) [
     claudeCodePkg

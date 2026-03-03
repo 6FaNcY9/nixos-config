@@ -2,10 +2,11 @@
 # Provides: Laptop-specific hardware configuration (power, bluetooth, etc)
 # Dependencies: None (but optimized for Framework 13 AMD)
 {
-lib,
-config,
-  pkgs, cfgLib,
-...
+  lib,
+  config,
+  pkgs,
+  cfgLib,
+  ...
 }:
 let
   cfg = config.features.hardware.laptop;

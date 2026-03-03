@@ -2,11 +2,12 @@
 # Provides: sops-nix integration for encrypted secrets
 # Dependencies: None
 {
-config,
-lib,
-inputs,
-  username, cfgLib,
-...
+  config,
+  lib,
+  inputs,
+  username,
+  cfgLib,
+  ...
 }:
 let
   cfg = config.features.security.secrets;
