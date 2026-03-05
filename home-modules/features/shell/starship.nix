@@ -28,7 +28,7 @@ in
 
         directory = {
           format = "[ 󰉋  $path ]($style)";
-          style = "fg:${c.base05} bg:${c.base01}";
+          style = "fg:${c.base05} bg:${c.base01} bold";
           truncation_length = 4;
           truncation_symbol = "…/";
         };
