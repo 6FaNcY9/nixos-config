@@ -41,13 +41,18 @@
 
       # Skip global flake registry lookup — self-contained with pinned nixpkgs
       flake-registry = "";
+      # Prevent flakes from overriding trusted-users/substituters via nixConfig
+      accept-flake-config = false;
     };
 
     # Use nh's cleaner to avoid double GC scheduling.
     gc.automatic = lib.mkDefault false;
 
-    # Store optimisation disabled (run manually: sudo nix-store --optimise)
-    optimise.automatic = false;
+    # Store optimisation: scheduled weekly (avoids inline latency during builds)
+    optimise = {
+      automatic = true;
+      dates = "weekly";
+    };
 
   };
 
