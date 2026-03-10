@@ -30,7 +30,7 @@ let
 
   codexPkg = inputs.codex-cli-nix.packages.${system}.default;
   opencodePkg = pkgs.opencode;
-  mistralVibePkg = inputs.mistral-vibe.packages.${system}.default;
+  mistralVibePkg = pkgs.mistral-vibe; # use overlay (consistent with opencodePkg = pkgs.opencode)
 
   i3Pkg = pkgs.i3;
 in
