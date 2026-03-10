@@ -22,9 +22,6 @@
     # Primary: Unstable (latest packages, recommended for most users)
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    # Fallback: Stable 25.11 (when unstable breaks)
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.11";
-
     # Codex CLI (always up-to-date)
     codex-cli-nix = {
       url = "github:sadjow/codex-cli-nix";
