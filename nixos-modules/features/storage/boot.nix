@@ -63,7 +63,7 @@ in
         };
 
         # systemd-boot configuration
-        systemd-boot.enable = lib.mkIf (cfg.bootloader == "systemd-boot") true;
+        systemd-boot.enable = (cfg.bootloader == "systemd-boot");
 
         # EFI variables
         efi.canTouchEfiVariables = cfg.canTouchEfiVariables;
