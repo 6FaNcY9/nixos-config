@@ -157,7 +157,7 @@ in
       # 0 = no restrictions, 1 = restrict to root, 2 = always hide (most secure)
       "kernel.kptr_restrict" = 2;
       # Disable kexec (prevents kernel replacement without reboot - mitigates certain rootkits)
-      "kernel.kexec_load_disabled" = lib.mkDefault 1;
+      "kernel.kexec_load_disabled" = 1; # always disable kexec on desktop (no mkDefault — must not be overridable)
       # Restrict ptrace to parent processes only (prevents process injection attacks)
       "kernel.yama.ptrace_scope" = 1;
     };
