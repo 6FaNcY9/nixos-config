@@ -37,7 +37,7 @@ in
       monitoring = {
         enable = false;
         grafana.enable = false;
-        logging.enhancedJournal = true; # Keep enhanced logging (minimal overhead)
+        logging.enhancedJournal = true; # Runs independently of monitoring.enable (separate guard in module)
       };
 
       # Automated updates (timer disabled for battery life)
@@ -91,7 +91,7 @@ in
 
       snapper = {
         enable = true;
-        enableTimeline = true; # Disabled for I/O reduction
+        enableTimeline = false; # Disabled for I/O reduction — manual snapshots preferred
         configs = {
           root = {
             subvolume = "/";
@@ -144,6 +144,7 @@ in
   #                Required for kernel to resume from hibernation.
   boot = {
     resumeDevice = mainDisk;
+    # resume_offset: regenerate if swapfile is recreated: sudo filefrag -v /swap/swapfile | awk 'NR==4{gsub(/\.\./,""); print $4}'
     kernelParams = [ "resume_offset=1959063" ];
   };
 
