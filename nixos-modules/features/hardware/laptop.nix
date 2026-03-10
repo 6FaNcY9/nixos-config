@@ -188,9 +188,9 @@ in
       # Confirmed fix for Framework 13 AMD: https://community.frame.work/t/56535
       "amdgpu.abmlevel=0"
 
-      # Dock suspend compatibility - disables PCIe ASPM power management
-      # Prevents USB-C dock disconnection issues during suspend/resume cycles
-      "pcie_aspm=off"
+      # pcie_aspm=off removed: was too broad (killed ASPM for all PCIe devices, hurting battery).
+      # WiFi ASPM is already fixed by rtw89_pci.disable_aspm_l1/l1ss above.
+      # Dock issues: use targeted udev rules for the specific device if they recur.
     ];
   };
 }
