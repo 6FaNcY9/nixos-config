@@ -1,13 +1,16 @@
 # Polybar status bar module
 # Top bar with i3 workspaces, window title, system stats, time, tray
 # Font choices:
-# - font-0 (Iosevka Term): Primary text, size 11.5pt bold for readability
+# - font-0 (stylixFonts.monospace): Primary text, size 11.5pt bold — intentionally smaller than desktop (14pt) for bar density
 # - font-1 (Symbols Nerd Font): Icons from nerd-fonts symbols-only package
 
 {
   config,
   pkgs,
   lib,
+  stylixFonts ? {
+    monospace.name = "Monospace";
+  },
   ...
 }:
 let
@@ -67,7 +70,7 @@ in
           border-color = "\${colors.dark}";
           separator = ".";
           separator-foreground = "\${colors.transparent}";
-          font-0 = "Iosevka Term:size=11.5:weight=bold;2"; # Primary text - clean, readable monospace
+          font-0 = "${stylixFonts.monospace.name}:size=11.5:weight=bold;2"; # size intentionally smaller than desktop (14pt) for bar density
           font-1 = "Symbols Nerd Font Mono:size=14;3"; # Icons - nerd-fonts symbols-only
           modules-left = modulesLeft;
           modules-center = modulesCenter;
