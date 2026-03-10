@@ -47,10 +47,10 @@
     # - Nerd Font patched version provides icon glyph support.
     fonts = {
       sizes = {
-        applications = 12;
+        applications = 14;
         terminal = 10;
-        desktop = 12;
-        popups = 12;
+        desktop = 14;
+        popups = 14;
       };
 
       monospace = {
