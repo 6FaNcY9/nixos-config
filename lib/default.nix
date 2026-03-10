@@ -209,7 +209,7 @@ let
     "subvol=${subvol}"
     "noatime"
     "nodiratime"
-    "compress=zstd:3"
+    "compress-force=zstd:1" # force-compress all files; zstd:1 is fast + better than heuristic skip
     "space_cache=v2"
     "discard=async"
   ];
