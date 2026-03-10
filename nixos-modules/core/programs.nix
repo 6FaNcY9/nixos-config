@@ -34,7 +34,7 @@
       flake = repoRoot;
       clean = {
         enable = true;
-        extraArgs = "--keep-since 4d --keep 3";
+        extraArgs = "--keep-since 7d --keep 5";
       };
     };
 
