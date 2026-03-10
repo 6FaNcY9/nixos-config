@@ -11,18 +11,9 @@
 }:
 let
   mainDisk = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
-
-  # Generate BTRFS mount options for SSD + battery optimization.
-  # Includes: subvolume selection, noatime (reduce writes), zstd compression,
-  #           space_cache=v2 (faster mounts), discard=async (SSD TRIM).
-  mkBtrfsOpts = subvol: [
-    "subvol=${subvol}"
-    "noatime"
-    "nodiratime"
-    "compress=zstd:3"
-    "space_cache=v2"
-    "discard=async"
-  ];
+  cfgLib = import ../../lib { inherit lib; };
+  # BTRFS mount options — see lib/default.nix for the full definition.
+  inherit (cfgLib) mkBtrfsOpts;
 
 in
 {
@@ -60,7 +51,7 @@ in
       openssh.enable = false; # Enable on servers via features.services.openssh.enable
 
       # Trezor hardware wallet (enabled on desktop)
-      trezord.enable = true; # Hardware wallet support
+      trezord.enable = false; # Hardware wallet support
     };
 
     desktop.i3-xfce = {
@@ -130,6 +121,7 @@ in
         enable = true;
         model = "framework-13-amd";
       };
+      powerManagement.useAutoFreq = true; # auto-cpufreq v3 for better battery/turbo on Framework 13 AMD
     };
 
     development.base = {

@@ -174,6 +174,11 @@ in
           "z"
         ];
       };
+
+      carapace = {
+        enable = true;
+        enableFishIntegration = true;
+      };
     };
   };
 }

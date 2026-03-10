@@ -1,0 +1,3 @@
+[files]
+# Exclude SOPS-encrypted secrets — base64-encoded ciphertext triggers false positives
+extend-exclude = ["secrets/**"]

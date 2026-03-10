@@ -24,6 +24,8 @@ _: {
       git.enable = true;
       fish.enable = true;
       starship.enable = true;
+      bat.enable = true;
+      eza.enable = true;
     };
     editor.nixvim.enable = true;
     terminal = {

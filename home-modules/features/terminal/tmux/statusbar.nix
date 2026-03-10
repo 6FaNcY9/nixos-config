@@ -1,9 +1,9 @@
 # Tmux Status Bar Configuration
-# Enhanced status line optimized for laptop use with battery, load, hostname, and time
+# Enhanced status line with load average, hostname, and time
 #
 # Layout:
 #   Left:  Session name (accent, bold) | window indicator
-#   Right: Battery (warn) | Load average (accent2) | Hostname (accent2) | Date/Time (accent)
+#   Right: Load average (accent2) | Hostname (accent2) | Date/Time (accent)
 #
 # Color scheme uses palette.* for consistency with overall theme
 { palette, ... }:
@@ -20,12 +20,11 @@
     # Left: session name (bold) + window indicator
     set -g status-left "#[fg=${palette.accent},bold]  #S #[default]#[fg=${palette.muted}]|#[default] "
 
-    # Right: battery + load + host + time
-    # Battery: Show percentage and charging status
+    # Right: load + host + time
     # Load: Show 1-min load average
     # Host: Hostname in accent color
     # Time: Date and time in accent color
-    set -g status-right "#[fg=${palette.warn}]#{?#{==:#{battery_percentage},},, #{battery_percentage} #{battery_icon}}#[default] #[fg=${palette.muted}]|#[default] #[fg=${palette.accent2}]#{?#{==:#(cat /proc/loadavg | cut -d' ' -f1),},,  #(cat /proc/loadavg | cut -d' ' -f1)}#[default] #[fg=${palette.muted}]|#[default] #[fg=${palette.accent2}] #H#[default] #[fg=${palette.muted}]|#[default] #[fg=${palette.accent}] %Y-%m-%d %H:%M#[default]"
+    set -g status-right "#[fg=${palette.accent2}]#{?#{==:#(cat /proc/loadavg | cut -d' ' -f1),},,  #(cat /proc/loadavg | cut -d' ' -f1)}#[default] #[fg=${palette.muted}]|#[default] #[fg=${palette.accent2}] #H#[default] #[fg=${palette.muted}]|#[default] #[fg=${palette.accent}] %Y-%m-%d %H:%M#[default]"
 
     # Window status format
     set -g window-status-format "#[fg=${palette.muted}]#I:#W#F#[default]"

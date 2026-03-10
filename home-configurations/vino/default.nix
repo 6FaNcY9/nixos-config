@@ -120,6 +120,7 @@ in
 
       alacritty.enable = true;
       btop.enable = true;
+      bat.enable = true;
       fzf.enable = true;
       dunst.enable = true;
       xfce.enable = true;

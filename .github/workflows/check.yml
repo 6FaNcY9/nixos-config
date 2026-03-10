@@ -31,6 +31,9 @@ jobs:
 
   flake-check:
     name: Flake Check
+    permissions:
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: Free disk space
@@ -48,6 +51,9 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
             sandbox = true
+
+      - name: Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
 
       - name: Setup Cachix
         uses: cachix/cachix-action@v15

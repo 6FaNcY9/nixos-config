@@ -20,6 +20,7 @@ in
     powerManagement = {
       enablePowerProfilesDaemon = mkBoolOpt true "Enable power-profiles-daemon for power management";
 
+      useAutoFreq = mkBoolOpt false "Use auto-cpufreq v3 instead of power-profiles-daemon (better turbo + governor control on AMD laptops)";
       enableGeneralPowerManagement = mkBoolOpt true "Enable general power management features";
     };
 
@@ -101,11 +102,28 @@ in
 
     # Services configuration
     services = {
-      power-profiles-daemon.enable = cfg.powerManagement.enablePowerProfilesDaemon;
+      power-profiles-daemon.enable =
+        cfg.powerManagement.enablePowerProfilesDaemon && !cfg.powerManagement.useAutoFreq;
       fprintd.enable = cfg.fingerprint.enable;
       blueman.enable = cfg.bluetooth.enableBlueman;
       hardware.bolt.enable = cfg.thunderbolt.enable;
       fwupd.enable = cfg.firmwareUpdates.enable;
+    };
+
+    # auto-cpufreq v3: Advanced frequency + turbo control (AMD/Intel)
+    # Replaces power-profiles-daemon when useAutoFreq = true (must not coexist)
+    services.auto-cpufreq = lib.mkIf cfg.powerManagement.useAutoFreq {
+      enable = true;
+      settings = {
+        charger = {
+          governor = "performance";
+          turbo = "auto";
+        };
+        battery = {
+          governor = "powersave";
+          turbo = "never";
+        };
+      };
     };
 
     # Hardware configuration

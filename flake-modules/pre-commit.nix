@@ -35,6 +35,7 @@
           deadnix.enable = true; # Dead code detector
           shellcheck.enable = true; # Shell script linter
           shfmt.enable = true; # Shell script formatter
+          typos.enable = true; # Spell checker across all source files
 
           # Security: Prevent committing unencrypted secrets
           # Checks secrets/*.yaml files for sops encryption markers

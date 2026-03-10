@@ -83,16 +83,18 @@ _: {
       };
     };
 
-    # Notify: Modern notification system
-    # Compact fade-in notifications with 3s timeout
-    notify = {
-
+    # snacks.nvim: Modern UI utilities — notifier replaces nvim-notify, bigfile
+    # protects heavy plugins from firing on large files, words highlights references
+    snacks = {
       enable = true;
       settings = {
-        timeout = 3000;
-        top_down = true;
-        render = "compact";
-        stages = "fade";
+        notifier = {
+          enabled = true;
+          timeout = 3000;
+          style = "compact";
+        };
+        bigfile.enabled = true;
+        words.enabled = true;
       };
     };
 

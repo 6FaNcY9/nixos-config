@@ -156,57 +156,22 @@ _: {
       };
     };
 
-    # nvim-cmp: Autocompletion with LSP, path, buffer, and snippet sources
-    # Keybinds: Tab/S-Tab=navigate, CR=confirm, C-Space=trigger
-    cmp = {
+    # blink-cmp: Async Rust completion engine (replaces nvim-cmp, LazyVim v14 default)
+    # Preset super-tab: Tab/S-Tab navigate items, CR confirm, C-Space trigger
+    blink-cmp = {
       enable = true;
-      autoEnableSources = true;
-
-      settings = {
-        snippet.expand.__raw = ''
-          function(args)
-            require("luasnip").lsp_expand(args.body)
-          end
-        '';
-
-        mapping = {
-          "<C-Space>" = "cmp.mapping.complete()";
-          "<CR>" = "cmp.mapping.confirm({ select = true })";
-          "<Tab>" = "cmp.mapping.select_next_item()";
-          "<S-Tab>" = "cmp.mapping.select_prev_item()";
-        };
-
-        sources = [
-          { name = "nvim_lsp"; }
-          { name = "path"; }
-          { name = "buffer"; }
-          { name = "luasnip"; }
-        ];
-      };
-
-      # Cmdline completion
-      cmdline = {
-        "/" = {
-          mapping.__raw = "cmp.mapping.preset.cmdline()";
-          sources = [
-            { name = "buffer"; }
-          ];
-        };
-
-        "?" = {
-          mapping.__raw = "cmp.mapping.preset.cmdline()";
-          sources = [
-            { name = "buffer"; }
-          ];
-        };
-
-        ":" = {
-          mapping.__raw = "cmp.mapping.preset.cmdline()";
-          sources = [
-            { name = "path"; }
-            { name = "cmdline"; }
-          ];
-        };
+      setupLspCapabilities = true;
+      keymap.preset = "super-tab";
+      sources.default = [
+        "lsp"
+        "path"
+        "snippets"
+        "buffer"
+      ];
+      completion = {
+        accept.auto_brackets.enabled = true;
+        menu.auto_show = true;
+        documentation.auto_show = true;
       };
     };
 
@@ -219,7 +184,17 @@ _: {
         # Scripting & config
         pyright.enable = true;
         lua_ls.enable = true;
-        nixd.enable = true;
+        nixd = {
+          enable = true;
+          settings = {
+            nixpkgs.expr = "import <nixpkgs> { }";
+            formatting.command = [ "nixfmt" ];
+            options = {
+              nixos.expr = "(builtins.getFlake (builtins.toString ./.)).nixosConfigurations.bandit.options";
+              home_manager.expr = "(builtins.getFlake (builtins.toString ./.)).homeConfigurations.\"vino@bandit\".options";
+            };
+          };
+        };
         bashls.enable = true;
 
         # Data formats
@@ -257,6 +232,23 @@ _: {
           "[d" = "goto_prev";
           "]d" = "goto_next";
           "<leader>e" = "open_float";
+        };
+      };
+    };
+
+    # conform.nvim: Reliable format-on-save (replaces unreliable per-LSP formatting)
+    conform-nvim = {
+      enable = true;
+      settings = {
+        formatters_by_ft = {
+          nix = [ "nixfmt" ];
+          python = [ "ruff" ];
+          rust = [ "rustfmt" ];
+          lua = [ "stylua" ];
+        };
+        format_on_save = {
+          lsp_format = "fallback";
+          timeout_ms = 500;
         };
       };
     };

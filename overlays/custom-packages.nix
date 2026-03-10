@@ -105,6 +105,8 @@ final: prev: {
           });
       nodeModules = final.callPackage "${opencodeSrc}/nix/node_modules.nix" {
         rev = opencodeRev;
+        # hashes.json at pinned commit is stale; override with correct hash.
+        hash = "sha256-4kjoJ06VNvHltPHfzQRBG0bC6R39jao10ffGzrNZ230=";
       };
       nodeModulesPatched = nodeModules.overrideAttrs (old: {
         buildPhase =

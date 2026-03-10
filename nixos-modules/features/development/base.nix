@@ -52,6 +52,10 @@ in
       enableNixDirenv = mkBoolOpt true "Enable nix-direnv integration";
     };
 
+    nixLd = {
+      enable = mkBoolOpt true "Enable nix-ld for running unpatched ELF binaries (Node downloads, Python wheels, VSCode extensions, etc.)";
+    };
+
     fileWatchers = {
       maxUserWatches = lib.mkOption {
         type = lib.types.int;
@@ -110,6 +114,18 @@ in
     programs.direnv = lib.mkIf cfg.direnv.enable {
       enable = true;
       nix-direnv.enable = cfg.direnv.enableNixDirenv;
+    };
+
+    # nix-ld: shim layer so downloaded unpatched binaries can find glibc/libs
+    programs.nix-ld = lib.mkIf cfg.nixLd.enable {
+      enable = true;
+      # Extra libs beyond the nix-ld defaults (zlib, openssl, curl, libgcc)
+      libraries = with pkgs; [
+        zlib
+        openssl
+        curl
+        stdenv.cc.cc
+      ];
     };
 
     # Warnings

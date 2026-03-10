@@ -66,19 +66,6 @@ let
       ];
     };
 
-  # mkDevshellMotd :: { title :: Str, emoji :: Str?, description :: Str? } -> Str
-  # Create a formatted MOTD (message of the day) for devshells with color codes.
-  mkDevshellMotd =
-    {
-      title,
-      emoji ? "🔨",
-      description ? "",
-    }:
-    ''
-      {202}${emoji} ${title}{reset}
-      ${description}
-    '';
-
   # mkShellScript :: { pkgs :: Pkgs, name :: Str, body :: Str } -> Derivation
   # Create a shell script with standard error handling (set -euo pipefail).
   # Note: For scripts with runtime dependencies, use pkgs.writeShellApplication instead.
@@ -214,6 +201,18 @@ let
       "label-${state}-padding-left" = 1;
       "label-${state}-padding-right" = 1;
     };
+
+  # mkBtrfsOpts :: Str -> [Str]
+  # Generate BTRFS mount options optimized for SSD + battery life.
+  # Subvolume, noatime, nodiratime, zstd:3 compression, space_cache=v2, async TRIM.
+  mkBtrfsOpts = subvol: [
+    "subvol=${subvol}"
+    "noatime"
+    "nodiratime"
+    "compress=zstd:3"
+    "space_cache=v2"
+    "discard=async"
+  ];
 in
 {
   # Workspace helpers
@@ -246,7 +245,7 @@ in
     ;
 
   # Devshell helpers
-  inherit mkDevshellMotd mkShellScript;
+  inherit mkShellScript;
 
   # Color helpers
   inherit darkenColor mkColorReplacer;
@@ -256,4 +255,7 @@ in
 
   # Polybar helpers
   inherit mkPolybarTwoTone mkPolybarTwoToneState;
+
+  # Filesystem helpers
+  inherit mkBtrfsOpts;
 }
