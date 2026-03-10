@@ -65,11 +65,7 @@ in
       };
     };
 
-    i3Package = lib.mkOption {
-      type = lib.types.package;
-      default = pkgs.i3;
-      description = "i3 window manager package to use";
-    };
+    i3Package = lib.mkPackageOption pkgs "i3" { };
   };
 
   config = lib.mkIf cfg.enable {
