@@ -39,7 +39,7 @@ final: prev: {
   # mistral-vibe: Official flake package (uv2nix Python venv wrapper).
   # Source: inputs.mistral-vibe.packages.${system}.default
   # Exposed in home-modules via mistralVibePkg, but also available as pkgs.mistral-vibe.
-  mistral-vibe = inputs.mistral-vibe.packages.${final.system}.default;
+  mistral-vibe = inputs.mistral-vibe.packages.${final.stdenv.hostPlatform.system}.default;
 
   # strip-json-comments-cli: CLI tool to strip JSON comments (used by some dev tools).
   # Upstream has no package-lock.json; we vendor a generated one in overlays/npm-locks/.
@@ -105,8 +105,6 @@ final: prev: {
           });
       nodeModules = final.callPackage "${opencodeSrc}/nix/node_modules.nix" {
         rev = opencodeRev;
-        # hashes.json at pinned commit is stale; override with correct hash.
-        hash = "sha256-4kjoJ06VNvHltPHfzQRBG0bC6R39jao10ffGzrNZ230=";
       };
       nodeModulesPatched = nodeModules.overrideAttrs (old: {
         buildPhase =
@@ -127,6 +125,14 @@ final: prev: {
           # The nix source fileset excludes .github/, so we create an empty stub.
           mkdir -p .github
           touch .github/TEAM_MEMBERS
+          # Restore serverUrl in plugin input so plugins like oh-my-opencode work.
+          # Upstream replaced it with a throwing getter in 1.2.21+; we patch it to
+          # return the hardcoded default URL (port 4096, matching createOpencodeClient).
+          # This matches the pending fix in oh-my-openagent PR #2419.
+          # sed -z treats the file as one record (null-delimited), enabling \n in patterns.
+          sed -z -i \
+            's/get serverUrl(): URL {\n        throw new Error("Server URL is no longer supported in plugins")\n      },/serverUrl: new URL("http:\/\/localhost:4096"),/' \
+            packages/opencode/src/plugin/index.ts
         '';
         # The embedded Bun JS runtime's file watcher needs libstdc++.so.6 at runtime.
         # The upstream installPhase already wraps with makeBinaryWrapper for PATH.
