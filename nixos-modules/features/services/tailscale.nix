@@ -40,7 +40,5 @@ in
       checkReversePath = "loose"; # Required for Tailscale routing - allows asymmetric routing
     };
 
-    # Persistence (if needed)
-    environment.systemPackages = [ pkgs.tailscale ];
   };
 }
