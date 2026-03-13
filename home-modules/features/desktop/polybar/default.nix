@@ -58,7 +58,7 @@ in
       settings = {
         "bar/top" = {
           width = "100%";
-          height = "16pt";
+          height = "18pt";
           radius = 0;
           dpi = 100;
           background = "\${colors.dark}";
@@ -70,7 +70,7 @@ in
           border-color = "\${colors.dark}";
           separator = ".";
           separator-foreground = "\${colors.transparent}";
-          font-0 = "${stylixFonts.monospace.name}:size=11.5:weight=bold;2"; # size intentionally smaller than desktop (14pt) for bar density
+          font-0 = "${stylixFonts.monospace.name}:size=14:weight=bold;2"; # size intentionally smaller than desktop (14pt) for bar density
           font-1 = "Symbols Nerd Font Mono:size=14;3"; # Icons - nerd-fonts symbols-only
           modules-left = modulesLeft;
           modules-center = modulesCenter;
