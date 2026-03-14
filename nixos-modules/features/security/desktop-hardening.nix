@@ -21,26 +21,20 @@ in
         description = "Sudo password timeout in minutes (0 = always ask)";
       };
 
-      requirePassword = lib.mkOption {
-        type = lib.types.bool;
+      requirePassword = lib.mkEnableOption "sudo password requirement (disables NOPASSWD)" // {
         default = true;
-        description = "Always require password for sudo (disable NOPASSWD)";
       };
     };
 
     polkit = {
-      restrictUserActions = lib.mkOption {
-        type = lib.types.bool;
+      restrictUserActions = lib.mkEnableOption "polkit user action restrictions" // {
         default = true;
-        description = "Restrict polkit actions for regular users (requires admin for system changes)";
       };
     };
 
     firewall = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
+      enable = lib.mkEnableOption "basic firewall rules for desktop" // {
         default = true;
-        description = "Enable basic firewall rules for desktop";
       };
 
       allowedTCPPorts = lib.mkOption {
@@ -160,16 +154,45 @@ in
       "kernel.kexec_load_disabled" = 1; # always disable kexec on desktop (no mkDefault — must not be overridable)
       # Restrict ptrace to parent processes only (prevents process injection attacks)
       "kernel.yama.ptrace_scope" = 1;
+
+      # BPF hardening (real exploit vector — multiple CVEs 2021-2022)
+      "kernel.unprivileged_bpf_disabled" = 1;
+      "net.core.bpf_jit_enable" = false;
+      "net.core.bpf_jit_harden" = 2;
+
+      # Disable ftrace debugging (information disclosure)
+      "kernel.ftrace_enabled" = false;
+
+      # Restrict performance event access (ASLR bypass vector)
+      "kernel.perf_event_paranoid" = 3;
+
+      # Kernel panic on oops (prevent exploitation of corrupted state)
+      "kernel.panic_on_oops" = 1;
+      "kernel.panic" = 10; # Auto-reboot after 10s
+
+      # Filesystem hardening (TOCTOU, FIFO/symlink race conditions)
+      "fs.protected_fifos" = 2;
+      "fs.protected_regular" = 2;
+
+      # Additional ICMP/redirect hardening
+      "net.ipv4.icmp_echo_ignore_broadcasts" = true;
+      "net.ipv4.conf.all.secure_redirects" = false;
+      "net.ipv4.conf.default.secure_redirects" = false;
+      "net.ipv4.conf.all.send_redirects" = false;
+      "net.ipv4.conf.default.send_redirects" = false;
     };
 
+    # Kernel image protection (prevents live patching and kexec misuse)
+    security.protectKernelImage = true;
+
+    # Page Table Isolation — Meltdown mitigation (Intel pre-2019 CPUs)
+    # No-op on CPUs with hardware mitigation; slight overhead on syscall-heavy workloads
+    security.forcePageTableIsolation = true;
+
     # Additional security packages
-    environment.systemPackages =
-      let
-        p = pkgs;
-      in
-      [
-        # Firewall management tool
-        p.nftables
-      ];
+    environment.systemPackages = [
+      # Firewall management tool
+      pkgs.nftables
+    ];
   };
 }

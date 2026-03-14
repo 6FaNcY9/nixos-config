@@ -10,10 +10,11 @@
   # Nix settings (flakes, binary caches, GC)
   nix = {
     settings = {
-      trusted-users = [
+      trusted-users = [ "root" ]; # Only root can override substituters/sandbox settings
+      allowed-users = [
         "root"
         "@wheel"
-      ]; # Allow running nix commands without sudo
+      ]; # @wheel can run nix commands but not bypass security settings
       experimental-features = [
         "nix-command"
         "flakes"

@@ -22,14 +22,15 @@ let
     inherit pkgs;
     name = "lock-screen";
     body = ''
-      ${pkgs.maim}/bin/maim /tmp/lockscreen.png
-      ${pkgs.imagemagick}/bin/convert /tmp/lockscreen.png -blur 0x8 /tmp/lockscreen.png
+      LOCK_IMG="''${XDG_RUNTIME_DIR:-/tmp}/lockscreen.png"
+      ${pkgs.maim}/bin/maim "$LOCK_IMG"
+      ${pkgs.imagemagick}/bin/convert "$LOCK_IMG" -blur 0x8 "$LOCK_IMG"
       # i3lock-color configuration:
       # - Transparent inside, colored ring (muted), accent keypress highlight, red backspace
       # - Clock centered with time above, date below
       # - Media/screen keys pass through to allow emergency volume/brightness adjustments
       ${pkgs.i3lock-color}/bin/i3lock-color \
-        --image=/tmp/lockscreen.png \
+        --image="$LOCK_IMG" \
         --inside-color=00000000 \
         --ring-color=${stripHash palette.muted}ff \
         --keyhl-color=${stripHash palette.accent}ff \
@@ -55,7 +56,7 @@ let
         --clock \
         --pass-media-keys \
         --pass-screen-keys
-      rm -f /tmp/lockscreen.png
+      rm -f "$LOCK_IMG"
     '';
   };
 in
