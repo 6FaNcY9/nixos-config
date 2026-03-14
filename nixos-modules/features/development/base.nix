@@ -120,11 +120,11 @@ in
     programs.nix-ld = lib.mkIf cfg.nixLd.enable {
       enable = true;
       # Extra libs beyond the nix-ld defaults (zlib, openssl, curl, libgcc)
-      libraries = with pkgs; [
-        zlib
-        openssl
-        curl
-        stdenv.cc.cc
+      libraries = [
+        pkgs.zlib
+        pkgs.openssl
+        pkgs.curl
+        pkgs.stdenv.cc.cc
       ];
     };
 

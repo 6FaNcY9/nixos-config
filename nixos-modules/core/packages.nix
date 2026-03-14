@@ -6,18 +6,18 @@
   ...
 }:
 let
-  systemPackages = with pkgs; [
-    btrfs-progs
-    cachix # Binary cache management
-    curl
-    efibootmgr
-    git
-    vim
-    wget
-    gnupg
-    sops
-    age
-    ssh-to-age
+  systemPackages = [
+    pkgs.btrfs-progs
+    pkgs.cachix # Binary cache management
+    pkgs.curl
+    pkgs.efibootmgr
+    pkgs.git
+    pkgs.vim
+    pkgs.wget
+    pkgs.gnupg
+    pkgs.sops
+    pkgs.age
+    pkgs.ssh-to-age
   ];
 in
 {
