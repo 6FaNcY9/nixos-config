@@ -6,7 +6,7 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
 - `flake.nix` – uses flake-parts + ez-configs to wire inputs and exports `nixosConfigurations.bandit`, `homeConfigurations."vino@bandit"`, formatter, and optional dev shells.
 - `nixos-configurations/bandit/` – host entrypoint and hardware profile (`hardware-configuration.nix`).
 - `nixos-configurations/README.md` – quick guide for adding hosts.
-- `home-configurations/vino/default.nix` – Home Manager profile: Stylix targets (gtk, i3, xfce, rofi, starship, nixvim, firefox), Firefox userChrome override, package set (CLIs, dev tools, desktop utilities), fish setup with abbreviations, Atuin/Zoxide/direnv/fzf, i3 config, XFCE session XML, and detailed nixvim plugin stack.
+- `home-configurations/vino/default.nix` – Home Manager profile: Stylix targets (gtk, i3, xfce, rofi, qutebrowser, starship, nixvim, firefox), package set (CLIs, dev tools, desktop utilities), fish setup with abbreviations, Atuin/Zoxide/direnv/fzf, i3 config, XFCE session XML, detailed nixvim plugin stack, plus the retained Firefox userChrome override.
 - `home-configurations/vino/hosts/<name>.nix` – host-specific Home Manager overrides (profiles, device names, etc.).
 - `shared-modules/` – shared stylix palette/fonts + i3 workspace list.
 - `nixos-modules/` – NixOS modules organized as:

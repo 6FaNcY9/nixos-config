@@ -332,7 +332,7 @@ home-modules/
     shell/     - shell.{git, fish, starship}
     editor/    - editor.nixvim
     terminal/  - terminal.{alacritty, tmux, yazi}
-    desktop/   - desktop.{services, clipboard, lock, firefox, xfce-session, i3, polybar, rofi}
+    desktop/   - desktop.{services, clipboard, lock, qutebrowser, firefox, xfce-session, i3, polybar, rofi}
   profiles.nix - Package bundles (profiles.{core,dev,desktop,extras,ai})
 ```
 
@@ -355,7 +355,8 @@ In `home-configurations/vino/hosts/<host>.nix`:
   features.desktop.services.enable = true;
   features.desktop.clipboard.enable = true;
   features.desktop.lock.enable = true;
-  features.desktop.firefox.enable = true;
+  features.desktop.qutebrowser.enable = true;
+  features.desktop.firefox.enable = false;
   features.desktop.xfce-session.enable = true;
   features.desktop.i3.enable = true;
   features.desktop.polybar.enable = true;
