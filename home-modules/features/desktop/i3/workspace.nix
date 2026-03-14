@@ -18,7 +18,10 @@ let
   assignRules = [
     {
       ws = 1;
-      criteria = [ { class = "firefox"; } ];
+      criteria = [
+        { class = "qutebrowser"; }
+        { class = "firefox"; }
+      ];
     }
     {
       ws = 2;

@@ -1,15 +1,17 @@
 # Desktop feature module - Aggregates all desktop-related configuration
-# Imports: services, clipboard, screen lock, Firefox, XFCE session, i3, polybar, rofi
+# Imports: services, clipboard, screen lock, qutebrowser, Firefox, XFCE session, i3, polybar, rofi
 
 {
   imports = [
     ./services.nix
     ./clipboard.nix
     ./lock
+    ./qutebrowser.nix
     ./firefox.nix
     ./xfce-session.nix
     ./i3
     ./polybar
     ./rofi
+    ./vibe
   ];
 }

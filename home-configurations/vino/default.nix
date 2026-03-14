@@ -123,6 +123,7 @@ in
       bat.enable = true;
       fzf.enable = true;
       dunst.enable = true;
+      qutebrowser.enable = true;
       xfce.enable = true;
 
       starship = {

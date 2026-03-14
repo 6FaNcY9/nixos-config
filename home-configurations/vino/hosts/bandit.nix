@@ -37,11 +37,13 @@ _: {
       services.enable = true;
       clipboard.enable = true;
       lock.enable = true;
-      firefox.enable = true;
+      qutebrowser.enable = true;
+      firefox.enable = false;
       xfce-session.enable = true;
       i3.enable = true;
       polybar.enable = true;
       rofi.enable = true;
+      vibe.enable = true;
     };
   };
   # Workspaces use shared defaults from shared-modules/workspaces.nix
