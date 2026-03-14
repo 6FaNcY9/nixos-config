@@ -29,10 +29,8 @@ in
       };
 
       lightdm = {
-        enable = lib.mkOption {
-          type = lib.types.bool;
+        enable = lib.mkEnableOption "LightDM display manager" // {
           default = true;
-          description = "Enable LightDM display manager";
         };
 
         indicators = lib.mkOption {
@@ -52,17 +50,11 @@ in
     };
 
     audio = {
-      enablePipewire = lib.mkOption {
-        type = lib.types.bool;
+      enablePipewire = lib.mkEnableOption "PipeWire audio (recommended over PulseAudio)" // {
         default = true;
-        description = "Enable PipeWire audio (recommended over PulseAudio)";
       };
 
-      enableJack = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Enable JACK audio support";
-      };
+      enableJack = lib.mkEnableOption "JACK audio support";
     };
 
     i3Package = lib.mkPackageOption pkgs "i3" { };

@@ -15,33 +15,23 @@ in
 
     targets = {
       grub = {
-        enable = lib.mkOption {
-          type = lib.types.bool;
+        enable = lib.mkEnableOption "stylix theme for GRUB bootloader" // {
           default = true;
-          description = "Apply stylix theme to GRUB bootloader";
         };
       };
 
       lightdm = {
-        enable = lib.mkOption {
-          type = lib.types.bool;
+        enable = lib.mkEnableOption "stylix theme for LightDM display manager" // {
           default = true;
-          description = "Apply stylix theme to LightDM display manager";
         };
       };
     };
 
     homeManagerIntegration = {
-      autoImport = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Automatically import stylix into home-manager";
-      };
+      autoImport = lib.mkEnableOption "automatically import stylix into home-manager";
 
-      followSystem = lib.mkOption {
-        type = lib.types.bool;
+      followSystem = lib.mkEnableOption "make home-manager follow system theme settings" // {
         default = true;
-        description = "Make home-manager follow system theme settings";
       };
     };
   };

@@ -14,10 +14,8 @@ in
     enable = lib.mkEnableOption "BTRFS filesystem maintenance";
 
     fstrim = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
+      enable = lib.mkEnableOption "fstrim for SSD maintenance" // {
         default = true;
-        description = "Enable fstrim for SSD maintenance";
       };
 
       interval = lib.mkOption {
@@ -28,10 +26,8 @@ in
     };
 
     autoScrub = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
+      enable = lib.mkEnableOption "automatic BTRFS scrubbing" // {
         default = true;
-        description = "Enable automatic BTRFS scrubbing";
       };
 
       fileSystems = lib.mkOption {

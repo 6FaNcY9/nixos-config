@@ -23,22 +23,14 @@ in
       description = "Bootloader to use";
     };
 
-    efiSupport = lib.mkOption {
-      type = lib.types.bool;
+    efiSupport = lib.mkEnableOption "EFI support" // {
       default = true;
-      description = "Enable EFI support";
     };
 
-    useOSProber = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Enable OS prober for dual-boot detection";
-    };
+    useOSProber = lib.mkEnableOption "OS prober for dual-boot detection";
 
-    canTouchEfiVariables = lib.mkOption {
-      type = lib.types.bool;
+    canTouchEfiVariables = lib.mkEnableOption "EFI variable modification by bootloader" // {
       default = true;
-      description = "Allow bootloader to modify EFI variables";
     };
 
     kernelPackage = lib.mkOption {
@@ -63,7 +55,7 @@ in
         };
 
         # systemd-boot configuration
-        systemd-boot.enable = (cfg.bootloader == "systemd-boot");
+        systemd-boot.enable = cfg.bootloader == "systemd-boot";
 
         # EFI variables
         efi.canTouchEfiVariables = cfg.canTouchEfiVariables;
