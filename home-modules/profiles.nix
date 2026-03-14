@@ -34,9 +34,16 @@ let
 
   vibeWrapper =
     if mistralVibePkg != null then
-      pkgs.writeShellScriptBin "vibe" ''
-        exec ${pkgs.direnv}/bin/direnv exec "$HOME/.vibe" ${mistralVibePkg}/bin/vibe "$@"
-      ''
+      pkgs.writeShellApplication {
+        name = "vibe";
+        runtimeInputs = [
+          pkgs.direnv
+          mistralVibePkg
+        ];
+        text = ''
+          exec direnv exec "$HOME/.vibe" vibe "$@"
+        '';
+      }
     else
       null;
 
