@@ -52,53 +52,62 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # Sudo configuration
-    security.sudo = {
-      execWheelOnly = lib.mkIf cfg.sudo.requirePassword true;
-      extraConfig = ''
-        # Sudo timeout: ${toString cfg.sudo.timeout} minutes
-        Defaults timestamp_timeout=${toString cfg.sudo.timeout}
-        # Require password for all commands (disable NOPASSWD)
-        ${lib.optionalString cfg.sudo.requirePassword ''
-          Defaults passwd_tries=3
-          Defaults passwd_timeout=1
-        ''}
-      '';
-    };
+    security = {
+      # Sudo configuration
+      sudo = {
+        execWheelOnly = lib.mkIf cfg.sudo.requirePassword true;
+        extraConfig = ''
+          # Sudo timeout: ${toString cfg.sudo.timeout} minutes
+          Defaults timestamp_timeout=${toString cfg.sudo.timeout}
+          # Require password for all commands (disable NOPASSWD)
+          ${lib.optionalString cfg.sudo.requirePassword ''
+            Defaults passwd_tries=3
+            Defaults passwd_timeout=1
+          ''}
+        '';
+      };
 
-    # Polkit hardening
-    security.polkit = lib.mkIf cfg.polkit.restrictUserActions {
-      enable = true;
-      extraConfig = ''
-        // Restrict regular users from system-wide changes
-        // Users in 'wheel' group can still use sudo for these actions
+      # Polkit hardening
+      polkit = lib.mkIf cfg.polkit.restrictUserActions {
+        enable = true;
+        extraConfig = ''
+          // Restrict regular users from system-wide changes
+          // Users in 'wheel' group can still use sudo for these actions
 
-        // Disable user installation of system packages
-        polkit.addRule(function(action, subject) {
-          if (action.id == "org.freedesktop.packagekit.package-install" ||
-              action.id == "org.freedesktop.packagekit.package-remove") {
-            return polkit.Result.AUTH_ADMIN;
-          }
-        });
-
-        // Require admin for system services control
-        polkit.addRule(function(action, subject) {
-          if (action.id.indexOf("org.freedesktop.systemd1.manage-units") == 0) {
-            if (!subject.isInGroup("wheel")) {
+          // Disable user installation of system packages
+          polkit.addRule(function(action, subject) {
+            if (action.id == "org.freedesktop.packagekit.package-install" ||
+                action.id == "org.freedesktop.packagekit.package-remove") {
               return polkit.Result.AUTH_ADMIN;
             }
-          }
-        });
+          });
 
-        // Require admin for network configuration
-        polkit.addRule(function(action, subject) {
-          if (action.id.indexOf("org.freedesktop.NetworkManager") == 0) {
-            if (!subject.isInGroup("wheel")) {
-              return polkit.Result.AUTH_ADMIN;
+          // Require admin for system services control
+          polkit.addRule(function(action, subject) {
+            if (action.id.indexOf("org.freedesktop.systemd1.manage-units") == 0) {
+              if (!subject.isInGroup("wheel")) {
+                return polkit.Result.AUTH_ADMIN;
+              }
             }
-          }
-        });
-      '';
+          });
+
+          // Require admin for network configuration
+          polkit.addRule(function(action, subject) {
+            if (action.id.indexOf("org.freedesktop.NetworkManager") == 0) {
+              if (!subject.isInGroup("wheel")) {
+                return polkit.Result.AUTH_ADMIN;
+              }
+            }
+          });
+        '';
+      };
+
+      # Kernel image protection (prevents live patching and kexec misuse)
+      protectKernelImage = true;
+
+      # Page Table Isolation — Meltdown mitigation (Intel pre-2019 CPUs)
+      # No-op on CPUs with hardware mitigation; slight overhead on syscall-heavy workloads
+      forcePageTableIsolation = true;
     };
 
     # Firewall configuration
@@ -181,13 +190,6 @@ in
       "net.ipv4.conf.all.send_redirects" = false;
       "net.ipv4.conf.default.send_redirects" = false;
     };
-
-    # Kernel image protection (prevents live patching and kexec misuse)
-    security.protectKernelImage = true;
-
-    # Page Table Isolation — Meltdown mitigation (Intel pre-2019 CPUs)
-    # No-op on CPUs with hardware mitigation; slight overhead on syscall-heavy workloads
-    security.forcePageTableIsolation = true;
 
     # Additional security packages
     environment.systemPackages = [
