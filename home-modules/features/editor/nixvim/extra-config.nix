@@ -9,23 +9,19 @@
 { pkgs, ... }:
 {
   programs.nixvim = {
-    extraPlugins =
-      let
-        vp = pkgs.vimPlugins;
-      in
-      [
-        # Plugins without native nixvim modules
-        vp.vim-matchup # Enhanced % matching
-        vp.cheatsheet-nvim # Searchable keymaps/commands help
-      ];
+    extraPlugins = with pkgs.vimPlugins; [
+      # Plugins without native nixvim modules
+      vim-matchup # Enhanced % matching
+      cheatsheet-nvim # Searchable keymaps/commands help
+    ];
 
-    extraPackages =
-      let
-        p = pkgs;
-      in
-      [
-        p.tree-sitter-cli
-      ];
+    extraPackages = with pkgs; [
+      tree-sitter-cli
+      # Formatters for conform.nvim
+      nixfmt
+      ruff
+      stylua
+    ];
 
     extraConfigLua = ''
       -- Fix tree-sitter query errors by prepending nvim-treesitter runtime path
@@ -56,6 +52,16 @@
           })
         end, { force = true })
       end
+      -- Filetype detection for LSP servers
+      vim.filetype.add({
+        extension = {
+          mdx = "markdown.mdx",
+          tmpl = "gotmpl",
+        },
+        filename = {
+          ["go.work"] = "gowork",
+        },
+      })
     '';
   };
 }

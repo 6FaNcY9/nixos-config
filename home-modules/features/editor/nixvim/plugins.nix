@@ -1,7 +1,7 @@
 # Plugin Ecosystem Configuration
 # All plugins with their settings: LSP, completion, AI assistance, fuzzy finder, etc.
 
-_: {
+{ pkgs, ... }:
   programs.nixvim.plugins = {
     # GitHub Copilot: AI-powered code completion with auto-triggered suggestions
     copilot-lua = {
@@ -187,7 +187,7 @@ _: {
         nixd = {
           enable = true;
           settings = {
-            nixpkgs.expr = "import <nixpkgs> { }";
+            nixpkgs.expr = "import ${pkgs.path} {}";
             formatting.command = [ "nixfmt" ];
             options = {
               nixos.expr = "(builtins.getFlake (builtins.toString ./.)).nixosConfigurations.bandit.options";
