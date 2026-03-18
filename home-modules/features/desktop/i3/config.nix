@@ -12,12 +12,12 @@
     terminal = "alacritty";
     menu = "rofi -show drun";
 
-    # Inner gap between windows, outer=0, smart gaps/borders collapse when single window
+    # Inner gap between windows, outer gap for breathing room, borders always visible
     gaps = {
       inner = 8;
       outer = 4;
       smartGaps = false;
-      smartBorders = "on";
+      smartBorders = "off";
     };
 
     window = {
@@ -98,6 +98,13 @@
         criteria = {
           class = "Thunar";
           title = "File Operation Progress";
+        };
+      }
+      {
+        # Force i3 border despite Alacritty's _MOTIF_WM_HINTS requesting no decorations
+        command = "border pixel 2";
+        criteria = {
+          class = "Alacritty";
         };
       }
     ];
