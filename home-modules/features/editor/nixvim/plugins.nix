@@ -2,6 +2,7 @@
 # All plugins with their settings: LSP, completion, AI assistance, fuzzy finder, etc.
 
 { pkgs, ... }:
+{
   programs.nixvim.plugins = {
     # GitHub Copilot: AI-powered code completion with auto-triggered suggestions
     copilot-lua = {
