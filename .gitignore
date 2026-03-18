@@ -26,6 +26,7 @@
 /.serena/
 /.claude/
 /.sisyphus/*
+CLAUDE.md
 
 # -----------------------------
 # Secrets / keys (never commit)
