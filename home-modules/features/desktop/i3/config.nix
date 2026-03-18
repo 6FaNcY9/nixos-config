@@ -15,8 +15,8 @@
     # Inner gap between windows, outer=0, smart gaps/borders collapse when single window
     gaps = {
       inner = 8;
-      outer = 0;
-      smartGaps = true;
+      outer = 4;
+      smartGaps = false;
       smartBorders = "on";
     };
 
