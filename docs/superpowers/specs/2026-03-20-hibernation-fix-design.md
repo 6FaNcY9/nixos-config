@@ -20,9 +20,9 @@ The user also tried `sudo hibernate` which does not exist as a standalone comman
 - `boot.resumeDevice` — set to the BTRFS partition UUID in `bandit/default.nix:145`
 - `kernelParams = [ "resume_offset=1959063" ]` — set in `bandit/default.nix:147`
 - Swap file at `/swap/swapfile` with priority 1 (disk backup after zram)
-- Rofi power menu `power-menu.sh:33` calls `systemctl hibernate`
+- Rofi power menu `power-menu.sh:32` calls `systemctl hibernate`
 - `xss-lock --transfer-sleep-lock` in autostart handles screen lock before hibernate
-- Polkit (`desktop-hardening.nix`) does not restrict `org.freedesktop.login1.hibernate` — local wheel users can hibernate without a password prompt
+- Polkit (`desktop-hardening.nix`) does not block hibernation — `polkit.restrictUserActions` defaults to `true` and is active, but its `manage-units` rule only restricts users outside the `wheel` group; `vino` is a wheel user, so no password prompt is required for `systemctl hibernate`
 
 ## What Is Missing
 
@@ -46,19 +46,19 @@ powerManagement = {
 ```nix
 systemd.sleep.extraConfig = lib.mkIf cfg.powerManagement.enableHibernation ''
   AllowHibernation=yes
-  HibernateMode=platform shutdown
 '';
 ```
 
-`HibernateMode=platform shutdown` is the correct mode for UEFI systems (uses the UEFI hibernate mechanism, falls back to shutdown if unavailable). This is the systemd default but making it explicit avoids ambiguity.
+Only `AllowHibernation=yes` is needed. `HibernateMode` is intentionally omitted — the systemd default (`platform sleep shutdown`) is the correct fallback chain for UEFI systems and should not be narrowed.
 
 **Enable in `bandit/default.nix`:**
 ```nix
 features.hardware.laptop.powerManagement = {
   enableHibernation = true;
-  # existing options unchanged
 };
 ```
+
+Note: `bandit/default.nix` has no existing `powerManagement` overrides (all use module defaults). This block is a pure addition.
 
 ### Why Not Other Locations
 
@@ -75,10 +75,11 @@ features.hardware.laptop.powerManagement = {
 ## Testing
 
 After rebuild:
-1. `systemctl hibernate` should succeed without error
-2. System should hibernate, power off, and resume correctly on next boot
-3. Rofi power menu hibernate entry should work
-4. If swap file is ever recreated, `resume_offset` must be regenerated:
+1. Confirm the option was applied: `cat /etc/systemd/sleep.conf` should contain `AllowHibernation=yes`
+2. `systemctl hibernate` should succeed without error
+3. System should hibernate, power off, and resume correctly on next boot
+4. Rofi power menu hibernate entry should work
+5. If swap file is ever recreated, `resume_offset` must be regenerated:
    ```bash
    sudo filefrag -v /swap/swapfile | awk 'NR==4{gsub(/\.\./,""); print $4}'
    ```
