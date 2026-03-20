@@ -136,7 +136,12 @@ in
       secrets.enable = true;
 
       # Desktop security hardening
-      desktop-hardening.enable = true;
+      desktop-hardening = {
+        enable = true;
+        # Disable kernel image protection to allow hibernation.
+        # kexec is still blocked via sysctl in desktop-hardening regardless of this setting.
+        protectKernelImage = false;
+      };
     };
   };
 

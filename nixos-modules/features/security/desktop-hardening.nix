@@ -32,6 +32,12 @@ in
       };
     };
 
+    protectKernelImage =
+      lib.mkEnableOption "kernel image protection (sets nohibernate; disables hibernation as a side effect)"
+      // {
+        default = true;
+      };
+
     firewall = {
       enable = lib.mkEnableOption "basic firewall rules for desktop" // {
         default = true;
@@ -103,7 +109,8 @@ in
       };
 
       # Kernel image protection (prevents live patching and kexec misuse)
-      protectKernelImage = true;
+      # Note: kexec is still blocked via sysctl below regardless of this setting
+      inherit (cfg) protectKernelImage;
 
       # Page Table Isolation — Meltdown mitigation (Intel pre-2019 CPUs)
       # No-op on CPUs with hardware mitigation; slight overhead on syscall-heavy workloads
