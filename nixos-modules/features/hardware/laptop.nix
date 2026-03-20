@@ -100,9 +100,9 @@ in
   config = lib.mkIf cfg.enable {
     # Power management
     powerManagement.enable = cfg.powerManagement.enableGeneralPowerManagement;
-    systemd.sleep.extraConfig = lib.mkIf cfg.powerManagement.enableHibernation ''
-      AllowHibernation=yes
-    '';
+    systemd.sleep.settings = lib.mkIf cfg.powerManagement.enableHibernation {
+      Sleep.AllowHibernation = true;
+    };
 
     # Services configuration
     services = {

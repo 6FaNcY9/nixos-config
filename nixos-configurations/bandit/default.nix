@@ -114,6 +114,7 @@ in
     hardware.laptop = {
       enable = true;
       cpu.vendor = "amd";
+      powerManagement.enableHibernation = true;
       zram = {
         memoryPercent = 50; # Increase from 25% to 50% for better memory headroom
       };
@@ -121,7 +122,6 @@ in
         enable = true;
         model = "framework-13-amd";
       };
-      powerManagement.useAutoFreq = true; # auto-cpufreq v3 for better battery/turbo on Framework 13 AMD
     };
 
     development.base = {
