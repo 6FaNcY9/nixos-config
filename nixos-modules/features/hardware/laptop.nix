@@ -22,6 +22,7 @@ in
 
       useAutoFreq = mkBoolOpt false "Use auto-cpufreq v3 instead of power-profiles-daemon (better turbo + governor control on AMD laptops)";
       enableGeneralPowerManagement = mkBoolOpt true "Enable general power management features";
+      enableHibernation = mkBoolOpt false "Enable hibernation via systemd sleep configuration (requires resume device and offset to be set in boot config)";
     };
 
     bluetooth = {
@@ -99,6 +100,9 @@ in
   config = lib.mkIf cfg.enable {
     # Power management
     powerManagement.enable = cfg.powerManagement.enableGeneralPowerManagement;
+    systemd.sleep.extraConfig = lib.mkIf cfg.powerManagement.enableHibernation ''
+      AllowHibernation=yes
+    '';
 
     # Services configuration
     services = {
