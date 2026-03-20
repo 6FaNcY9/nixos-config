@@ -47,43 +47,5 @@
 
     # Use prebuilt nix-index database (prevents 12GB evaluation)
     nix-index-database.comma.enable = true;
-
-    # Allow running non‑Nix dynamic binaries (bunx/AppImage/vendor CLIs)
-    nix-ld = {
-      enable = true;
-      libraries =
-        let
-          p = pkgs;
-        in
-        [
-          # Default/core libs (NixOS wiki baseline)
-          p.zlib
-          p.zstd
-          p.stdenv.cc.cc
-          p.curl
-          p.openssl
-          p.attr
-          p.libssh
-          p.bzip2
-          p.libxml2
-          p.acl
-          p.libsodium
-          p.util-linux
-          p.xz
-          p.systemd
-
-          # Common desktop/runtime additions
-          p.glib
-          p.gtk3
-          p.libGL
-          p.libva
-          p.pipewire
-          p.libx11
-          p.libxext
-          p.libxrandr
-          p.libxrender
-          p.libxcb
-        ];
-    };
   };
 }

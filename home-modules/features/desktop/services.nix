@@ -94,7 +94,10 @@ in
 
         settings = {
           # Rounded corners (8px radius) for modern aesthetics
-          corner-radius = 8;
+          # 10 = 8 inner radius + 2px border width, ensures concentric rounding with no corner artifacts
+          corner-radius = 10;
+          # Round the outer border edge too, preventing clipped corner pixels on i3 borders
+          round-borders = 1;
           rounded-corners-exclude = [
             "window_type = 'dock'"
             "window_type = 'desktop'"

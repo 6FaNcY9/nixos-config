@@ -38,7 +38,7 @@ _: {
       clipboard.enable = true;
       lock.enable = true;
       qutebrowser.enable = true;
-      firefox.enable = false;
+      firefox.enable = true;
       xfce-session.enable = true;
       i3.enable = true;
       polybar.enable = true;

@@ -23,7 +23,7 @@ mainbox {
     padding: 20px;
     spacing: 12px;
     background-color: inherit;
-    children: [ "message", "listview" ];
+    children: [ "listview" ];
 }
 
 message {

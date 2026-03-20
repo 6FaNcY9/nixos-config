@@ -39,7 +39,7 @@ in
 {
   options.theme = {
     colors = lib.mkOption {
-      type = lib.types.attrs;
+      type = lib.types.attrsOf lib.types.str;
       readOnly = true;
       default = c;
       description = "Raw base16 colors from Stylix (with fallback).";

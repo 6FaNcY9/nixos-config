@@ -204,7 +204,7 @@ let
 
   # mkBtrfsOpts :: Str -> [Str]
   # Generate BTRFS mount options optimized for SSD + battery life.
-  # Subvolume, noatime, nodiratime, zstd:3 compression, space_cache=v2, async TRIM.
+  # Subvolume, noatime, nodiratime, zstd:1 compression, space_cache=v2, async TRIM.
   mkBtrfsOpts = subvol: [
     "subvol=${subvol}"
     "noatime"

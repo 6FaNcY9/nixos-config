@@ -116,16 +116,43 @@ in
       nix-direnv.enable = cfg.direnv.enableNixDirenv;
     };
 
-    # nix-ld: shim layer so downloaded unpatched binaries can find glibc/libs
+    # nix-ld: shim layer so downloaded unpatched binaries can find glibc/libs.
+    # Full library list covers both core system needs and common desktop/runtime deps.
     programs.nix-ld = lib.mkIf cfg.nixLd.enable {
       enable = true;
-      # Extra libs beyond the nix-ld defaults (zlib, openssl, curl, libgcc)
-      libraries = [
-        pkgs.zlib
-        pkgs.openssl
-        pkgs.curl
-        pkgs.stdenv.cc.cc
-      ];
+      libraries =
+        let
+          p = pkgs;
+        in
+        [
+          # Core/system libs (NixOS wiki baseline)
+          p.zlib
+          p.zstd
+          p.stdenv.cc.cc
+          p.curl
+          p.openssl
+          p.attr
+          p.libssh
+          p.bzip2
+          p.libxml2
+          p.acl
+          p.libsodium
+          p.util-linux
+          p.xz
+          p.systemd
+
+          # Common desktop/runtime additions
+          p.glib
+          p.gtk3
+          p.libGL
+          p.libva
+          p.pipewire
+          p.libx11
+          p.libxext
+          p.libxrandr
+          p.libxrender
+          p.libxcb
+        ];
     };
 
     # Warnings
