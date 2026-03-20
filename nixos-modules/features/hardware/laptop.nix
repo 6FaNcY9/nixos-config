@@ -101,7 +101,7 @@ in
     # Power management
     powerManagement.enable = cfg.powerManagement.enableGeneralPowerManagement;
     systemd.sleep.settings = lib.mkIf cfg.powerManagement.enableHibernation {
-      Sleep.AllowHibernation = true;
+      Sleep.AllowHibernation = "yes";
     };
 
     # Services configuration
