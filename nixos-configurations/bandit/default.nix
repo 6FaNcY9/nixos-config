@@ -114,6 +114,8 @@ in
     hardware.laptop = {
       enable = true;
       cpu.vendor = "amd";
+      # useAutoFreq intentionally not set (defaults to false) — auto-cpufreq caused
+      # instability on this machine; using power-profiles-daemon instead.
       powerManagement.enableHibernation = true;
       zram = {
         memoryPercent = 50; # Increase from 25% to 50% for better memory headroom
