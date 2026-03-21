@@ -22,7 +22,7 @@ in
         add_newline = false;
 
         format = ''
-          $directory$git_branch$git_status$nix_shell$direnv$cmd_duration
+          $directory$git_branch$git_status$rust$python$golang$nodejs$nix_shell$direnv$cmd_duration
           $character
         '';
 
@@ -51,6 +51,26 @@ in
           ahead = "⇡";
           behind = "⇣";
           diverged = "⇡⇣";
+        };
+
+        rust = {
+          format = "[ 󱘗 $version ]($style)";
+          style = "fg:${c.base08} bg:${c.base01}";
+        };
+
+        python = {
+          format = "[  $version ]($style)";
+          style = "fg:${c.base0A} bg:${c.base01}";
+        };
+
+        golang = {
+          format = "[  $version ]($style)";
+          style = "fg:${c.base0D} bg:${c.base01}";
+        };
+
+        nodejs = {
+          format = "[  $version ]($style)";
+          style = "fg:${c.base0B} bg:${c.base01}";
         };
 
         nix_shell = {

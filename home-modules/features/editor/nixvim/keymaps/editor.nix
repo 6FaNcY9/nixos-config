@@ -41,7 +41,7 @@ _: {
     {
       mode = "n";
       key = "<leader>fm";
-      action = "<cmd>lua vim.lsp.buf.format({ async = true })<cr>";
+      action = "<cmd>lua require('conform').format({ async = true })<cr>";
       options = {
         silent = true;
         desc = "Format";
@@ -54,6 +54,7 @@ _: {
       options = {
         noremap = true;
         silent = true;
+        desc = "Markview toggle";
       };
     }
     {
@@ -63,6 +64,7 @@ _: {
       options = {
         noremap = true;
         silent = true;
+        desc = "Markview render";
       };
     }
   ];

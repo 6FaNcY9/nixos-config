@@ -134,7 +134,7 @@ in
         color = "red";
       };
 
-      # ── Memory (aqua two-tone) ──
+      # ── Memory (orange two-tone) ──
       "module/memory" = {
         type = "internal/memory";
         interval = 1;

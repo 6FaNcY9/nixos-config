@@ -6,13 +6,17 @@
 #   - cheatsheet-nvim: Searchable keymaps and commands help
 #   - Treesitter runtime path fix for complete query files
 
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 {
   programs.nixvim = {
     extraPlugins = with pkgs.vimPlugins; [
       # Plugins without native nixvim modules
       vim-matchup # Enhanced % matching
       cheatsheet-nvim # Searchable keymaps/commands help
+      (pkgs.vimUtils.buildVimPlugin {
+        name = "hmts-nvim";
+        src = inputs.hmts-nvim;
+      })
     ];
 
     extraPackages = with pkgs; [
@@ -21,6 +25,7 @@
       nixfmt
       ruff
       stylua
+      rustfmt
     ];
 
     extraConfigLua = ''
@@ -30,7 +35,6 @@
       vim.opt.rtp:prepend("${pkgs.vimPlugins.nvim-treesitter}/runtime/")
 
       -- Plugin-specific global variables
-      vim.g.rainbow_delimiters = vim.g.rainbow_delimiters or {}
       vim.g.matchup_matchparen_offscreen = { method = "popup" }
 
       -- Cheatsheet: searchable quick help for keymaps/commands

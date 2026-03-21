@@ -43,6 +43,7 @@
         ++ commonDevPackages
         ++ [
           pkgs.just
+          pkgs.nix-tree # Interactive Nix closure explorer
         ];
 
       # ── Helpers ───────────────────────────────────────────

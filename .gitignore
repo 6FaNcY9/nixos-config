@@ -107,3 +107,6 @@ docs/archive/
 # Git worktrees (isolated workspaces)
 .worktrees/
 .aider*
+
+# Superpowers brainstorm sessions
+.superpowers/

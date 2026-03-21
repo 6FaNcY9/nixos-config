@@ -3,6 +3,9 @@
 # Formatters:
 #   nixfmt — Nix code formatter (official Nixpkgs formatter)
 #
+# Note: shfmt is handled by the standalone pre-commit hook (see pre-commit.nix)
+# to avoid option conflicts with treefmt's shfmt configuration.
+#
 # Usage:
 #   nix fmt          — Format all files
 #   treefmt --check  — Check formatting without modifying

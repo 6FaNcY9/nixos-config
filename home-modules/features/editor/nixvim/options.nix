@@ -39,6 +39,9 @@ _: {
       laststatus = 3; # Global statusline (single line across all splits)
       colorcolumn = "100"; # Visual guide at 100 characters for line length
 
+      # Clipboard: use system clipboard for y/p (requires xclip/xsel installed)
+      clipboard = "unnamedplus";
+
       # Performance and history settings
       updatetime = 200; # Faster CursorHold events (for LSP, git signs, etc.)
       undofile = true; # Persistent undo history across sessions

@@ -82,7 +82,7 @@ in
     services.polybar.settings = {
       "module/menu".click-left = "exec ${dropdownMenu}/bin/rofi-dropdown-menu &";
       "module/power".click-left = "exec ${powerMenu}/bin/rofi-power-menu";
-      "module/network".click-left = "${networkMenu}/bin/rofi-network-menu";
+      "module/network".click-left = "exec ${networkMenu}/bin/rofi-network-menu &";
     };
 
     xsession.windowManager.i3.config.keybindings =

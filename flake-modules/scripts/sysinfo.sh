@@ -61,13 +61,15 @@ else
 	echo "  Run: nix run .#generate-age-key"
 fi
 
-# GPG key check
-GPG_KEY="4D8770567A65FE1369E2BCC1611871842A8C1619"
-if gpg --list-secret-keys "$GPG_KEY" >/dev/null 2>&1; then
+# GPG key check — read from git config, not hardcoded
+GPG_KEY=$(git config --global user.signingkey 2>/dev/null || echo "")
+if [ -n "$GPG_KEY" ] && gpg --list-secret-keys "$GPG_KEY" >/dev/null 2>&1; then
 	echo -e "${GREEN}OK${NC} GPG signing key: Imported ($GPG_KEY)"
-else
-	echo -e "${YELLOW}--${NC} GPG signing key: Not imported"
+elif [ -n "$GPG_KEY" ]; then
+	echo -e "${YELLOW}--${NC} GPG signing key: Not imported ($GPG_KEY)"
 	echo "  Key will auto-import on next home-manager activation"
+else
+	echo -e "${YELLOW}--${NC} GPG signing key: Not configured in git config"
 fi
 
 # Secrets directory check

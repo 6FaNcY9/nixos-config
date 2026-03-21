@@ -34,6 +34,26 @@ _: {
           end
         '';
       }
+      {
+        event = [ "FileType" ];
+        pattern = [
+          "markdown"
+          "gitcommit"
+        ];
+        command = "setlocal spell spelllang=en_us";
+      }
+      # nvim-lint: run linters on save and after leaving insert mode
+      {
+        event = [
+          "BufWritePost"
+          "InsertLeave"
+        ];
+        callback.__raw = ''
+          function()
+            require('lint').try_lint()
+          end
+        '';
+      }
     ];
   };
 }

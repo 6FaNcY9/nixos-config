@@ -1,68 +1,28 @@
-# Screen lock module - i3lock-color with blurred screenshot background
-# Creates lock-screen command that:
-# 1. Takes screenshot with maim
-# 2. Blurs it with ImageMagick
-# 3. Displays i3lock-color with palette-colored ring indicators and clock
+# Screen lock module - switches to LightDM greeter on lock
+# Uses dm-tool switch-to-greeter for instant lock with the same login screen as boot.
+# The i3 session is preserved; logging in returns to it.
 
 {
   config,
   lib,
   pkgs,
-  palette,
   cfgLib,
   ...
 }:
 let
   cfg = config.features.desktop.lock;
 
-  # Strip the '#' prefix from palette colors for i3lock-color
-  stripHash = color: builtins.substring 1 6 color;
-
   lockScript = cfgLib.mkShellScript {
     inherit pkgs;
     name = "lock-screen";
     body = ''
-      LOCK_IMG="''${XDG_RUNTIME_DIR:-/tmp}/lockscreen.png"
-      ${pkgs.maim}/bin/maim "$LOCK_IMG"
-      ${pkgs.imagemagick}/bin/convert "$LOCK_IMG" -blur 0x8 "$LOCK_IMG"
-      # i3lock-color configuration:
-      # - Transparent inside, colored ring (muted), accent keypress highlight, red backspace
-      # - Clock centered with time above, date below
-      # - Media/screen keys pass through to allow emergency volume/brightness adjustments
-      ${pkgs.i3lock-color}/bin/i3lock-color \
-        --image="$LOCK_IMG" \
-        --inside-color=00000000 \
-        --ring-color=${stripHash palette.muted}ff \
-        --keyhl-color=${stripHash palette.accent}ff \
-        --bshl-color=${stripHash palette.danger}ff \
-        --separator-color=00000000 \
-        --ringver-color=${stripHash palette.accent}ff \
-        --ringwrong-color=${stripHash palette.danger}ff \
-        --line-uses-ring \
-        --ind-pos="w/2:h/2" \
-        --radius=120 \
-        --ring-width=8 \
-        --time-str="%H:%M:%S" \
-        --time-color=${stripHash palette.text}ff \
-        --time-size=48 \
-        --time-pos="w/2:h/2-80" \
-        --date-str="%A, %d %B" \
-        --date-color=${stripHash palette.muted}ff \
-        --date-size=18 \
-        --date-pos="w/2:h/2+60" \
-        --verif-text="Verifying..." \
-        --wrong-text="Wrong!" \
-        --noinput-text="" \
-        --clock \
-        --pass-media-keys \
-        --pass-screen-keys
-      rm -f "$LOCK_IMG"
+      ${pkgs.lightdm}/bin/dm-tool switch-to-greeter
     '';
   };
 in
 {
   options.features.desktop.lock = {
-    enable = lib.mkEnableOption "desktop lock screen with i3lock-color";
+    enable = lib.mkEnableOption "desktop lock screen via LightDM greeter";
   };
 
   config = lib.mkIf cfg.enable {

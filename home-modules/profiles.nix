@@ -126,6 +126,7 @@ let
     pkgs.killall
     pkgs.xclip
     pkgs.gsimplecal
+    pkgs.chromium
   ];
 
   extrasPkgs = [

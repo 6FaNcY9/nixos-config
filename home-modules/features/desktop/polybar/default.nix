@@ -1,7 +1,7 @@
 # Polybar status bar module
 # Top bar with i3 workspaces, window title, system stats, time, tray
 # Font choices:
-# - font-0 (stylixFonts.monospace): Primary text, size 11.5pt bold — intentionally smaller than desktop (14pt) for bar density
+# - font-0 (stylixFonts.monospace): Primary text, size 14pt bold
 # - font-1 (Symbols Nerd Font): Icons from nerd-fonts symbols-only package
 
 {
@@ -28,7 +28,10 @@ let
     ]
     ++ lib.optionals hasNetwork [ "network" ]
     ++ lib.optionals hasBattery [ "battery" ]
-    ++ [ "power" ]
+    ++ [
+      "pulseaudio"
+      "power"
+    ]
   );
 in
 {
@@ -52,6 +55,7 @@ in
 
       script = ''
         ${pkgs.procps}/bin/pkill -x polybar || true
+        export I3SOCK=$(${pkgs.i3}/bin/i3 --get-socketpath)
         ${config.services.polybar.package}/bin/polybar --reload top &
       '';
 

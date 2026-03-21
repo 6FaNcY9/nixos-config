@@ -82,7 +82,6 @@ in
     SSL_CERT_FILE = "/etc/ssl/certs/ca-bundle.crt";
     NIX_SSL_CERT_FILE = "/etc/ssl/certs/ca-bundle.crt";
   };
-
   news.display = "silent";
 
   xdg = {

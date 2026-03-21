@@ -111,13 +111,11 @@ in
     # Desktop programs
     programs = {
       dconf.enable = true; # Required for GTK settings and XFCE components to persist preferences
-      i3lock.enable = true; # Screen locker
     };
 
     # Security settings
     security = {
       polkit.enable = true; # Policy kit for privilege escalation (mounting drives, NetworkManager, etc.)
-      pam.services.i3lock.enable = true; # PAM support for i3lock
       rtkit.enable = true; # RealtimeKit for audio - grants realtime scheduling to audio processes
     };
 

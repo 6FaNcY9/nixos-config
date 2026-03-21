@@ -43,6 +43,10 @@ in
           ${loadSecret config.sops.secrets.context7_api_key.path "CONTEXT7_API_KEY"}
           ${loadSecret config.sops.secrets.helicone_api_key.path "HELICONE_API_KEY"}
 
+          # GITHUB_PERSONAL_ACCESS_TOKEN aliases GITHUB_MCP_PAT because the GitHub MCP
+          # server expects the former name while the sops secret uses the latter.
+          set -gx GITHUB_PERSONAL_ACCESS_TOKEN $GITHUB_MCP_PAT
+
           set -g fzf_fd_opts --hidden --follow --exclude .git
           set -g fzf_preview_dir_cmd 'eza --all --color=always --group-directories-first'
           set -g fzf_preview_file_cmd 'bat --style=numbers --color=always'
@@ -100,6 +104,13 @@ in
           gla = "git log --oneline --graph --decorate --all -20";
           gst = "git stash";
           gstp = "git stash pop";
+
+          # Git Worktrees
+          gwt = "git worktree";
+          gwtl = "git worktree list";
+          gwta = "git worktree add";
+          gwtd = "git worktree remove";
+          gwtp = "git worktree prune";
 
           # File Operations
           ll = "eza -lah";

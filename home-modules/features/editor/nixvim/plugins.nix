@@ -64,6 +64,10 @@
         };
       };
     };
+    treesitter-context = {
+      enable = true;
+      settings.max_lines = 3;
+    };
 
     # Git integration
     web-devicons.enable = true;
@@ -105,6 +109,10 @@
           { "<leader>f", group = "Find" },
           { "<leader>t", group = "Terminal" },
           { "<leader>c", group = "Code" },
+          { "<leader>b", group = "Buffer" },
+          { "<leader>x", group = "Diagnostics" },
+          { "<leader>a", group = "AI" },
+          { "<leader>p", group = "Preview" },
         })
       '';
     };
@@ -223,17 +231,31 @@
         lspBuf = {
           "gd" = "definition";
           "gD" = "declaration";
+          "gT" = "type_definition";
           "gr" = "references";
           "gi" = "implementation";
           "K" = "hover";
+          "<C-k>" = "signature_help";
           "<leader>rn" = "rename";
           "<leader>ca" = "code_action";
+          "<leader>cs" = "workspace_symbol";
         };
         diagnostic = {
           "[d" = "goto_prev";
           "]d" = "goto_next";
           "<leader>e" = "open_float";
         };
+      };
+    };
+
+    # nvim-lint: Async linter runner (complements conform formatters with style/error checks)
+    lint = {
+      enable = true;
+      lintersByFt = {
+        nix = [ "statix" ];
+        python = [ "ruff" ];
+        bash = [ "shellcheck" ];
+        lua = [ "luacheck" ];
       };
     };
 
@@ -249,7 +271,7 @@
         };
         format_on_save = {
           lsp_format = "fallback";
-          timeout_ms = 500;
+          timeout_ms = 1000;
         };
       };
     };

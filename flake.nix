@@ -116,6 +116,12 @@
       url = "github:AngelJumbo/gruvbox-wallpapers";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # hmts.nvim: Home Manager treesitter injections (bash in HM settings)
+    hmts-nvim = {
+      url = "github:calops/hmts.nvim";
+      flake = false;
+    };
   };
 
   outputs =

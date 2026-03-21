@@ -232,7 +232,8 @@ in
     in
     builtins.listToAttrs (
       map (ws: {
-        name = "${keyPrefix}${toString ws.number}";
+        # i3 uses key "0" for workspace 10 (single-char key after modifier)
+        name = "${keyPrefix}${if ws.number == 10 then "0" else toString ws.number}";
         value = "${commandPrefix} \"${mkWorkspaceName ws}\"";
       }) workspaces
     );
