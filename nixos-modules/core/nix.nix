@@ -30,12 +30,12 @@
 
       # Binary caches for faster builds (community pattern)
       substituters = [
-        "https://cache.nixos.org"
+        # cache.nixos.org is added automatically by NixOS — not listed here to avoid duplicates
         "https://nix-community.cachix.org"
         "https://vino-nixos-config.cachix.org" # Personal binary cache
       ];
       trusted-public-keys = [
-        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+        # cache.nixos.org key is added automatically by NixOS — not listed here to avoid duplicates
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "vino-nixos-config.cachix.org-1:8LFVkzmO/+crLWO0Q3bqWOOamVjScT3v1/PCHPiTiUU=" # Personal cache key
       ];
