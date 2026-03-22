@@ -44,6 +44,7 @@ _: {
       polybar.enable = true;
       rofi.enable = true;
       vibe.enable = true;
+      filezilla.enable = true;
     };
   };
   # Workspaces use shared defaults from shared-modules/workspaces.nix

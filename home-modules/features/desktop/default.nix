@@ -13,5 +13,6 @@
     ./polybar
     ./rofi
     ./vibe
+    ./filezilla.nix
   ];
 }
