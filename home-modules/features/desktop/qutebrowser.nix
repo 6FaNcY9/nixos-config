@@ -68,6 +68,21 @@ in
         "colors.tabs.indicator.stop" = c.base0B;
         "colors.tabs.indicator.error" = c.base08;
 
+        # --- Status bar modes ---
+        # Each mode gets a distinct text color; bg stays dark across all modes.
+        # Normal: green | Insert: teal | Command: yellow | Private: pink
+        "colors.statusbar.normal.bg" = c.base00;
+        "colors.statusbar.normal.fg" = c.base0B;
+        "colors.statusbar.insert.bg" = c.base00;
+        "colors.statusbar.insert.fg" = c.base0D;
+        "colors.statusbar.command.bg" = c.base00;
+        "colors.statusbar.command.fg" = c.base0A;
+        "colors.statusbar.command.private.bg" = c.base00;
+        "colors.statusbar.command.private.fg" = c.base0E;
+        "colors.statusbar.private.bg" = c.base01;
+        "colors.statusbar.private.fg" = c.base0E;
+        "colors.statusbar.progress.bg" = c.base0B;
+
         # --- Ad blocking ---
         "content.blocking.method" = "both"; # block via both hosts file and ad
         "content.blocking.adblock.lists" = [
