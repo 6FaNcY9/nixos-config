@@ -26,6 +26,10 @@
       ruff
       stylua
       rustfmt
+      # Linters for nvim-lint
+      statix
+      shellcheck
+      lua51Packages.luacheck
     ];
 
     extraConfigLua = ''
