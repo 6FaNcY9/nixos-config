@@ -30,7 +30,7 @@ let
     ++ lib.optionals hasBattery [ "battery" ]
     ++ [
       "pulseaudio"
-      "power"
+      #"power"
     ]
   );
 in

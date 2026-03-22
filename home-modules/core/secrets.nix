@@ -44,38 +44,45 @@ in
       github_mcp_pat = {
         sopsFile = githubMcpSecretFile;
         format = "yaml";
+        mode = "0400"; # read-only for owner; loaded into env via fish interactiveShellInit
       };
 
       gpg_signing_key = {
         sopsFile = gpgSigningKeyFile;
         key = "gpg_private_key";
         format = "yaml";
+        mode = "0400"; # read-only for owner; imported once by home.activation.importGpgKey
       };
 
       cachix_auth_token = {
         sopsFile = cachixSecretFile;
         key = "cachix_auth_token";
         format = "yaml";
+        mode = "0400"; # read-only for owner; used by cachix CLI and pre-commit hook
       };
 
       exa_api_key = {
         sopsFile = exaApiSecretFile;
         format = "yaml";
+        mode = "0400"; # read-only for owner; loaded into env via fish interactiveShellInit
       };
 
       context7_api_key = {
         sopsFile = context7SecretFile;
         format = "yaml";
+        mode = "0400"; # read-only for owner; loaded into env via fish interactiveShellInit
       };
 
       mistral_api_key = {
         sopsFile = mistralSecretFile;
         format = "yaml";
+        mode = "0400"; # read-only for owner; loaded into env by consumers
       };
 
       helicone_api_key = {
         sopsFile = heliconeSecretFile;
         format = "yaml";
+        mode = "0400"; # read-only for owner; loaded into env via fish interactiveShellInit
       };
     };
   };
