@@ -36,7 +36,9 @@ No Stylix FileZilla module is needed or created. FileZilla inherits the Gruvbox 
 
 ## fzdefaults.xml
 
-Managed via `xdg.configFile."filezilla/fzdefaults.xml"`, creating a read-only Nix store symlink at `~/.config/filezilla/fzdefaults.xml`.
+Managed via `home.file.".filezilla/fzdefaults.xml"`, creating a read-only Nix store symlink at `~/.filezilla/fzdefaults.xml`.
+
+FileZilla searches for `fzdefaults.xml` in `~/.filezilla/`, `/etc/filezilla/`, and the install-prefix `share/filezilla/` — it does **not** search `~/.config/filezilla/`. Using `home.file` at the `~/.filezilla/` path is the reliable, documented location. The main settings file `filezilla.xml` continues to live at `~/.config/filezilla/filezilla.xml` (XDG location, found via a separate lookup).
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -55,10 +57,10 @@ Managed via `xdg.configFile."filezilla/fzdefaults.xml"`, creating a read-only Ni
 A Nix string containing the full XML template is stored in the module and written to the Nix store via `pkgs.writeText`. A `home.activation` entry copies it on first run only:
 
 ```bash
-mkdir -p "$HOME/.config/filezilla"
+$DRY_RUN_CMD mkdir -p "$HOME/.config/filezilla"
 if [ ! -f "$HOME/.config/filezilla/filezilla.xml" ]; then
-  cp ${filezillaConfigFile} "$HOME/.config/filezilla/filezilla.xml"
-  chmod 600 "$HOME/.config/filezilla/filezilla.xml"
+  $DRY_RUN_CMD cp ${filezillaConfigFile} "$HOME/.config/filezilla/filezilla.xml"
+  $DRY_RUN_CMD chmod 600 "$HOME/.config/filezilla/filezilla.xml"
 fi
 ```
 
@@ -120,7 +122,7 @@ After the first copy the file is fully writable. FileZilla accumulates runtime s
 | `Remote filelist colwidths` | `260 75 95 105 85 85` |
 | `Queue column widths` | `200 65 200 90 65 160` |
 
-**Greeting version** is set to suppress the first-launch welcome dialog. The exact version string must be read from `pkgs.filezilla.version` at evaluation time via Nix string interpolation.
+**Greeting version** is set to `9.9.9` (a deliberately high fake version) to suppress the first-launch welcome dialog permanently. Using the actual package version (`pkgs.filezilla.version`) would cause the dialog to reappear after any FileZilla upgrade, since the first-run copy strategy never updates `filezilla.xml` after initial creation. The fake high version is future-proof across all foreseeable real releases.
 
 ## Files Changed
 
