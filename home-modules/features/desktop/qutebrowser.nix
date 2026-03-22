@@ -108,6 +108,40 @@ in
         "colors.completion.scrollbar.fg" = c.base03;
         "colors.completion.scrollbar.bg" = c.base00;
 
+        # --- Hints ---
+        # Yellow bg with dark text: high visibility for keyboard navigation
+        "colors.hints.bg" = c.base0A;
+        "colors.hints.fg" = c.base00;
+        "colors.hints.match.fg" = c.base09;
+
+        # --- Downloads bar ---
+        # Teal=in progress, green=done, red text=error
+        "colors.downloads.bar.bg" = c.base00;
+        "colors.downloads.start.fg" = c.base00;
+        "colors.downloads.start.bg" = c.base0D;
+        "colors.downloads.stop.fg" = c.base00;
+        "colors.downloads.stop.bg" = c.base0B;
+        "colors.downloads.error.fg" = c.base08;
+        "colors.downloads.error.bg" = c.base00;
+
+        # --- Messages ---
+        # Info: teal | Warning: yellow | Error: red — each with dark fg for contrast
+        "colors.messages.info.bg" = c.base0D;
+        "colors.messages.info.fg" = c.base00;
+        "colors.messages.info.border" = c.base0D;
+        "colors.messages.warning.bg" = c.base0A;
+        "colors.messages.warning.fg" = c.base00;
+        "colors.messages.warning.border" = c.base0A;
+        "colors.messages.error.bg" = c.base08;
+        "colors.messages.error.fg" = c.base00;
+        "colors.messages.error.border" = c.base08;
+
+        # --- Keyhint overlay ---
+        # bgAlt bg so it lifts above content; orange suffix to highlight the key
+        "colors.keyhint.bg" = c.base01;
+        "colors.keyhint.fg" = c.base05;
+        "colors.keyhint.suffix.fg" = c.base09;
+
         # --- Ad blocking ---
         "content.blocking.method" = "both"; # block via both hosts file and ad
         "content.blocking.adblock.lists" = [
