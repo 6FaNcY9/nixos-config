@@ -1,5 +1,5 @@
 /* Gruvbox theme overrides for Firefox
-   Colors injected via Home Manager from palette.nix (@@baseXX@@ placeholders)
+   Colors injected via Home Manager from palette.nix (@baseXX@ placeholders)
    Accent: deep orange (base0F) / bright orange (base09) */
 
 @-moz-document url(chrome://browser/content/browser.xhtml),

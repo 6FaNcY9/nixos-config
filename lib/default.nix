@@ -23,13 +23,16 @@ let
 
   # validateSecretEncrypted :: Path -> Bool
   # Assert that a secret file is encrypted by sops (checks for sops metadata). Throws if unencrypted.
+  # Requires BOTH the encrypted payload marker AND the sops metadata header so that a file
+  # containing "ENC[AES256_GCM" in a comment but no real encryption still fails.
   validateSecretEncrypted =
     secretPath:
     let
       exists = builtins.pathExists secretPath;
       content = if exists then builtins.readFile secretPath else "";
-      # Check if file contains sops metadata (encrypted files have this)
-      isEncrypted = exists && lib.hasInfix "ENC[AES256_GCM" content;
+      hasPayload = lib.hasInfix "ENC[AES256_GCM" content;
+      hasSopsMeta = lib.hasInfix "sops:" content;
+      isEncrypted = exists && hasPayload && hasSopsMeta;
     in
     assert
       isEncrypted
@@ -128,6 +131,8 @@ let
 
   # mkColorReplacer :: { colors :: AttrSet, prefix :: Str?, suffix :: Str? } -> (Str -> Str)
   # Replace color placeholders (@@key@@) in strings with actual color values.
+  # Throws at evaluation time if any prefix marker remains after replacement,
+  # catching misspelled placeholder keys before they silently pass through.
   # Example: mkColorReplacer {colors = {base00 = "#282828";}} "@@base00@@" => "#282828"
   mkColorReplacer =
     {
@@ -140,7 +145,14 @@ let
       oldStrs = map (k: "${prefix}${k}${suffix}") keys;
       newStrs = map (k: colors.${k}) keys;
     in
-    builtins.replaceStrings oldStrs newStrs;
+    str:
+    let
+      result = builtins.replaceStrings oldStrs newStrs str;
+    in
+    if lib.hasInfix prefix result then
+      throw "mkColorReplacer: unreplaced '${prefix}…${suffix}' placeholder found — misspelled key in template? Output: ${result}"
+    else
+      result;
 
   # mkBoolOpt :: Bool -> Str -> Option
   # Boolean option shorthand used by NixOS feature modules.
