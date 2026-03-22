@@ -125,6 +125,7 @@ let
     pkgs.feh
     pkgs.killall
     pkgs.xclip
+    pkgs.copyq # Clipboard manager — persists clipboard content after source app closes
     pkgs.gsimplecal
     pkgs.chromium
   ];

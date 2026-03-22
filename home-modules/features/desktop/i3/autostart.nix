@@ -1,6 +1,7 @@
 # i3 autostart programs - Launched when i3 session starts
 # - autotiling: Auto-switch split direction based on window dimensions
 # - unclutter: Hide mouse cursor after 3s idle, show on move
+# - copyq: Clipboard manager — persists clipboard content (fixes Flameshot image loss on X11)
 # - polkit-gnome: Authentication agent for privilege escalation prompts
 # - xss-lock: Screen locker integration (--transfer-sleep-lock ensures lock before suspend)
 # - xautolock: Idle timer (5min → lock, 10min → DPMS off)
@@ -15,6 +16,12 @@
     }
     {
       command = "${pkgs.unclutter}/bin/unclutter --timeout 3 --jitter 5 --ignore-scrolling";
+      always = false;
+      notification = false;
+    }
+    {
+      # copyq: clipboard manager — keeps images/text in clipboard after source app closes
+      command = "${pkgs.copyq}/bin/copyq --start-server";
       always = false;
       notification = false;
     }
