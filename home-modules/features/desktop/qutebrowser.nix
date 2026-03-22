@@ -52,6 +52,22 @@ in
         "colors.statusbar.caret.selection.bg" = c.base0D;
         "colors.statusbar.caret.selection.fg" = c.base00;
 
+        # --- Tab bar ---
+        # Active tab: bgAlt bg + orange text to match system accent
+        # Inactive tabs: primary bg + muted text so they recede
+        "colors.tabs.bar.bg" = c.base00;
+        "colors.tabs.even.bg" = c.base00;
+        "colors.tabs.odd.bg" = c.base00;
+        "colors.tabs.even.fg" = c.base03;
+        "colors.tabs.odd.fg" = c.base03;
+        "colors.tabs.selected.even.bg" = c.base01;
+        "colors.tabs.selected.odd.bg" = c.base01;
+        "colors.tabs.selected.even.fg" = c.base09;
+        "colors.tabs.selected.odd.fg" = c.base09;
+        "colors.tabs.indicator.start" = c.base0D;
+        "colors.tabs.indicator.stop" = c.base0B;
+        "colors.tabs.indicator.error" = c.base08;
+
         # --- Ad blocking ---
         "content.blocking.method" = "both"; # block via both hosts file and ad
         "content.blocking.adblock.lists" = [
@@ -126,6 +142,9 @@ in
 
         # --- mail.mrija.org: allow all cookies (site requires session cookies to log in) ---
         config.set('content.cookies.accept', 'all', 'https://mail.mrija.org')
+
+        # --- claude.ai: allow canvas reading (required for file upload UI) ---
+        config.set('content.canvas_reading', True, 'https://claude.ai')
       '';
     };
     xdg.mimeApps.defaultApplications = {
