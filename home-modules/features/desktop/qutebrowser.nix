@@ -83,6 +83,15 @@ in
         "colors.statusbar.private.fg" = c.base0E;
         "colors.statusbar.progress.bg" = c.base0B;
 
+        # --- URL colors ---
+        # Warm beige default; green=https (secure), yellow=http (warn),
+        # orange=hover (callout), red=error
+        "colors.statusbar.url.fg" = c.base05;
+        "colors.statusbar.url.success.https.fg" = c.base0B;
+        "colors.statusbar.url.success.http.fg" = c.base0A;
+        "colors.statusbar.url.hover.fg" = c.base09;
+        "colors.statusbar.url.error.fg" = c.base08;
+
         # --- Ad blocking ---
         "content.blocking.method" = "both"; # block via both hosts file and ad
         "content.blocking.adblock.lists" = [
