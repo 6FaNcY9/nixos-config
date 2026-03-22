@@ -20,7 +20,8 @@ let
   cfg = config.features.desktop.filezilla;
 in
 {
-  options.features.desktop.filezilla.enable = lib.mkEnableOption "FileZilla FTP/SFTP client configuration";
+  options.features.desktop.filezilla.enable =
+    lib.mkEnableOption "FileZilla FTP/SFTP client configuration";
 
   config = lib.mkIf cfg.enable (
     let
