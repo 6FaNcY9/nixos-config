@@ -92,6 +92,22 @@ in
         "colors.statusbar.url.hover.fg" = c.base09;
         "colors.statusbar.url.error.fg" = c.base08;
 
+        # --- Completion popup (extended) ---
+        # Alternating rows, orange category headers and match highlights.
+        # Selected item bg/borders already set above (base02).
+        "colors.completion.fg" = c.base05;
+        "colors.completion.odd.bg" = c.base00;
+        "colors.completion.even.bg" = c.base01;
+        "colors.completion.category.fg" = c.base09;
+        "colors.completion.category.bg" = c.base00;
+        "colors.completion.category.border.top" = c.base00;
+        "colors.completion.category.border.bottom" = c.base01;
+        "colors.completion.item.selected.fg" = c.base05;
+        "colors.completion.item.selected.match.fg" = c.base09;
+        "colors.completion.match.fg" = c.base09;
+        "colors.completion.scrollbar.fg" = c.base03;
+        "colors.completion.scrollbar.bg" = c.base00;
+
         # --- Ad blocking ---
         "content.blocking.method" = "both"; # block via both hosts file and ad
         "content.blocking.adblock.lists" = [
