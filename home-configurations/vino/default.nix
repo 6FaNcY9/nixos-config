@@ -13,59 +13,23 @@
   ...
 }:
 let
-  inherit (pkgs.stdenv.hostPlatform) system;
+  cfgLib = import ../../lib { inherit lib; };
   hostName = if osConfig != null then osConfig.networking.hostName else hostname; # Fallback when using standalone home-manager
   hostModulePath = ./hosts/${hostName}.nix;
   hostModules = lib.optionals (builtins.pathExists hostModulePath) [ hostModulePath ];
-
-  # Stylix fonts (with fallback)
-  stylixFonts = lib.attrByPath [ "stylix" "fonts" ] {
-    sansSerif = {
-      name = "Sans";
-    };
-    monospace = {
-      name = "Monospace";
-    };
-  } config;
-
-  codexPkg = inputs.codex-cli-nix.packages.${system}.default;
-  opencodePkg = pkgs.opencode;
-  mistralVibePkg = pkgs.mistral-vibe; # use overlay (consistent with opencodePkg = pkgs.opencode)
-
-  i3Pkg = pkgs.i3;
 in
 {
   imports = [ ../../home-modules/default.nix ] ++ hostModules;
 
-  # Inject shared arguments available to ALL home-modules via function args.
-  #
-  # Available arguments:
-  #   palette     — Semantic colors (bg, text, accent, warn, danger) from theme.palette
-  #   c           — Raw base16 colors (base00..base0F) from theme.colors
-  #   workspaces  — i3 workspace definitions [{number, icon}]
-  #   cfgLib      — Helper library from ../../lib (mkShellScript, mkColorReplacer, etc.)
-  #   stylixFonts — Font configuration {sansSerif, monospace} from Stylix
-  #   i3Pkg       — i3 window manager package
-  #   codexPkg    — Codex CLI from flake input
-  #   opencodePkg — OpenCode from overlay
-  #   mistralVibePkg — Mistral Vibe from flake input
-  #   hostname    — Current host name
-  #
-  # Usage in home-modules: Add arg name to function signature, e.g.
-  #   {pkgs, palette, cfgLib, ...}:
-  _module.args = {
-    inherit (config.theme) palette;
-    inherit (config) workspaces;
-    c = config.theme.colors;
+  # Inject shared arguments into all home-modules via _module.args.
+  # See lib/default.nix:mkUserModuleArgs for the full list of injected args.
+  _module.args = cfgLib.mkUserModuleArgs {
     inherit
-      stylixFonts
-      i3Pkg
-      codexPkg
-      opencodePkg
-      mistralVibePkg
+      config
+      pkgs
+      inputs
+      hostName
       ;
-    hostname = hostName;
-    cfgLib = import ../../lib { inherit lib; };
   };
 
   # ============================================================
