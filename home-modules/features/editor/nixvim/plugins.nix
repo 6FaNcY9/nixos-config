@@ -1,7 +1,12 @@
 # Plugin Ecosystem Configuration
 # All plugins with their settings: LSP, completion, AI assistance, fuzzy finder, etc.
 
-{ pkgs, ... }:
+{
+  pkgs,
+  config,
+  hostname,
+  ...
+}:
 {
   programs.nixvim.plugins = {
     # GitHub Copilot: AI-powered code completion with auto-triggered suggestions
@@ -199,8 +204,8 @@
             nixpkgs.expr = "import ${pkgs.path} {}";
             formatting.command = [ "nixfmt" ];
             options = {
-              nixos.expr = "(builtins.getFlake (builtins.toString ./.)).nixosConfigurations.bandit.options";
-              home_manager.expr = "(builtins.getFlake (builtins.toString ./.)).homeConfigurations.\"vino@bandit\".options";
+              nixos.expr = "(builtins.getFlake (builtins.toString ./.)).nixosConfigurations.${hostname}.options";
+              home_manager.expr = "(builtins.getFlake (builtins.toString ./.)).homeConfigurations.\"${config.home.username}@${hostname}\".options";
             };
           };
         };

@@ -1,6 +1,7 @@
 # Core: Basic networking and locale
 # Always enabled (no option)
-_: {
+{ lib, ... }:
+{
   # Networking
   networking = {
     networkmanager.enable = true;
@@ -8,7 +9,7 @@ _: {
   };
 
   # Locale and timezone
-  time.timeZone = "Europe/Vienna";
-  i18n.defaultLocale = "en_US.UTF-8";
-  console.keyMap = "de-latin1-nodeadkeys";
+  time.timeZone = lib.mkDefault "Europe/Vienna";
+  i18n.defaultLocale = lib.mkDefault "en_US.UTF-8";
+  console.keyMap = lib.mkDefault "de-latin1-nodeadkeys";
 }
