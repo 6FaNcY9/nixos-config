@@ -21,7 +21,7 @@ let
   heliconeSecretFile = "${inputs.self}/secrets/helicone.yaml";
 
   secretValidation = cfgLib.mkSecretValidation {
-    secrets = [
+    secrets = builtins.filter builtins.pathExists [
       githubMcpSecretFile
       gpgSigningKeyFile
       cachixSecretFile
@@ -40,62 +40,72 @@ in
   sops = {
     age.keyFile = lib.mkDefault "${config.xdg.configHome}/sops/age/keys.txt";
 
-    secrets = {
-      github_mcp_pat = {
-        sopsFile = githubMcpSecretFile;
-        format = "yaml";
-        mode = "0400"; # read-only for owner; loaded into env via fish interactiveShellInit
-      };
-
-      gpg_signing_key = {
-        sopsFile = gpgSigningKeyFile;
-        key = "gpg_private_key";
-        format = "yaml";
-        mode = "0400"; # read-only for owner; imported once by home.activation.importGpgKey
-      };
-
-      cachix_auth_token = {
-        sopsFile = cachixSecretFile;
-        key = "cachix_auth_token";
-        format = "yaml";
-        mode = "0400"; # read-only for owner; used by cachix CLI and pre-commit hook
-      };
-
-      exa_api_key = {
-        sopsFile = exaApiSecretFile;
-        format = "yaml";
-        mode = "0400"; # read-only for owner; loaded into env via fish interactiveShellInit
-      };
-
-      context7_api_key = {
-        sopsFile = context7SecretFile;
-        format = "yaml";
-        mode = "0400"; # read-only for owner; loaded into env via fish interactiveShellInit
-      };
-
-      mistral_api_key = {
-        sopsFile = mistralSecretFile;
-        format = "yaml";
-        mode = "0400"; # read-only for owner; loaded into env by consumers
-      };
-
-      helicone_api_key = {
-        sopsFile = heliconeSecretFile;
-        format = "yaml";
-        mode = "0400"; # read-only for owner; loaded into env via fish interactiveShellInit
-      };
-    };
+    secrets = lib.mkMerge (
+      lib.optional (builtins.pathExists githubMcpSecretFile) {
+        github_mcp_pat = {
+          sopsFile = githubMcpSecretFile;
+          format = "yaml";
+          mode = "0400"; # read-only for owner; loaded into env via fish interactiveShellInit
+        };
+      }
+      ++ lib.optional (builtins.pathExists gpgSigningKeyFile) {
+        gpg_signing_key = {
+          sopsFile = gpgSigningKeyFile;
+          key = "gpg_private_key";
+          format = "yaml";
+          mode = "0400"; # read-only for owner; imported once by home.activation.importGpgKey
+        };
+      }
+      ++ lib.optional (builtins.pathExists cachixSecretFile) {
+        cachix_auth_token = {
+          sopsFile = cachixSecretFile;
+          key = "cachix_auth_token";
+          format = "yaml";
+          mode = "0400"; # read-only for owner; used by cachix CLI and pre-commit hook
+        };
+      }
+      ++ lib.optional (builtins.pathExists exaApiSecretFile) {
+        exa_api_key = {
+          sopsFile = exaApiSecretFile;
+          format = "yaml";
+          mode = "0400"; # read-only for owner; loaded into env via fish interactiveShellInit
+        };
+      }
+      ++ lib.optional (builtins.pathExists context7SecretFile) {
+        context7_api_key = {
+          sopsFile = context7SecretFile;
+          format = "yaml";
+          mode = "0400"; # read-only for owner; loaded into env via fish interactiveShellInit
+        };
+      }
+      ++ lib.optional (builtins.pathExists mistralSecretFile) {
+        mistral_api_key = {
+          sopsFile = mistralSecretFile;
+          format = "yaml";
+          mode = "0400"; # read-only for owner; loaded into env by consumers
+        };
+      }
+      ++ lib.optional (builtins.pathExists heliconeSecretFile) {
+        helicone_api_key = {
+          sopsFile = heliconeSecretFile;
+          format = "yaml";
+          mode = "0400"; # read-only for owner; loaded into env via fish interactiveShellInit
+        };
+      }
+    );
   };
 
   # Import GPG key after sops-nix has decrypted secrets
-  # Non-fatal: only imports if the secret exists
-  home.activation.importGpgKey = lib.hm.dag.entryAfter [ "writeBoundary" "reloadSystemd" ] ''
-    SECRET_PATH="${config.sops.secrets.gpg_signing_key.path}"
-    if [ -f "$SECRET_PATH" ]; then
-      echo "Importing GPG signing key..."
-      $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg --batch --import "$SECRET_PATH" 2>/dev/null || echo "GPG key already imported or import failed (non-fatal)"
-    else
-      echo "GPG signing key secret not yet available, skipping import"
-    fi
-  '';
+  # Only declared when gpg secret file exists on this host
+  home.activation = lib.mkIf (builtins.pathExists gpgSigningKeyFile) {
+    importGpgKey = lib.hm.dag.entryAfter [ "writeBoundary" "reloadSystemd" ] ''
+      SECRET_PATH="${config.sops.secrets.gpg_signing_key.path}"
+      if [ -f "$SECRET_PATH" ]; then
+        echo "Importing GPG signing key..."
+        $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg --batch --import "$SECRET_PATH" 2>/dev/null || echo "GPG key already imported or import failed (non-fatal)"
+      else
+        echo "GPG signing key secret not yet available, skipping import"
+      fi
+    '';
+  };
 }
