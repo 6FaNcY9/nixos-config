@@ -9,7 +9,7 @@
 #   generate-age-key        — Generate age key for sops-nix encryption
 #   sysinfo                 — System diagnostics and configuration status
 #   cachix-push             — Push build results to Cachix binary cache
-{ primaryHost, username, ... }:
+{ username, ... }:
 {
   perSystem =
     {
@@ -120,7 +120,7 @@
           ];
           runtimeEnv = {
             CACHE_NAME = "${username}-nixos-config";
-            PRIMARY_HOST = primaryHost;
+            PRIMARY_HOST = "bandit";
           };
           meta.description = "Push current system build to Cachix";
           text = builtins.readFile ./scripts/cachix-push.sh;

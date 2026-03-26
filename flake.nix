@@ -128,7 +128,6 @@
     inputs@{ flake-parts, ... }:
     let
       system = "x86_64-linux";
-      primaryHost = "bandit";
       # Auto-derive username from single directory under home-configurations/
       homeUsers = builtins.attrNames (builtins.readDir ./home-configurations);
       username =
@@ -172,10 +171,9 @@
         debug = false;
 
         # globalArgs: Available to all perSystem flake-modules (e.g. _common.nix, apps.nix).
-        # Contains: primaryHost, username, repoRoot, pkgsFor, nixpkgsConfig
+        # Contains: username, repoRoot, pkgsFor, nixpkgsConfig
         _module.args = {
           inherit
-            primaryHost
             username
             repoRoot
             pkgsFor
@@ -205,7 +203,7 @@
               ;
           };
 
-          nixos.hosts.${primaryHost}.userHomeModules = [ username ];
+          nixos.hosts.bandit.userHomeModules = [ username ];
         };
 
         flake = {

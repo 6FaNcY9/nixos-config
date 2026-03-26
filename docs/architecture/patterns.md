@@ -36,7 +36,7 @@ flake-parts.lib.mkFlake { inherit inputs; } ({ ... }: {
     globalArgs = {
       inherit inputs username repoRoot;  # Available in ALL modules
     };
-    nixos.hosts.${primaryHost}.userHomeModules = [ "vino" ];
+    nixos.hosts.bandit.userHomeModules = [ "vino" ];
   };
 });
 ```
@@ -106,7 +106,7 @@ Each `default.nix` acts as an aggregator: it imports all module files in its dir
 **Why:** Passing data via `specialArgs`, `extraSpecialArgs`, or config references becomes tedious and error-prone. The `_module.args` pattern establishes a "context layer" where values are injected once and accessed naturally via function arguments.
 
 **Where:**
-- `flake.nix` — top-level args for perSystem modules (primaryHost, username, repoRoot, pkgsFor)
+- `flake.nix` — top-level args for perSystem modules (username, repoRoot, pkgsFor)
 - `flake-modules/_common.nix` — perSystem args (cfgLib, commonDevPackages, mkApp, opencodePkg)
 - `nixos-modules/home-manager.nix` — bridge NixOS args to Home Manager via `extraSpecialArgs`
 - `home-configurations/vino/default.nix` — home-module args (palette, c, workspaces, stylixFonts, cfgLib)
@@ -121,7 +121,7 @@ Each `default.nix` acts as an aggregator: it imports all module files in its dir
 ```nix
 # flake.nix (top-level)
 _module.args = {
-  inherit primaryHost username repoRoot pkgsFor;
+  inherit username repoRoot pkgsFor;
 };
 
 # flake-modules/_common.nix (perSystem)
