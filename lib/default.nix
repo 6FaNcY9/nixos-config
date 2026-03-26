@@ -225,6 +225,43 @@ let
     "space_cache=v2"
     "discard=async"
   ];
+
+  # mkUserModuleArgs :: { config, pkgs, inputs, hostName } -> AttrSet
+  # Build the _module.args attrset for a Home Manager user configuration.
+  # Centralises the derivation of palette, workspaces, fonts, packages, and
+  # hostname so that a second user config can call this instead of copy-pasting.
+  #
+  # Args:
+  #   config   — Home Manager config (provides theme.*, workspaces, stylix.fonts)
+  #   pkgs     — nixpkgs package set
+  #   inputs   — flake inputs (used for codex-cli-nix)
+  #   hostName — resolved hostname string (from osConfig or fallback)
+  mkUserModuleArgs =
+    {
+      config,
+      pkgs,
+      inputs,
+      hostName,
+    }:
+    let
+      inherit (pkgs.stdenv.hostPlatform) system;
+      stylixFonts = lib.attrByPath [ "stylix" "fonts" ] {
+        sansSerif.name = "Sans";
+        monospace.name = "Monospace";
+      } config;
+    in
+    {
+      inherit (config.theme) palette;
+      inherit (config) workspaces;
+      c = config.theme.colors;
+      inherit stylixFonts;
+      i3Pkg = pkgs.i3;
+      codexPkg = inputs.codex-cli-nix.packages.${system}.default;
+      opencodePkg = pkgs.opencode;
+      mistralVibePkg = pkgs.mistral-vibe;
+      hostname = hostName;
+      cfgLib = import ./. { inherit lib; };
+    };
 in
 {
   # Workspace helpers
@@ -271,4 +308,7 @@ in
 
   # Filesystem helpers
   inherit mkBtrfsOpts;
+
+  # User module args helper
+  inherit mkUserModuleArgs;
 }
