@@ -8,5 +8,7 @@
     ./secrets.nix
     ./server-hardening.nix
     ./desktop-hardening.nix
+    ./tor-routing.nix
+    ./clamav.nix
   ];
 }

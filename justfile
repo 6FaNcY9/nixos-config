@@ -100,3 +100,17 @@ commit:
 # Runs the repository bootstrap script to verify prerequisites and run flake checks
 bootstrap:
   bash ./scripts/bootstrap.sh
+
+# ── Security ─────────────────────────────────────────────
+
+# Scan home directory for viruses (moves infected files to /var/lib/clamav-quarantine)
+scan-home:
+    clamav-scan home
+
+# Scan entire system for viruses (moves infected files to /var/lib/clamav-quarantine)
+scan-system:
+    clamav-scan system
+
+# Scan a specific path: just scan ~/Downloads
+scan PATH:
+    clamav-scan '{{PATH}}'
