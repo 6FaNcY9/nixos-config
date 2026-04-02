@@ -53,7 +53,12 @@ in
 
       script = ''
         ${pkgs.procps}/bin/pkill -x polybar || true
-        export I3SOCK=$(${pkgs.i3}/bin/i3 --get-socketpath)
+        # Wait for i3 socket — polybar starts before i3 is ready at login,
+        # causing the i3 module to be silently disabled for the whole session.
+        until I3SOCK=$(${pkgs.i3}/bin/i3 --get-socketpath 2>/dev/null); do
+          ${pkgs.coreutils}/bin/sleep 0.5
+        done
+        export I3SOCK
         ${config.services.polybar.package}/bin/polybar --reload top &
       '';
 
