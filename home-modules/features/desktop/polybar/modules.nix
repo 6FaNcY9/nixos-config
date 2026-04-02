@@ -19,6 +19,21 @@ let
   hasBattery = config.devices.battery != "";
   hasNetwork = config.devices.networkInterface != "";
   hasLan = config.devices.lanInterface != "";
+  networkScript = pkgs.writeShellScript "polybar-network" ''
+    if [ -f /run/tor-routing-active ]; then
+      IP=$(${pkgs.curl}/bin/curl --socks5 127.0.0.1:9050 --max-time 5 -s https://api.ipify.org 2>/dev/null || echo "tor:?")
+      IP=$(printf '%s' "$IP" | tr -d '%{}')
+      echo "%{F#d3869b}🧅 $IP%{F-}"
+    else
+      SSID=$(${pkgs.wirelesstools}/bin/iwgetid -r ${config.devices.networkInterface} 2>/dev/null || echo "")
+      SSID=$(printf '%s' "$SSID" | tr -d '%{}')
+      if [ -z "$SSID" ]; then
+        echo "%{F#fb4934}󰖪 off%{F-}"
+      else
+        echo "%{F#b8bb26}󰖩 $SSID%{F-}"
+      fi
+    fi
+  '';
 in
 {
   services.polybar.settings = lib.mkMerge [
@@ -236,25 +251,15 @@ in
       };
     }
 
-    # ── Network / WiFi (green two-tone) ──
+    # ── Network / WiFi (tor-aware custom script) ──
     (lib.optionalAttrs hasNetwork {
       "module/network" = {
-        type = "internal/network";
-        interface = "${config.devices.networkInterface}";
+        type = "custom/script";
+        exec = "${networkScript}";
         interval = 3;
-        label-connected = "%essid%";
-        label-disconnected = "off";
         click-right = "${pkgs.networkmanagerapplet}/bin/nm-connection-editor &";
-      }
-      // mkPolybarTwoToneState {
-        state = "connected";
-        icon = "󰖩 ";
-        color = "green";
-      }
-      // mkPolybarTwoToneState {
-        state = "disconnected";
-        icon = "󰖪 ";
-        color = "red";
+        format-background = "\${colors.module-bg}";
+        format-padding = 1;
       };
     })
 
