@@ -28,8 +28,8 @@ in
         type = "custom/text";
         format = " MENU ";
         click-right = "exec ${pkgs.rofi}/bin/rofi -show drun -disable-history -show-icons &";
-        format-foreground = "\${colors.black}";
-        format-background = "\${colors.orange-alt}";
+        format-foreground = "\${colors.orange-alt}";
+        format-background = "\${colors.module-bg}";
       };
 
       # ── i3 workspaces ──
@@ -47,21 +47,24 @@ in
         label-mode = " %mode% ";
         label-mode-padding = 1;
         label-mode-background = "\${colors.red}";
-        label-mode-foreground = "\${colors.cream}";
+        label-mode-foreground = "\${colors.red-alt}";
         label-focused = " %icon% ";
-        label-focused-foreground = "\${colors.black}";
-        label-focused-background = "\${colors.yellow-alt}";
+        label-focused-foreground = "\${colors.yellow-alt}";
+        label-focused-background = "\${colors.module-bg}";
+        label-focused-underline = "\${colors.yellow-alt}";
         label-focused-padding = 0;
         label-unfocused = " %icon% ";
-        label-unfocused-foreground = "\${colors.yellow-alt}";
+        label-unfocused-foreground = "\${colors.muted}";
+        label-unfocused-background = "\${colors.module-bg}";
         label-unfocused-padding = 0;
         label-visible = " %icon% ";
         label-visible-foreground = "\${colors.yellow-alt}";
+        label-visible-background = "\${colors.module-bg}";
         label-visible-underline = "\${colors.red}";
         label-visible-padding = 0;
         label-urgent = " %icon% ";
-        label-urgent-foreground = "\${colors.black}";
-        label-urgent-background = "\${colors.red-alt}";
+        label-urgent-foreground = "\${colors.red-alt}";
+        label-urgent-background = "\${colors.module-bg}";
         label-urgent-padding = 0;
         label-separator = " ";
         label-separator-padding = 0;
@@ -109,7 +112,7 @@ in
         interval = 3600;
       }
       // mkPolybarTwoTone {
-        icon = "󱩊 ";
+        icon = "󰒋 ";
         color = "blue";
       };
 
