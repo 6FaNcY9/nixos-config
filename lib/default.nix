@@ -174,42 +174,45 @@ let
       description = "Enable ${name} package set.";
     };
 
-  # mkPolybarTwoTone :: { icon :: Str, color :: Str, colorAlt :: Str?, fg :: Str? } -> AttrSet
-  # Two-tone polybar module style: icon block (dark color) + label block (bright variant).
+  # mkPolybarTwoTone :: { icon :: Str, color :: Str, colorAlt :: Str? } -> AttrSet
+  # Uniform-background polybar module style: single dark segment (colors.module-bg),
+  # colored icon + text via colorAlt. The fg override from the prior two-tone design
+  # has been removed — all foreground is now driven by colorAlt.
+  # icon: the NerdFont/FA glyph to prefix
+  # color: base color name (used to derive colorAlt default)
+  # colorAlt: the bright accent color key for foreground text (default: "${color}-alt")
   mkPolybarTwoTone =
     {
       icon,
       color,
       colorAlt ? "${color}-alt",
-      fg ? "black",
     }:
     {
       format-prefix = "  ${icon} ";
-      format-prefix-foreground = "\${colors.${fg}}";
-      format-prefix-background = "\${colors.${color}}";
-      label-foreground = "\${colors.${fg}}";
-      label-background = "\${colors.${colorAlt}}";
+      format-prefix-foreground = "\${colors.${colorAlt}}";
+      format-prefix-background = "\${colors.module-bg}";
+      label-foreground = "\${colors.${colorAlt}}";
+      label-background = "\${colors.module-bg}";
       label-padding-left = 1;
       label-padding-right = 1;
     };
 
-  # mkPolybarTwoToneState :: { state :: Str, icon :: Str, color :: Str, colorAlt :: Str?, fg :: Str? } -> AttrSet
-  # Two-tone style for a named state (e.g. format-volume, format-charging).
+  # mkPolybarTwoToneState :: { state :: Str, icon :: Str, color :: Str, colorAlt :: Str? } -> AttrSet
+  # Uniform-background style for a named state (e.g. format-volume, format-charging).
   mkPolybarTwoToneState =
     {
       state,
       icon,
       color,
       colorAlt ? "${color}-alt",
-      fg ? "black",
     }:
     {
       "format-${state}-prefix" = "  ${icon} ";
-      "format-${state}-prefix-foreground" = "\${colors.${fg}}";
-      "format-${state}-prefix-background" = "\${colors.${color}}";
+      "format-${state}-prefix-foreground" = "\${colors.${colorAlt}}";
+      "format-${state}-prefix-background" = "\${colors.module-bg}";
       "format-${state}" = "<label-${state}>";
-      "label-${state}-foreground" = "\${colors.${fg}}";
-      "label-${state}-background" = "\${colors.${colorAlt}}";
+      "label-${state}-foreground" = "\${colors.${colorAlt}}";
+      "label-${state}-background" = "\${colors.module-bg}";
       "label-${state}-padding-left" = 1;
       "label-${state}-padding-right" = 1;
     };
