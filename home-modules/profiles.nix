@@ -116,6 +116,7 @@ let
     pkgs.copyq # Clipboard manager — persists clipboard content after source app closes
     pkgs.gsimplecal
     pkgs.chromium
+    pkgs.claude-desktop
   ];
 
   extrasPkgs = [

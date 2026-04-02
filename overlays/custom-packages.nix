@@ -40,6 +40,11 @@ final: prev: {
       };
     };
 
+  # claude-desktop: Electron wrapper for Claude (k3d3/claude-desktop-linux-flake).
+  # Uses the FHS variant for NixOS compatibility.
+  claude-desktop =
+    inputs.claude-desktop.packages.${final.stdenv.hostPlatform.system}.claude-desktop-with-fhs;
+
   # mistral-vibe: Official flake package (uv2nix Python venv wrapper).
   # Source: inputs.mistral-vibe.packages.${system}.default
   # Exposed in home-modules via mistralVibePkg, but also available as pkgs.mistral-vibe.
@@ -98,66 +103,4 @@ final: prev: {
       '';
       meta.mainProgram = "agentsys";
     };
-
-  # opencode: Force bun isolated installs to prevent symlink issues in nix store.
-  # The --linker=isolated flag ensures each package gets its own node_modules copy,
-  # preventing "cannot find module" errors with hoisted dependencies.
-  # See: https://bun.sh/docs/install/linker
-  opencode =
-    let
-      opencodeSrc = inputs.opencode;
-      opencodeRev = opencodeSrc.shortRev or (opencodeSrc.rev or "dirty");
-      # opencode 1.2.15+ requires bun ≥1.3.10; fall back to pinned build only if nixpkgs is older.
-      bun_1_3_10 =
-        if prev.lib.versionAtLeast prev.bun.version "1.3.10" then
-          prev.bun
-        else
-          prev.bun.overrideAttrs (_: {
-            version = "1.3.10";
-            src = prev.fetchurl {
-              url = "https://github.com/oven-sh/bun/releases/download/bun-v1.3.10/bun-linux-x64.zip";
-              hash = "sha256-9XvAGH45Yj3nFro6OJ/aVIay175xMamAulTce3M9Lgg=";
-            };
-          });
-      nodeModules = final.callPackage "${opencodeSrc}/nix/node_modules.nix" {
-        rev = opencodeRev;
-      };
-      nodeModulesPatched = nodeModules.overrideAttrs (old: {
-        buildPhase =
-          final.lib.replaceStrings [ "bun install \\\n" ] [ "bun install \\\n      --linker=isolated \\\n" ]
-            old.buildPhase;
-      });
-    in
-    (final.callPackage "${opencodeSrc}/nix/opencode.nix" {
-      node_modules = nodeModulesPatched;
-      bun = bun_1_3_10;
-    }).overrideAttrs
-      (old: {
-        postPatch = (old.postPatch or "") + ''
-          substituteInPlace packages/opencode/script/build.ts \
-            --replace "../../../node_modules/@opentui/solid/scripts/solid-plugin" \
-                      "../node_modules/@opentui/solid/scripts/solid-plugin"
-          # opencode 1.3.2 requires bun@^1.3.11 but nixpkgs ships 1.3.10; relax the check.
-          sed -i 's|const expectedBunVersionRange = .*|const expectedBunVersionRange = `>=1.3.10`;|' packages/script/src/index.ts
-          # packages/script/src/index.ts reads .github/TEAM_MEMBERS at module init.
-          # The nix source fileset excludes .github/, so we create an empty stub.
-          mkdir -p .github
-          touch .github/TEAM_MEMBERS
-          # Restore serverUrl in plugin input so plugins like oh-my-opencode work.
-          # Upstream replaced it with a throwing getter in 1.2.21+; we patch it to
-          # return the hardcoded default URL (port 4096, matching createOpencodeClient).
-          # This matches the pending fix in oh-my-openagent PR #2419.
-          # sed -z treats the file as one record (null-delimited), enabling \n in patterns.
-          sed -z -i \
-            's/get serverUrl(): URL {\n        throw new Error("Server URL is no longer supported in plugins")\n      },/serverUrl: new URL("http:\/\/localhost:4096"),/' \
-            packages/opencode/src/plugin/index.ts
-        '';
-        # The embedded Bun JS runtime's file watcher needs libstdc++.so.6 at runtime.
-        # The upstream installPhase already wraps with makeBinaryWrapper for PATH.
-        # We re-wrap to also add LD_LIBRARY_PATH for the native watcher binding.
-        postFixup = (old.postFixup or "") + ''
-          wrapProgram $out/bin/opencode \
-            --prefix LD_LIBRARY_PATH : "${final.stdenv.cc.cc.lib}/lib"
-        '';
-      });
 }

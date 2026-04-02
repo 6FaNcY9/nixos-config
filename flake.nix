@@ -28,12 +28,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # OpenCode (upstream tracking; update via `nix flake update opencode`)
-    opencode = {
-      url = "github:anomalyco/opencode";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # Mistral Vibe (AI assistant)
     mistral-vibe = {
       url = "github:mistralai/mistral-vibe";
@@ -121,6 +115,11 @@
     hmts-nvim = {
       url = "github:calops/hmts.nvim";
       flake = false;
+    };
+
+    claude-desktop = {
+      url = "github:k3d3/claude-desktop-linux-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
