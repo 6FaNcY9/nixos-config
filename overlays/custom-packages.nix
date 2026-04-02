@@ -89,8 +89,12 @@ final: prev: {
       dontNpmBuild = true;
       dontNpmPrune = true;
       # Upstream ships no package-lock.json; inject our vendored one.
+      # Also patch cli.js: fs.cpSync from the nix store preserves read-only permissions,
+      # so ~/.agentsys ends up unwritable and npm install inside it fails with EACCES.
+      # Fix: chmod -R u+w the install dir right before npm install runs.
       postPatch = ''
         cp ${./npm-locks/agentsys-5.1.0-lock.json} ./package-lock.json
+        sed -i "s|execSync('npm install --production'|execSync('chmod -R u+w ' + installDir); execSync('npm install --production'|" bin/cli.js
       '';
       meta.mainProgram = "agentsys";
     };
@@ -133,6 +137,8 @@ final: prev: {
           substituteInPlace packages/opencode/script/build.ts \
             --replace "../../../node_modules/@opentui/solid/scripts/solid-plugin" \
                       "../node_modules/@opentui/solid/scripts/solid-plugin"
+          # opencode 1.3.2 requires bun@^1.3.11 but nixpkgs ships 1.3.10; relax the check.
+          sed -i 's|const expectedBunVersionRange = .*|const expectedBunVersionRange = `>=1.3.10`;|' packages/script/src/index.ts
           # packages/script/src/index.ts reads .github/TEAM_MEMBERS at module init.
           # The nix source fileset excludes .github/, so we create an empty stub.
           mkdir -p .github

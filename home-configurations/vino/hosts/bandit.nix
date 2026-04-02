@@ -17,6 +17,7 @@ _: {
     battery = "BAT1"; # Framework battery
     backlight = "amdgpu_bl1"; # AMD GPU backlight
     networkInterface = "wlp1s0"; # WiFi interface
+    lanInterface = ""; # Set to ethernet interface name when docked (e.g., "enp3s0")
   };
 
   features = {
@@ -45,6 +46,7 @@ _: {
       rofi.enable = true;
       vibe.enable = true;
       filezilla.enable = true;
+      bitwarden.enable = true;
     };
   };
   # Workspaces use shared defaults from shared-modules/workspaces.nix

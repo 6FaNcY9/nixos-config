@@ -53,15 +53,16 @@ in
         "colors.statusbar.caret.selection.fg" = c.base00;
 
         # --- Tab bar ---
-        # Active tab: bgAlt bg + orange text to match system accent
-        # Inactive tabs: primary bg + muted text so they recede
-        "colors.tabs.bar.bg" = c.base00;
+        # bar.bg shows through between tabs (vertical separators) and below
+        # tabs (horizontal rule separating tab bar from page content).
+        # Active tab: base02 bg + orange text. Inactive: base00 + muted.
+        "colors.tabs.bar.bg" = c.base01;
         "colors.tabs.even.bg" = c.base00;
         "colors.tabs.odd.bg" = c.base00;
         "colors.tabs.even.fg" = c.base03;
         "colors.tabs.odd.fg" = c.base03;
-        "colors.tabs.selected.even.bg" = c.base01;
-        "colors.tabs.selected.odd.bg" = c.base01;
+        "colors.tabs.selected.even.bg" = c.base02;
+        "colors.tabs.selected.odd.bg" = c.base02;
         "colors.tabs.selected.even.fg" = c.base09;
         "colors.tabs.selected.odd.fg" = c.base09;
         "colors.tabs.indicator.start" = c.base0D;
@@ -204,6 +205,10 @@ in
         "gp" = "tab-pin";
       };
       extraConfig = ''
+        # --- Tab padding: exposes bar.bg as vertical separators between tabs
+        #     and as horizontal rule between tab bar and page content ---
+        c.tabs.padding = {"top": 3, "bottom": 3, "left": 6, "right": 6}
+
         # --- Cloudflare Turnstile: allow canvas, cookies, WebGL for challenge iframe ---
         # QtWebEngine lacks navigator.userAgentData (QTBUG-107260) so Turnstile may still
         # fail on some sites regardless — open in Firefox as fallback if needed.
@@ -219,6 +224,14 @@ in
 
         # --- claude.ai: allow canvas reading (required for file upload UI) ---
         config.set('content.canvas_reading', True, 'https://claude.ai')
+
+        config.set('content.cookies.accept', 'all', 'https://chat.mistral.ai') # allow session cookies for chat.mistral.ai
+        config.set('content.canvas_reading', True, 'https://chat.mistral.ai') # allow canvas reading for chat.mistral.ai
+        config.set('content.cookies.accept', 'all', 'https://vault.bitwarden.com') # allow session cookies for Bitwarden
+        config.set('content.cookies.accept', 'all', 'https://bitwarden.com') # allow session cookies for Bitwarden
+
+        # --- UPC router page: disable dark mode inversion (light UI looks fine as-is) ---
+        config.set('colors.webpage.darkmode.enabled', False, 'http://192.168.0.1')
       '';
     };
     xdg.mimeApps.defaultApplications = {

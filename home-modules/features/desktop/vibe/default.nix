@@ -3,7 +3,7 @@
 # so they're tracked in nixos-config and not forgotten on fresh installs.
 #
 # The .vibe/ directory is where vibe expects its devenv shell (direnv + devenv).
-# The wrapper in profiles.nix runs: direnv exec "$HOME/.vibe" vibe "$@"
+# Run `cd ~/.vibe && devenv shell` or configure direnv to activate the shell.
 {
   lib,
   config,

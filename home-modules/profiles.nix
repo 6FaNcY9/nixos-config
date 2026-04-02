@@ -18,7 +18,6 @@
   cfgLib,
   codexPkg ? null,
   opencodePkg ? null,
-  mistralVibePkg ? null,
   ...
 }:
 let
@@ -32,27 +31,14 @@ let
 
   githubCopilotPkg = lib.attrByPath [ "github-copilot-cli" ] null pkgs;
 
-  vibeWrapper =
-    if mistralVibePkg != null then
-      pkgs.writeShellApplication {
-        name = "vibe";
-        runtimeInputs = [
-          pkgs.direnv
-          mistralVibePkg
-        ];
-        text = ''
-          exec direnv exec "$HOME/.vibe" vibe "$@"
-        '';
-      }
-    else
-      null;
+  vibePkg = lib.attrByPath [ "mistral-vibe" ] null pkgs;
 
   aiPkgs = lib.filter (p: p != null) [
     claudeCodePkg
     codexPkg
     opencodePkg
     githubCopilotPkg
-    vibeWrapper
+    vibePkg
     pkgs.agentsys
   ];
 
@@ -94,6 +80,7 @@ let
   ];
 
   devPkgs = [
+    pkgs.filezilla
     pkgs.sqlite
     pkgs.python3
     pkgs.clang
@@ -107,6 +94,7 @@ let
     pkgs.devenv
     pkgs.strip-json-comments-cli
     pkgs.tree-sitter-cli # v0.26.5 CLI tool (separate from tree-sitter library for neovim)
+    pkgs.jetbrains.idea # Ultimate — requires JetBrains license (student pack)
   ];
 
   desktopPkgs = [

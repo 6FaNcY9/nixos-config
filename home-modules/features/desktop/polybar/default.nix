@@ -17,6 +17,7 @@ let
   cfg = config.features.desktop.polybar;
   hasBattery = config.devices.battery != "";
   hasNetwork = config.devices.networkInterface != "";
+  hasLan = config.devices.lanInterface != "";
   modulesLeft = "menu i3 xwindow tray";
   modulesCenter = "time";
   modulesRight = lib.concatStringsSep " " (
@@ -27,11 +28,8 @@ let
       "memory"
     ]
     ++ lib.optionals hasNetwork [ "network" ]
+    ++ lib.optionals hasLan [ "lan" ]
     ++ lib.optionals hasBattery [ "battery" ]
-    ++ [
-      "pulseaudio"
-      #"power"
-    ]
   );
 in
 {

@@ -77,7 +77,6 @@ nixos-modules/features/
 │   └── desktop-hardening.nix    - Desktop security (sudo, polkit, firewall)
 ├── services/
 │   ├── tailscale.nix            - Tailscale VPN
-│   ├── backup.nix               - Restic backup
 │   ├── monitoring.nix           - System monitoring
 │   ├── auto-update.nix          - Automated system updates
 │   ├── openssh.nix              - SSH server

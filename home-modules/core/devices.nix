@@ -22,7 +22,13 @@
     networkInterface = lib.mkOption {
       type = lib.types.str;
       default = "";
-      description = "Network interface name for status widgets (e.g., wlp1s0).";
+      description = "Wireless interface name for status widgets (e.g., wlp1s0).";
+    };
+
+    lanInterface = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      description = "Wired ethernet interface name for status widgets (e.g., enp3s0). Leave empty if no ethernet port.";
     };
   };
 }

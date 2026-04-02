@@ -59,7 +59,7 @@ Host-specific NixOS system configuration (auto-discovered by ez-configs).
 
 | File | Purpose | Imported By |
 |------|---------|-------------|
-| `nixos-configurations/bandit/default.nix` | Host config for Framework 13 AMD: roles (desktop, laptop, dev), filesystems, backup, monitoring | ez-configs → `nixosConfigurations.bandit` |
+| `nixos-configurations/bandit/default.nix` | Host config for Framework 13 AMD: roles (desktop, laptop, dev), filesystems, monitoring | ez-configs → `nixosConfigurations.bandit` |
 | `nixos-configurations/bandit/hardware-configuration.nix` | Hardware scan output: filesystems, kernel modules, initrd, boot configuration | `nixos-configurations/bandit/default.nix` |
 
 ---

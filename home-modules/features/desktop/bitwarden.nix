@@ -1,6 +1,12 @@
-# Bitwarden CLI + qutebrowser integration
-# Provides bw CLI, pinentry-rofi for master password prompt, and keyutils for session key caching.
-# Symlinks the bundled qute-bitwarden userscript into qutebrowser's search path.
+# Bitwarden integration
+# Primary workflow: rbw daemon + rofi-rbw picker (Mod+p) for credential autotype.
+# Web vault (Mod+Shift+b) for managing entries, TOTP, and sharing.
+# bw CLI kept for scripting edge cases.
+#
+# First-time setup after home-switch:
+#   rbw config set email <your@email.com>
+#   rbw register   # sends verification email
+#   rbw unlock     # starts the daemon and unlocks the vault
 {
   lib,
   pkgs,
@@ -12,19 +18,15 @@ let
 in
 {
   options.features.desktop.bitwarden.enable =
-    lib.mkEnableOption "Bitwarden CLI + qutebrowser integration";
+    lib.mkEnableOption "Bitwarden — rbw daemon + rofi-rbw picker + bw CLI";
 
   config = lib.mkIf cfg.enable {
     home.packages = [
-      pkgs.bitwarden-cli # Official Bitwarden CLI (bw) — used by qute-bitwarden userscript
-      pkgs.pinentry-rofi # Pinentry frontend for bw master password prompt
-      pkgs.keyutils # keyctl — used by qute-bitwarden to cache the bw session key
+      pkgs.bitwarden-cli # bw CLI — vault export, scripting, edge cases
+      pkgs.rbw # rbw daemon — keeps vault unlocked, no session key juggling
+      pkgs.rofi-rbw # rofi picker — autotypes credentials into focused window
+      pkgs.pinentry-rofi # pinentry frontend for rbw master password prompt
+      pkgs.xdotool # required by rofi-rbw for autotyping on X11
     ];
-
-    # Symlink bundled qute-bitwarden into qutebrowser's userscripts search path.
-    # The nix store path is not searched by default; symlinking makes it available to
-    # `spawn --userscript qute-bitwarden`. Requires bitwarden-cli (bw) to be installed.
-    home.file.".local/share/qutebrowser/userscripts/qute-bitwarden".source =
-      "${pkgs.qutebrowser}/share/qutebrowser/userscripts/qute-bitwarden";
   };
 }

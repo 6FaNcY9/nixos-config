@@ -18,6 +18,7 @@ let
   );
   hasBattery = config.devices.battery != "";
   hasNetwork = config.devices.networkInterface != "";
+  hasLan = config.devices.lanInterface != "";
 in
 {
   services.polybar.settings = lib.mkMerge [
@@ -250,6 +251,28 @@ in
       // mkPolybarTwoToneState {
         state = "disconnected";
         icon = "󰖪 ";
+        color = "red";
+      };
+    })
+
+    # ── LAN / Ethernet (blue two-tone) ──
+    (lib.optionalAttrs hasLan {
+      "module/lan" = {
+        type = "internal/network";
+        interface = "${config.devices.lanInterface}";
+        interval = 3;
+        label-connected = "%local_ip%";
+        label-disconnected = "off";
+        click-right = "${pkgs.networkmanagerapplet}/bin/nm-connection-editor &";
+      }
+      // mkPolybarTwoToneState {
+        state = "connected";
+        icon = "󰈀 ";
+        color = "blue";
+      }
+      // mkPolybarTwoToneState {
+        state = "disconnected";
+        icon = "󰈂 ";
         color = "red";
       };
     })
