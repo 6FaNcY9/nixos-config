@@ -51,6 +51,15 @@ in
       example = [ "vino" ];
       description = "Extra usernames or UIDs to exempt from TOR routing. The 'tor' user is always exempted.";
     };
+
+    manualMode = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        When true, the nftables-tor-routing service is not started at boot.
+        Use `systemctl start nftables-tor-routing` or `just tor` to activate manually.
+      '';
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -111,7 +120,7 @@ in
     #     flushes the main ruleset, so we re-add our table afterwards)
     systemd.services.nftables-tor-routing = {
       description = "TOR transparent proxy nftables routing rules";
-      wantedBy = [ "multi-user.target" ];
+      wantedBy = lib.mkIf (!cfg.manualMode) [ "multi-user.target" ];
       after = [
         "nftables.service"
         "tor.service"
