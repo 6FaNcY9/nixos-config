@@ -16,6 +16,7 @@ in
     dark = palette.bg;
     black = "#000000";
     transparent = "#00000000";
+    module-bg = "#2d2d2d"; # uniform segment background — all modules use this
 
     # Semantic (from shared palette)
     inherit (palette)
@@ -27,11 +28,12 @@ in
       ;
     cream = c.base07;
 
-    # Gruvbox two-tone module pairs (icon-bg / label-bg)
+    # Gruvbox accent color pairs (text/icon foreground)
     #
-    # Each polybar module uses a "two-tone" design: a darker icon block and
-    # a brighter label block.  The dark variant is derived via darkenColor
-    # from the base16 slot; the "-alt" variant is the base16 color itself.
+    # Each polybar module uses a uniform dark background (module-bg) with colored
+    # foreground text and icons.  The "-alt" variant (the base16 color itself) is
+    # used as the foreground accent; the plain variant (darkened) is kept for
+    # potential future use or overrides.
     green = darken 0.30 c.base0B;
     green-alt = c.base0B;
     yellow = darken 0.30 c.base0A;
