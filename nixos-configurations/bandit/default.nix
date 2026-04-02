@@ -148,6 +148,11 @@ in
         enable = true;
         excludePaths = [ "/home/vino/Documents/Projekts/mrijaPage" ];
       };
+
+      tor-routing = {
+        enable = true;
+        excludedUIDs = [ "vino" ];
+      };
     };
   };
 

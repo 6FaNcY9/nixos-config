@@ -51,6 +51,19 @@ in
       example = [ "vino" ];
       description = "Extra usernames or UIDs to exempt from TOR routing. The 'tor' user is always exempted.";
     };
+
+    manualMode = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        When true, the nftables-tor-routing service is not started at boot and
+        the system DNS resolver is left pointing at the real upstream servers.
+        Use `systemctl start nftables-tor-routing` or `just tor` to activate manually.
+
+        WARNING: setting enable = true with manualMode = false routes ALL traffic
+        through TOR at boot — make sure the tor daemon starts cleanly first.
+      '';
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -111,7 +124,9 @@ in
     #     flushes the main ruleset, so we re-add our table afterwards)
     systemd.services.nftables-tor-routing = {
       description = "TOR transparent proxy nftables routing rules";
-      wantedBy = [ "multi-user.target" ];
+      # In manualMode the service is not wired to multi-user.target — it must
+      # be started explicitly via `systemctl start` or `just tor`.
+      wantedBy = lib.optionals (!cfg.manualMode) [ "multi-user.target" ];
       after = [
         "nftables.service"
         "tor.service"
@@ -120,8 +135,11 @@ in
         "nftables.service"
         "tor.service"
       ];
-      # Remove our table whenever TOR stops (prevents routing to a closed port)
-      bindsTo = [ "tor.service" ];
+      # In manualMode we do NOT bind to tor.service — binding means that if
+      # tor starts for any reason the routing activates automatically, which
+      # defeats the purpose of manualMode and can silently break connectivity
+      # if tor isn't ready.
+      bindsTo = lib.optionals (!cfg.manualMode) [ "tor.service" ];
       # Re-add our table whenever nftables is reloaded / restarted
       partOf = [ "nftables.service" ];
 
@@ -164,10 +182,15 @@ in
     # Belt-and-suspenders: point the system resolver at localhost so that
     # applications querying 127.0.0.1:53 are also caught by the nftables rule.
     # Priority 900 is below mkDefault (1000) so explicit user overrides win.
-    networking.nameservers = lib.mkOverride 900 [ "127.0.0.1" ];
+    #
+    # In manualMode these overrides are NOT applied — the nftables-tor-routing
+    # service is not running at boot, so 127.0.0.1:53 has nothing listening
+    # and all DNS would time out.  DNS is redirected at the packet level when
+    # the service is started manually (the nftables rule catches port 53).
+    networking.nameservers = lib.mkIf (!cfg.manualMode) (lib.mkOverride 900 [ "127.0.0.1" ]);
 
     # If systemd-resolved is active, strip fallback upstream servers so it
-    # cannot bypass TOR for unresolved names.
-    services.resolved.fallbackDns = lib.mkOverride 900 [ ];
+    # cannot bypass TOR for unresolved names.  Same manualMode guard applies.
+    services.resolved.fallbackDns = lib.mkIf (!cfg.manualMode) (lib.mkOverride 900 [ ]);
   };
 }
