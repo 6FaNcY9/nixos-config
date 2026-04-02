@@ -1,3 +1,7 @@
 [files]
 # Exclude SOPS-encrypted secrets — base64-encoded ciphertext triggers false positives
 extend-exclude = ["secrets/**"]
+
+[default.extend-words]
+# nftables keyword: "output interface" — not a typo of "of"
+oif = "oif"

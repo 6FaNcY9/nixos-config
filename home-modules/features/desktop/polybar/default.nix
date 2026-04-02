@@ -64,21 +64,19 @@ in
 
       settings = {
         "bar/top" = {
-          width = "100%";
+          width = "calc(100% - 10px)";
+          offset-x = 5;
+          offset-y = 5;
           height = "18pt";
-          radius = 0;
+          radius = 8;
           dpi = 100;
           background = "\${colors.dark}";
           foreground = "\${colors.muted}";
           padding = 0;
-          module-margin = 0;
+          module-margin = 2;
           line-size = "0pt";
-          border-size = "3pt";
-          border-color = "\${colors.dark}";
-          separator = ".";
-          separator-foreground = "\${colors.transparent}";
-          font-0 = "${stylixFonts.monospace.name}:size=14:weight=bold;2"; # 14pt monospace for bar text
-          font-1 = "Symbols Nerd Font Mono:size=14;3"; # Icons - nerd-fonts symbols-only
+          font-0 = "${stylixFonts.monospace.name}:size=14:weight=bold;2";
+          font-1 = "Symbols Nerd Font Mono:size=14;3";
           modules-left = modulesLeft;
           modules-center = modulesCenter;
           modules-right = modulesRight;

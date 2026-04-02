@@ -114,3 +114,24 @@ scan-system:
 # Scan a specific path: just scan ~/Downloads
 scan PATH:
     clamav-scan '{{PATH}}'
+
+# Toggle transparent Tor routing on/off
+# Active state persists until toggled off or machine reboots (/run is tmpfs)
+tor:
+    #!/usr/bin/env bash
+    if [ -f /run/tor-routing-active ]; then
+      echo "Stopping Tor routing..."
+      sudo systemctl stop nftables-tor-routing.service
+      sudo rm -f /run/tor-routing-active
+      echo "Done. Traffic is no longer routed through Tor."
+    else
+      echo "Starting Tor routing..."
+      if sudo systemctl start nftables-tor-routing.service; then
+        sudo touch /run/tor-routing-active
+        echo "Done. All TCP and DNS traffic is now routed through Tor."
+        echo "Polybar will show the Tor exit IP within 3 seconds."
+      else
+        echo "ERROR: Failed to start nftables-tor-routing.service. Routing not active." >&2
+        exit 1
+      fi
+    fi
