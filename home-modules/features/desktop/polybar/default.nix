@@ -59,7 +59,7 @@ in
           ${pkgs.coreutils}/bin/sleep 0.5
         done
         export I3SOCK
-        ${config.services.polybar.package}/bin/polybar --reload top &
+        exec ${config.services.polybar.package}/bin/polybar --reload top
       '';
 
       settings = {
@@ -92,5 +92,7 @@ in
         };
       };
     };
+
+    systemd.user.services.polybar.Service.Type = lib.mkForce "simple";
   };
 }
