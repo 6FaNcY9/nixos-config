@@ -1,11 +1,12 @@
 # Security: ClamAV on-demand antivirus scanner
 #
-# Provides three scan commands via the `clamav-scan` wrapper script:
+# Provides commands via wrapper scripts:
 #   clamav-scan home    — scans $HOME
 #   clamav-scan system  — scans /
 #   clamav-scan <path>  — scans a specific path
+#   clamav-update       — manually update virus definitions (run freshclam)
 #
-# Virus definitions are updated once at boot via freshclam (no recurring timer).
+# Virus definitions are NOT updated automatically — run clamav-update manually.
 # Infected files are moved to /var/lib/clamav-quarantine (never auto-deleted).
 {
   lib,
@@ -25,6 +26,11 @@ let
   excludeFlags = lib.concatMapStringsSep " " (p: "--exclude-dir=${p}") (
     systemExcludes ++ cfg.excludePaths
   );
+
+  updateScript = pkgs.writeShellScriptBin "clamav-update" ''
+    echo "Updating ClamAV virus definitions..."
+    sudo freshclam
+  '';
 
   scanScript = pkgs.writeShellScriptBin "clamav-scan" ''
     case "$1" in
@@ -57,20 +63,17 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # Enable freshclam (pulls in the clamav package automatically).
-    services.clamav.updater.enable = true;
-
-    # Override the recurring timer: fire once 2 minutes after boot instead.
-    # mkForce replaces the entire timerConfig set (drops OnCalendar and Persistent).
-    systemd.timers.clamav-freshclam.timerConfig = lib.mkForce {
-      OnBootSec = "2min";
-    };
+    # Install clamav for clamscan and freshclam binaries.
+    # The auto-updater (freshclam timer) is intentionally disabled — use clamav-update manually.
+    environment.systemPackages = [
+      pkgs.clamav
+      scanScript
+      updateScript
+    ];
 
     # Quarantine directory — root-owned, never auto-cleaned.
     systemd.tmpfiles.rules = [
       "d ${quarantine} 0700 root root -"
     ];
-
-    environment.systemPackages = [ scanScript ];
   };
 }
