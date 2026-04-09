@@ -40,15 +40,26 @@ final: prev: {
       };
     };
 
-  # claude-desktop: Electron wrapper for Claude (k3d3/claude-desktop-linux-flake).
-  # Uses the FHS variant for NixOS compatibility.
-  claude-desktop =
-    inputs.claude-desktop.packages.${final.stdenv.hostPlatform.system}.claude-desktop-with-fhs;
-
   # mistral-vibe: Official flake package (uv2nix Python venv wrapper).
   # Source: inputs.mistral-vibe.packages.${system}.default
   # Exposed in home-modules via mistralVibePkg, but also available as pkgs.mistral-vibe.
   mistral-vibe = inputs.mistral-vibe.packages.${final.stdenv.hostPlatform.system}.default;
+
+  # opencode: Pinned to specific release for timely updates (nixpkgs lags fast opencode cadence).
+  # The upstream hashes.json FOD hash doesn't match what local bun 1.3.11 produces.
+  # Override node_modules hash using node_modules_updater as the chain-override base.
+  opencode =
+    let
+      system = final.stdenv.hostPlatform.system;
+      # node_modules_updater = node_modules.override { hash = fakeHash; };
+      # Chain-override with the actual hash our local bun produces.
+      localNodeModules = inputs.opencode.packages.${system}.node_modules_updater.override {
+        hash = "sha256-LRhPPrOKCGUSCEWTpAxPdWKTKVNkg82WrvD25cP3jts=";
+      };
+    in
+    inputs.opencode.packages.${system}.default.override {
+      node_modules = localNodeModules;
+    };
 
   # strip-json-comments-cli: CLI tool to strip JSON comments (used by some dev tools).
   # Upstream has no package-lock.json; we vendor a generated one in overlays/npm-locks/.

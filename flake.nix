@@ -117,10 +117,13 @@
       flake = false;
     };
 
-    claude-desktop = {
-      url = "github:k3d3/claude-desktop-linux-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
+    # opencode: Pinned as own input so we can track fast release cadence (nixpkgs lags).
+    # NOTE: Do NOT follow nixpkgs here. The opencode flake's node_modules hash was computed
+    # with its own nixpkgs (specific bun version). Following would cause a hash mismatch.
+    opencode = {
+      url = "github:sst/opencode/v1.3.17";
     };
+
   };
 
   outputs =
