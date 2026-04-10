@@ -48,6 +48,8 @@ final: prev: {
   # opencode: Pinned to specific release for timely updates (nixpkgs lags fast opencode cadence).
   # The upstream hashes.json FOD hash doesn't match what local bun 1.3.11 produces.
   # Override node_modules hash using node_modules_updater as the chain-override base.
+  # Also applies opencode-compaction-fix.patch to fix auto-compaction only triggering during
+  # sub-agent runs (it was checking only lastFinished.tokens instead of cumulative session tokens).
   opencode =
     let
       system = final.stdenv.hostPlatform.system;
@@ -57,9 +59,11 @@ final: prev: {
         hash = "sha256-LRhPPrOKCGUSCEWTpAxPdWKTKVNkg82WrvD25cP3jts=";
       };
     in
-    inputs.opencode.packages.${system}.default.override {
+    (inputs.opencode.packages.${system}.default.override {
       node_modules = localNodeModules;
-    };
+    }).overrideAttrs (_old: {
+      patches = [ ./opencode-compaction-fix.patch ];
+    });
 
   # strip-json-comments-cli: CLI tool to strip JSON comments (used by some dev tools).
   # Upstream has no package-lock.json; we vendor a generated one in overlays/npm-locks/.
