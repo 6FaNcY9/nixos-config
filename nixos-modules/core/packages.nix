@@ -18,6 +18,7 @@ let
     pkgs.sops
     pkgs.age
     pkgs.ssh-to-age
+    pkgs.ntfs3g # NTFS write support for root (mount.ntfs-3g helper in system PATH)
   ];
 in
 {
