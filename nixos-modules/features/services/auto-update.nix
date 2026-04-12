@@ -80,9 +80,15 @@ in
       script = ''
         set -euo pipefail
 
-        # Abort if repoRoot is dirty - prevents data loss from uncommitted changes
+        # Abort if repoRoot has any changes: untracked, unstaged, or staged
+        # git diff catches unstaged; git diff --cached catches staged;
+        # git ls-files catches untracked files not ignored by .gitignore.
         ${pkgs.util-linux}/bin/runuser -u ${username} -- \
           ${pkgs.git}/bin/git -C ${repoRoot} diff --quiet
+        ${pkgs.util-linux}/bin/runuser -u ${username} -- \
+          ${pkgs.git}/bin/git -C ${repoRoot} diff --cached --quiet
+        test -z "$(${pkgs.util-linux}/bin/runuser -u ${username} -- \
+          ${pkgs.git}/bin/git -C ${repoRoot} ls-files --others --exclude-standard)"
 
         # Update flake.lock as the user (preserves file ownership)
         ${pkgs.util-linux}/bin/runuser -u ${username} -- \
@@ -92,8 +98,12 @@ in
           # Auto-commit the updated flake.lock to prevent dirty tree on subsequent runs
           ${pkgs.util-linux}/bin/runuser -u ${username} -- \
             ${pkgs.git}/bin/git -C ${repoRoot} add flake.lock
-          ${pkgs.util-linux}/bin/runuser -u ${username} -- \
-            ${pkgs.git}/bin/git -C ${repoRoot} commit -m "${cfg.commitMessage}"
+          # Guard commit: skip if flake.lock was unchanged (no-op update must not fail service)
+          if ! ${pkgs.util-linux}/bin/runuser -u ${username} -- \
+              ${pkgs.git}/bin/git -C ${repoRoot} diff --cached --quiet -- flake.lock; then
+            ${pkgs.util-linux}/bin/runuser -u ${username} -- \
+              ${pkgs.git}/bin/git -C ${repoRoot} commit -m "${cfg.commitMessage}"
+          fi
         ''}
 
         # Switch as root (requires elevated permissions for system changes)
