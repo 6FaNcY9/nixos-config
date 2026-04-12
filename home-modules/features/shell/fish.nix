@@ -74,7 +74,7 @@ in
           # Claude Code CLI token optimization
           set -gx DISABLE_NON_ESSENTIAL_MODEL_CALLS 1
           set -gx MAX_THINKING_TOKENS 10000
-          set -gx CLAUDE_CODE_SUBAGENT_MODEL "claude-haiku-4-5-20251001"
+          set -gx CLAUDE_CODE_SUBAGENT_MODEL "claude-haiku-4-5"
         '';
 
         # Abbreviations use the full repoRoot path (not `.#`) so they resolve

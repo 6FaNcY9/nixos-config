@@ -10,11 +10,14 @@
   # Nix settings (flakes, binary caches, GC)
   nix = {
     settings = {
-      trusted-users = [ "root" ]; # Only root can override substituters/sandbox settings
+      trusted-users = [
+        "root"
+        "@wheel" # wheel users can add substituters, use cachix, set --option substituters
+      ];
       allowed-users = [
         "root"
         "@wheel"
-      ]; # @wheel can run nix commands but not bypass security settings
+      ];
       experimental-features = [
         "nix-command"
         "flakes"
@@ -57,8 +60,10 @@
 
   };
 
-  # Pin nixpkgs for legacy commands and for `nix run nixpkgs#...`
+  # Pin nixpkgs in registry and NIX_PATH so both `nix run nixpkgs#...` and
+  # legacy `nix-shell '<nixpkgs>'` / third-party scripts use the pinned revision.
   nix.registry.nixpkgs.flake = inputs.nixpkgs;
+  nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
 
   # Allow unfree, catch deprecated aliases, wire overlays (keeps pkgs.stable available as fallback).
   nixpkgs = {

@@ -188,10 +188,6 @@ in
       # Better battery life and compatibility than S3 suspend on Ryzen mobile
       "mem_sleep_default=s2idle"
 
-      # AMD GPU stability fix - enables DC debug mask for better display compatibility
-      # Resolves screen flickering and display power management issues
-      "amdgpu.dcdebugmask=0x10"
-
       # Disable ABM (Adaptive Backlight Modulation / Vari-Bright)
       # Prevents display from appearing grayed-out/washed-out on battery.
       # Confirmed fix for Framework 13 AMD: https://community.frame.work/t/56535
