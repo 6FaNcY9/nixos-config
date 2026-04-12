@@ -3,7 +3,7 @@
 # - Enterprise policies to disable telemetry, studies, Pocket, Firefox Accounts
 # - Privacy settings: tracking protection, strict cookie isolation, no prefetch
 # - Performance: VA-API hardware acceleration, memory cache (no disk cache for SSD longevity)
-# - Custom theme: mkColorReplacer applies base16 colors to userChrome.theme.css template
+# - Custom theme: base16 colors injected into userChrome.theme.css via builtins.replaceStrings
 
 {
   lib,
@@ -11,7 +11,6 @@
   username,
   c,
   config,
-  cfgLib,
   ...
 }:
 let
@@ -189,16 +188,47 @@ in
           };
         };
 
-        # Custom CSS theme using mkColorReplacer to inject base16 colors into template
-        # The template file contains placeholder variables replaced at build time
+        # Custom CSS theme: base16 colors injected into userChrome.theme.css via builtins.replaceStrings
         userChrome =
           let
             themeTemplate = builtins.readFile ../../../assets/firefox/userChrome.theme.css;
-            replaceColors = cfgLib.mkColorReplacer { colors = c; };
+            themed =
+              builtins.replaceStrings
+                [
+                  "@@base00@@"
+                  "@@base01@@"
+                  "@@base02@@"
+                  "@@base03@@"
+                  "@@base05@@"
+                  "@@base07@@"
+                  "@@base08@@"
+                  "@@base09@@"
+                  "@@base0A@@"
+                  "@@base0B@@"
+                  "@@base0C@@"
+                  "@@base0D@@"
+                  "@@base0E@@"
+                  "@@base0F@@"
+                ]
+                [
+                  c.base00
+                  c.base01
+                  c.base02
+                  c.base03
+                  c.base05
+                  c.base07
+                  c.base08
+                  c.base09
+                  c.base0A
+                  c.base0B
+                  c.base0C
+                  c.base0D
+                  c.base0E
+                  c.base0F
+                ]
+                themeTemplate;
           in
-          lib.mkAfter (
-            (builtins.readFile ../../../assets/firefox/userChrome.css) + "\n" + replaceColors themeTemplate
-          );
+          lib.mkAfter ((builtins.readFile ../../../assets/firefox/userChrome.css) + "\n" + themed);
 
         userContent = builtins.readFile ../../../assets/firefox/userContent.css;
       };
