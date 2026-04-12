@@ -38,15 +38,26 @@ in
           set -gx SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
           set -e SSH_AGENT_PID
 
-          ${loadSecret config.sops.secrets.github_mcp_pat.path "GITHUB_MCP_PAT"}
-          ${loadSecret config.sops.secrets.exa_api_key.path "EXA_API_KEY"}
-          ${loadSecret config.sops.secrets.context7_api_key.path "CONTEXT7_API_KEY"}
-          ${loadSecret config.sops.secrets.helicone_api_key.path "HELICONE_API_KEY"}
-
+          ${lib.optionalString (config.sops.secrets ? github_mcp_pat) (
+            loadSecret config.sops.secrets.github_mcp_pat.path "GITHUB_MCP_PAT"
+          )}
+          ${lib.optionalString (config.sops.secrets ? exa_api_key) (
+            loadSecret config.sops.secrets.exa_api_key.path "EXA_API_KEY"
+          )}
+          ${lib.optionalString (config.sops.secrets ? context7_api_key) (
+            loadSecret config.sops.secrets.context7_api_key.path "CONTEXT7_API_KEY"
+          )}
+          ${lib.optionalString (config.sops.secrets ? helicone_api_key) (
+            loadSecret config.sops.secrets.helicone_api_key.path "HELICONE_API_KEY"
+          )}
           # GITHUB_PERSONAL_ACCESS_TOKEN aliases GITHUB_MCP_PAT because the GitHub MCP
           # server expects the former name while the sops secret uses the latter.
-          set -gx GITHUB_PERSONAL_ACCESS_TOKEN $GITHUB_MCP_PAT
+          # Only set if the secret exists to avoid propagating an empty token.
+          ${lib.optionalString (config.sops.secrets ? github_mcp_pat) ''
+            set -gx GITHUB_PERSONAL_ACCESS_TOKEN $GITHUB_MCP_PAT
+          ''}
 
+          # FZF plugin Configuration 
           set -g fzf_fd_opts --hidden --follow --exclude .git
           set -g fzf_preview_dir_cmd 'eza --all --color=always --group-directories-first'
           set -g fzf_preview_file_cmd 'bat --style=numbers --color=always'
@@ -59,6 +70,11 @@ in
 
           set -Ux fifc_editor nvim
           fzf_configure_bindings --directory=\ct --git_log=\cg --git_status=\cs --history=\cr --processes=\cp --variables=\cv
+
+          # Claude Code CLI token optimization
+          set -gx DISABLE_NON_ESSENTIAL_MODEL_CALLS 1
+          set -gx MAX_THINKING_TOKENS 10000
+          set -gx CLAUDE_CODE_SUBAGENT_MODEL "claude-haiku-4-5-20251001"
         '';
 
         # Abbreviations use the full repoRoot path (not `.#`) so they resolve
@@ -151,6 +167,14 @@ in
             {
               name = "fifc";
               inherit (fp.fifc) src;
+            }
+            {
+              name = "autopair";
+              inherit (fp.autopair) src;
+            }
+            {
+              name = "done";
+              inherit (fp.done) src;
             }
           ];
       };
