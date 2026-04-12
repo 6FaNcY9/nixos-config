@@ -62,6 +62,8 @@ final: prev: {
     };
 
   # strip-json-comments-cli: thin npx wrapper — avoids vendoring a package-lock.json.
+  # IMPURE: `npx --yes` fetches from the npm registry at runtime (not sandboxed).
+  # Accepted trade-off: vendoring would require a package-lock.json + FOD hash update on every bump.
   strip-json-comments-cli = prev.writeShellApplication {
     name = "strip-json-comments";
     runtimeInputs = [ prev.nodejs ];
@@ -69,6 +71,8 @@ final: prev: {
   };
 
   # agentsys: thin npx wrapper — avoids vendoring a package-lock.json and EACCES patch.
+  # IMPURE: `npx --yes` fetches from the npm registry at runtime (not sandboxed).
+  # Accepted trade-off: vendoring would require a package-lock.json + FOD hash update on every bump.
   agentsys = prev.writeShellApplication {
     name = "agentsys";
     runtimeInputs = [ prev.nodejs ];

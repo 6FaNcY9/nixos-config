@@ -17,7 +17,7 @@ Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager 
   - `core/` – Always-on infrastructure: devices, nixpkgs, package managers, secrets
   - `features/` – Optional modules (explicit enable): shell, editor, terminal, desktop
   - `profiles.nix` – Package bundles (toggle with `profiles.*` flags)
-- `overlays/` – overlays (includes `pkgs.stable` from nixpkgs-stable).
+- `overlays/` – overlays (custom package builds and version pins; available as `pkgs.<name>`).
 - `lib/` – helper functions shared across modules.
 
 ## Conventions
@@ -86,9 +86,16 @@ How imports work (ez-configs):
 - `homeConfigurations` are generated per host when a user is listed under `ezConfigs.nixos.hosts.<host>.userHomeModules`.
 
 Home Manager shared args:
-- `home-configurations/vino/default.nix` injects `_module.args`: `c`, `palette`, `stylixFonts`, `i3Pkg`, `workspaces`.
+- `home-configurations/vino/default.nix` injects `_module.args`:
+  - `c` – raw base16 colors (`c.base00`–`c.base0F`)
+  - `palette` – semantic aliases: `accent`, `accent2`, `warn`, `danger`, `muted`, `bg`, `bgAlt`, `text`, `cream`, `orange`, `aqua`, `purple`
+  - `stylixFonts` – active Stylix font names
+  - `i3Pkg`, `codexPkg`, `opencodePkg`, `mistralVibePkg` – pinned package refs
+  - `workspaces` – shared workspace list
+  - `hostname` – current host name
+  - `cfgLib` – pure helper functions from `lib/`
 - Package groups are defined in `home-modules/profiles.nix` and controlled via `profiles` booleans (see below).
-- Use these in HM modules for consistent theming.
+- Prefer `palette.*` over `c.baseXX` for new work; raw `c.*` is an escape hatch for colors without a semantic alias.
 
 Fish plugin src shorthand:
 - `inherit (fifc) src` == `src = fifc.src` (pulls the plugin source from `pkgs.fishPlugins.fifc`).
@@ -107,8 +114,7 @@ Tooling:
 ## 📖 Documentation
 
 - **[Feature Modules Guide](docs/FEATURE_MODULES.md)** - How to use and create features
-- **[Development Services](docs/DEVELOPMENT_SERVICES.md)** - PostgreSQL, Redis, etc.
-- **[Architecture](docs/architecture/)** - System design and components
+- **[Architecture](docs/architecture/)** - System design decisions
 
 ## Secrets (sops-nix)
 - Config lives in `features.security.secrets.*` and `home-modules/core/secrets.nix`.
@@ -146,7 +152,7 @@ Toggle package groups in `home-configurations/vino/default.nix` (or a host-speci
 - Flake checks: `nix flake check` (includes pre-commit hooks)
 
 ## Automation
-- Weekly systemd timer `nixos-config-update` runs `nix flake update` and `nixos-rebuild switch` for `bandit` (AC power only).
+- Monthly systemd timer `nixos-config-update` runs `nix flake update` and `nixos-rebuild switch` for `bandit` (AC power only). Frequency is controlled by `features.services.auto-update.timer.calendar` (default: `"monthly"`).
 
 ## Updates (Optional)
 - Update all inputs: `nix flake update`
@@ -157,9 +163,9 @@ Notes
 - Stylix auto-enables Gruvbox; Home Manager targets follow system theme (see `nixos-modules/stylix-nixos.nix`).
 - Hibernate/suspend rely on the swap device/offset in `nixos-configurations/<host>/default.nix`—keep in sync if storage changes.
 - If you want to suppress the dirty-tree warning for QA/commit, use the fish abbreviations `qa` / `gcommit` (they pass `--option warn-dirty false`).
-- Bluetooth is only enabled when `roles.laptop = true` (defaults to off on new hosts).
+- Bluetooth is only enabled when `features.hardware.laptop.bluetooth.enable = true` (defaults to off on new hosts).
 - XFCE is used as a session manager only (`noDesktop = true`, `enableXfwm = false`); i3 handles window management.
-- Roles are opt-in per host; enable `roles.desktop`/`roles.laptop` only where needed.
+- Features are opt-in per host; enable `features.hardware.laptop` / `features.desktop.i3-xfce` only where needed.
 - Polybar hides battery/backlight/power modules when no device is configured and shows IP instead.
 
 ## Cheatsheet

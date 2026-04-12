@@ -75,6 +75,8 @@ in
       serviceConfig = {
         Type = "oneshot";
         WorkingDirectory = repoRoot;
+        PrivateTmp = true;
+        ProtectHome = "read-only";
       };
 
       script = ''

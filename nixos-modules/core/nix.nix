@@ -35,11 +35,13 @@
       substituters = [
         # cache.nixos.org is added automatically by NixOS — not listed here to avoid duplicates
         "https://nix-community.cachix.org"
+        "https://devenv.cachix.org" # devenv shell dependencies
         "https://vino-nixos-config.cachix.org" # Personal binary cache
       ];
       trusted-public-keys = [
         # cache.nixos.org key is added automatically by NixOS — not listed here to avoid duplicates
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
         "vino-nixos-config.cachix.org-1:8LFVkzmO/+crLWO0Q3bqWOOamVjScT3v1/PCHPiTiUU=" # Personal cache key
       ];
 

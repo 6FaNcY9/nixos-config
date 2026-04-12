@@ -88,7 +88,7 @@ in
       gtk = {
         enable = true;
         colors.enable = true;
-        flatpakSupport.enable = true;
+        flatpakSupport.enable = false; # Flatpak not in use
       };
 
       alacritty.enable = true;
