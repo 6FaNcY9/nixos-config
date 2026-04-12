@@ -5,12 +5,17 @@
   lib,
   config,
   pkgs,
-  cfgLib,
   ...
 }:
 let
   cfg = config.features.development.base;
-  inherit (cfgLib) mkBoolOpt;
+  mkBool =
+    default: desc:
+    lib.mkOption {
+      type = lib.types.bool;
+      inherit default;
+      description = desc;
+    };
 in
 {
   options.features.development.base = {
@@ -18,10 +23,10 @@ in
 
     virtualization = {
       docker = {
-        enable = mkBoolOpt false "Enable Docker container runtime";
+        enable = mkBool false "Enable Docker container runtime";
 
         autoPrune = {
-          enable = mkBoolOpt true "Enable automatic Docker resource cleanup";
+          enable = mkBool true "Enable automatic Docker resource cleanup";
 
           dates = lib.mkOption {
             type = lib.types.str;
@@ -32,28 +37,28 @@ in
       };
 
       podman = {
-        enable = mkBoolOpt false "Enable Podman container runtime";
+        enable = mkBool false "Enable Podman container runtime";
 
-        dockerCompat = mkBoolOpt false "Enable Docker CLI compatibility for Podman";
+        dockerCompat = mkBool false "Enable Docker CLI compatibility for Podman";
       };
     };
 
     buildEssentials = {
-      enable = mkBoolOpt true "Install build essentials (make, cmake, gcc, etc)";
+      enable = mkBool true "Install build essentials (make, cmake, gcc, etc)";
     };
 
     debugTools = {
-      enable = mkBoolOpt true "Install debugging tools (gdb, strace, ltrace)";
+      enable = mkBool true "Install debugging tools (gdb, strace, ltrace)";
     };
 
     direnv = {
-      enable = mkBoolOpt true "Enable direnv for automatic environment loading";
+      enable = mkBool true "Enable direnv for automatic environment loading";
 
-      enableNixDirenv = mkBoolOpt true "Enable nix-direnv integration";
+      enableNixDirenv = mkBool true "Enable nix-direnv integration";
     };
 
     nixLd = {
-      enable = mkBoolOpt true "Enable nix-ld for running unpatched ELF binaries (Node downloads, Python wheels, VSCode extensions, etc.)";
+      enable = mkBool true "Enable nix-ld for running unpatched ELF binaries (Node downloads, Python wheels, VSCode extensions, etc.)";
     };
 
     fileWatchers = {

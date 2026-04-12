@@ -13,7 +13,6 @@
   ...
 }:
 let
-  cfgLib = import ../../lib { inherit lib; };
   hostName = if osConfig != null then osConfig.networking.hostName else hostname; # Fallback when using standalone home-manager
   hostModulePath = ./hosts/${hostName}.nix;
   hostModules = lib.optionals (builtins.pathExists hostModulePath) [ hostModulePath ];
@@ -22,15 +21,26 @@ in
   imports = [ ../../home-modules/default.nix ] ++ hostModules;
 
   # Inject shared arguments into all home-modules via _module.args.
-  # See lib/default.nix:mkUserModuleArgs for the full list of injected args.
-  _module.args = cfgLib.mkUserModuleArgs {
-    inherit
-      config
-      pkgs
-      inputs
-      hostName
-      ;
-  };
+  _module.args =
+    let
+      inherit (pkgs.stdenv.hostPlatform) system;
+      stylixFonts = lib.attrByPath [ "stylix" "fonts" ] {
+        sansSerif.name = "Sans";
+        monospace.name = "Monospace";
+      } config;
+    in
+    {
+      inherit (config.theme) palette;
+      inherit (config) workspaces;
+      c = config.theme.colors;
+      inherit stylixFonts;
+      i3Pkg = pkgs.i3;
+      codexPkg = inputs.codex-cli-nix.packages.${system}.default;
+      opencodePkg = pkgs.opencode;
+      mistralVibePkg = pkgs.mistral-vibe;
+      hostname = hostName;
+      cfgLib = import ../../lib { inherit lib; };
+    };
 
   # ============================================================
   # Home settings

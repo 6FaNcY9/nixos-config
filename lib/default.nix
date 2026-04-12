@@ -69,111 +69,6 @@ let
       ];
     };
 
-  # mkShellScript :: { pkgs :: Pkgs, name :: Str, body :: Str } -> Derivation
-  # Create a shell script with standard error handling (set -euo pipefail).
-  # Note: For scripts with runtime dependencies, use pkgs.writeShellApplication instead.
-  mkShellScript =
-    {
-      pkgs,
-      name,
-      body,
-    }:
-    pkgs.writeShellScriptBin name ''
-      set -euo pipefail
-      ${body}
-    '';
-
-  # darkenColor :: Float -> Str -> Str
-  # Darken a #rrggbb hex color by a fraction (0.0 - 1.0).
-  # Example: darkenColor 0.30 "#ff8700" => "#b25e00"
-  darkenColor =
-    fraction: hex:
-    let
-      hexDigits = "0123456789abcdef";
-      hexToInt =
-        c:
-        let
-          lower = lib.toLower c;
-          idx = lib.lists.findFirstIndex (x: x == lower) null (lib.stringToCharacters hexDigits);
-        in
-        if idx != null then idx else 0;
-      parseChannel = a: b: hexToInt a * 16 + hexToInt b;
-      clamp =
-        v:
-        if v < 0 then
-          0
-        else if v > 255 then
-          255
-        else
-          v;
-      toHex =
-        n:
-        let
-          hi = builtins.elemAt (lib.stringToCharacters hexDigits) (n / 16);
-          lo = builtins.elemAt (lib.stringToCharacters hexDigits) (lib.mod n 16);
-        in
-        "${hi}${lo}";
-    in
-    assert
-      (builtins.stringLength hex == 7 && builtins.substring 0 1 hex == "#")
-      || throw "darkenColor: expected '#rrggbb' (7 chars), got '${hex}'";
-    let
-      chars = lib.stringToCharacters hex;
-      r = parseChannel (builtins.elemAt chars 1) (builtins.elemAt chars 2);
-      g = parseChannel (builtins.elemAt chars 3) (builtins.elemAt chars 4);
-      b = parseChannel (builtins.elemAt chars 5) (builtins.elemAt chars 6);
-      factor = 1.0 - fraction;
-      newR = clamp (builtins.floor (r * factor + 0.5));
-      newG = clamp (builtins.floor (g * factor + 0.5));
-      newB = clamp (builtins.floor (b * factor + 0.5));
-    in
-    "#${toHex newR}${toHex newG}${toHex newB}";
-
-  # mkColorReplacer :: { colors :: AttrSet, prefix :: Str?, suffix :: Str? } -> (Str -> Str)
-  # Replace color placeholders (@@key@@) in strings with actual color values.
-  # Throws at evaluation time if any prefix marker remains after replacement,
-  # catching misspelled placeholder keys before they silently pass through.
-  # Example: mkColorReplacer {colors = {base00 = "#282828";}} "@@base00@@" => "#282828"
-  mkColorReplacer =
-    {
-      colors,
-      prefix ? "@@",
-      suffix ? "@@",
-    }:
-    let
-      keys = builtins.attrNames colors;
-      oldStrs = map (k: "${prefix}${k}${suffix}") keys;
-      newStrs = map (k: colors.${k}) keys;
-    in
-    str:
-    let
-      result = builtins.replaceStrings oldStrs newStrs str;
-    in
-    if lib.hasInfix prefix result then
-      throw "mkColorReplacer: unreplaced '${prefix}…${suffix}' placeholder found — misspelled key in template? Output: ${result}"
-    else
-      result;
-
-  # mkBoolOpt :: Bool -> Str -> Option
-  # Boolean option shorthand used by NixOS feature modules.
-  mkBoolOpt =
-    default: desc:
-    lib.mkOption {
-      type = lib.types.bool;
-      inherit default;
-      description = desc;
-    };
-
-  # mkProfile :: Str -> Bool -> Option
-  # Profile option shorthand for enabling package sets.
-  mkProfile =
-    name: default:
-    lib.mkOption {
-      type = lib.types.bool;
-      inherit default;
-      description = "Enable ${name} package set.";
-    };
-
   # mkPolybarTwoTone :: { icon :: Str, color :: Str, colorAlt :: Str?, fg :: Str? } -> AttrSet
   # Two-tone polybar module style: icon block (dark color) + label block (bright variant).
   mkPolybarTwoTone =
@@ -226,42 +121,6 @@ let
     "discard=async"
   ];
 
-  # mkUserModuleArgs :: { config, pkgs, inputs, hostName } -> AttrSet
-  # Build the _module.args attrset for a Home Manager user configuration.
-  # Centralises the derivation of palette, workspaces, fonts, packages, and
-  # hostname so that a second user config can call this instead of copy-pasting.
-  #
-  # Args:
-  #   config   — Home Manager config (provides theme.*, workspaces, stylix.fonts)
-  #   pkgs     — nixpkgs package set
-  #   inputs   — flake inputs (used for codex-cli-nix)
-  #   hostName — resolved hostname string (from osConfig or fallback)
-  mkUserModuleArgs =
-    {
-      config,
-      pkgs,
-      inputs,
-      hostName,
-    }:
-    let
-      inherit (pkgs.stdenv.hostPlatform) system;
-      stylixFonts = lib.attrByPath [ "stylix" "fonts" ] {
-        sansSerif.name = "Sans";
-        monospace.name = "Monospace";
-      } config;
-    in
-    {
-      inherit (config.theme) palette;
-      inherit (config) workspaces;
-      c = config.theme.colors;
-      inherit stylixFonts;
-      i3Pkg = pkgs.i3;
-      codexPkg = inputs.codex-cli-nix.packages.${system}.default;
-      opencodePkg = pkgs.opencode;
-      mistralVibePkg = pkgs.mistral-vibe;
-      hostname = hostName;
-      cfgLib = import ./. { inherit lib; };
-    };
 in
 {
   # Workspace helpers
@@ -294,21 +153,9 @@ in
     mkSecretValidation
     ;
 
-  # Devshell helpers
-  inherit mkShellScript;
-
-  # Color helpers
-  inherit darkenColor mkColorReplacer;
-
-  # Option + profile helpers
-  inherit mkBoolOpt mkProfile;
-
   # Polybar helpers
   inherit mkPolybarTwoTone mkPolybarTwoToneState;
 
   # Filesystem helpers
   inherit mkBtrfsOpts;
-
-  # User module args helper
-  inherit mkUserModuleArgs;
 }

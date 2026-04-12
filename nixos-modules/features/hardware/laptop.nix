@@ -5,12 +5,17 @@
   lib,
   config,
   pkgs,
-  cfgLib,
   ...
 }:
 let
   cfg = config.features.hardware.laptop;
-  inherit (cfgLib) mkBoolOpt;
+  mkBool =
+    default: desc:
+    lib.mkOption {
+      type = lib.types.bool;
+      inherit default;
+      description = desc;
+    };
   isFramework13Amd = cfg.framework.enable && cfg.framework.model == "framework-13-amd";
 in
 {
@@ -18,31 +23,31 @@ in
     enable = lib.mkEnableOption "laptop hardware support and optimizations";
 
     powerManagement = {
-      enablePowerProfilesDaemon = mkBoolOpt true "Enable power-profiles-daemon for power management";
+      enablePowerProfilesDaemon = mkBool true "Enable power-profiles-daemon for power management";
 
-      useAutoFreq = mkBoolOpt false "Use auto-cpufreq v3 instead of power-profiles-daemon (better turbo + governor control on AMD laptops)";
-      enableGeneralPowerManagement = mkBoolOpt true "Enable general power management features";
-      enableHibernation = mkBoolOpt false "Enable hibernation via systemd sleep configuration (requires resume device and offset to be set in boot config)";
+      useAutoFreq = mkBool false "Use auto-cpufreq v3 instead of power-profiles-daemon (better turbo + governor control on AMD laptops)";
+      enableGeneralPowerManagement = mkBool true "Enable general power management features";
+      enableHibernation = mkBool false "Enable hibernation via systemd sleep configuration (requires resume device and offset to be set in boot config)";
     };
 
     bluetooth = {
-      enable = mkBoolOpt true "Enable Bluetooth support";
+      enable = mkBool true "Enable Bluetooth support";
 
-      powerOnBoot = mkBoolOpt false "Power on Bluetooth adapter on boot";
+      powerOnBoot = mkBool false "Power on Bluetooth adapter on boot";
 
-      enableBlueman = mkBoolOpt true "Enable Blueman GUI (requires desktop environment)";
+      enableBlueman = mkBool true "Enable Blueman GUI (requires desktop environment)";
     };
 
     fingerprint = {
-      enable = mkBoolOpt true "Enable fingerprint reader support (fprintd)";
+      enable = mkBool true "Enable fingerprint reader support (fprintd)";
     };
 
     thunderbolt = {
-      enable = mkBoolOpt true "Enable Thunderbolt/USB-C dock support";
+      enable = mkBool true "Enable Thunderbolt/USB-C dock support";
     };
 
     firmwareUpdates = {
-      enable = mkBoolOpt true "Enable firmware updates via fwupd";
+      enable = mkBool true "Enable firmware updates via fwupd";
     };
 
     cpu = {
@@ -55,19 +60,19 @@ in
         description = "CPU vendor for microcode updates";
       };
 
-      enableMicrocodeUpdates = mkBoolOpt true "Enable CPU microcode updates";
+      enableMicrocodeUpdates = mkBool true "Enable CPU microcode updates";
     };
 
     sensors = {
-      disableIIO = mkBoolOpt true "Disable IIO sensors (light, accelerometer) to save battery";
+      disableIIO = mkBool true "Disable IIO sensors (light, accelerometer) to save battery";
     };
 
     wireless = {
-      enableRegulatoryDatabase = mkBoolOpt true "Enable wireless regulatory database for WiFi compliance";
+      enableRegulatoryDatabase = mkBool true "Enable wireless regulatory database for WiFi compliance";
     };
 
     zram = {
-      enable = mkBoolOpt true "Enable zram compressed swap in RAM";
+      enable = mkBool true "Enable zram compressed swap in RAM";
 
       algorithm = lib.mkOption {
         type = lib.types.str;
@@ -83,7 +88,7 @@ in
     };
 
     framework = {
-      enable = mkBoolOpt false "Enable Framework laptop-specific tools and optimizations";
+      enable = mkBool false "Enable Framework laptop-specific tools and optimizations";
 
       model = lib.mkOption {
         type = lib.types.enum [

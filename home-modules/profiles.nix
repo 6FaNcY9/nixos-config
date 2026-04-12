@@ -15,7 +15,6 @@
   lib,
   pkgs,
   config,
-  cfgLib,
   codexPkg ? null,
   opencodePkg ? null,
   ...
@@ -126,11 +125,31 @@ let
 in
 {
   options.profiles = {
-    core = cfgLib.mkProfile "core CLI tools" true; # Essential CLI: git, ripgrep, fd, eza, bat, jq, zellij, nix-tree, lazygit, etc.
-    dev = cfgLib.mkProfile "development tools" true; # Programming: sqlite, python3, clang, nodejs, rust, cargo, uv, devenv, tree-sitter
-    desktop = cfgLib.mkProfile "desktop apps" true; # GUI apps: alacritty, rofi, thunar, btop, dunst, flameshot, picom, etc.
-    extras = cfgLib.mkProfile "nice-to-have extras" false; # Extras: chafa, fastfetch
-    ai = cfgLib.mkProfile "AI tools" false; # AI/LLM: claude-code, codex, opencode, github-copilot-cli
+    core = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable core CLI tools package set.";
+    }; # Essential CLI: git, ripgrep, fd, eza, bat, jq, zellij, nix-tree, lazygit, etc.
+    dev = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable development tools package set.";
+    }; # Programming: sqlite, python3, clang, nodejs, rust, cargo, uv, devenv, tree-sitter
+    desktop = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable desktop apps package set.";
+    }; # GUI apps: alacritty, rofi, thunar, btop, dunst, flameshot, picom, etc.
+    extras = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable nice-to-have extras package set.";
+    }; # Extras: chafa, fastfetch
+    ai = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable AI tools package set.";
+    }; # AI/LLM: claude-code, codex, opencode, github-copilot-cli
   };
 
   config.home.packages = lib.concatLists [

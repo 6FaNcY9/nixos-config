@@ -6,19 +6,15 @@
   config,
   lib,
   pkgs,
-  cfgLib,
   ...
 }:
 let
   cfg = config.features.desktop.lock;
 
-  lockScript = cfgLib.mkShellScript {
-    inherit pkgs;
-    name = "lock-screen";
-    body = ''
-      ${pkgs.lightdm}/bin/dm-tool switch-to-greeter
-    '';
-  };
+  lockScript = pkgs.writeShellScriptBin "lock-screen" ''
+    set -euo pipefail
+    ${pkgs.lightdm}/bin/dm-tool switch-to-greeter
+  '';
 in
 {
   options.features.desktop.lock = {
