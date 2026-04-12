@@ -1,0 +1,29 @@
+--- a/plugin/hmts.lua
++++ b/plugin/hmts.lua
+@@ -124,7 +124,13 @@
+ ---@param predicate string[]
+ ---@return boolean
+ local function hmts_path_handler(match, _, bufnr, predicate)
+-	local node = match[predicate[2]]:parent()
++	local raw = match[predicate[2]]
++	if raw == nil then return false end
++	-- Neovim >=0.11 removed the all=false wrapper; match values are always TSNode[]
++	-- Pick last node to match Neovim 0.10 behavior (v[#v] in the old compat wrapper)
++	local node0 = type(raw) == "table" and raw[#raw] or raw
++	if node0 == nil then return false end
++	local node = node0:parent()
+ 	local target_path = vim.list_slice(predicate, 3, nil)
+ 
+ 	while node do
+@@ -152,7 +158,11 @@
+ ---@param predicate string[]
+ ---@param metadata table<string, string>
+ local function hmts_inject_handler(match, _, bufnr, predicate, metadata)
+-	local path_node = match[predicate[2]]
++	local raw = match[predicate[2]]
++	if raw == nil then return end
++	-- Neovim >=0.11: same unwrap needed (directive, so plain return not return false)
++	local path_node = type(raw) == "table" and raw[#raw] or raw
++	if path_node == nil then return end
+ 	local filename = find_filename_in_parent_node(path_node, bufnr)
+ 	local alias = vim.filetype.match({ filename = filename })

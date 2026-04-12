@@ -15,7 +15,11 @@
       cheatsheet-nvim # Searchable keymaps/commands help
       (pkgs.vimUtils.buildVimPlugin {
         name = "hmts-nvim";
-        src = inputs.hmts-nvim;
+        src = pkgs.applyPatches {
+          name = "hmts-nvim-src";
+          src = inputs.hmts-nvim;
+          patches = [ ./hmts-neovim-compat.patch ];
+        };
       })
     ];
 
