@@ -128,7 +128,7 @@ in
 
     development.base = {
       enable = true;
-      virtualization.docker.enable = false; # Disabled by default
+      virtualization.docker.enable = true; # Disabled by default
       virtualization.podman.enable = false; # Disabled by default
     };
 
