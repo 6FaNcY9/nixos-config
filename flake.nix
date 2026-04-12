@@ -121,7 +121,7 @@
     # NOTE: Do NOT follow nixpkgs here. The opencode flake's node_modules hash was computed
     # with its own nixpkgs (specific bun version). Following would cause a hash mismatch.
     opencode = {
-      url = "github:sst/opencode/v1.3.17";
+      url = "github:sst/opencode/27190635ea0497766a16ebddab8c4ca0b31f94a7";
     };
 
   };

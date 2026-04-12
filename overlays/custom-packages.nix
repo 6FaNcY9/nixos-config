@@ -46,24 +46,20 @@ final: prev: {
   mistral-vibe = inputs.mistral-vibe.packages.${final.stdenv.hostPlatform.system}.default;
 
   # opencode: Pinned to specific release for timely updates (nixpkgs lags fast opencode cadence).
-  # The upstream hashes.json FOD hash doesn't match what local bun 1.3.11 produces.
+  # The upstream hashes.json FOD hash doesn't match what local bun produces.
   # Override node_modules hash using node_modules_updater as the chain-override base.
-  # Also applies opencode-compaction-fix.patch to fix auto-compaction only triggering during
-  # sub-agent runs (it was checking only lastFinished.tokens instead of cumulative session tokens).
   opencode =
     let
-      system = final.stdenv.hostPlatform.system;
+      inherit (final.stdenv.hostPlatform) system;
       # node_modules_updater = node_modules.override { hash = fakeHash; };
       # Chain-override with the actual hash our local bun produces.
       localNodeModules = inputs.opencode.packages.${system}.node_modules_updater.override {
-        hash = "sha256-LRhPPrOKCGUSCEWTpAxPdWKTKVNkg82WrvD25cP3jts=";
+        hash = "sha256-gFbo3B6TFAmin2marXlwUyfchTX6ogsaUFEzBIl4zaI=";
       };
     in
-    (inputs.opencode.packages.${system}.default.override {
+    inputs.opencode.packages.${system}.default.override {
       node_modules = localNodeModules;
-    }).overrideAttrs (_old: {
-      patches = [ ./opencode-compaction-fix.patch ];
-    });
+    };
 
   # strip-json-comments-cli: CLI tool to strip JSON comments (used by some dev tools).
   # Upstream has no package-lock.json; we vendor a generated one in overlays/npm-locks/.
