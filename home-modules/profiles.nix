@@ -94,7 +94,6 @@ let
     pkgs.devenv
     pkgs.strip-json-comments-cli
     pkgs.tree-sitter-cli # v0.26.5 CLI tool (separate from tree-sitter library for neovim)
-    pkgs.jetbrains.idea # Ultimate — requires JetBrains license (student pack)
   ];
 
   desktopPkgs = [
@@ -116,11 +115,12 @@ let
     pkgs.copyq # Clipboard manager — persists clipboard content after source app closes
     pkgs.gsimplecal
     pkgs.chromium
-    pkgs.claude-desktop
   ];
 
   extrasPkgs = [
     pkgs.chafa
+    pkgs.woeusb-ng
+    pkgs.wimlib
     pkgs.fastfetch # neofetch replacement (actively maintained)
   ];
 in
