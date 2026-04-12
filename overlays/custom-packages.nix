@@ -61,57 +61,17 @@ final: prev: {
       node_modules = localNodeModules;
     };
 
-  # strip-json-comments-cli: CLI tool to strip JSON comments (used by some dev tools).
-  # Upstream has no package-lock.json; we vendor a generated one in overlays/npm-locks/.
-  strip-json-comments-cli =
-    let
-      version = "3.0.0";
-    in
-    prev.buildNpmPackage {
-      pname = "strip-json-comments-cli";
-      inherit version;
-      src = prev.fetchFromGitHub {
-        owner = "sindresorhus";
-        repo = "strip-json-comments-cli";
-        rev = "v${version}";
-        hash = "sha256-aMp/1/TpEed6eHU7FCXMjAkX/2EcOyhR1cPDHek4Noc=";
-      };
-      npmDepsHash = "sha256-XVUiaKWGX6ucnSq4G2puSjKLZukIpHscaMoVSiKvXtA=";
-      dontNpmBuild = true;
-      dontNpmPrune = true;
-      # Upstream ships no package-lock.json; inject our vendored one.
-      postPatch = ''
-        cp ${./npm-locks/strip-json-comments-cli-3.0.0-lock.json} ./package-lock.json
-      '';
-      meta.mainProgram = "strip-json-comments";
-    };
+  # strip-json-comments-cli: thin npx wrapper — avoids vendoring a package-lock.json.
+  strip-json-comments-cli = prev.writeShellApplication {
+    name = "strip-json-comments";
+    runtimeInputs = [ prev.nodejs ];
+    text = ''exec npx --yes strip-json-comments-cli "$@"'';
+  };
 
-  # agentsys: AI agent orchestration CLI (used with Claude).
-  # Upstream has no package-lock.json; we vendor a generated one in overlays/npm-locks/.
-  agentsys =
-    let
-      version = "5.1.0";
-    in
-    prev.buildNpmPackage {
-      pname = "agentsys";
-      inherit version;
-      src = prev.fetchFromGitHub {
-        owner = "avifenesh";
-        repo = "agentsys";
-        rev = "v${version}";
-        hash = "sha256-Ms58KSlCa1zee4yUQzXqwEmdYLjV+wYPy0Dg4jXEwB8=";
-      };
-      npmDepsHash = "sha256-Au15dCG96Ond/y7XisnuN9nKo/5COsdJ4feBW8fe7z0=";
-      dontNpmBuild = true;
-      dontNpmPrune = true;
-      # Upstream ships no package-lock.json; inject our vendored one.
-      # Also patch cli.js: fs.cpSync from the nix store preserves read-only permissions,
-      # so ~/.agentsys ends up unwritable and npm install inside it fails with EACCES.
-      # Fix: chmod -R u+w the install dir right before npm install runs.
-      postPatch = ''
-        cp ${./npm-locks/agentsys-5.1.0-lock.json} ./package-lock.json
-        sed -i "s|execSync('npm install --production'|execSync('chmod -R u+w ' + installDir); execSync('npm install --production'|" bin/cli.js
-      '';
-      meta.mainProgram = "agentsys";
-    };
+  # agentsys: thin npx wrapper — avoids vendoring a package-lock.json and EACCES patch.
+  agentsys = prev.writeShellApplication {
+    name = "agentsys";
+    runtimeInputs = [ prev.nodejs ];
+    text = ''exec npx --yes agentsys "$@"'';
+  };
 }
