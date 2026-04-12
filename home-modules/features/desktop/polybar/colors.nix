@@ -1,12 +1,7 @@
 {
-  cfgLib,
   palette,
-  c,
   ...
 }:
-let
-  darken = cfgLib.darkenColor;
-in
 {
   services.polybar.settings."colors" = {
     # Base (from shared palette)
@@ -24,27 +19,26 @@ in
       warn
       danger
       muted
+      cream
       ;
-    cream = c.base07;
 
-    # Gruvbox two-tone module pairs (icon-bg / label-bg)
-    #
-    # Each polybar module uses a "two-tone" design: a darker icon block and
-    # a brighter label block.  The dark variant is derived via darkenColor
-    # from the base16 slot; the "-alt" variant is the base16 color itself.
-    green = darken 0.30 c.base0B;
-    green-alt = c.base0B;
-    yellow = darken 0.30 c.base0A;
-    yellow-alt = c.base0A;
-    orange = darken 0.47 c.base09;
-    orange-alt = c.base09;
-    blue = darken 0.30 c.base0D;
-    blue-alt = c.base0D;
-    aqua = darken 0.30 c.base0C;
-    aqua-alt = c.base0C;
-    purple = darken 0.30 c.base0E;
-    purple-alt = c.base0E;
-    red = darken 0.30 c.base08;
-    red-alt = c.base08;
+    # Gruvbox two-tone module pairs (icon-bg / label-bg).
+    # Dark variants are hardcoded 30–47% darkened shades of Gruvbox Dark Pale base16 slots.
+    # If the theme changes, update these to match the new palette.
+    # Convention: <color> = dark icon bg, <color>-alt = bright label bg.
+    green = "#7b7b00"; # base0B (#afaf00) darkened 30%
+    green-alt = palette.accent;
+    yellow = "#b37b00"; # base0A (#ffaf00) darkened 30%
+    yellow-alt = palette.warn;
+    orange = "#874800"; # base09 (#ff8700) darkened 47%
+    orange-alt = palette.orange;
+    blue = "#5c7979"; # base0D (#83adad) darkened 30%
+    blue-alt = palette.accent2;
+    aqua = "#5d795d"; # base0C (#85ad85) darkened 30%
+    aqua-alt = palette.aqua;
+    purple = "#945d79"; # base0E (#d485ad) darkened 30%
+    purple-alt = palette.purple;
+    red = "#974343"; # base08 (#d75f5f) darkened 30%
+    red-alt = palette.danger;
   };
 }

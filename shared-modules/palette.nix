@@ -88,6 +88,26 @@ in
             default = c.base03;
             description = "Muted/disabled text color.";
           };
+          cream = lib.mkOption {
+            type = lib.types.str;
+            default = c.base07;
+            description = "Cream/brightest text color.";
+          };
+          orange = lib.mkOption {
+            type = lib.types.str;
+            default = c.base09;
+            description = "Orange accent color.";
+          };
+          aqua = lib.mkOption {
+            type = lib.types.str;
+            default = c.base0C;
+            description = "Aqua/teal accent color.";
+          };
+          purple = lib.mkOption {
+            type = lib.types.str;
+            default = c.base0E;
+            description = "Purple/magenta accent color.";
+          };
         };
       };
       default = { };
