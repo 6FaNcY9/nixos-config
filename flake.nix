@@ -95,16 +95,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Development services (PostgreSQL, Redis, etc.)
-    # Note: process-compose-flake and services-flake do not expose a nixpkgs input,
-    # so no follows override is set (would produce "override for non-existent input" warnings).
-    process-compose-flake = {
-      url = "github:Platonic-Systems/process-compose-flake";
-    };
-    services-flake = {
-      url = "github:juspay/services-flake";
-    };
-
     # Wallpaper
     gruvbox-wallpaper = {
       url = "github:AngelJumbo/gruvbox-wallpapers";
@@ -188,7 +178,6 @@
           inputs.pre-commit-hooks.flakeModule
           inputs.treefmt-nix.flakeModule
           inputs.devshell.flakeModule
-          inputs.process-compose-flake.flakeModule
           ./flake-modules
         ];
 
