@@ -85,6 +85,7 @@ in
       btop.enable = true;
       bat.enable = true;
       fzf.enable = true;
+
       dunst.enable = true;
       qutebrowser.enable = true;
       xfce.enable = true;
@@ -103,9 +104,7 @@ in
         };
       };
 
-      firefox = {
-        enable = false; # Disabled - manual dark mode config in firefox.nix
-      };
+      firefox.enable = false;
 
       tmux = {
         enable = true;
