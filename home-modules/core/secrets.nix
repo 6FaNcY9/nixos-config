@@ -19,15 +19,19 @@ let
   context7SecretFile = "${inputs.self}/secrets/context7-api.yaml";
   mistralSecretFile = "${inputs.self}/secrets/mistral.yaml";
   heliconeSecretFile = "${inputs.self}/secrets/helicone.yaml";
+  mistralClaudeSecretFile = "${inputs.self}/secrets/mistral-claude.yaml";
 
   secretValidation = cfgLib.mkSecretValidation {
     secrets = builtins.filter builtins.pathExists [
-      githubMcpSecretFile
       gpgSigningKeyFile
       cachixSecretFile
+
+      githubMcpSecretFile
       exaApiSecretFile
       context7SecretFile
       mistralSecretFile
+      mistralClaudeSecretFile
+
       heliconeSecretFile
     ];
     label = "Home";
@@ -81,6 +85,13 @@ in
       ++ lib.optional (builtins.pathExists mistralSecretFile) {
         mistral_api_key = {
           sopsFile = mistralSecretFile;
+          format = "yaml";
+          mode = "0400"; # read-only for owner; loaded into env by consumers
+        };
+      }
+      ++ lib.optional (builtins.pathExists mistralClaudeSecretFile) {
+        mistral_claude_api_key = {
+          sopsFile = mistralClaudeSecretFile;
           format = "yaml";
           mode = "0400"; # read-only for owner; loaded into env by consumers
         };

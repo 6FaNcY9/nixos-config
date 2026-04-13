@@ -56,6 +56,10 @@ in
           ${lib.optionalString (config.sops.secrets ? github_mcp_pat) ''
             set -gx GITHUB_PERSONAL_ACCESS_TOKEN $GITHUB_MCP_PAT
           ''}
+          # Load Mistral API key into environment for CLI and shell access, but only if the secret is defined
+          ${lib.optionalString (config.sops.secrets ? mistral_claude_api_key) (
+            loadSecret config.sops.secrets.mistral_claude_api_key.path "MISTRAL_CLAUDE_API_KEY"
+          )}
 
           # FZF plugin Configuration 
           set -g fzf_fd_opts --hidden --follow --exclude .git
