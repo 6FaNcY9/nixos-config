@@ -100,6 +100,8 @@ let
     pkgs.autotiling
     pkgs.rofi
     pkgs.thunar # Moved to top-level in unstable
+    pkgs.thunar-archive-plugin
+    pkgs.file-roller
     # applets managed by HM services (services.network-manager-applet, services.blueman-applet)
     pkgs.btop
     pkgs.brightnessctl
