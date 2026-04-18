@@ -233,12 +233,18 @@ in
         userContent = builtins.readFile ../../../assets/firefox/userContent.css;
       };
     };
-    xdg.mimeApps.enable = true;
-    xdg.mimeApps.defaultApplications = {
-      "x-scheme-handler/http" = [ "firefox.desktop" ];
-      "x-scheme-handler/https" = [ "firefox.desktop" ];
-      "text/html" = [ "firefox.desktop" ];
+    xdg.mimeApps = {
+      enable = true;
+      defaultApplications = {
+        "x-scheme-handler/http" = [ "firefox.desktop" ];
+        "x-scheme-handler/https" = [ "firefox.desktop" ];
+        "text/html" = [ "firefox.desktop" ];
+      };
     };
+    # Thunar (XFCE) overwrites ~/.config/mimeapps.list on file open, which breaks
+    # HM's activation symlink. force=true lets HM re-own it on each switch.
+    # See: https://github.com/nix-community/home-manager/issues/1213
+    xdg.configFile."mimeapps.list".force = true;
     # XFCE exo preferred applications — controls exo-open --launch WebBrowser
     home.file.".config/xfce4/helpers.rc".text = ''
       WebBrowser=firefox
