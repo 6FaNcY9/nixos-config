@@ -15,29 +15,19 @@
   lib,
   pkgs,
   config,
-  codexPkg ? null,
-  opencodePkg ? null,
   ...
 }:
 let
   cfg = config.profiles;
 
-  claudeCodePkg =
-    let
-      unstablePkg = lib.attrByPath [ "unstable" "claude-code" ] null pkgs;
-    in
-    if unstablePkg != null then unstablePkg else lib.attrByPath [ "claude-code" ] null pkgs;
-
+  claudeCodePkg = lib.attrByPath [ "claude-code" ] null pkgs;
   githubCopilotPkg = lib.attrByPath [ "github-copilot-cli" ] null pkgs;
-
-  vibePkg = lib.attrByPath [ "mistral-vibe" ] null pkgs;
 
   aiPkgs = lib.filter (p: p != null) [
     claudeCodePkg
-    codexPkg
-    opencodePkg
+    pkgs.opencode
     githubCopilotPkg
-    vibePkg
+    pkgs.mistral-vibe
     pkgs.agentsys
   ];
 

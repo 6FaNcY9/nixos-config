@@ -6,7 +6,7 @@
 
 {
   lib,
-  i3Pkg,
+  pkgs,
   config,
   ...
 }:
@@ -30,7 +30,7 @@ in
       enable = true;
       windowManager.i3 = {
         enable = true;
-        package = i3Pkg;
+        package = pkgs.i3;
       };
     };
   };

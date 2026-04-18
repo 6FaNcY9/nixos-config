@@ -23,7 +23,6 @@ in
   # Inject shared arguments into all home-modules via _module.args.
   _module.args =
     let
-      inherit (pkgs.stdenv.hostPlatform) system;
       stylixFonts = lib.attrByPath [ "stylix" "fonts" ] {
         sansSerif.name = "Sans";
         monospace.name = "Monospace";
@@ -34,10 +33,6 @@ in
       inherit (config) workspaces;
       c = config.theme.colors;
       inherit stylixFonts;
-      i3Pkg = pkgs.i3;
-      codexPkg = inputs.codex-cli-nix.packages.${system}.default;
-      opencodePkg = pkgs.opencode;
-      mistralVibePkg = pkgs.mistral-vibe;
       hostname = hostName;
       cfgLib = import ../../lib { inherit lib; };
     };

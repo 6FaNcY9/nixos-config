@@ -41,8 +41,6 @@ final: prev: {
     };
 
   # mistral-vibe: Official flake package (uv2nix Python venv wrapper).
-  # Source: inputs.mistral-vibe.packages.${system}.default
-  # Exposed in home-modules via mistralVibePkg, but also available as pkgs.mistral-vibe.
   mistral-vibe = inputs.mistral-vibe.packages.${final.stdenv.hostPlatform.system}.default;
 
   # opencode: Pinned to specific release for timely updates (nixpkgs lags fast opencode cadence).
