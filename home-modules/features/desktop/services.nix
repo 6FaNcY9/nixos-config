@@ -26,11 +26,11 @@ in
         settings = {
           global = {
             frame_width = 2;
-            frame_color = lib.mkForce palette.accent;
+            frame_color = palette.accent;
             corner_radius = 10;
             offset = "10x40";
             origin = "top-right";
-            separator_color = lib.mkForce "frame";
+            separator_color = "frame";
             padding = 8;
             horizontal_padding = 12;
             icon_position = "left";
@@ -40,21 +40,21 @@ in
             history_length = 20;
           };
           urgency_low = {
-            background = lib.mkForce palette.bg;
-            foreground = lib.mkForce palette.text;
-            frame_color = lib.mkForce palette.muted;
+            background = palette.bg;
+            foreground = palette.text;
+            frame_color = palette.muted;
             timeout = 5;
           };
           urgency_normal = {
-            background = lib.mkForce palette.bg;
-            foreground = lib.mkForce palette.text;
-            frame_color = lib.mkForce palette.accent;
+            background = palette.bg;
+            foreground = palette.text;
+            frame_color = palette.accent;
             timeout = 10;
           };
           urgency_critical = {
-            background = lib.mkForce palette.bg;
-            foreground = lib.mkForce palette.text;
-            frame_color = lib.mkForce palette.danger;
+            background = palette.bg;
+            foreground = palette.text;
+            frame_color = palette.danger;
             timeout = 0;
           };
         };

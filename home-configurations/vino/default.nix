@@ -91,7 +91,7 @@ in
       bat.enable = true;
       fzf.enable = true;
 
-      dunst.enable = true;
+      dunst.enable = false; # Managed manually in features.desktop.services with palette colors
       qutebrowser.enable = true;
       xfce.enable = true;
 
