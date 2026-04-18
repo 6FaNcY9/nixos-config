@@ -9,7 +9,6 @@
 }:
 let
   cfg = config.features.desktop.qutebrowser;
-  desktopFile = "org.qutebrowser.qutebrowser.desktop";
 in
 {
   options.features.desktop.qutebrowser = {
@@ -233,11 +232,6 @@ in
         # --- UPC router page: disable dark mode inversion (light UI looks fine as-is) ---
         config.set('colors.webpage.darkmode.enabled', False, 'http://192.168.0.1')
       '';
-    };
-    xdg.mimeApps.defaultApplications = {
-      "x-scheme-handler/http" = [ desktopFile ];
-      "x-scheme-handler/https" = [ desktopFile ];
-      "text/html" = [ desktopFile ];
     };
   };
 }

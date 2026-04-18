@@ -233,5 +233,17 @@ in
         userContent = builtins.readFile ../../../assets/firefox/userContent.css;
       };
     };
+    xdg.mimeApps.enable = true;
+    xdg.mimeApps.defaultApplications = {
+      "x-scheme-handler/http" = [ "firefox.desktop" ];
+      "x-scheme-handler/https" = [ "firefox.desktop" ];
+      "text/html" = [ "firefox.desktop" ];
+    };
+    # XFCE exo preferred applications — controls exo-open --launch WebBrowser
+    home.file.".config/xfce4/helpers.rc".text = ''
+      WebBrowser=firefox
+    '';
+
   };
+
 }
