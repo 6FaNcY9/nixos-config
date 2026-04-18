@@ -4,9 +4,7 @@
 # - Module arguments injection
 {
   lib,
-  pkgs,
   config,
-  inputs,
   osConfig ? null,
   username,
   hostname,

@@ -77,31 +77,33 @@ in
       '';
     in
     {
-      home.packages = [ pkgs.filezilla ];
+      home = {
+        packages = [ pkgs.filezilla ];
 
-      # fzdefaults.xml — read-only administrative defaults.
-      # FileZilla searches ~/.filezilla/ for this file (NOT ~/.config/filezilla/).
-      # Kiosk mode 1: FileZilla saves all settings but never persists passwords.
-      home.file.".filezilla/fzdefaults.xml".text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <FileZilla3>
-          <Settings>
-            <Setting name="Kiosk mode">1</Setting>
-            <Setting name="Disable update check">1</Setting>
-          </Settings>
-        </FileZilla3>
-      '';
+        # fzdefaults.xml — read-only administrative defaults.
+        # FileZilla searches ~/.filezilla/ for this file (NOT ~/.config/filezilla/).
+        # Kiosk mode 1: FileZilla saves all settings but never persists passwords.
+        file.".filezilla/fzdefaults.xml".text = ''
+          <?xml version="1.0" encoding="UTF-8"?>
+          <FileZilla3>
+            <Settings>
+              <Setting name="Kiosk mode">1</Setting>
+              <Setting name="Disable update check">1</Setting>
+            </Settings>
+          </FileZilla3>
+        '';
 
-      # filezilla.xml — main settings file, must be writable at runtime.
-      # Copied once on first home-manager switch; never overwritten so runtime
-      # state (trusted TLS certs, column widths, site manager entries) persists.
-      home.activation.filezillaConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        $DRY_RUN_CMD mkdir -p "$HOME/.config/filezilla"
-        if [ ! -f "$HOME/.config/filezilla/filezilla.xml" ]; then
-          $DRY_RUN_CMD cp ${filezillaConfigFile} "$HOME/.config/filezilla/filezilla.xml"
-          $DRY_RUN_CMD chmod 600 "$HOME/.config/filezilla/filezilla.xml"
-        fi
-      '';
+        # filezilla.xml — main settings file, must be writable at runtime.
+        # Copied once on first home-manager switch; never overwritten so runtime
+        # state (trusted TLS certs, column widths, site manager entries) persists.
+        activation.filezillaConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          $DRY_RUN_CMD mkdir -p "$HOME/.config/filezilla"
+          if [ ! -f "$HOME/.config/filezilla/filezilla.xml" ]; then
+            $DRY_RUN_CMD cp ${filezillaConfigFile} "$HOME/.config/filezilla/filezilla.xml"
+            $DRY_RUN_CMD chmod 600 "$HOME/.config/filezilla/filezilla.xml"
+          fi
+        '';
+      };
     }
   );
 }
