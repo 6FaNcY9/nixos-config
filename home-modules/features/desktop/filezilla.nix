@@ -77,6 +77,8 @@ in
       '';
     in
     {
+      home.packages = [ pkgs.filezilla ];
+
       # fzdefaults.xml — read-only administrative defaults.
       # FileZilla searches ~/.filezilla/ for this file (NOT ~/.config/filezilla/).
       # Kiosk mode 1: FileZilla saves all settings but never persists passwords.

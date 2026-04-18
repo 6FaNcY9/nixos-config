@@ -69,7 +69,6 @@ let
   ];
 
   devPkgs = [
-    pkgs.filezilla
     pkgs.sqlite
     pkgs.python3
     pkgs.clang
