@@ -47,11 +47,6 @@ in
         timer.calendar = "monthly"; # When enabled, run monthly
       };
 
-      # OpenSSH server (disabled on desktop/laptop)
-      openssh.enable = false; # Enable on servers via features.services.openssh.enable
-
-      # Trezor hardware wallet (enabled on desktop)
-      trezord.enable = false; # Hardware wallet support
     };
 
     desktop.i3-xfce = {

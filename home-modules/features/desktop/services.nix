@@ -63,32 +63,8 @@ in
         enable = true;
         backend = "glx";
 
-        # Subtle inactive window dimming for visual depth without distraction
-        activeOpacity = 1.0;
-        inactiveOpacity = 1.0;
-        menuOpacity = 1.0;
-
-        # Fade animations
         fade = false;
-        fadeDelta = 4;
-        fadeSteps = [
-          0.03
-          0.03
-        ];
-
-        # Subtle shadows
         shadow = false;
-        shadowOffsets = [
-          (-4)
-          (-4)
-        ];
-        shadowOpacity = 0.25;
-        shadowExclude = [
-          "name = 'Notification'"
-          "class_g = 'Conky'"
-          "class_g = 'Polybar'"
-          "_GTK_FRAME_EXTENTS@:c"
-        ];
 
         vSync = true;
 

@@ -124,16 +124,5 @@ in
       };
     };
 
-    # Warning if timer is disabled
-    warnings = lib.optional (cfg.enable && !cfg.timer.enable) ''
-      features.services.auto-update is enabled but timer is disabled.
-      Updates will only run when manually triggered via:
-        systemctl start nixos-config-update
-
-      To enable automatic updates, set:
-        features.services.auto-update.timer.enable = true;
-
-      Note: Disabled by default for battery life (2-4% per update, 10-15min CPU)
-    '';
   };
 }
