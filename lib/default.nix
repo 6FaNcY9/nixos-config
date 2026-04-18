@@ -146,12 +146,8 @@ in
       }) workspaces
     );
 
-  # Validation helpers
-  inherit
-    validateSecretExists
-    validateSecretEncrypted
-    mkSecretValidation
-    ;
+  # Validation helpers (only mkSecretValidation is public API)
+  inherit mkSecretValidation;
 
   # Polybar helpers
   inherit mkPolybarTwoTone mkPolybarTwoToneState;

@@ -198,10 +198,6 @@ in
       "net.ipv4.conf.default.send_redirects" = false;
     };
 
-    # Additional security packages
-    environment.systemPackages = [
-      # Firewall management tool
-      pkgs.nftables
-    ];
+    environment.systemPackages = lib.mkIf cfg.firewall.enable [ pkgs.nftables ];
   };
 }

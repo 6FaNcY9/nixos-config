@@ -28,8 +28,7 @@
   config.stylix = {
     enable = true;
 
-    # Use configurable wallpaper
-    image = config.theme.wallpaper;
+    image = lib.mkDefault config.theme.wallpaper;
 
     polarity = lib.mkDefault "dark";
     base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/gruvbox-dark-pale.yaml";

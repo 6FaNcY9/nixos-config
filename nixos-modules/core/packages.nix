@@ -5,8 +5,8 @@
   pkgs,
   ...
 }:
-let
-  systemPackages = [
+{
+  environment.systemPackages = [
     pkgs.btrfs-progs
     pkgs.cachix # Binary cache management
     pkgs.curl
@@ -20,9 +20,6 @@ let
     pkgs.ssh-to-age
     pkgs.ntfs3g # NTFS write support for root (mount.ntfs-3g helper in system PATH)
   ];
-in
-{
-  environment.systemPackages = systemPackages;
 
   # Many third-party scripts use #!/bin/bash shebangs (e.g. Claude Code plugins).
   # NixOS doesn't provide /bin/bash by default — only /bin/sh.
