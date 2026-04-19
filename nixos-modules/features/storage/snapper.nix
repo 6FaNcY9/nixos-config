@@ -30,14 +30,7 @@ in
   options.features.storage.snapper = {
     enable = lib.mkEnableOption "snapper BTRFS snapshot management";
 
-    enableTimeline = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = ''
-        Enable automatic timeline snapshots (hourly).
-        Disabled by default to reduce I/O - manual snapshots and backups preferred.
-      '';
-    };
+    enableTimeline = lib.mkEnableOption "automatic timeline snapshots (hourly); disabled by default to reduce I/O";
 
     configs = lib.mkOption {
       type = lib.types.attrsOf (
