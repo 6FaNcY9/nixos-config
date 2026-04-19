@@ -43,21 +43,20 @@ final: prev: {
   # mistral-vibe: Official flake package (uv2nix Python venv wrapper).
   mistral-vibe = inputs.mistral-vibe.packages.${final.stdenv.hostPlatform.system}.default;
 
-  # opencode: Pinned to specific release for timely updates (nixpkgs lags fast opencode cadence).
-  # The upstream hashes.json FOD hash doesn't match what local bun produces.
-  # Override node_modules hash using node_modules_updater as the chain-override base.
+  # opencode: anomalyco/opencode fork has correct hashes.json baked in for the current release.
+  # prettier is a root devDep excluded by --filter '!./' in node_modules.nix; inject from nixpkgs.
   opencode =
     let
       inherit (final.stdenv.hostPlatform) system;
-      # node_modules_updater = node_modules.override { hash = fakeHash; };
-      # Chain-override with the actual hash our local bun produces.
-      localNodeModules = inputs.opencode.packages.${system}.node_modules_updater.override {
-        hash = "sha256-gFbo3B6TFAmin2marXlwUyfchTX6ogsaUFEzBIl4zaI=";
-      };
+      base = inputs.opencode.packages.${system}.default;
     in
-    inputs.opencode.packages.${system}.default.override {
-      node_modules = localNodeModules;
-    };
+    base.overrideAttrs (old: {
+      postConfigure = (old.postConfigure or "") + ''
+        chmod -R u+w packages/opencode/node_modules
+        mkdir -p packages/opencode/node_modules/prettier
+        cp -r ${final.prettier}/lib/node_modules/prettier/. packages/opencode/node_modules/prettier/
+      '';
+    });
 
   # strip-json-comments-cli: thin npx wrapper — avoids vendoring a package-lock.json.
   # IMPURE: `npx --yes` fetches from the npm registry at runtime (not sandboxed).

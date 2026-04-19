@@ -108,11 +108,11 @@
       flake = false;
     };
 
-    # opencode: Pinned as own input so we can track fast release cadence (nixpkgs lags).
-    # NOTE: Do NOT follow nixpkgs here. The opencode flake's node_modules hash was computed
-    # with its own nixpkgs (specific bun version). Following would cause a hash mismatch.
+    # opencode: Using anomalyco/opencode fork which has correct nix/hashes.json baked in.
+    # This fork tracks sst/opencode HEAD and has a simpler flake (nixpkgs-only inputs).
+    # models-dev is available in nixpkgs, so no extra inputs needed.
     opencode = {
-      url = "github:sst/opencode/27190635ea0497766a16ebddab8c4ca0b31f94a7";
+      url = "github:anomalyco/opencode/33b2795cc84c79e91e15549609713567eb08348a";
     };
 
   };
