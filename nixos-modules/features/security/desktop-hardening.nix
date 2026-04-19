@@ -112,8 +112,10 @@ in
       # Note: kexec is still blocked via sysctl below regardless of this setting
       inherit (cfg) protectKernelImage;
 
-      # Page Table Isolation — Meltdown mitigation (Intel pre-2019 CPUs)
-      # No-op on CPUs with hardware mitigation; slight overhead on syscall-heavy workloads
+      # Page Table Isolation — Meltdown mitigation (Intel pre-2019 CPUs only).
+      # This machine uses an AMD CPU with hardware Meltdown immunity; PTI is a no-op
+      # here (kernel detects RDCL_NO and skips the TLB flush overhead automatically).
+      # Kept true so the config is safe to reuse on Intel hardware without modification.
       forcePageTableIsolation = true;
     };
 
@@ -173,7 +175,7 @@ in
 
       # BPF hardening (real exploit vector — multiple CVEs 2021-2022)
       "kernel.unprivileged_bpf_disabled" = 1;
-      "net.core.bpf_jit_enable" = false;
+      "net.core.bpf_jit_enable" = 0;
       "net.core.bpf_jit_harden" = 2;
 
       # Disable ftrace debugging (information disclosure)
