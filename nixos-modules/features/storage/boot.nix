@@ -41,6 +41,16 @@ in
       default = "latest";
       description = "Linux kernel package to use";
     };
+
+    grubDevice = lib.mkOption {
+      type = lib.types.str;
+      default = "nodev";
+      description = ''
+        GRUB install target. Use "nodev" for EFI-only installs (default).
+        For legacy BIOS installs set this to the disk device, e.g. "/dev/sda".
+        Ignored when bootloader = "systemd-boot".
+      '';
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -51,7 +61,7 @@ in
         grub = lib.mkIf (cfg.bootloader == "grub") {
           enable = true;
           inherit (cfg) efiSupport useOSProber;
-          device = if cfg.efiSupport then "nodev" else "/dev/sda"; # EFI uses nodev
+          device = cfg.grubDevice;
         };
 
         # systemd-boot configuration
