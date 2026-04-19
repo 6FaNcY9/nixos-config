@@ -11,6 +11,10 @@
 }:
 let
   mainDisk = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
+  # Directories excluded from ClamAV scans on this host.
+  clamavExcludePaths = [
+    "/home/vino/Documents/Projekts/mrijaPage" # active web project — many small files
+  ];
   cfgLib = import ../../lib { inherit lib; };
   # BTRFS mount options — see lib/default.nix for the full definition.
   inherit (cfgLib) mkBtrfsOpts;
@@ -58,7 +62,7 @@ in
       boot = {
         enable = true;
         bootloader = "grub";
-        kernelPackage = "latest";
+        kernelPackage = "stable"; # Pinned to stable (6.x LTS) — linux 7.0 from nixpkgs 20260414 broke boot on Framework 13 AMD
       };
 
       swap = {
@@ -141,7 +145,7 @@ in
 
       clamav = {
         enable = true;
-        excludePaths = [ "/home/vino/Documents/Projekts/mrijaPage" ];
+        excludePaths = clamavExcludePaths;
       };
     };
   };
@@ -154,6 +158,17 @@ in
     resumeDevice = mainDisk;
     # resume_offset: regenerate if swapfile is recreated: sudo filefrag -v /swap/swapfile | awk 'NR==4{gsub(/\.\./,""); print $4}'
     kernelParams = [ "resume_offset=1959063" ];
+    # Disable systemd initrd — NixOS/nixpkgs 4bd9165 enabled it by default but it causes
+    # a boot hang on this machine (Framework 13 AMD, kernel ≥6.11). Root cause: the amdgpu
+    # kernel module initialises asynchronously under systemd-initrd's parallel unit model,
+    # creating a race between GPU firmware loading and the stage-1 → stage-2 switch-root.
+    # The classic busybox initrd uses sequential shell scripts so modules load in order,
+    # avoiding the race entirely. Tracked upstream: NixOS/nixpkgs #449939.
+    # Keep false until amdgpu async-init is fixed in the kernel or nixpkgs works around it.
+    # ⚠ WARNING: scripted initrd is deprecated and scheduled for removal in NixOS 26.11.
+    #   This must be resolved before upgrading past 26.05 — either the upstream bug is fixed,
+    #   or blacklist amdgpu from initrd async loading, or switch to a kernel with the fix.
+    initrd.systemd.enable = false;
   };
 
   # Filesystem mounts — optimized BTRFS options override hardware-configuration.nix.
