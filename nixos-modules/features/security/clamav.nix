@@ -17,6 +17,14 @@
 let
   cfg = config.features.security.clamav;
   quarantine = "/var/lib/clamav-quarantine";
+  clamavDb = "/var/lib/clamav";
+
+  # Minimal freshclam config: point to database dir, suppress clamd notification
+  # (no daemon running — otherwise freshclam logs a misleading clamd.conf error).
+  freshclamConf = pkgs.writeText "freshclam.conf" ''
+    DatabaseDirectory ${clamavDb}
+    NotifyClamd no
+  '';
   systemExcludes = [
     "/proc"
     "/sys"
@@ -29,7 +37,7 @@ let
 
   updateScript = pkgs.writeShellScriptBin "clamav-update" ''
     echo "Updating ClamAV virus definitions..."
-    sudo freshclam
+    sudo freshclam --config-file=${freshclamConf}
   '';
 
   scanScript = pkgs.writeShellScriptBin "clamav-scan" ''
@@ -72,8 +80,10 @@ in
     ];
 
     # Quarantine directory — root-owned, never auto-cleaned.
+    # Database directory — freshclam writes virus definitions here.
     systemd.tmpfiles.rules = [
       "d ${quarantine} 0700 root root -"
+      "d ${clamavDb} 0755 root root -"
     ];
   };
 }
