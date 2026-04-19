@@ -75,15 +75,20 @@ in
       enable = mkBool true "Enable zram compressed swap in RAM";
 
       algorithm = lib.mkOption {
-        type = lib.types.str;
+        type = lib.types.enum [
+          "lzo"
+          "lzo-rle"
+          "lz4"
+          "zstd"
+        ];
         default = "zstd";
-        description = "Compression algorithm for zram";
+        description = "Compression algorithm for zram (zstd recommended: best ratio + speed)";
       };
 
       memoryPercent = lib.mkOption {
-        type = lib.types.int;
+        type = lib.types.ints.between 1 100;
         default = 25;
-        description = "Percentage of RAM to use for zram swap";
+        description = "Percentage of RAM to allocate for zram swap (1-100)";
       };
     };
 
