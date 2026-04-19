@@ -9,10 +9,10 @@
 { pkgs, inputs, ... }:
 {
   programs.nixvim = {
-    extraPlugins = with pkgs.vimPlugins; [
+    extraPlugins = [
       # Plugins without native nixvim modules
-      vim-matchup # Enhanced % matching
-      cheatsheet-nvim # Searchable keymaps/commands help
+      pkgs.vimPlugins.vim-matchup # Enhanced % matching
+      pkgs.vimPlugins.cheatsheet-nvim # Searchable keymaps/commands help
       (pkgs.vimUtils.buildVimPlugin {
         name = "hmts-nvim";
         src = pkgs.applyPatches {
@@ -23,17 +23,17 @@
       })
     ];
 
-    extraPackages = with pkgs; [
-      tree-sitter-cli
+    extraPackages = [
+      pkgs.tree-sitter-cli
       # Formatters for conform.nvim
-      nixfmt
-      ruff
-      stylua
-      rustfmt
+      pkgs.nixfmt
+      pkgs.ruff
+      pkgs.stylua
+      pkgs.rustfmt
       # Linters for nvim-lint
-      statix
-      shellcheck
-      lua51Packages.luacheck
+      pkgs.statix
+      pkgs.shellcheck
+      pkgs.lua51Packages.luacheck
     ];
 
     extraConfigLua = ''
