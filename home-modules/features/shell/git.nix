@@ -1,6 +1,11 @@
 # Git configuration with delta integration
 # User identity and signing are set in home-configurations/vino/default.nix
-{ lib, config, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.features.shell.git;
 in
@@ -26,6 +31,7 @@ in
 
       git = {
         enable = true;
+        package = pkgs.gitFull;
 
         settings = {
           alias = {
