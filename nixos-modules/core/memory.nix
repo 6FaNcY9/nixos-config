@@ -1,7 +1,6 @@
 # Core: Memory management and swap configuration
 _: {
-  # Optimize for interactive desktop usage
-  # Lower swappiness prevents system lag during memory pressure
+  # Tuned for interactive desktop usage with zram swap
   boot.kernel.sysctl = {
     # High swappiness with zram: prefer compressed RAM swap over disk I/O (default: 60)
     # With zram enabled, this reduces disk writes and improves interactive responsiveness
