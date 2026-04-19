@@ -17,6 +17,11 @@ let
   # Hardcoded for Gruvbox Dark Pale (#3a3a3a darkened 15%).
   surface = "#313131";
 
+  # Gruvbox colors not in the palette — kept as named constants for clarity.
+  yellowAlt = "#fabd2f"; # Gruvbox bright yellow — prompt background & highlights
+  redAlt = "#fb4934"; # Gruvbox bright red — danger/warning accent
+  elementBg = "#1b1b1b"; # Darker card background for alternating list rows
+
   # Shared color variable block — imported by all other rasi files via @theme "theme".
   themeRasi = ''
     * {
@@ -27,15 +32,15 @@ let
         orange:              ${c.base0F};
         orange-alt:          ${palette.orange};
         yellow:              ${palette.warn};
-        yellow-alt:          #fabd2f;
+        yellow-alt:          ${yellowAlt};
         fg-col:              ${palette.text};
         fg-col2:             ${c.base06};
         grey:                ${palette.muted};
         cream:               ${palette.cream};
-        red-alt:             #fb4934;
-        element-bg:          #1b1b1b;
+        red-alt:             ${redAlt};
+        element-bg:          ${elementBg};
         element-alternate-bg:${palette.bg};
-        highlight:           underline bold #fabd2f;
+        highlight:           underline bold ${yellowAlt};
 
         accent-green:        ${palette.accent};
         accent-blue:         ${palette.accent2};
