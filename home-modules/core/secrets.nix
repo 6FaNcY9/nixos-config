@@ -1,5 +1,6 @@
 # sops-nix Home Manager secret management
-# Manages encrypted secrets for: GitHub MCP PAT, GPG signing key, Cachix auth, Exa API, Context7 API, Mistral API
+# sops-nix Home Manager secret management
+# Manages encrypted secrets for: GitHub MCP PAT, GPG signing key, Cachix auth, Exa API, Context7 API, Mistral API, Hermes env
 # GPG signing key is auto-imported via home.activation hook after decryption
 #
 {
@@ -20,6 +21,7 @@ let
   mistralSecretFile = "${inputs.self}/secrets/mistral.yaml";
   heliconeSecretFile = "${inputs.self}/secrets/helicone.yaml";
   mistralClaudeSecretFile = "${inputs.self}/secrets/mistral-claude.yaml";
+  hermesSecretFile = "${inputs.self}/secrets/hermes.yaml";
 
   secretValidation = cfgLib.mkSecretValidation {
     secrets = builtins.filter builtins.pathExists [
@@ -33,6 +35,7 @@ let
       mistralClaudeSecretFile
 
       heliconeSecretFile
+      hermesSecretFile
     ];
     label = "Home";
   };
@@ -101,6 +104,14 @@ in
           sopsFile = heliconeSecretFile;
           format = "yaml";
           mode = "0400"; # read-only for owner; loaded into env via fish interactiveShellInit
+        };
+      }
+      ++ lib.optional (builtins.pathExists hermesSecretFile) {
+        hermes_env = {
+          sopsFile = hermesSecretFile;
+          # key defaults to "hermes_env" matching the yaml top-level key
+          format = "yaml";
+          mode = "0400"; # read-only; copied to ~/.hermes/.env by hermes activation
         };
       }
     );
