@@ -11,6 +11,7 @@
 }:
 let
   mainDisk = "/dev/disk/by-uuid/0629aaee-1698-49d1-b3e1-e7bb6b957cda";
+  resumeOffset = "1959063";
   # Directories excluded from ClamAV scans on this host.
   clamavExcludePaths = [
     "/home/vino/Documents/Projekts/mrijaPage" # active web project — many small files
@@ -156,19 +157,13 @@ in
   #                Required for kernel to resume from hibernation.
   boot = {
     resumeDevice = mainDisk;
-    # resume_offset: regenerate if swapfile is recreated: sudo filefrag -v /swap/swapfile | awk 'NR==4{gsub(/\.\./,""); print $4}'
-    kernelParams = [ "resume_offset=1959063" ];
-    # Disable systemd initrd — NixOS/nixpkgs 4bd9165 enabled it by default but it causes
-    # a boot hang on this machine (Framework 13 AMD, kernel ≥6.11). Root cause: the amdgpu
-    # kernel module initialises asynchronously under systemd-initrd's parallel unit model,
-    # creating a race between GPU firmware loading and the stage-1 → stage-2 switch-root.
-    # The classic busybox initrd uses sequential shell scripts so modules load in order,
-    # avoiding the race entirely. Tracked upstream: NixOS/nixpkgs #449939.
-    # Keep false until amdgpu async-init is fixed in the kernel or nixpkgs works around it.
-    # ⚠ WARNING: scripted initrd is deprecated and scheduled for removal in NixOS 26.11.
-    #   This must be resolved before upgrading past 26.05 — either the upstream bug is fixed,
-    #   or blacklist amdgpu from initrd async loading, or switch to a kernel with the fix.
-    initrd.systemd.enable = false;
+    # Host-specific swapfile offset; regenerate if /swap/swapfile is recreated:
+    #   sudo filefrag -v /swap/swapfile | awk 'NR==4{gsub(/\.\./,""); print $4}'
+    kernelParams = [ "resume_offset=${resumeOffset}" ];
+    # Keep systemd-initrd, but serialize udev after module loading to avoid the amdgpu
+    # initrd race seen on this Framework 13 AMD host during the stage-1 → stage-2 switch.
+    # Upstream workaround: NixOS/nixpkgs #202846.
+    initrd.systemd.services.systemd-udevd.after = [ "systemd-modules-load.service" ];
   };
 
   # Filesystem mounts — optimized BTRFS options override hardware-configuration.nix.
