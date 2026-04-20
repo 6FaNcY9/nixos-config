@@ -62,7 +62,7 @@ in
       boot = {
         enable = true;
         bootloader = "grub";
-        kernelPackage = "stable"; # Pinned to stable (6.x LTS) — linux 7.0 from nixpkgs 20260414 broke boot on Framework 13 AMD
+        kernelPackage = "latest";
       };
 
       swap = {
