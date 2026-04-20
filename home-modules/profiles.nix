@@ -29,6 +29,7 @@ let
     githubCopilotPkg
     pkgs.mistral-vibe
     pkgs.agentsys
+    pkgs.hermes-agent
   ];
 
   corePkgs = [

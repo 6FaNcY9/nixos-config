@@ -48,6 +48,7 @@ _: {
       filezilla.enable = true;
       bitwarden.enable = true;
     };
+    ai.hermes.enable = true;
   };
   # Workspaces use shared defaults from shared-modules/workspaces.nix
   # Override here only if host-specific icons are needed
