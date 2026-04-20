@@ -22,12 +22,6 @@
     # Primary: Unstable (latest packages, recommended for most users)
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    # Codex CLI (always up-to-date)
-    codex-cli-nix = {
-      url = "github:sadjow/codex-cli-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # Mistral Vibe (AI assistant)
     mistral-vibe = {
       url = "github:mistralai/mistral-vibe";
@@ -114,6 +108,10 @@
     opencode = {
       url = "github:anomalyco/opencode/33b2795cc84c79e91e15549609713567eb08348a";
     };
+
+    # Hermes Agent — upstream flake, package only (nixosModule has a flake-parts bug).
+    # We consume packages.${system}.default directly via overlay, bypassing the module.
+    hermes-agent.url = "github:NousResearch/hermes-agent";
 
   };
 

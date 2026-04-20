@@ -40,6 +40,10 @@ final: prev: {
       };
     };
 
+  # hermes-agent: Nous Research self-improving AI agent.
+  # Pulled directly from upstream flake package output (x86_64-linux default).
+  hermes-agent = inputs.hermes-agent.packages.${final.stdenv.hostPlatform.system}.default;
+
   # mistral-vibe: Official flake package (uv2nix Python venv wrapper).
   mistral-vibe = inputs.mistral-vibe.packages.${final.stdenv.hostPlatform.system}.default;
 
