@@ -56,8 +56,12 @@ in
     userDirs = {
       enable = true;
       createDirectories = true;
+      setSessionVariables = true; # Keep legacy behavior (new default is false in 26.05+)
     };
   };
+
+  # Keep GTK4 using the same stylix-managed theme (new HM default in 26.05+ is null)
+  gtk.gtk4.theme = config.gtk.theme;
 
   # Validation warnings
   warnings = lib.optionals (config.programs.git.settings.commit.gpgsign or false) [
