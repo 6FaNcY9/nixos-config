@@ -9,6 +9,34 @@
 }:
 let
   inherit (cfgLib) mkPolybarTwoTone mkPolybarTwoToneState;
+  mkIcon =
+    codepoint:
+    builtins.readFile (
+      pkgs.runCommand "polybar-icon-${toString codepoint}" { nativeBuildInputs = [ pkgs.python3 ]; } ''
+                python - <<'PY' > "$out"
+        print(chr(${toString codepoint}), end="")
+        PY
+      ''
+    );
+  icons = {
+    xwindow = mkIcon 983523;
+    time = mkIcon 983277;
+    host = mkIcon 989770;
+    cpu = mkIcon 62652;
+    temp = mkIcon 61227;
+    memory = mkIcon 983899;
+    volume = mkIcon 984446;
+    muted = mkIcon 984449;
+    power = mkIcon 984101;
+    autotiling = mkIcon 984429;
+    networkConnected = mkIcon 984489;
+    networkDisconnected = mkIcon 984490;
+    lanConnected = mkIcon 983552;
+    lanDisconnected = mkIcon 983554;
+    batteryCharging = mkIcon 983172;
+    batteryDischarging = mkIcon 983182;
+    batteryFull = mkIcon 983161;
+  };
   hasIcons = builtins.any (workspace: workspace.icon != "") workspaces;
   wsIconAttrs = lib.listToAttrs (
     map (workspace: {
@@ -84,7 +112,7 @@ in
         label = "%title:0:50:.....%";
       }
       // mkPolybarTwoTone {
-        icon = "󰇣 ";
+        icon = icons.xwindow;
         color = "purple";
       };
 
@@ -98,7 +126,7 @@ in
         label = "%{A1:${pkgs.gsimplecal}/bin/gsimplecal &:}%time%  ||  %date%%{A}";
       }
       // mkPolybarTwoTone {
-        icon = "󰃭 ";
+        icon = icons.time;
         color = "yellow";
       };
 
@@ -109,7 +137,7 @@ in
         interval = 3600;
       }
       // mkPolybarTwoTone {
-        icon = "󱩊 ";
+        icon = icons.host;
         color = "blue";
       };
 
@@ -120,7 +148,7 @@ in
         label = "%percentage:2%%";
       }
       // mkPolybarTwoTone {
-        icon = " ";
+        icon = icons.cpu;
         color = "green";
       };
 
@@ -131,7 +159,7 @@ in
         interval = 2;
       }
       // mkPolybarTwoTone {
-        icon = " ";
+        icon = icons.temp;
         color = "red";
       };
 
@@ -142,7 +170,7 @@ in
         label = "%free%";
       }
       // mkPolybarTwoTone {
-        icon = "󰍛 ";
+        icon = icons.memory;
         color = "orange";
       };
 
@@ -154,19 +182,19 @@ in
       }
       // mkPolybarTwoToneState {
         state = "volume";
-        icon = "󰕾";
+        icon = icons.volume;
         color = "yellow";
       }
       // mkPolybarTwoToneState {
         state = "muted";
-        icon = "󰖁";
+        icon = icons.muted;
         color = "red";
       };
 
       # ── Power button (yellow block) ──
       "module/power" = {
         type = "custom/text";
-        format = " 󰐥 ";
+        format = " ${icons.power} ";
         format-foreground = "\${colors.black}";
         format-background = "\${colors.yellow}";
       };
@@ -228,7 +256,7 @@ in
         ''}";
       }
       // mkPolybarTwoTone {
-        icon = "󰕭 ";
+        icon = icons.autotiling;
         color = "aqua";
       };
     }
@@ -245,12 +273,12 @@ in
       }
       // mkPolybarTwoToneState {
         state = "connected";
-        icon = "󰖩 ";
+        icon = icons.networkConnected;
         color = "green";
       }
       // mkPolybarTwoToneState {
         state = "disconnected";
-        icon = "󰖪 ";
+        icon = icons.networkDisconnected;
         color = "red";
       };
     })
@@ -267,12 +295,12 @@ in
       }
       // mkPolybarTwoToneState {
         state = "connected";
-        icon = "󰈀 ";
+        icon = icons.lanConnected;
         color = "blue";
       }
       // mkPolybarTwoToneState {
         state = "disconnected";
-        icon = "󰈂 ";
+        icon = icons.lanDisconnected;
         color = "red";
       };
     })
@@ -289,17 +317,17 @@ in
       }
       // mkPolybarTwoToneState {
         state = "charging";
-        icon = "󰂄";
+        icon = icons.batteryCharging;
         color = "aqua";
       }
       // mkPolybarTwoToneState {
         state = "discharging";
-        icon = "󰂎";
+        icon = icons.batteryDischarging;
         color = "aqua";
       }
       // mkPolybarTwoToneState {
         state = "full";
-        icon = "󰁹";
+        icon = icons.batteryFull;
         color = "aqua";
       };
     })
