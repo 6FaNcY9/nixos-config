@@ -35,6 +35,8 @@ _: {
       yazi.enable = true;
     };
     desktop = {
+      # Home Manager keeps the user-layer pieces split out even though NixOS enables
+      # the combined system feature `features.desktop.i3-xfce` for this host.
       services.enable = true;
       clipboard.enable = true;
       lock.enable = true;
