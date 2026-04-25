@@ -1,6 +1,7 @@
 # i3 autostart programs - Launched when i3 session starts
 # - autotiling: Auto-switch split direction based on window dimensions
 # - unclutter: Hide mouse cursor after 3s idle, show on move
+# - flameshot: Screenshot daemon — must be running before gui invocations (fixes 30s D-Bus timeout)
 # - copyq: Clipboard manager — persists clipboard content (fixes Flameshot image loss on X11)
 # - polkit-gnome: Authentication agent for privilege escalation prompts
 # - xss-lock: Screen locker integration (--transfer-sleep-lock ensures lock before suspend)
@@ -9,6 +10,11 @@
 { pkgs, ... }:
 {
   xsession.windowManager.i3.config.startup = [
+    {
+      command = "env XDG_CURRENT_DESKTOP=i3 XDG_SESSION_TYPE=x11 QT_QPA_PLATFORM=xcb ${pkgs.flameshot}/bin/flameshot";
+      always = false;
+      notification = false;
+    }
     {
       command = "${pkgs.autotiling}/bin/autotiling";
       always = true;
