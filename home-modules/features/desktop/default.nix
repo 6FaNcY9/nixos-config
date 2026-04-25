@@ -15,5 +15,6 @@
     ./vibe
     ./filezilla.nix
     ./bitwarden.nix
+    ./notepad.nix
   ];
 }
