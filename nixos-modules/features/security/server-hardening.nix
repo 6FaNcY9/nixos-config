@@ -41,13 +41,12 @@ in
     services.fail2ban = {
       enable = true;
       inherit (cfg.fail2ban) ignoreIP;
-      jails.sshd = ''
-        enabled = true
-        mode = aggressive
-        maxretry = 3
-        bantime = 3600
-        findtime = 600
-      '';
+      jails.sshd.settings = {
+        mode = "aggressive";
+        maxretry = 3;
+        bantime = "1h";
+        findtime = "10m";
+      };
     };
 
     # SSH user restrictions (if specified)
