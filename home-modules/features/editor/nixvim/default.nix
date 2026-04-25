@@ -36,6 +36,10 @@ in
       defaultEditor = true;
       viAlias = true;
       vimAlias = true;
+
+      # Reuse the host package set so NixVim inherits repo-wide nixpkgs config
+      # (notably allowAliases = false), avoiding legacy plugin alias warnings.
+      nixpkgs.useGlobalPackages = true;
     };
   };
 }
