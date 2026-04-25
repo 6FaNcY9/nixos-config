@@ -194,6 +194,7 @@
           };
 
           nixos.hosts.bandit.userHomeModules = [ username ];
+          nixos.hosts.homelab.userHomeModules = [ username ];
         };
 
         flake = {
