@@ -5,6 +5,7 @@
 {
   lib,
   config,
+  pkgs,
   osConfig ? null,
   username,
   hostname,
@@ -48,6 +49,14 @@ in
     NH_NOM = "1";
     SSL_CERT_FILE = "/etc/ssl/certs/ca-bundle.crt";
     NIX_SSL_CERT_FILE = "/etc/ssl/certs/ca-bundle.crt";
+  };
+
+  home.pointerCursor = {
+    package = pkgs.bibata-cursors;
+    name = "Bibata-Modern-Classic";
+    size = 24;
+    gtk.enable = true;
+    x11.enable = true;
   };
   news.display = "silent";
 
