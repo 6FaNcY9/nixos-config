@@ -59,6 +59,7 @@ let
     "${mod}+m" = "move scratchpad";
     "${mod}+Shift+m" = "scratchpad show";
 
+    "${mod}+n" = "exec joplin-desktop";
     "${mod}+Return" = "exec alacritty";
     "${mod}+Shift+w" = "exec qutebrowser";
     "${mod}+d" = "exec rofi -show drun";
@@ -70,7 +71,10 @@ let
     "${mod}+Shift+x" = "exec lock-screen";
     "${mod}+r" = "mode \"resize\"";
 
-    "Print" = "exec ${pkgs.flameshot}/bin/flameshot gui";
+    "Print" =
+      "exec --no-startup-id env XDG_CURRENT_DESKTOP=i3 XDG_SESSION_TYPE=x11 QT_QPA_PLATFORM=xcb ${pkgs.flameshot}/bin/flameshot gui";
+    "F11" =
+      "exec --no-startup-id env XDG_CURRENT_DESKTOP=i3 XDG_SESSION_TYPE=x11 QT_QPA_PLATFORM=xcb ${pkgs.flameshot}/bin/flameshot gui";
 
     # Dunst notification controls
     "${mod}+grave" = "exec ${pkgs.dunst}/bin/dunstctl history-pop";

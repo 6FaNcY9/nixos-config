@@ -40,6 +40,11 @@ in
 
             show_indicators = true;
             history_length = 20;
+            markup = "full";
+            word_wrap = true;
+            mouse_left_click = "do_action";
+            mouse_right_click = "close_current";
+            mouse_middle_click = "close_all";
           };
           urgency_low = {
             background = palette.bg;
@@ -95,6 +100,7 @@ in
             showSidePanelButton = true;
             showDesktopNotification = false;
             disabledTrayIcon = false;
+            useX11LegacyScreenshot = true;
           };
           Shortcuts = {
             TYPE_COPY = "Return";
@@ -103,5 +109,12 @@ in
         };
       };
     };
+
+    # Flameshot 14.x uses XDG portal unless XDG_SESSION_TYPE=x11 is explicit
+    systemd.user.services.flameshot.Service.Environment = [
+      "XDG_CURRENT_DESKTOP=i3"
+      "XDG_SESSION_TYPE=x11"
+      "QT_QPA_PLATFORM=xcb"
+    ];
   };
 }
