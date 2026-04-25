@@ -53,11 +53,10 @@
       enable = true;
       nixGrammars = true;
 
-      settings = {
-        auto_install = false;
-        highlight.enable = true;
-        indent.enable = true;
+      highlight.enable = true;
+      indent.enable = true;
 
+      settings = {
         incremental_selection = {
           enable = true;
           keymaps = {

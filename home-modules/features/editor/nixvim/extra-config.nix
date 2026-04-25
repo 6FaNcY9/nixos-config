@@ -6,7 +6,12 @@
 #   - cheatsheet-nvim: Searchable keymaps and commands help
 #   - Treesitter runtime path fix for complete query files
 
-{ pkgs, inputs, ... }:
+{
+  pkgs,
+  inputs,
+  config,
+  ...
+}:
 {
   programs.nixvim = {
     extraPlugins = [
@@ -40,7 +45,7 @@
       -- Fix tree-sitter query errors by prepending nvim-treesitter runtime path
       -- This ensures complete query files with inheritance (e.g., ecma for JS/TS)
       -- See: https://github.com/NixOS/nixpkgs/issues/478561
-      vim.opt.rtp:prepend("${pkgs.vimPlugins.nvim-treesitter}/runtime/")
+      vim.opt.rtp:prepend("${config.programs.nixvim.plugins.treesitter.package}/runtime/")
 
       -- Plugin-specific global variables
       vim.g.matchup_matchparen_offscreen = { method = "popup" }
