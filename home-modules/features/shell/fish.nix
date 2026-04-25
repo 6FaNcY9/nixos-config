@@ -149,6 +149,9 @@ in
           ".." = "cd ..";
           "..." = "cd ../..";
           "...." = "cd ../../..";
+
+          # pkgs install with "nix shell nixpkgs#"
+          npkg = "nix shell nixpkgs#";
         };
 
         plugins =
