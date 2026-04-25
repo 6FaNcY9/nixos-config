@@ -1,0 +1,1226 @@
+{
+  "generated_at": "2026-04-23T05:21:21.612405",
+  "commit": "fc01dbe3b69b5e578097abaa4e43340f78a0423c",
+  "languages": [
+    "nix"
+  ],
+  "file_count": 118,
+  "symbol_count": 207,
+  "files": [
+    "flake-modules/_common.nix",
+    "flake-modules/apps.nix",
+    "flake-modules/checks.nix",
+    "flake-modules/default.nix",
+    "flake-modules/devshells.nix",
+    "flake-modules/packages.nix",
+    "flake-modules/pre-commit.nix",
+    "flake-modules/treefmt.nix",
+    "flake.nix",
+    "home-configurations/vino/default.nix",
+    "home-configurations/vino/hosts/bandit.nix",
+    "home-configurations/vino/hosts/homelab.nix",
+    "home-modules/core/default.nix",
+    "home-modules/core/devices.nix",
+    "home-modules/core/nixpkgs.nix",
+    "home-modules/core/package-managers.nix",
+    "home-modules/core/secrets.nix",
+    "home-modules/default.nix",
+    "home-modules/features/ai/default.nix",
+    "home-modules/features/ai/hermes.nix",
+    "home-modules/features/default.nix",
+    "home-modules/features/desktop/bitwarden.nix",
+    "home-modules/features/desktop/clipboard.nix",
+    "home-modules/features/desktop/default.nix",
+    "home-modules/features/desktop/filezilla.nix",
+    "home-modules/features/desktop/firefox.nix",
+    "home-modules/features/desktop/i3/autostart.nix",
+    "home-modules/features/desktop/i3/config.nix",
+    "home-modules/features/desktop/i3/default.nix",
+    "home-modules/features/desktop/i3/keybindings.nix",
+    "home-modules/features/desktop/i3/workspace.nix",
+    "home-modules/features/desktop/lock/default.nix",
+    "home-modules/features/desktop/polybar/colors.nix",
+    "home-modules/features/desktop/polybar/default.nix",
+    "home-modules/features/desktop/polybar/modules.nix",
+    "home-modules/features/desktop/qutebrowser.nix",
+    "home-modules/features/desktop/rofi/default.nix",
+    "home-modules/features/desktop/rofi/scripts.nix",
+    "home-modules/features/desktop/services.nix",
+    "home-modules/features/desktop/vibe/default.nix",
+    "home-modules/features/desktop/vibe/devenv.nix",
+    "home-modules/features/desktop/xfce-session.nix",
+    "home-modules/features/editor/default.nix",
+    "home-modules/features/editor/nixvim/autocmds.nix",
+    "home-modules/features/editor/nixvim/default.nix",
+    "home-modules/features/editor/nixvim/extra-config.nix",
+    "home-modules/features/editor/nixvim/highlights.nix",
+    "home-modules/features/editor/nixvim/keymaps/copilot.nix",
+    "home-modules/features/editor/nixvim/keymaps/default.nix",
+    "home-modules/features/editor/nixvim/keymaps/editor.nix",
+    "home-modules/features/editor/nixvim/keymaps/lsp.nix",
+    "home-modules/features/editor/nixvim/keymaps/navigation.nix",
+    "home-modules/features/editor/nixvim/keymaps/telescope.nix",
+    "home-modules/features/editor/nixvim/keymaps/terminal.nix",
+    "home-modules/features/editor/nixvim/options.nix",
+    "home-modules/features/editor/nixvim/plugins.nix",
+    "home-modules/features/editor/nixvim/ui.nix",
+    "home-modules/features/shell/bat.nix",
+    "home-modules/features/shell/default.nix",
+    "home-modules/features/shell/eza.nix",
+    "home-modules/features/shell/fish.nix",
+    "home-modules/features/shell/git.nix",
+    "home-modules/features/shell/starship.nix",
+    "home-modules/features/terminal/alacritty.nix",
+    "home-modules/features/terminal/default.nix",
+    "home-modules/features/terminal/tmux/default.nix",
+    "home-modules/features/terminal/tmux/keybindings.nix",
+    "home-modules/features/terminal/tmux/plugins.nix",
+    "home-modules/features/terminal/tmux/statusbar.nix",
+    "home-modules/features/terminal/yazi/default.nix",
+    "home-modules/profiles.nix",
+    "lib/default.nix",
+    "nixos-configurations/bandit/default.nix",
+    "nixos-configurations/bandit/hardware-configuration.nix",
+    "nixos-configurations/homelab/default.nix",
+    "nixos-configurations/homelab/hardware-configuration.nix",
+    "nixos-modules/core/default.nix",
+    "nixos-modules/core/fonts.nix",
+    "nixos-modules/core/memory.nix",
+    "nixos-modules/core/networking.nix",
+    "nixos-modules/core/nix.nix",
+    "nixos-modules/core/oomd.nix",
+    "nixos-modules/core/packages.nix",
+    "nixos-modules/core/programs.nix",
+    "nixos-modules/core/system.nix",
+    "nixos-modules/core/users.nix",
+    "nixos-modules/default.nix",
+    "nixos-modules/features/default.nix",
+    "nixos-modules/features/desktop/default.nix",
+    "nixos-modules/features/desktop/i3-xfce.nix",
+    "nixos-modules/features/development/base.nix",
+    "nixos-modules/features/development/default.nix",
+    "nixos-modules/features/hardware/default.nix",
+    "nixos-modules/features/hardware/laptop.nix",
+    "nixos-modules/features/security/clamav.nix",
+    "nixos-modules/features/security/default.nix",
+    "nixos-modules/features/security/desktop-hardening.nix",
+    "nixos-modules/features/security/secrets.nix",
+    "nixos-modules/features/security/server-hardening.nix",
+    "nixos-modules/features/services/auto-update.nix",
+    "nixos-modules/features/services/default.nix",
+    "nixos-modules/features/services/monitoring.nix",
+    "nixos-modules/features/services/openssh.nix",
+    "nixos-modules/features/services/tailscale.nix",
+    "nixos-modules/features/services/trezord.nix",
+    "nixos-modules/features/storage/boot.nix",
+    "nixos-modules/features/storage/btrfs.nix",
+    "nixos-modules/features/storage/default.nix",
+    "nixos-modules/features/storage/snapper.nix",
+    "nixos-modules/features/storage/swap.nix",
+    "nixos-modules/features/theme/default.nix",
+    "nixos-modules/features/theme/stylix.nix",
+    "nixos-modules/home-manager.nix",
+    "overlays/custom-packages.nix",
+    "overlays/default.nix",
+    "shared-modules/palette.nix",
+    "shared-modules/stylix-common.nix",
+    "shared-modules/workspaces.nix"
+  ],
+  "symbols": [
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"stylix system-wide theme management\"",
+      "file": "nixos-modules/features/theme/stylix.nix",
+      "line": 14
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"stylix theme for GRUB bootloader\"",
+      "file": "nixos-modules/features/theme/stylix.nix",
+      "line": 18
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"stylix theme for LightDM display manager\"",
+      "file": "nixos-modules/features/theme/stylix.nix",
+      "line": 24
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"automatically import stylix into home-manager\"",
+      "file": "nixos-modules/features/theme/stylix.nix",
+      "line": 31
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"make home-manager follow system theme settings\"",
+      "file": "nixos-modules/features/theme/stylix.nix",
+      "line": 33
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"OpenSSH server with secure defaults\"",
+      "file": "nixos-modules/features/services/openssh.nix",
+      "line": 14
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"BTRFS filesystem maintenance\"",
+      "file": "nixos-modules/features/storage/btrfs.nix",
+      "line": 14
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"fstrim for SSD maintenance\"",
+      "file": "nixos-modules/features/storage/btrfs.nix",
+      "line": 17
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"automatic BTRFS scrubbing\"",
+      "file": "nixos-modules/features/storage/btrfs.nix",
+      "line": 29
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"development environment and tools\"",
+      "file": "nixos-modules/features/development/base.nix",
+      "line": 22
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"automated NixOS flake updates and rebuilds\"",
+      "file": "nixos-modules/features/services/auto-update.nix",
+      "line": 17
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"systemd timer for automatic updates\"",
+      "file": "nixos-modules/features/services/auto-update.nix",
+      "line": 20
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"GRUB bootloader configuration\"",
+      "file": "nixos-modules/features/storage/boot.nix",
+      "line": 15
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"EFI support\"",
+      "file": "nixos-modules/features/storage/boot.nix",
+      "line": 26
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"OS prober for dual-boot detection\"",
+      "file": "nixos-modules/features/storage/boot.nix",
+      "line": 30
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"EFI variable modification by bootloader\"",
+      "file": "nixos-modules/features/storage/boot.nix",
+      "line": 32
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"Tailscale VPN mesh networking\"",
+      "file": "nixos-modules/features/services/tailscale.nix",
+      "line": 14
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"hermes-agent AI assistant (Nous Research)\"",
+      "file": "home-modules/features/ai/hermes.nix",
+      "line": 56
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"sops-nix secrets management\"",
+      "file": "nixos-modules/features/security/secrets.nix",
+      "line": 28
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"baseline desktop security hardening\"",
+      "file": "nixos-modules/features/security/desktop-hardening.nix",
+      "line": 15
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"sudo password requirement (disables NOPASSWD)\"",
+      "file": "nixos-modules/features/security/desktop-hardening.nix",
+      "line": 24
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"polkit user action restrictions\"",
+      "file": "nixos-modules/features/security/desktop-hardening.nix",
+      "line": 30
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"kernel image protection (sets nohibernate; disables hibernation as a side effect)\"",
+      "file": "nixos-modules/features/security/desktop-hardening.nix",
+      "line": 36
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"basic firewall rules for desktop\"",
+      "file": "nixos-modules/features/security/desktop-hardening.nix",
+      "line": 42
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"i3 window manager with XFCE components\"",
+      "file": "nixos-modules/features/desktop/i3-xfce.nix",
+      "line": 15
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"LightDM display manager\"",
+      "file": "nixos-modules/features/desktop/i3-xfce.nix",
+      "line": 32
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"PipeWire audio (recommended over PulseAudio)\"",
+      "file": "nixos-modules/features/desktop/i3-xfce.nix",
+      "line": 53
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"JACK audio support\"",
+      "file": "nixos-modules/features/desktop/i3-xfce.nix",
+      "line": 57
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"Trezor hardware wallet daemon\"",
+      "file": "nixos-modules/features/services/trezord.nix",
+      "line": 14
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"ClamAV on-demand antivirus scanner\"",
+      "file": "nixos-modules/features/security/clamav.nix",
+      "line": 64
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"snapper BTRFS snapshot management\"",
+      "file": "nixos-modules/features/storage/snapper.nix",
+      "line": 31
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"automatic timeline snapshots (hourly); disabled by default to reduce I/O\"",
+      "file": "nixos-modules/features/storage/snapper.nix",
+      "line": 33
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"baseline server hardening (fail2ban, sysctl, nftables)\"",
+      "file": "nixos-modules/features/security/server-hardening.nix",
+      "line": 14
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"yazi file manager\"",
+      "file": "home-modules/features/terminal/yazi/default.nix",
+      "line": 25
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"swap configuration\"",
+      "file": "nixos-modules/features/storage/swap.nix",
+      "line": 14
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"alacritty terminal emulator\"",
+      "file": "home-modules/features/terminal/alacritty.nix",
+      "line": 15
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"system monitoring with Prometheus and exporters\"",
+      "file": "nixos-modules/features/services/monitoring.nix",
+      "line": 14
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"Grafana dashboards\"",
+      "file": "nixos-modules/features/services/monitoring.nix",
+      "line": 17
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"node_exporter for system metrics\"",
+      "file": "nixos-modules/features/services/monitoring.nix",
+      "line": 48
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"enhanced systemd journal logging configuration\"",
+      "file": "nixos-modules/features/services/monitoring.nix",
+      "line": 61
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"tmux terminal multiplexer\"",
+      "file": "home-modules/features/terminal/tmux/default.nix",
+      "line": 15
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"desktop session services (dunst, picom, flameshot, network-manager-applet)\"",
+      "file": "home-modules/features/desktop/services.nix",
+      "line": 18
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"nixvim editor\"",
+      "file": "home-modules/features/editor/nixvim/default.nix",
+      "line": 19
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"git version control + delta pager\"",
+      "file": "home-modules/features/shell/git.nix",
+      "line": 14
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"XFCE4 session configuration for i3-xfce setup\"",
+      "file": "home-modules/features/desktop/xfce-session.nix",
+      "line": 19
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"desktop lock screen via LightDM greeter\"",
+      "file": "home-modules/features/desktop/lock/default.nix",
+      "line": 21
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"i3 window manager with custom configuration\"",
+      "file": "home-modules/features/desktop/i3/default.nix",
+      "line": 25
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"laptop hardware support and optimizations\"",
+      "file": "nixos-modules/features/hardware/laptop.nix",
+      "line": 23
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"Bitwarden \u2014 rbw daemon + rofi-rbw picker + bw CLI\"",
+      "file": "home-modules/features/desktop/bitwarden.nix",
+      "line": 21
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"Rofi application launcher with custom themes\"",
+      "file": "home-modules/features/desktop/rofi/default.nix",
+      "line": 608
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"clipboard manager (clipmenu)\"",
+      "file": "home-modules/features/desktop/clipboard.nix",
+      "line": 13
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"vibe AI assistant devenv configuration\"",
+      "file": "home-modules/features/desktop/vibe/default.nix",
+      "line": 17
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"Firefox web browser with custom configuration\"",
+      "file": "home-modules/features/desktop/firefox.nix",
+      "line": 21
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"bat \u2014 cat replacement with syntax highlighting\"",
+      "file": "home-modules/features/shell/bat.nix",
+      "line": 16
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"eza \u2014 ls replacement with icons and git integration\"",
+      "file": "home-modules/features/shell/eza.nix",
+      "line": 16
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"FileZilla FTP/SFTP client configuration\"",
+      "file": "home-modules/features/desktop/filezilla.nix",
+      "line": 24
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"Polybar status bar with custom configuration\"",
+      "file": "home-modules/features/desktop/polybar/default.nix",
+      "line": 42
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"starship prompt\"",
+      "file": "home-modules/features/shell/starship.nix",
+      "line": 13
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"fish shell with modern tooling\"",
+      "file": "home-modules/features/shell/fish.nix",
+      "line": 21
+    },
+    {
+      "kind": "option",
+      "name": "lib.mkEnableOption \"qutebrowser web browser\"",
+      "file": "home-modules/features/desktop/qutebrowser.nix",
+      "line": 15
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/stylix-common.nix",
+      "line": 20
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/workspaces.nix",
+      "line": 10
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/workspaces.nix",
+      "line": 14
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/workspaces.nix",
+      "line": 18
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/palette.nix",
+      "line": 41
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/palette.nix",
+      "line": 48
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/palette.nix",
+      "line": 51
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/palette.nix",
+      "line": 56
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/palette.nix",
+      "line": 61
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/palette.nix",
+      "line": 66
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/palette.nix",
+      "line": 71
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/palette.nix",
+      "line": 76
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/palette.nix",
+      "line": 81
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/palette.nix",
+      "line": 86
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/palette.nix",
+      "line": 91
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/palette.nix",
+      "line": 96
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/palette.nix",
+      "line": 101
+    },
+    {
+      "kind": "mkOption",
+      "file": "shared-modules/palette.nix",
+      "line": 106
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/storage/btrfs.nix",
+      "line": 21
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/storage/btrfs.nix",
+      "line": 33
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/storage/btrfs.nix",
+      "line": 43
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/storage/swap.nix",
+      "line": 16
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/storage/swap.nix",
+      "line": 20
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/storage/swap.nix",
+      "line": 26
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/storage/swap.nix",
+      "line": 32
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/services/openssh.nix",
+      "line": 16
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/services/openssh.nix",
+      "line": 22
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/services/openssh.nix",
+      "line": 34
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/development/base.nix",
+      "line": 14
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/development/base.nix",
+      "line": 31
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/development/base.nix",
+      "line": 65
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/development/base.nix",
+      "line": 71
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/storage/boot.nix",
+      "line": 17
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/storage/boot.nix",
+      "line": 36
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/storage/boot.nix",
+      "line": 45
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/services/auto-update.nix",
+      "line": 22
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/services/auto-update.nix",
+      "line": 29
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/services/auto-update.nix",
+      "line": 35
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/services/auto-update.nix",
+      "line": 42
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/services/auto-update.nix",
+      "line": 48
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/services/auto-update.nix",
+      "line": 54
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/desktop/i3-xfce.nix",
+      "line": 17
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/desktop/i3-xfce.nix",
+      "line": 25
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/desktop/i3-xfce.nix",
+      "line": 36
+    },
+    {
+      "kind": "mkOption",
+      "file": "home-modules/profiles.nix",
+      "line": 120
+    },
+    {
+      "kind": "mkOption",
+      "file": "home-modules/profiles.nix",
+      "line": 125
+    },
+    {
+      "kind": "mkOption",
+      "file": "home-modules/profiles.nix",
+      "line": 130
+    },
+    {
+      "kind": "mkOption",
+      "file": "home-modules/profiles.nix",
+      "line": 135
+    },
+    {
+      "kind": "mkOption",
+      "file": "home-modules/profiles.nix",
+      "line": 140
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/services/tailscale.nix",
+      "line": 16
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/storage/snapper.nix",
+      "line": 35
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/storage/snapper.nix",
+      "line": 39
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/storage/snapper.nix",
+      "line": 45
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/storage/snapper.nix",
+      "line": 51
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/storage/snapper.nix",
+      "line": 57
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/storage/snapper.nix",
+      "line": 63
+    },
+    {
+      "kind": "mkOption",
+      "file": "home-modules/core/devices.nix",
+      "line": 10
+    },
+    {
+      "kind": "mkOption",
+      "file": "home-modules/core/devices.nix",
+      "line": 16
+    },
+    {
+      "kind": "mkOption",
+      "file": "home-modules/core/devices.nix",
+      "line": 22
+    },
+    {
+      "kind": "mkOption",
+      "file": "home-modules/core/devices.nix",
+      "line": 28
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/security/server-hardening.nix",
+      "line": 16
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/security/server-hardening.nix",
+      "line": 22
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/services/monitoring.nix",
+      "line": 19
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/services/monitoring.nix",
+      "line": 25
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/services/monitoring.nix",
+      "line": 33
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/services/monitoring.nix",
+      "line": 39
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/services/monitoring.nix",
+      "line": 52
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/services/monitoring.nix",
+      "line": 63
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/services/monitoring.nix",
+      "line": 69
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/security/desktop-hardening.nix",
+      "line": 18
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/security/desktop-hardening.nix",
+      "line": 46
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/security/desktop-hardening.nix",
+      "line": 52
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/security/clamav.nix",
+      "line": 65
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/hardware/laptop.nix",
+      "line": 14
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/hardware/laptop.nix",
+      "line": 54
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/hardware/laptop.nix",
+      "line": 77
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/hardware/laptop.nix",
+      "line": 88
+    },
+    {
+      "kind": "mkOption",
+      "file": "nixos-modules/features/hardware/laptop.nix",
+      "line": 98
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/theme/stylix.nix",
+      "line": 39
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/storage/btrfs.nix",
+      "line": 51
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/storage/btrfs.nix",
+      "line": 53
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/storage/btrfs.nix",
+      "line": 59
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/development/base.nix",
+      "line": 79
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/development/base.nix",
+      "line": 82
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/development/base.nix",
+      "line": 89
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/development/base.nix",
+      "line": 119
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/development/base.nix",
+      "line": 126
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/security/desktop-hardening.nix",
+      "line": 60
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/security/desktop-hardening.nix",
+      "line": 64
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/security/desktop-hardening.nix",
+      "line": 77
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/security/desktop-hardening.nix",
+      "line": 123
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/security/desktop-hardening.nix",
+      "line": 203
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/storage/boot.nix",
+      "line": 56
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/storage/boot.nix",
+      "line": 61
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/desktop/i3-xfce.nix",
+      "line": 63
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/desktop/i3-xfce.nix",
+      "line": 76
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/desktop/i3-xfce.nix",
+      "line": 101
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/security/secrets.nix",
+      "line": 31
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/ai/hermes.nix",
+      "line": 59
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/security/clamav.nix",
+      "line": 73
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/security/server-hardening.nix",
+      "line": 32
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/security/server-hardening.nix",
+      "line": 53
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/services/trezord.nix",
+      "line": 17
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/storage/snapper.nix",
+      "line": 86
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/storage/swap.nix",
+      "line": 52
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/services/openssh.nix",
+      "line": 41
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/core/secrets.nix",
+      "line": 122
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/services/tailscale.nix",
+      "line": 28
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/terminal/yazi/default.nix",
+      "line": 28
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/editor/nixvim/default.nix",
+      "line": 33
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/shell/git.nix",
+      "line": 17
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/shell/eza.nix",
+      "line": 18
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/services/auto-update.nix",
+      "line": 61
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/services/auto-update.nix",
+      "line": 65
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/services/auto-update.nix",
+      "line": 118
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/terminal/alacritty.nix",
+      "line": 18
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/hardware/laptop.nix",
+      "line": 110
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/hardware/laptop.nix",
+      "line": 113
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/hardware/laptop.nix",
+      "line": 129
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/hardware/laptop.nix",
+      "line": 151
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/hardware/laptop.nix",
+      "line": 154
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/hardware/laptop.nix",
+      "line": 166
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/hardware/laptop.nix",
+      "line": 173
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/hardware/laptop.nix",
+      "line": 179
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/hardware/laptop.nix",
+      "line": 184
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/shell/bat.nix",
+      "line": 18
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/desktop/services.nix",
+      "line": 21
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/desktop/xfce-session.nix",
+      "line": 22
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/terminal/tmux/default.nix",
+      "line": 24
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/desktop/lock/default.nix",
+      "line": 24
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/services/monitoring.nix",
+      "line": 79
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/services/monitoring.nix",
+      "line": 86
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/services/monitoring.nix",
+      "line": 92
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/services/monitoring.nix",
+      "line": 129
+    },
+    {
+      "kind": "mkIf",
+      "file": "nixos-modules/features/services/monitoring.nix",
+      "line": 164
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/desktop/i3/default.nix",
+      "line": 28
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/shell/starship.nix",
+      "line": 16
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/desktop/clipboard.nix",
+      "line": 16
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/desktop/rofi/default.nix",
+      "line": 611
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/shell/fish.nix",
+      "line": 24
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/desktop/bitwarden.nix",
+      "line": 23
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/desktop/vibe/default.nix",
+      "line": 20
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/desktop/polybar/default.nix",
+      "line": 45
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/desktop/filezilla.nix",
+      "line": 26
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/desktop/rofi/scripts.nix",
+      "line": 73
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/desktop/firefox.nix",
+      "line": 24
+    },
+    {
+      "kind": "mkIf",
+      "file": "home-modules/features/desktop/qutebrowser.nix",
+      "line": 18
+    }
+  ]
+}
