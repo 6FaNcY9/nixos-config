@@ -33,7 +33,7 @@ in
     assertions = [
       {
         assertion = config.features.services.openssh.enable;
-        message = "features.security.server-hardening requires features.services.openssh.enable = true (fail2ban sshd jail needs sshd running)";
+        message = "features.security.server-hardening requires features.services.openssh.enable = true (fail2ban sshd jail needs sshd running). Add `features.services.openssh.enable = true` to your host configuration.";
       }
     ];
 

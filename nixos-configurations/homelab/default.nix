@@ -23,7 +23,7 @@ let
   mainDisk = "/dev/mapper/cryptroot";
 
   cfgLib = import ../../lib { inherit lib; };
-  inherit (cfgLib) mkBtrfsOpts;
+  inherit (cfgLib) mkBtrfsMounts;
 in
 {
   imports = [
@@ -71,6 +71,7 @@ in
       boot = {
         enable = true;
         bootloader = "grub";
+        kernelPackage = "latest";
         # Detect Windows 11 partition for dual-boot GRUB menu.
         useOSProber = true;
       };
@@ -134,46 +135,19 @@ in
   };
 
   # ================================================================
-  # Filesystem mounts — optimized BTRFS options override hardware-configuration.nix.
+  # Filesystem mounts — optimized BTRFS options for all subvolumes.
+  # mkBtrfsMounts applies mkForce so these win over hardware-configuration.nix stubs.
   # All subvolumes are on /dev/mapper/cryptroot (unlocked LUKS device).
   # ================================================================
-  fileSystems = {
-    "/" = {
-      device = mainDisk;
-      fsType = "btrfs";
-      options = lib.mkForce (mkBtrfsOpts "@");
-    };
-    "/home" = {
-      device = mainDisk;
-      fsType = "btrfs";
-      options = lib.mkForce (mkBtrfsOpts "@home");
-    };
-    "/nix" = {
-      device = mainDisk;
-      fsType = "btrfs";
-      options = lib.mkForce (mkBtrfsOpts "@nix");
-    };
-    "/var" = {
-      device = mainDisk;
-      fsType = "btrfs";
-      options = lib.mkForce (mkBtrfsOpts "@var");
-    };
-    "/swap" = {
-      device = mainDisk;
-      fsType = "btrfs";
-      options = lib.mkForce (mkBtrfsOpts "@swap");
-    };
-    "/.snapshots" = {
-      device = mainDisk;
-      fsType = "btrfs";
-      options = lib.mkForce (mkBtrfsOpts "@/.snapshots");
-    };
-    "/home/.snapshots" = {
-      device = mainDisk;
-      fsType = "btrfs";
-      options = lib.mkForce (mkBtrfsOpts "@home/.snapshots");
-    };
-  };
+  fileSystems = mkBtrfsMounts mainDisk [
+    "@"
+    "@home"
+    "@nix"
+    "@var"
+    "@swap"
+    "@/.snapshots"
+    "@home/.snapshots"
+  ];
 
   # ================================================================
   # SSH authorised keys
@@ -187,4 +161,19 @@ in
   users.users.${username}.openssh.authorizedKeys.keys = [
     # "ssh-ed25519 AAAA... vino@bandit"
   ];
+
+  # ================================================================
+  # Pre-deployment safety checks
+  # ================================================================
+  assertions = [
+    {
+      # Catches a forgotten UUID replacement before nixos-install, not at runtime.
+      assertion = !lib.hasPrefix "REPLACE-WITH-" config.boot.initrd.luks.devices.cryptroot.device;
+      message = "homelab: REPLACE-WITH-LUKS-UUID is still a placeholder. Replace it in hardware-configuration.nix with the actual LUKS partition UUID (see docs/homelab-partition-guide.md).";
+    }
+  ];
+
+  warnings =
+    lib.optional (config.users.users.${username}.openssh.authorizedKeys.keys == [ ])
+      "homelab: no SSH authorized_keys configured — you will be locked out after first boot. Add your public key to users.users.\${username}.openssh.authorizedKeys.keys.";
 }
