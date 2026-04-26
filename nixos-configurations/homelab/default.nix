@@ -1,14 +1,16 @@
 # NixOS configuration for host: homelab
 #
 # Hardware: Intel i9 + RTX 4090 + 4TB NVMe + 64GB DDR5
-# Storage:  BTRFS with subvolumes (@, @home, @nix, @var, @swap), dual-boot Windows 11
+# Storage:  1TB Windows 11 (dual-boot) + 3TB NixOS (LUKS2+BTRFS)
+#           Subvolumes: @, @home, @nix, @var, @swap, @/.snapshots, @home/.snapshots
 # Features: Headless server — SSH + Tailscale + Podman
 #
 # Before first deployment:
-#   1. Run nixos-generate-config on the target and update hardware-configuration.nix
-#   2. Replace REPLACE-WITH-BTRFS-UUID in hardware-configuration.nix and mainDisk below
-#   3. Add SSH public key to authorizedKeys (see TODO below)
-#   4. Generate homelab age key, add to .sops.yaml, re-encrypt secrets, then set secrets.enable = true
+#   1. Resize Windows to ~1TB and set up LUKS+BTRFS on the rest — see docs/homelab-partition-guide.md
+#   2. Replace REPLACE-WITH-LUKS-UUID in hardware-configuration.nix (the encrypted NixOS partition)
+#   3. Replace REPLACE-WITH-EFI-UUID in hardware-configuration.nix (the NixOS EFI partition)
+#   4. Add SSH public key to authorizedKeys (see TODO below)
+#   5. Generate homelab age key, add to .sops.yaml, re-encrypt secrets, then set secrets.enable = true
 {
   inputs,
   lib,
@@ -16,9 +18,9 @@
   ...
 }:
 let
-  # UUID of the BTRFS partition (all subvolumes share one partition).
-  # Update after running nixos-generate-config on the target.
-  mainDisk = "/dev/disk/by-uuid/REPLACE-WITH-BTRFS-UUID";
+  # All BTRFS subvolumes live on the unlocked LUKS device.
+  # The LUKS partition UUID lives in hardware-configuration.nix under boot.initrd.luks.devices.
+  mainDisk = "/dev/mapper/cryptroot";
 
   cfgLib = import ../../lib { inherit lib; };
   inherit (cfgLib) mkBtrfsOpts;
@@ -133,6 +135,7 @@ in
 
   # ================================================================
   # Filesystem mounts — optimized BTRFS options override hardware-configuration.nix.
+  # All subvolumes are on /dev/mapper/cryptroot (unlocked LUKS device).
   # ================================================================
   fileSystems = {
     "/" = {
@@ -154,6 +157,21 @@ in
       device = mainDisk;
       fsType = "btrfs";
       options = lib.mkForce (mkBtrfsOpts "@var");
+    };
+    "/swap" = {
+      device = mainDisk;
+      fsType = "btrfs";
+      options = lib.mkForce (mkBtrfsOpts "@swap");
+    };
+    "/.snapshots" = {
+      device = mainDisk;
+      fsType = "btrfs";
+      options = lib.mkForce (mkBtrfsOpts "@/.snapshots");
+    };
+    "/home/.snapshots" = {
+      device = mainDisk;
+      fsType = "btrfs";
+      options = lib.mkForce (mkBtrfsOpts "@home/.snapshots");
     };
   };
 
