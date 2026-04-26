@@ -166,9 +166,11 @@ in
   # Pre-deployment reminders (warnings, not assertions — must not break nix flake check)
   # ================================================================
   warnings =
-    lib.optionals (lib.hasPrefix "REPLACE-WITH-" config.boot.initrd.luks.devices.cryptroot.device) [
-      "homelab: REPLACE-WITH-LUKS-UUID is still a placeholder in hardware-configuration.nix. Replace it with the actual LUKS partition UUID before deploying (see docs/homelab-partition-guide.md)."
-    ]
+    lib.optionals
+      (lib.hasPrefix "REPLACE-WITH-" config.boot.initrd.luks.devices.cryptroot.device)
+      [
+        "homelab: REPLACE-WITH-LUKS-UUID is still a placeholder in hardware-configuration.nix. Replace it with the actual LUKS partition UUID before deploying (see docs/homelab-partition-guide.md)."
+      ]
     ++ lib.optional (config.users.users.${username}.openssh.authorizedKeys.keys == [ ])
       "homelab: no SSH authorized_keys configured — you will be locked out after first boot. Add your public key to users.users.${username}.openssh.authorizedKeys.keys.";
 }
