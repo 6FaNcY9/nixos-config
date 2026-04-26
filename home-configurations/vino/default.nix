@@ -75,30 +75,30 @@ in
   # Stylix maps base05 (warm beige) as selected-text on base0D (muted teal) — both
   # mid-brightness, low contrast. Override: base00 (very dark) text on base0D (teal)
   # gives a strong contrast ratio and reads cleanly in Thunar, Mousepad, etc.
-  gtk.gtk3.extraCss = with config.lib.stylix.colors.withHashtag; ''
+  gtk.gtk3.extraCss = ''
     *:selected,
     *:selected:focus {
-      color: ${base00};
-      background-color: ${base0D};
+      color: ${config.lib.stylix.colors.withHashtag.base00};
+      background-color: ${config.lib.stylix.colors.withHashtag.base0D};
     }
     .view:selected,
     .view:selected:focus,
     .view row:selected,
     .view row:selected:focus {
-      color: ${base00};
-      background-color: ${base0D};
+      color: ${config.lib.stylix.colors.withHashtag.base00};
+      background-color: ${config.lib.stylix.colors.withHashtag.base0D};
     }
     row:selected label,
     row:selected:focus label {
-      color: ${base00};
+      color: ${config.lib.stylix.colors.withHashtag.base00};
     }
   '';
 
-  gtk.gtk4.extraCss = with config.lib.stylix.colors.withHashtag; ''
+  gtk.gtk4.extraCss = ''
     *:selected,
     *:selected:focus {
-      color: ${base00};
-      background-color: ${base0D};
+      color: ${config.lib.stylix.colors.withHashtag.base00};
+      background-color: ${config.lib.stylix.colors.withHashtag.base0D};
     }
   '';
 
