@@ -14,21 +14,6 @@ let
     text = builtins.readFile ./scripts/power-menu.sh;
   };
 
-  networkMenu = pkgs.writeShellApplication {
-    name = "rofi-network-menu";
-    runtimeInputs = [
-      pkgs.coreutils
-      pkgs.gawk
-      pkgs.gnugrep
-      pkgs.iproute2
-      pkgs.libnotify
-      pkgs.networkmanager
-      pkgs.networkmanagerapplet
-      pkgs.rofi
-    ];
-    text = builtins.readFile ./scripts/network-menu.sh;
-  };
-
   clipboardMenu = pkgs.writeShellApplication {
     name = "rofi-clipboard-menu";
     runtimeInputs = [
@@ -75,14 +60,12 @@ in
       audioSwitcher
       clipboardMenu
       dropdownMenu
-      networkMenu
       powerMenu
     ];
 
     services.polybar.settings = {
       "module/menu".click-left = "exec ${dropdownMenu}/bin/rofi-dropdown-menu &";
       "module/power".click-left = "exec ${powerMenu}/bin/rofi-power-menu";
-      "module/network".click-left = "exec ${networkMenu}/bin/rofi-network-menu &";
     };
 
     xsession.windowManager.i3.config.keybindings =
@@ -92,7 +75,6 @@ in
       lib.mkOptionDefault {
         "${mod}+Shift+e" = "exec ${powerMenu}/bin/rofi-power-menu";
         "${mod}+Shift+v" = "exec ${clipboardMenu}/bin/rofi-clipboard-menu";
-        "${mod}+Shift+n" = "exec ${networkMenu}/bin/rofi-network-menu";
         "${mod}+Shift+s" = "exec ${audioSwitcher}/bin/rofi-audio-switcher";
       };
   };
