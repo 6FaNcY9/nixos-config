@@ -94,6 +94,12 @@
         };
       }
       {
+        command = "floating enable, resize set 900 600";
+        criteria = {
+          class = "copyq";
+        };
+      }
+      {
         command = "floating enable, resize set 800 600";
         criteria = {
           class = "Thunar";

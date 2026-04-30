@@ -14,15 +14,6 @@ let
     text = builtins.readFile ./scripts/power-menu.sh;
   };
 
-  clipboardMenu = pkgs.writeShellApplication {
-    name = "rofi-clipboard-menu";
-    runtimeInputs = [
-      pkgs.clipmenu
-      pkgs.rofi
-    ];
-    text = builtins.readFile ./scripts/clipboard-menu.sh;
-  };
-
   audioSwitcher = pkgs.writeShellApplication {
     name = "rofi-audio-switcher";
     runtimeInputs = [
@@ -58,7 +49,6 @@ in
   config = lib.mkIf cfg.enable {
     home.packages = [
       audioSwitcher
-      clipboardMenu
       dropdownMenu
       powerMenu
     ];
@@ -74,7 +64,6 @@ in
       in
       lib.mkOptionDefault {
         "${mod}+Shift+e" = "exec ${powerMenu}/bin/rofi-power-menu";
-        "${mod}+Shift+v" = "exec ${clipboardMenu}/bin/rofi-clipboard-menu";
         "${mod}+Shift+s" = "exec ${audioSwitcher}/bin/rofi-audio-switcher";
       };
   };
