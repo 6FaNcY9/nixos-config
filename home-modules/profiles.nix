@@ -127,7 +127,7 @@ in
       type = lib.types.bool;
       default = true;
       description = "Enable desktop apps package set.";
-    }; # GUI apps: alacritty, rofi, thunar, btop, dunst, flameshot, picom, etc.
+    }; # GUI apps: rofi, thunar, btop, autotiling, feh, copyq, chromium, etc.
     extras = lib.mkOption {
       type = lib.types.bool;
       default = false;
