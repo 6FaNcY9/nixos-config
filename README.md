@@ -42,7 +42,7 @@ This configuration uses explicit feature modules for discoverability and clear d
 ```bash
 nix repl
 > :lf .
-> :t config.features  # Shows all available features
+> :t nixosConfigurations.bandit.config.features  # Shows all available features
 ```
 
 **Enable features** in `nixos-configurations/<host>/default.nix`:
@@ -90,7 +90,6 @@ Home Manager shared args:
   - `c` – raw base16 colors (`c.base00`–`c.base0F`)
   - `palette` – semantic aliases: `accent`, `accent2`, `warn`, `danger`, `muted`, `bg`, `bgAlt`, `text`, `cream`, `orange`, `aqua`, `purple`
   - `stylixFonts` – active Stylix font names
-  - `i3Pkg`, `codexPkg`, `opencodePkg`, `mistralVibePkg` – pinned package refs
   - `workspaces` – shared workspace list
   - `hostname` – current host name
   - `cfgLib` – pure helper functions from `lib/`
@@ -156,11 +155,11 @@ Toggle package groups in `home-configurations/vino/default.nix` (or a host-speci
 
 ## Updates (Optional)
 - Update all inputs: `nix flake update`
-- Update one input: `nix flake lock --update-input nixpkgs`
+- Update one input: `nix flake update nixpkgs`
 
 Notes
 - `allowUnfree = true` is enabled for packages like VS Code.
-- Stylix auto-enables Gruvbox; Home Manager targets follow system theme (see `nixos-modules/stylix-nixos.nix`).
+- Stylix auto-enables Gruvbox; Home Manager targets follow system theme (see `nixos-modules/features/theme/stylix.nix`).
 - Hibernate/suspend rely on the swap device/offset in `nixos-configurations/<host>/default.nix`—keep in sync if storage changes.
 - If you want to suppress the dirty-tree warning for QA/commit, use the fish abbreviations `qa` / `gcommit` (they pass `--option warn-dirty false`).
 - Bluetooth is only enabled when `features.hardware.laptop.bluetooth.enable = true` (defaults to off on new hosts).

@@ -1,5 +1,5 @@
 # Desktop feature module - Aggregates all desktop-related configuration
-# Imports: services, clipboard, screen lock, qutebrowser, Firefox, XFCE session, i3, polybar, rofi, FileZilla, Bitwarden
+# Imports: services, clipboard, screen lock, qutebrowser, Firefox, XFCE session, i3, polybar, rofi, FileZilla
 
 {
   imports = [
@@ -14,7 +14,6 @@
     ./rofi
     ./vibe
     ./filezilla.nix
-    ./bitwarden.nix
     ./notepad.nix
   ];
 }

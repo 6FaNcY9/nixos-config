@@ -48,7 +48,6 @@ _: {
       rofi.enable = true;
       vibe.enable = true;
       filezilla.enable = true;
-      bitwarden.enable = true;
       notepad.enable = true;
     };
     ai.hermes.enable = true;

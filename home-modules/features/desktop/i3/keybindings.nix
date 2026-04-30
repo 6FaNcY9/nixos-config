@@ -63,8 +63,6 @@ let
     "${mod}+Return" = "exec alacritty";
     "${mod}+Shift+w" = "exec qutebrowser";
     "${mod}+d" = "exec rofi -show drun";
-    "${mod}+p" = "exec rofi-rbw"; # Bitwarden credential picker (autotype)
-    "${mod}+Shift+b" = "exec qutebrowser vault.bitwarden.com"; # Bitwarden web vault
     "${mod}+Shift+q" = "kill";
     "${mod}+Shift+c" = "reload";
     "${mod}+Shift+r" = "restart";
