@@ -1,4 +1,4 @@
-# Rofi menu scripts (power, network, clipboard, audio, dropdown).
+# Rofi menu scripts (power, clipboard, audio, dropdown).
 {
   config,
   pkgs,
