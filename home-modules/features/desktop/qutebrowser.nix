@@ -226,9 +226,6 @@ in
 
         config.set('content.cookies.accept', 'all', 'https://chat.mistral.ai') # allow session cookies for chat.mistral.ai
         config.set('content.canvas_reading', True, 'https://chat.mistral.ai') # allow canvas reading for chat.mistral.ai
-        config.set('content.cookies.accept', 'all', 'https://vault.bitwarden.com') # allow session cookies for Bitwarden
-        config.set('content.cookies.accept', 'all', 'https://bitwarden.com') # allow session cookies for Bitwarden
-
         # --- UPC router page: disable dark mode inversion (light UI looks fine as-is) ---
         config.set('colors.webpage.darkmode.enabled', False, 'http://192.168.0.1')
       '';

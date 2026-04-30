@@ -118,21 +118,6 @@ in
       polkit.enable = true; # Policy kit for privilege escalation (mounting drives, NetworkManager, etc.)
       rtkit.enable = true; # RealtimeKit for audio - grants realtime scheduling to audio processes
       pam.services.lightdm.startSession = true;
-      # Add pam_keyinit.so to the login session stack so every login (including
-      # LightDM, which does `session include login`) gets a proper per-user
-      # kernel session keyring. Without this, the session keyring is anonymous
-      # (uid=0): child processes cannot "possess" keys in @u and get only
-      # view-only (perm 0x01) instead of the possessor's full 0x3f, causing
-      # `keyctl pipe` / `keyctl timeout` to fail with EACCES.
-      # Required by qute-bitwarden to cache the Bitwarden session key.
-      # The `revoke` flag clears all session-keyring keys on logout.
-      pam.services.login.rules.session.keyinit = {
-        modulePath = "${pkgs.linux-pam}/lib/security/pam_keyinit.so";
-        control = "optional";
-        args = [ "revoke" ];
-        # Run immediately after pam_unix establishes the user identity.
-        order = config.security.pam.services.login.rules.session.unix.order + 10;
-      };
     };
 
     # Warnings
