@@ -86,7 +86,6 @@ let
   ];
 
   desktopPkgs = [
-    pkgs.alacritty
     pkgs.autotiling
     pkgs.rofi
     pkgs.thunar # Moved to top-level in unstable
@@ -95,9 +94,6 @@ let
     # applets managed by HM services (services.network-manager-applet, services.blueman-applet)
     pkgs.btop
     pkgs.brightnessctl
-    pkgs.dunst
-    pkgs.flameshot
-    pkgs.picom
     pkgs.playerctl
     pkgs.polkit_gnome
     pkgs.feh
