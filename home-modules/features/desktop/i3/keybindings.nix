@@ -60,7 +60,7 @@ let
     "${mod}+Shift+m" = "scratchpad show";
 
     "${mod}+n" = "exec joplin-desktop";
-    "${mod}+Shift+v" = "exec copyq toggle";
+    "${mod}+Shift+v" = "exec --no-startup-id copyq toggle";
     "${mod}+Return" = "exec alacritty";
     "${mod}+Shift+w" = "exec qutebrowser";
     "${mod}+d" = "exec rofi -show drun";
