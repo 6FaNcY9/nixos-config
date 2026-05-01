@@ -1,5 +1,5 @@
 # Core: Font configuration
-# Always enabled (no option)
+# Core fontconfig settings are always enabled; desktop font packages are gated on i3-xfce.
 {
   config,
   lib,
