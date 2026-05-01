@@ -39,6 +39,14 @@
   display: none !important;
 }
 
+/* "Manage Bookmarks" link in bookmarks toolbar overflow */
+#BMB_bookmarksShowAll,
+.BMB_bookmarksShowAll,
+#PlacesChevronPopup menuitem[oncommand*="showAllBookmarks"],
+#bookmarksShowAll {
+  display: none !important;
+}
+
 /* URL bar icons */
 #identity-permission-box,
 #star-button-box,
