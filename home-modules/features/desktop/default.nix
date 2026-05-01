@@ -1,5 +1,5 @@
 # Desktop feature module - Aggregates all desktop-related configuration
-# Imports: services, screen lock, qutebrowser, Firefox, XFCE session, i3, polybar, rofi, FileZilla
+# Imports: services, screen lock, qutebrowser, Firefox, XFCE session, i3, polybar, rofi, vibe, FileZilla, notepad
 
 {
   imports = [

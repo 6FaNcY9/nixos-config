@@ -2,7 +2,10 @@
 #
 # Provides helper functions for workspaces, validation, devshells, colors, options, and polybar.
 
-{ lib }:
+{
+  lib,
+  pkgs ? null,
+}:
 let
   # mkWorkspaceName :: { number :: Int, icon :: Str } -> Str
   # Format workspace as "number:icon" (or just "number" if icon is empty).
@@ -109,6 +112,19 @@ let
       "label-${state}-padding-right" = 1;
     };
 
+  # mkPolybarIcon :: Int -> Str
+  # Generate a Polybar icon glyph from a Font Awesome / PUA codepoint via Python chr().
+  mkPolybarIcon =
+    codepoint:
+    assert pkgs != null || throw "mkPolybarIcon requires pkgs to be passed when importing ../../lib";
+    builtins.readFile (
+      pkgs.runCommand "polybar-icon-${toString codepoint}" { nativeBuildInputs = [ pkgs.python3 ]; } ''
+        python - <<'PY' > "$out"
+        print(chr(${toString codepoint}), end="")
+        PY
+      ''
+    );
+
   # mkBtrfsOpts :: Str -> [Str]
   # Generate BTRFS mount options optimized for SSD + battery life.
   # Subvolume, noatime, nodiratime, zstd:1 compression, space_cache=v2, async TRIM.
@@ -150,7 +166,7 @@ in
   inherit mkSecretValidation;
 
   # Polybar helpers
-  inherit mkPolybarTwoTone mkPolybarTwoToneState;
+  inherit mkPolybarIcon mkPolybarTwoTone mkPolybarTwoToneState;
 
   # Filesystem helpers
   inherit mkBtrfsOpts;

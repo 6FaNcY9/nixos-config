@@ -4,13 +4,11 @@
 {
   imports = [
     ./nix.nix
-    ./memory.nix
     ./oomd.nix
     ./networking.nix
     ./users.nix
     ./programs.nix
     ./packages.nix
     ./fonts.nix
-    ./system.nix
   ];
 }

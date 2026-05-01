@@ -33,7 +33,9 @@ in
       c = config.theme.colors;
       inherit stylixFonts;
       hostname = hostName;
-      cfgLib = import ../../lib { inherit lib; };
+      cfgLib = import ../../lib {
+        inherit lib pkgs;
+      };
     };
 
   # ============================================================

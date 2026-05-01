@@ -29,6 +29,7 @@ in
   ];
 
   networking.hostName = "bandit";
+  system.stateVersion = "25.11";
 
   # Feature modules
   features = {

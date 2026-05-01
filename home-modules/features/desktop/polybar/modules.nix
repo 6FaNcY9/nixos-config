@@ -8,34 +8,25 @@
   ...
 }:
 let
-  inherit (cfgLib) mkPolybarTwoTone mkPolybarTwoToneState;
-  mkIcon =
-    codepoint:
-    builtins.readFile (
-      pkgs.runCommand "polybar-icon-${toString codepoint}" { nativeBuildInputs = [ pkgs.python3 ]; } ''
-                python - <<'PY' > "$out"
-        print(chr(${toString codepoint}), end="")
-        PY
-      ''
-    );
+  inherit (cfgLib) mkPolybarIcon mkPolybarTwoTone mkPolybarTwoToneState;
   icons = {
-    xwindow = mkIcon 983523;
-    time = mkIcon 983277;
-    host = mkIcon 989770;
-    cpu = mkIcon 62652;
-    temp = mkIcon 61227;
-    memory = mkIcon 983899;
-    volume = mkIcon 984446;
-    muted = mkIcon 984449;
-    power = mkIcon 984101;
-    autotiling = mkIcon 984429;
-    networkConnected = mkIcon 984489;
-    networkDisconnected = mkIcon 984490;
-    lanConnected = mkIcon 983552;
-    lanDisconnected = mkIcon 983554;
-    batteryCharging = mkIcon 983172;
-    batteryDischarging = mkIcon 983182;
-    batteryFull = mkIcon 983161;
+    xwindow = mkPolybarIcon 983523;
+    time = mkPolybarIcon 983277;
+    host = mkPolybarIcon 989770;
+    cpu = mkPolybarIcon 62652;
+    temp = mkPolybarIcon 61227;
+    memory = mkPolybarIcon 983899;
+    volume = mkPolybarIcon 984446;
+    muted = mkPolybarIcon 984449;
+    power = mkPolybarIcon 984101;
+    autotiling = mkPolybarIcon 984429;
+    networkConnected = mkPolybarIcon 984489;
+    networkDisconnected = mkPolybarIcon 984490;
+    lanConnected = mkPolybarIcon 983552;
+    lanDisconnected = mkPolybarIcon 983554;
+    batteryCharging = mkPolybarIcon 983172;
+    batteryDischarging = mkPolybarIcon 983182;
+    batteryFull = mkPolybarIcon 983161;
   };
   hasIcons = builtins.any (workspace: workspace.icon != "") workspaces;
   wsIconAttrs = lib.listToAttrs (

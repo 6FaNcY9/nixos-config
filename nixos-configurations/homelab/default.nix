@@ -30,6 +30,7 @@ in
   ];
 
   networking.hostName = "homelab";
+  system.stateVersion = "25.11";
 
   # Home Manager imports Stylix explicitly in home-modules/default.nix.
   # Disable Stylix's automatic HM injection to avoid double-importing the module.
