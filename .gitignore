@@ -19,6 +19,7 @@
 /CLAUDE.md
 /agent.md
 /.pre-commit-config.yaml
+.repo-map.json
 
 # -----------------------------
 # AI Tool Directories
