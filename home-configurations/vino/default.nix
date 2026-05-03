@@ -72,14 +72,14 @@ in
   };
 
   # Keep GTK4 using the same stylix-managed theme (new HM default in 26.05+ is null).
-  # extraCss: Stylix maps base0D (teal) as selection bg — too bright for a dark theme.
-  # Redefine the selection bg to base02 (dark grey) and fg to cream, with !important
-  # to override Stylix's generated stylesheet specificity.
+  # extraCss: Stylix sets accent_bg_color=base0D (teal) as the selection background —
+  # too bright for a dark theme. Redefine accent_bg/fg to base02+cream at end of
+  # stylesheet (later @define-color wins) and enforce via !important as fallback.
   gtk =
     let
       selectionCss = ''
-        @define-color theme_selected_bg_color ${config.theme.colors.base02};
-        @define-color theme_selected_fg_color ${config.theme.palette.cream};
+        @define-color accent_bg_color ${config.theme.colors.base02};
+        @define-color accent_fg_color ${config.theme.palette.cream};
         *:selected, *:selected * {
           background-color: ${config.theme.colors.base02} !important;
           color: ${config.theme.palette.cream} !important;
