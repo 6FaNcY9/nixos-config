@@ -1,0 +1,12 @@
+# .claudeignore
+result
+result-*
+.direnv/
+.devenv/
+devenv.lock
+flake.lock
+secrets/
+.git/
+*.age-key
+data/
+.worktrees/
