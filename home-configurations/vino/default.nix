@@ -71,8 +71,14 @@ in
     };
   };
 
-  # Keep GTK4 using the same stylix-managed theme (new HM default in 26.05+ is null)
-  gtk.gtk4.theme = config.gtk.theme;
+  # Keep GTK4 using the same stylix-managed theme (new HM default in 26.05+ is null).
+  # extraCss: Stylix pairs base0D (teal) selection bg with base00 (dark) text — poor
+  # contrast in a dark theme. Force selected text to cream (base07) globally.
+  gtk = {
+    gtk4.theme = config.gtk.theme;
+    gtk3.extraCss = "*:selected, *:selected * { color: ${config.theme.palette.cream}; }";
+    gtk4.extraCss = "*:selected, *:selected * { color: ${config.theme.palette.cream}; }";
+  };
 
   # Validation warnings
   warnings = lib.optionals (config.programs.git.settings.commit.gpgsign or false) [
