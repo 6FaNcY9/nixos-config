@@ -4,6 +4,7 @@
 {
   lib,
   config,
+  pkgs,
   ...
 }:
 let
@@ -49,6 +50,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    environment.systemPackages = [ pkgs.btrfs-progs ];
+
     # SSD maintenance via fstrim
     services.fstrim = lib.mkIf cfg.fstrim.enable {
       enable = true;

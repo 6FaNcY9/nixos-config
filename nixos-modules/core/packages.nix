@@ -7,7 +7,6 @@
 }:
 {
   environment.systemPackages = [
-    pkgs.btrfs-progs
     pkgs.cachix # Binary cache management
     pkgs.curl
     pkgs.efibootmgr
