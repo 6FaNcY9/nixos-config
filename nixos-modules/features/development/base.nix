@@ -5,6 +5,7 @@
   lib,
   config,
   pkgs,
+  username,
   ...
 }:
 let
@@ -61,6 +62,10 @@ in
       enable = mkBool true "Enable nix-ld for running unpatched ELF binaries (Node downloads, Python wheels, VSCode extensions, etc.)";
     };
 
+    wireshark = {
+      enable = mkBool false "Enable Wireshark network analyzer (Qt) with packet capture group";
+    };
+
     fileWatchers = {
       maxUserWatches = lib.mkOption {
         type = lib.types.int;
@@ -115,50 +120,58 @@ in
       "fs.inotify.max_user_instances" = cfg.fileWatchers.maxUserInstances;
     };
 
-    # direnv integration
-    programs.direnv = lib.mkIf cfg.direnv.enable {
-      enable = true;
-      nix-direnv.enable = cfg.direnv.enableNixDirenv;
+    programs = {
+      direnv = lib.mkIf cfg.direnv.enable {
+        enable = true;
+        nix-direnv.enable = cfg.direnv.enableNixDirenv;
+      };
+
+      # nix-ld: shim layer so downloaded unpatched binaries can find glibc/libs.
+      # Full library list covers both core system needs and common desktop/runtime deps.
+      nix-ld = lib.mkIf cfg.nixLd.enable {
+        enable = true;
+        libraries =
+          let
+            p = pkgs;
+          in
+          [
+            # Core/system libs (NixOS wiki baseline)
+            p.zlib
+            p.zstd
+            p.stdenv.cc.cc
+            p.curl
+            p.openssl
+            p.attr
+            p.libssh
+            p.bzip2
+            p.libxml2
+            p.acl
+            p.libsodium
+            p.util-linux
+            p.xz
+            p.systemd
+
+            # Common desktop/runtime additions
+            p.glib
+            p.gtk3
+            p.libGL
+            p.libva
+            p.pipewire
+            p.libx11
+            p.libxext
+            p.libxrandr
+            p.libxrender
+            p.libxcb
+          ];
+      };
+
+      wireshark = lib.mkIf cfg.wireshark.enable {
+        enable = true;
+        package = pkgs.wireshark;
+      };
     };
 
-    # nix-ld: shim layer so downloaded unpatched binaries can find glibc/libs.
-    # Full library list covers both core system needs and common desktop/runtime deps.
-    programs.nix-ld = lib.mkIf cfg.nixLd.enable {
-      enable = true;
-      libraries =
-        let
-          p = pkgs;
-        in
-        [
-          # Core/system libs (NixOS wiki baseline)
-          p.zlib
-          p.zstd
-          p.stdenv.cc.cc
-          p.curl
-          p.openssl
-          p.attr
-          p.libssh
-          p.bzip2
-          p.libxml2
-          p.acl
-          p.libsodium
-          p.util-linux
-          p.xz
-          p.systemd
-
-          # Common desktop/runtime additions
-          p.glib
-          p.gtk3
-          p.libGL
-          p.libva
-          p.pipewire
-          p.libx11
-          p.libxext
-          p.libxrandr
-          p.libxrender
-          p.libxcb
-        ];
-    };
+    users.users.${username}.extraGroups = lib.optionals cfg.wireshark.enable [ "wireshark" ];
 
     # Warnings
     warnings =

@@ -129,8 +129,9 @@ in
 
     development.base = {
       enable = true;
-      virtualization.docker.enable = true; # Disabled by default
-      virtualization.podman.enable = false; # Disabled by default
+      virtualization.docker.enable = true;
+      virtualization.podman.enable = false;
+      wireshark.enable = true;
     };
 
     security = {
