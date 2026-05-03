@@ -24,9 +24,10 @@
 # AI Tool Directories
 # -----------------------------
 /.serena/
-/.claude/
+/.claude/*
+!/.claude/CLAUDE.md
 /.sisyphus/*
-CLAUDE.md
+/CLAUDE.md
 
 # -----------------------------
 # Secrets / keys (never commit)
