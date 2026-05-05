@@ -194,7 +194,7 @@
           };
 
           nixos.hosts.bandit.userHomeModules = [ username ];
-          nixos.hosts.homelab.userHomeModules = [ username ];
+          # nixos.hosts.homelab.userHomeModules = [ username ]; # Uncomment if you want to deploy to homelab server as well.
         };
 
         flake = {
