@@ -97,11 +97,15 @@ in
         enable = true;
         colors.enable = true;
         flatpakSupport.enable = false;
-        # Stylix maps base0D (teal) as accent_bg_color (selection bg) — too bright for
-        # a dark theme. Override to base02 (dark grey) with cream text.
+        # Stylix maps base0D (teal) as selection bg — too bright for a dark theme.
+        # Override all GTK3 + libadwaita selection color variables to base02 (dark grey).
         extraCss = ''
           @define-color accent_bg_color ${config.theme.colors.base02};
           @define-color accent_fg_color ${config.theme.palette.cream};
+          @define-color theme_selected_bg_color ${config.theme.colors.base02};
+          @define-color theme_selected_fg_color ${config.theme.palette.cream};
+          @define-color selected_bg_color ${config.theme.colors.base02};
+          @define-color selected_fg_color ${config.theme.palette.cream};
           *:selected, *:selected * {
             background-color: ${config.theme.colors.base02} !important;
             color: ${config.theme.palette.cream} !important;
