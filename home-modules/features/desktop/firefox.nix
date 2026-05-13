@@ -25,6 +25,8 @@ in
     programs.firefox = {
       enable = true;
       package = pkgs.firefox;
+      # home.stateVersion < 26.05 → keep legacy profile path to avoid migration
+      configPath = ".mozilla/firefox";
 
       # Enforce privacy-related policies (enterprise policies)
       policies = {
