@@ -15,10 +15,14 @@ let
 
   # Secret file paths
   githubSecretFile = "${inputs.self}/secrets/github.yaml";
+  cloudflareSecretFile = "${inputs.self}/secrets/cloudflare.yaml";
 
   secretValidation = cfgLib.mkSecretValidation {
     secrets = [
       githubSecretFile
+    ]
+    ++ lib.optionals config.features.services.cloudflared.enable [
+      cloudflareSecretFile
     ];
     label = "System";
   };
@@ -44,6 +48,13 @@ in
         owner = username;
         mode = "0600";
         path = "${userHome}/.ssh/github";
+      };
+
+      secrets."cloudflare_tunnel_token" = lib.mkIf config.features.services.cloudflared.enable {
+        sopsFile = cloudflareSecretFile;
+        owner = "cloudflared";
+        group = "cloudflared";
+        mode = "0400";
       };
     };
 

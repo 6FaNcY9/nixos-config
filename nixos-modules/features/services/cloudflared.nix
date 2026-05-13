@@ -26,6 +26,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    features.services.cloudflared.tokenFile = lib.mkDefault config.sops.secrets.cloudflare_tunnel_token.path;
+
     assertions = [
       {
         assertion = config.features.security.secrets.enable;
