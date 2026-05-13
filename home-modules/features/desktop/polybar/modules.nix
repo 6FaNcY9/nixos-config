@@ -193,7 +193,7 @@ in
       # ── Brightness (purple two-tone) ──
       "module/brightness" = {
         type = "internal/backlight";
-        card = "amdgpu_bl1";
+        card = config.devices.backlight;
         enable-scroll = true;
       }
       // mkPolybarTwoTone {
