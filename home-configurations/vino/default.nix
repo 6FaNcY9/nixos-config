@@ -74,6 +74,36 @@ in
   # Keep GTK4 using the same stylix-managed theme (new HM default in 26.05+ is null).
   gtk.gtk4.theme = config.gtk.theme;
 
+  # Stylix maps base05 (warm beige) as selected-text on base0D (muted teal) — both
+  # mid-brightness, low contrast. Override: base00 (very dark) text on base0D (teal)
+  # gives a strong contrast ratio and reads cleanly in Thunar, Mousepad, etc.
+  gtk.gtk3.extraCss = ''
+    *:selected,
+    *:selected:focus {
+      color: ${config.lib.stylix.colors.withHashtag.base00};
+      background-color: ${config.lib.stylix.colors.withHashtag.base0D};
+    }
+    .view:selected,
+    .view:selected:focus,
+    .view row:selected,
+    .view row:selected:focus {
+      color: ${config.lib.stylix.colors.withHashtag.base00};
+      background-color: ${config.lib.stylix.colors.withHashtag.base0D};
+    }
+    row:selected label,
+    row:selected:focus label {
+      color: ${config.lib.stylix.colors.withHashtag.base00};
+    }
+  '';
+
+  gtk.gtk4.extraCss = ''
+    *:selected,
+    *:selected:focus {
+      color: ${config.lib.stylix.colors.withHashtag.base00};
+      background-color: ${config.lib.stylix.colors.withHashtag.base0D};
+    }
+  '';
+
   # Validation warnings
   warnings = lib.optionals (config.programs.git.settings.commit.gpgsign or false) [
     ''

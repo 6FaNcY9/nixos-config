@@ -17,8 +17,7 @@ let
     "/home/vino/Documents/Projekts/mrijaPage" # active web project — many small files
   ];
   cfgLib = import ../../lib { inherit lib; };
-  # BTRFS mount options — see lib/default.nix for the full definition.
-  inherit (cfgLib) mkBtrfsOpts;
+  inherit (cfgLib) mkBtrfsOpts mkBtrfsMounts;
 
 in
 {
@@ -172,28 +171,15 @@ in
     initrd.systemd.enable = false;
   };
 
-  # Filesystem mounts — optimized BTRFS options override hardware-configuration.nix.
-  # Main disk uses mkBtrfsOpts for consistent SSD + battery optimization.
-  fileSystems = {
-    "/" = {
-      device = mainDisk;
-      fsType = "btrfs";
-      options = lib.mkForce (mkBtrfsOpts "@"); # Force options to override hardware-configuration.nix
-    };
-    "/home" = {
-      device = mainDisk;
-      fsType = "btrfs";
-      options = lib.mkForce (mkBtrfsOpts "@home"); # Force options to override hardware-configuration.nix
-    };
-    "/nix" = {
-      device = mainDisk;
-      fsType = "btrfs";
-      options = lib.mkForce (mkBtrfsOpts "@nix"); # Force options to override hardware-configuration.nix
-    };
-    "/var" = {
-      device = mainDisk;
-      fsType = "btrfs";
-      options = lib.mkForce (mkBtrfsOpts "@var"); # Force options to override hardware-configuration.nix
-    };
-  };
+  # Filesystem mounts — optimized BTRFS options for all subvolumes.
+  # mkBtrfsMounts applies mkForce so these win over hardware-configuration.nix stubs.
+  fileSystems = mkBtrfsMounts mainDisk [
+    "@"
+    "@home"
+    "@nix"
+    "@var"
+    "@swap"
+    "@/.snapshots"
+    "@home/.snapshots"
+  ];
 }

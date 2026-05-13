@@ -137,6 +137,29 @@ let
     "discard=async"
   ];
 
+  # mkBtrfsMounts :: Str -> [Str] -> AttrSet
+  # Generate a fileSystems attrset for a list of BTRFS subvolumes on one device.
+  # Naming convention: "@" for root, "@home" for /home, "@/.snapshots" for /.snapshots.
+  # Applies mkBtrfsOpts (with mkForce) so these options win over hardware-configuration.nix stubs.
+  mkBtrfsMounts =
+    mainDisk: subvols:
+    builtins.listToAttrs (
+      map (subvol: {
+        name =
+          if subvol == "@" then
+            "/"
+          else if lib.hasPrefix "@/" subvol then
+            lib.removePrefix "@" subvol # "@/.snapshots" → "/.snapshots"
+          else
+            "/" + lib.removePrefix "@" subvol; # "@home" → "/home"
+        value = {
+          device = mainDisk;
+          fsType = "btrfs";
+          options = lib.mkForce (mkBtrfsOpts subvol);
+        };
+      }) subvols
+    );
+
 in
 {
   # Workspace helpers
@@ -169,5 +192,5 @@ in
   inherit mkPolybarIcon mkPolybarTwoTone mkPolybarTwoToneState;
 
   # Filesystem helpers
-  inherit mkBtrfsOpts;
+  inherit mkBtrfsOpts mkBtrfsMounts;
 }
