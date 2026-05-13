@@ -143,7 +143,6 @@ in
         # Disable kernel image protection to allow hibernation.
         # kexec is still blocked via sysctl in desktop-hardening regardless of this setting.
         protectKernelImage = false;
-        firewall.allowedTCPPorts = [ 8181 ];
       };
 
       clamav = {
