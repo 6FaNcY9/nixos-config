@@ -58,7 +58,11 @@ in
     };
 
     logging = {
-      enhancedJournal = lib.mkEnableOption "enhanced systemd journal logging configuration";
+      enhancedJournal = lib.mkEnableOption ''
+        enhanced systemd journal logging (retention, size limits).
+        Activates independently of monitoring.enable — guarded by its own
+        lib.mkIf so it works even when the Prometheus/Grafana stack is off
+      '';
 
       maxRetentionDays = lib.mkOption {
         type = lib.types.int;
