@@ -23,11 +23,6 @@ in
       '';
     };
 
-    upstream = lib.mkOption {
-      type = lib.types.str;
-      default = "http://127.0.0.1:80";
-      description = "Internal upstream URL. All tunnel traffic is forwarded here (Caddy).";
-    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -57,7 +52,7 @@ in
         ExecStart =
           let
             startScript = pkgs.writeShellScript "cloudflared-start" ''
-              export TUNNEL_TOKEN=$(< ${lib.escapeShellArg (toString cfg.tokenFile)})
+              export TUNNEL_TOKEN=$(< ${toString cfg.tokenFile})
               exec ${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate run
             '';
           in
