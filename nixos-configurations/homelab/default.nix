@@ -26,11 +26,16 @@ in
 {
   imports = [
     inputs.nix-index-database.nixosModules.nix-index
+    inputs.arion.nixosModules.arion
     ./hardware-configuration.nix
   ];
 
   networking.hostName = "homelab";
   system.stateVersion = "25.11";
+
+  # arion uses the Docker-compatible Podman socket as its container backend
+  virtualisation.podman.dockerSocket.enable = true;
+  virtualisation.arion.backend = "podman-socket";
 
   # Home Manager imports Stylix explicitly in home-modules/default.nix.
   # Disable Stylix's automatic HM injection to avoid double-importing the module.
