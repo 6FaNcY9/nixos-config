@@ -21,7 +21,7 @@ _: {
 
     terminal = {
       tmux.enable = true;
-      # alacritty and yazi omitted — no display server
+      # alacritty omitted — no display server
     };
 
     # No desktop features on headless host.

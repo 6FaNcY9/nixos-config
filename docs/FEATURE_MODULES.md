@@ -330,7 +330,7 @@ home-modules/
   features/    - Optional HM capabilities (explicit enable)
     shell/     - shell.{git, fish, starship}
     editor/    - editor.nixvim
-    terminal/  - terminal.{alacritty, tmux, yazi}
+    terminal/  - terminal.{alacritty, tmux}
     desktop/   - desktop.{services, clipboard, lock, qutebrowser, firefox, xfce-session, i3, polybar, rofi}
   profiles.nix - Package bundles (profiles.{core,dev,desktop,extras,ai})
 ```
@@ -349,8 +349,6 @@ In `home-configurations/vino/hosts/<host>.nix`:
 
   features.terminal.alacritty.enable = true;
   features.terminal.tmux.enable = true;
-  features.terminal.yazi.enable = true;
-
   features.desktop.services.enable = true;
   features.desktop.clipboard.enable = true;
   features.desktop.lock.enable = true;

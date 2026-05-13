@@ -32,7 +32,6 @@ _: {
     terminal = {
       alacritty.enable = true;
       tmux.enable = true;
-      yazi.enable = true;
     };
     desktop = {
       # Home Manager keeps the user-layer pieces split out even though NixOS enables

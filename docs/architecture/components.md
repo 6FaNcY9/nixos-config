@@ -210,7 +210,7 @@ User environment configuration: desktop, editor, shell, terminal, and infrastruc
 
 | File | Purpose | Imported By |
 |------|---------|-------------|
-| `home-modules/terminal/default.nix` | Aggregator: imports alacritty, tmux, yazi | `home-modules/default.nix` |
+| `home-modules/terminal/default.nix` | Aggregator: imports alacritty, tmux | `home-modules/default.nix` |
 | `home-modules/terminal/alacritty.nix` | Alacritty terminal: font, cursor, scrollback (styled by Stylix) | `home-modules/terminal/default.nix` |
 
 #### Tmux (4 files)
@@ -221,12 +221,6 @@ User environment configuration: desktop, editor, shell, terminal, and infrastruc
 | `home-modules/terminal/tmux/keybindings.nix` | Tmux keybindings: pane navigation, window management, copy mode | `home-modules/terminal/tmux/default.nix` |
 | `home-modules/terminal/tmux/plugins.nix` | Tmux plugins: sensible defaults, yank, fzf integration | `home-modules/terminal/tmux/default.nix` |
 | `home-modules/terminal/tmux/statusbar.nix` | Tmux status bar styling: colors, layout (styled by Stylix) | `home-modules/terminal/tmux/default.nix` |
-
-#### Yazi (1 file)
-
-| File | Purpose | Imported By |
-|------|---------|-------------|
-| `home-modules/terminal/yazi/default.nix` | Yazi file manager: keybindings, preview, theme | `home-modules/terminal/default.nix` |
 
 ---
 
