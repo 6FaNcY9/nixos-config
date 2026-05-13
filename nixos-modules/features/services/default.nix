@@ -5,6 +5,7 @@
 { ... }:
 {
   imports = [
+    ./cloudflared.nix
     ./tailscale.nix
     ./monitoring.nix
     ./auto-update.nix
