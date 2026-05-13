@@ -107,7 +107,7 @@ Each `default.nix` acts as an aggregator: it imports all module files in its dir
 
 **Where:**
 - `flake.nix` — top-level args for perSystem modules (username, repoRoot, pkgsFor)
-- `flake-modules/_common.nix` — perSystem args (cfgLib, commonDevPackages, mkApp, opencodePkg)
+- `flake-modules/_common.nix` — perSystem args (cfgLib, commonDevPackages, mkApp, `opencodePkg`, `opencodeBunPkg`)
 - `nixos-modules/home-manager.nix` — bridge NixOS args to Home Manager via `extraSpecialArgs`
 - `home-configurations/vino/default.nix` — home-module args (palette, c, workspaces, stylixFonts, cfgLib)
 
@@ -127,7 +127,7 @@ _module.args = {
 # flake-modules/_common.nix (perSystem)
 perSystem = { pkgs, inputs', ... }: {
   _module.args = {
-    inherit cfgLib commonDevPackages mkApp opencodePkg;
+    inherit cfgLib commonDevPackages mkApp opencodePkg opencodeBunPkg;
   };
 };
 

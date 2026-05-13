@@ -30,7 +30,7 @@ Top-level orchestration, overlays, and pure helper functions.
 | File | Purpose | Imported By |
 |------|---------|-------------|
 | `flake.nix` | Root flake: inputs, ez-configs wiring, overlays, globalArgs, flake-parts orchestration | Nix flake CLI |
-| `overlays/default.nix` | Nixpkgs overlay: stable fallback, tree-sitter-cli v0.26.5, opencode bun patch | `flake.nix` |
+| `overlays/default.nix` | Nixpkgs overlay: stable fallback, tree-sitter-cli v0.26.5, stable `opencode`, Bun-latest `opencode-bun` wrapper | `flake.nix` |
 | `lib/default.nix` | Pure helper functions: color/workspace/profile/polybar/validation/devshell utilities | `flake-modules/_common.nix`, `home-configurations/vino/default.nix`, various modules |
 
 ---
@@ -42,7 +42,7 @@ Development infrastructure exposed via `nix run`, `nix develop`, and `nix flake 
 | File | Purpose | Imported By |
 |------|---------|-------------|
 | `flake-modules/default.nix` | Aggregator: imports all flake-module parts | `flake.nix` |
-| `flake-modules/_common.nix` | Shared perSystem args: cfgLib, commonDevPackages, mkApp helper, opencodePkg | All flake-modules via perSystem |
+| `flake-modules/_common.nix` | Shared perSystem args: cfgLib, commonDevPackages, mkApp helper, overlaid OpenCode packages | All flake-modules via perSystem |
 | `flake-modules/apps.nix` | Nix run apps: update, clean, qa, commit, rebuild, deploy, sysinfo | `flake-modules/default.nix` |
 | `flake-modules/checks.nix` | Flake checks: nixos-bandit, home-vino eval targets | `flake-modules/default.nix` |
 | `flake-modules/devshells.nix` | Development shells: default, web, rust, go, python, ai | `flake-modules/default.nix` |

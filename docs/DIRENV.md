@@ -192,7 +192,7 @@ Available devshells in this repo:
 - `rust` - Rust development
 - `flask` - Python Flask development
 - `go` - Go development
-- `agents` - AI agent tools (opencode, bun)
+- `agents` - AI agent tools (stable `opencode`, latest `opencode-bun`, bun)
 - `pentest` - Penetration testing tools
 - `database` - Database tools (postgres, redis, etc.)
 - `nix-debug` - Nix debugging and analysis
