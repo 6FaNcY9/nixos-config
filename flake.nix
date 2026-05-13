@@ -102,13 +102,6 @@
       flake = false;
     };
 
-    # opencode: Using anomalyco/opencode fork which has correct nix/hashes.json baked in.
-    # This fork tracks sst/opencode HEAD and has a simpler flake (nixpkgs-only inputs).
-    # models-dev is available in nixpkgs, so no extra inputs needed.
-    opencode = {
-      url = "github:anomalyco/opencode/33b2795cc84c79e91e15549609713567eb08348a";
-    };
-
     # Hermes Agent — upstream flake, package only (nixosModule has a flake-parts bug).
     # We consume packages.${system}.default directly via overlay, bypassing the module.
     hermes-agent.url = "github:NousResearch/hermes-agent";
