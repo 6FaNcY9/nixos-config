@@ -30,6 +30,7 @@ in
   ];
 
   networking.hostName = "bandit";
+  services.dbus.implementation = "dbus";
   system.stateVersion = "25.11";
 
   # Feature modules
