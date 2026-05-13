@@ -24,11 +24,11 @@
 
 # -----------------------------
 # AI Tool Directories
-# -----------------------------
 /.serena/
 /.claude/*
 !/.claude/CLAUDE.md
 /.sisyphus/*
+/.opencode/repo-map.json
 /CLAUDE.md
 
 # -----------------------------
