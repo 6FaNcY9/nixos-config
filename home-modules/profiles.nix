@@ -23,10 +23,12 @@ let
   claudeCodePkg = lib.attrByPath [ "claude-code" ] null pkgs;
   githubCopilotPkg = lib.attrByPath [ "github-copilot-cli" ] null pkgs;
   agentsysPkg = lib.attrByPath [ "agentsys" ] null pkgs;
+  opencodeBunPkg = lib.attrByPath [ "opencode-bun" ] null pkgs;
 
   aiPkgs = lib.filter (p: p != null) [
     claudeCodePkg
     pkgs.opencode
+    opencodeBunPkg
     githubCopilotPkg
     pkgs.mistral-vibe
     agentsysPkg
@@ -85,6 +87,7 @@ let
     pkgs.strip-json-comments-cli
     pkgs.tree-sitter-cli # v0.26.5 CLI tool (separate from tree-sitter library for neovim)
     pkgs.ast-grep
+    pkgs.marksman # Markdown language server
   ];
 
   desktopPkgs = [
