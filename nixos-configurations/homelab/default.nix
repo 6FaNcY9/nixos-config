@@ -33,14 +33,11 @@ in
   networking.hostName = "homelab";
   system.stateVersion = "25.11";
 
-  # arion requires the Docker-compatible Podman socket as its container backend.
-  # dockerCompat in features.development.base adds the docker CLI alias;
-  # dockerSocket.enable exposes the socket arion reads from.
-  virtualisation = {
-    podman.dockerSocket.enable = true;
-    arion = {
-      backend = "podman-socket";
-      projects.web.settings = {
+  # arion backend = "podman-socket": the arion NixOS module auto-enables
+  # virtualisation.podman.dockerSocket so no explicit setting is needed here.
+  virtualisation.arion = {
+    backend = "podman-socket";
+    projects.web.settings = {
         services.caddy.service = {
           image = "caddy:2-alpine";
           # Loopback only — cloudflared (host process) forwards here.
@@ -55,7 +52,6 @@ in
           restart = "unless-stopped";
         };
       };
-    };
   };
 
   # Phase 1 placeholder Caddyfile — replaced in Phase 2 with per-domain reverse_proxy blocks

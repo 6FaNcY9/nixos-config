@@ -26,6 +26,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = config.features.security.secrets.enable;
+        message = "features.services.cloudflared requires features.security.secrets.enable = true — tokenFile must be a sops secret and sops-nix must be active";
+      }
+    ];
+
     users.users.cloudflared = {
       isSystemUser = true;
       group = "cloudflared";
@@ -61,6 +68,8 @@ in
         RestartSec = "5s";
         NoNewPrivileges = true;
         PrivateTmp = true;
+        # tokenFile must resolve to a path under /run (e.g. sops default /run/secrets/<name>).
+        # ProtectSystem=strict makes /etc read-only but leaves /run accessible.
         ProtectSystem = "strict";
         ProtectHome = true;
         RuntimeDirectory = "cloudflared";
