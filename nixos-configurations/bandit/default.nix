@@ -44,7 +44,6 @@ in
       # Monitoring (currently disabled for battery life)
       monitoring = {
         enable = false;
-        grafana.enable = false;
         logging.enhancedJournal = true; # Runs independently of monitoring.enable (separate guard in module)
       };
 
@@ -132,7 +131,6 @@ in
     development.base = {
       enable = true;
       virtualization.docker.enable = true;
-      virtualization.podman.enable = false;
       wireshark.enable = true;
     };
 
