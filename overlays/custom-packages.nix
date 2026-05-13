@@ -47,30 +47,6 @@ final: prev: {
   # mistral-vibe: Official flake package (uv2nix Python venv wrapper).
   mistral-vibe = inputs.mistral-vibe.packages.${final.stdenv.hostPlatform.system}.default;
 
-  # opencode: anomalyco/opencode fork has correct hashes.json baked in for the current release.
-  # prettier is a root devDep excluded by --filter '!./' in node_modules.nix; inject from nixpkgs.
-  opencode =
-    let
-      inherit (final.stdenv.hostPlatform) system;
-      base = inputs.opencode.packages.${system}.default;
-    in
-    base.overrideAttrs (old: {
-      postConfigure = (old.postConfigure or "") + ''
-        chmod -R u+w packages/opencode/node_modules
-        mkdir -p packages/opencode/node_modules/prettier
-        cp -r ${final.prettier}/lib/node_modules/prettier/. packages/opencode/node_modules/prettier/
-      '';
-    });
-
-  # strip-json-comments-cli: thin npx wrapper — avoids vendoring a package-lock.json.
-  # IMPURE: `npx --yes` fetches from the npm registry at runtime (not sandboxed).
-  # Accepted trade-off: vendoring would require a package-lock.json + FOD hash update on every bump.
-  strip-json-comments-cli = prev.writeShellApplication {
-    name = "strip-json-comments";
-    runtimeInputs = [ prev.nodejs ];
-    text = ''exec npx --yes strip-json-comments-cli "$@"'';
-  };
-
   # opencode-bun: Bun global-install wrapper for latest opencode-ai from npm.
   # IMPURE: installs opencode-ai@latest into $BUN_INSTALL/bin at runtime.
   # Use this alongside pkgs.opencode when you need the very latest upstream release
@@ -89,12 +65,4 @@ final: prev: {
     '';
   };
 
-  # agentsys: thin npx wrapper — avoids vendoring a package-lock.json and EACCES patch.
-  # IMPURE: `npx --yes` fetches from the npm registry at runtime (not sandboxed).
-  # Accepted trade-off: vendoring would require a package-lock.json + FOD hash update on every bump.
-  agentsys = prev.writeShellApplication {
-    name = "agentsys";
-    runtimeInputs = [ prev.nodejs ];
-    text = ''exec npx --yes agentsys "$@"'';
-  };
 }
