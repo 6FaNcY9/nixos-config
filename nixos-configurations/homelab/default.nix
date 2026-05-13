@@ -36,8 +36,40 @@ in
   # arion requires the Docker-compatible Podman socket as its container backend.
   # dockerCompat in features.development.base adds the docker CLI alias;
   # dockerSocket.enable exposes the socket arion reads from.
-  virtualisation.podman.dockerSocket.enable = true;
-  virtualisation.arion.backend = "podman-socket";
+  virtualisation = {
+    podman.dockerSocket.enable = true;
+    arion = {
+      backend = "podman-socket";
+      projects.web.settings = {
+        services.caddy.service = {
+          image = "caddy:2-alpine";
+          ports = [ "127.0.0.1:80:80" ];
+          volumes = [
+            "/var/lib/caddy/data:/data"
+            "/var/lib/caddy/config:/config"
+            "/etc/caddy/Caddyfile:/etc/caddy/Caddyfile:ro"
+          ];
+          restart = "unless-stopped";
+        };
+      };
+    };
+  };
+
+  # Phase 1 placeholder Caddyfile — replaced in Phase 2 with per-domain reverse_proxy blocks
+  environment.etc."caddy/Caddyfile".text = ''
+    {
+      admin off
+    }
+
+    :80 {
+      respond "homelab phase 1 ready" 200
+    }
+  '';
+
+  systemd.tmpfiles.rules = [
+    "d /var/lib/caddy/data   0750 root root -"
+    "d /var/lib/caddy/config 0750 root root -"
+  ];
 
   # Home Manager imports Stylix explicitly in home-modules/default.nix.
   # Disable Stylix's automatic HM injection to avoid double-importing the module.
