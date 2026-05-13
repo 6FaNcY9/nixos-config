@@ -22,16 +22,13 @@ let
 
   claudeCodePkg = lib.attrByPath [ "claude-code" ] null pkgs;
   githubCopilotPkg = lib.attrByPath [ "github-copilot-cli" ] null pkgs;
-  agentsysPkg = lib.attrByPath [ "agentsys" ] null pkgs;
   opencodeBunPkg = lib.attrByPath [ "opencode-bun" ] null pkgs;
 
   aiPkgs = lib.filter (p: p != null) [
     claudeCodePkg
-    pkgs.opencode
     opencodeBunPkg
     githubCopilotPkg
     pkgs.mistral-vibe
-    agentsysPkg
     (lib.attrByPath [ "hermes-agent" ] null pkgs)
   ];
 
@@ -84,7 +81,6 @@ let
     pkgs.clippy
     pkgs.uv
     pkgs.devenv
-    pkgs.strip-json-comments-cli
     pkgs.tree-sitter-cli # v0.26.5 CLI tool (separate from tree-sitter library for neovim)
     pkgs.ast-grep
     pkgs.marksman # Markdown language server
@@ -142,7 +138,7 @@ in
       type = lib.types.bool;
       default = false;
       description = "Enable AI tools package set.";
-    }; # AI/LLM: claude-code, codex, opencode, github-copilot-cli
+    }; # AI/LLM: claude-code (nix), opencode (bun/latest), mistral-vibe, github-copilot-cli, hermes-agent
   };
 
   config.home.packages = lib.concatLists [
