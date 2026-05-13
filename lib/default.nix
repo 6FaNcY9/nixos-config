@@ -2,7 +2,10 @@
 #
 # Provides helper functions for workspaces, validation, devshells, colors, options, and polybar.
 
-{ lib }:
+{
+  lib,
+  pkgs ? null,
+}:
 let
   # mkWorkspaceName :: { number :: Int, icon :: Str } -> Str
   # Format workspace as "number:icon" (or just "number" if icon is empty).

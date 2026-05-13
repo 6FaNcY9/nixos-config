@@ -14,6 +14,7 @@
 {
   inputs,
   lib,
+  config,
   username,
   ...
 }:
