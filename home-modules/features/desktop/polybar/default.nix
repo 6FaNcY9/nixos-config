@@ -53,12 +53,18 @@ in
 
       script = ''
         ${pkgs.procps}/bin/pkill -x polybar || true
+        # polybar 3.7.x fails to unembed stale tray clients (XCB_WINDOW error) when
+        # it restarts and a previous tray client (flameshot) still holds a dead XCB
+        # window reference. Kill flameshot now so the tray slot is clean, then
+        # restart it via systemd after polybar has claimed the tray manager.
+        ${pkgs.procps}/bin/pkill -x flameshot || true
         # Wait for i3 socket — polybar starts before i3 is ready at login,
         # causing the i3 module to be silently disabled for the whole session.
         until I3SOCK=$(${pkgs.i3}/bin/i3 --get-socketpath 2>/dev/null); do
           ${pkgs.coreutils}/bin/sleep 0.5
         done
         export I3SOCK
+        (${pkgs.coreutils}/bin/sleep 2 && ${pkgs.systemd}/bin/systemctl --user start flameshot) &
         exec ${config.services.polybar.package}/bin/polybar --reload top
       '';
 
@@ -84,7 +90,6 @@ in
           modules-right = modulesRight;
           cursor-click = "pointer";
           enable-ipc = true;
-          tray-position = "none";
         };
         "settings" = {
           screenchange-reload = true;
