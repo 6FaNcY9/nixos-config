@@ -43,6 +43,9 @@ in
       projects.web.settings = {
         services.caddy.service = {
           image = "caddy:2-alpine";
+          # Loopback only — cloudflared (host process) forwards here.
+          # No 0.0.0.0 or port 443: Cloudflare terminates TLS at the edge;
+          # ACME is never needed on this host.
           ports = [ "127.0.0.1:80:80" ];
           volumes = [
             "/var/lib/caddy/data:/data"
