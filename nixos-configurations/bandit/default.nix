@@ -26,6 +26,7 @@ in
     inputs.nixos-hardware.nixosModules.framework-13-7040-amd
     ./hardware-configuration.nix
     inputs.nix-index-database.nixosModules.nix-index
+    ../../nixos-modules/home-manager.nix
   ];
 
   networking.hostName = "bandit";
