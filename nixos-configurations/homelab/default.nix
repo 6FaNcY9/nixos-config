@@ -38,20 +38,20 @@ in
   virtualisation.arion = {
     backend = "podman-socket";
     projects.web.settings = {
-        services.caddy.service = {
-          image = "caddy:2-alpine";
-          # Loopback only — cloudflared (host process) forwards here.
-          # No 0.0.0.0 or port 443: Cloudflare terminates TLS at the edge;
-          # ACME is never needed on this host.
-          ports = [ "127.0.0.1:80:80" ];
-          volumes = [
-            "/var/lib/caddy/data:/data"
-            "/var/lib/caddy/config:/config"
-            "/etc/caddy/Caddyfile:/etc/caddy/Caddyfile:ro"
-          ];
-          restart = "unless-stopped";
-        };
+      services.caddy.service = {
+        image = "caddy:2-alpine";
+        # Loopback only — cloudflared (host process) forwards here.
+        # No 0.0.0.0 or port 443: Cloudflare terminates TLS at the edge;
+        # ACME is never needed on this host.
+        ports = [ "127.0.0.1:80:80" ];
+        volumes = [
+          "/var/lib/caddy/data:/data"
+          "/var/lib/caddy/config:/config"
+          "/etc/caddy/Caddyfile:/etc/caddy/Caddyfile:ro"
+        ];
+        restart = "unless-stopped";
       };
+    };
   };
 
   # Phase 1 placeholder Caddyfile — replaced in Phase 2 with per-domain reverse_proxy blocks
