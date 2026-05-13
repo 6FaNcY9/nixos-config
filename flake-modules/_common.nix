@@ -1,12 +1,15 @@
 # Shared helpers and package sets used across all perSystem modules.
+{ pkgsFor, ... }:
 {
   perSystem =
     {
       pkgs,
+      system,
       ...
     }:
     let
       cfgLib = import ../lib { inherit (pkgs) lib; };
+      overlayPkgs = pkgsFor system;
 
       # ── Package sets ──────────────────────────────────────
       # Essential CLI tools included in every devshell.
@@ -47,7 +50,8 @@
         ];
 
       # ── Helpers ───────────────────────────────────────────
-      opencodePkg = pkgs.opencode;
+      opencodePkg = overlayPkgs.opencode;
+      opencodeBunPkg = overlayPkgs."opencode-bun";
 
       # Create a flake app from a shell script.
       # Usage: mkApp "update" [pkgs.git pkgs.nix] "Update flake" ''#!/usr/bin/env bash\necho "hi"''
@@ -71,6 +75,7 @@
           flakeToolsPackages
           mkApp
           opencodePkg
+          opencodeBunPkg
           ;
       };
     };

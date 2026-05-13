@@ -14,6 +14,7 @@
       commonDevPackages,
       flakeToolsPackages,
       opencodePkg,
+      opencodeBunPkg,
       ...
     }:
     let
@@ -98,7 +99,7 @@
         };
 
         # ── Agents ─────────────────────────────────────────
-        # AI development tools shell (OpenCode, Node.js runtime).
+        # AI development tools shell (stable OpenCode + latest Bun-installed OpenCode).
         agents = {
           name = "agents";
           motd = "{202}agents{reset} devshell\n";
@@ -106,6 +107,7 @@
             projectShellPackages
             ++ [
               opencodePkg
+              opencodeBunPkg
             ]
             ++ (
               let
