@@ -1,5 +1,5 @@
 # Desktop session services module
-# Notification daemon (dunst), compositor (picom), screenshot tool (flameshot), system tray applets
+# Notification daemon (dunst), compositor (picom), screenshot tool (flameshot), network/BT tray applets
 # - Dunst provides desktop notifications with palette-colored urgency levels
 # - Picom provides compositing with subtle transparency and rounded corners
 # - Flameshot provides screenshot capabilities with annotation tools
@@ -21,7 +21,10 @@ in
   config = lib.mkIf cfg.enable {
     services = {
       network-manager-applet.enable = true;
-      blueman-applet.enable = true;
+      # blueman-applet: NOT using services.blueman-applet.enable because nixpkgs
+      # blueman ≥ 2.4.x ships Type=dbus + ExecStart in its base unit; HM's drop-in
+      # also sets ExecStart, making systemd refuse ("more than one ExecStart").
+      # Managed via i3 autostart instead (see i3/autostart.nix).
       dunst = {
         enable = true;
         settings = {
@@ -116,5 +119,6 @@ in
       "XDG_SESSION_TYPE=x11"
       "QT_QPA_PLATFORM=xcb"
     ];
+
   };
 }
