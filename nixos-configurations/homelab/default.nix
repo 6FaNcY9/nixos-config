@@ -33,7 +33,9 @@ in
   networking.hostName = "homelab";
   system.stateVersion = "25.11";
 
-  # arion uses the Docker-compatible Podman socket as its container backend
+  # arion requires the Docker-compatible Podman socket as its container backend.
+  # dockerCompat in features.development.base adds the docker CLI alias;
+  # dockerSocket.enable exposes the socket arion reads from.
   virtualisation.podman.dockerSocket.enable = true;
   virtualisation.arion.backend = "podman-socket";
 
