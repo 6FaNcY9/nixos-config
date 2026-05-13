@@ -113,6 +113,11 @@
     # We consume packages.${system}.default directly via overlay, bypassing the module.
     hermes-agent.url = "github:NousResearch/hermes-agent";
 
+    arion = {
+      url = "github:hercules-ci/arion";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   outputs =
