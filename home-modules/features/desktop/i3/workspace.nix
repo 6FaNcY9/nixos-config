@@ -47,10 +47,6 @@ let
       ws = 8;
       criteria = [ { class = "discord"; } ];
     }
-    {
-      ws = 9;
-      criteria = [ { class = "xfce4-settings-manager"; } ];
-    }
   ];
 in
 {

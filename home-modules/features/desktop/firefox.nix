@@ -247,11 +247,6 @@ in
     # HM's activation symlink. force=true lets HM re-own it on each switch.
     # See: https://github.com/nix-community/home-manager/issues/1213
     xdg.configFile."mimeapps.list".force = true;
-    # XFCE exo preferred applications — controls exo-open --launch WebBrowser
-    home.file.".config/xfce4/helpers.rc".text = ''
-      WebBrowser=firefox
-    '';
-
   };
 
 }

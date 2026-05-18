@@ -19,12 +19,6 @@ in
           default = true;
         };
       };
-
-      lightdm = {
-        enable = lib.mkEnableOption "stylix theme for LightDM display manager" // {
-          default = true;
-        };
-      };
     };
 
     homeManagerIntegration = {
@@ -41,9 +35,6 @@ in
     stylix = {
       # Bootloader theming
       targets.grub.enable = lib.mkDefault cfg.targets.grub.enable;
-
-      # Display manager theming
-      targets.lightdm.enable = cfg.targets.lightdm.enable;
 
       # Home Manager integration
       homeManagerIntegration = {

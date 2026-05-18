@@ -1,6 +1,5 @@
-# Screen lock module - switches to LightDM greeter on lock
-# Uses dm-tool switch-to-greeter for instant lock with the same login screen as boot.
-# The i3 session is preserved; logging in returns to it.
+# Screen lock module for the i3 desktop.
+# Uses i3lock so locking stays independent from the active display manager.
 
 {
   config,
@@ -12,13 +11,12 @@ let
   cfg = config.features.desktop.lock;
 
   lockScript = pkgs.writeShellScriptBin "lock-screen" ''
-    set -euo pipefail
-    ${pkgs.lightdm}/bin/dm-tool switch-to-greeter
+    exec ${pkgs.i3lock}/bin/i3lock -c 000000
   '';
 in
 {
   options.features.desktop.lock = {
-    enable = lib.mkEnableOption "desktop lock screen via LightDM greeter";
+    enable = lib.mkEnableOption "desktop lock screen via i3lock";
   };
 
   config = lib.mkIf cfg.enable {

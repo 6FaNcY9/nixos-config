@@ -9,11 +9,16 @@
 # - xss-lock: Screen locker integration (--transfer-sleep-lock ensures lock before suspend)
 # - xautolock: Idle timer (5min → lock, 10min → DPMS off)
 
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   xsession.windowManager.i3.config.startup = [
     {
       command = "env XDG_CURRENT_DESKTOP=i3 XDG_SESSION_TYPE=x11 QT_QPA_PLATFORM=xcb ${pkgs.flameshot}/bin/flameshot";
+      always = false;
+      notification = false;
+    }
+    {
+      command = "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator";
       always = false;
       notification = false;
     }
@@ -52,6 +57,18 @@
     {
       # xautolock: 5min idle → lock, 10min more → turn off display
       command = "${pkgs.xautolock}/bin/xautolock -time 5 -locker lock-screen -killtime 10 -killer '${pkgs.xset}/bin/xset dpms force off'";
+      always = false;
+      notification = false;
+    }
+    {
+      # always = true: re-runs on in-place i3 restart (e.g. after home-switch)
+      command = "${pkgs.feh}/bin/feh --no-fehbg --bg-fill '${config.theme.wallpaper}'";
+      always = true;
+      notification = false;
+    }
+    {
+      # Start tray.target to launch polybar and other tray services
+      command = "${pkgs.systemd}/bin/systemctl --user start tray.target";
       always = false;
       notification = false;
     }

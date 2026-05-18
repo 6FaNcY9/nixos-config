@@ -1,10 +1,10 @@
 # Desktop Features Aggregator
 #
 # Imports all desktop environment and window manager configurations.
-# Currently includes: i3-xfce (i3 window manager with XFCE components).
+# Currently includes: i3 with greetd + tuigreet.
 { ... }:
 {
   imports = [
-    ./i3-xfce.nix
+    ./i3.nix
   ];
 }
