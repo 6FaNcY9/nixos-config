@@ -39,24 +39,29 @@ jobs:
         uses: cachix/cachix-action@v15
         with:
           name: vino-nixos-config
-          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-          pushFilter: '(-source$|nixpkgs|nixos-unstable)'
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+          pushFilter: "(-source$|nixpkgs|nixos-unstable)"
 
       - name: Build NixOS configuration
         run: |
           echo "🔨 Building NixOS configuration..."
-          nix build .#nixosConfigurations.bandit.config.system.build.toplevel \
+          nix build .#nixosConfigurations.bandit \ #
             --print-build-logs \
-            --fallback
           # Clean up build artifacts to save space
-          rm -f result
+          rm -f result 
+
+          # nix build .#nixosConfigurations.bandit.config.system.build.toplevel \
+          #  --print-build-logs \
+          #  --fallback
+          ## Clean up build artifacts to save space
+          #rm -f result
 
       - name: Build Home Manager configuration
         run: |
           echo "🏠 Building Home Manager configuration..."
-          nix build .#homeConfigurations.\"vino@bandit\".activationPackage \
+          nix build .#homeConfigurations.\"vino@bandit\" \ # - .activationPackage
             --print-build-logs \
-            --fallback
+          # --fallback
           rm -f result
 
       - name: Build devshells
