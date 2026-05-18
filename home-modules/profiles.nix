@@ -103,6 +103,7 @@ let
     pkgs.copyq # Clipboard manager — persists clipboard content after source app closes
     pkgs.gsimplecal
     pkgs.chromium
+    pkgs.vscode
   ];
 
   extrasPkgs = [

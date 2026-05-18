@@ -55,6 +55,12 @@ in
           fetch.prune = true;
           rebase.autoStash = true;
           credential.helper = "libsecret";
+          "credential \"https://github.com\"" = {
+            helper = [
+              ""
+              "!gh auth git-credential"
+            ];
+          };
           rerere.enabled = true;
           column.ui = "auto";
         };

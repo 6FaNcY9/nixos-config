@@ -15,6 +15,10 @@
       autoLoad = true;
 
       settings = {
+        filetypes = {
+          yaml = true;
+        };
+
         suggestion = {
           enable = true;
           auto_trigger = true;
