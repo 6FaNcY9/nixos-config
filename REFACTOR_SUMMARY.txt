@@ -1,0 +1,192 @@
+================================================================================
+DUSTINLYONS/NIXOS-CONFIG ARCHITECTURE ANALYSIS
+Generated: May 13, 2026
+Repository: https://github.com/dustinlyons/nixos-config (commit d2bc630)
+================================================================================
+
+EXECUTIVE SUMMARY
+─────────────────────────────────────────────────────────────────────────────
+
+This is a well-structured, production-grade NixOS + Darwin configuration that
+supports both macOS and Linux with shared code. The architecture emphasizes:
+
+  • Clear platform separation (shared/ + nixos/ + darwin/)
+  • Auto-discovered overlays (no flake.nix boilerplate)
+  • Composition-based Home-Manager integration (not inheritance)
+  • Dual host strategy (platform-generic + named machines)
+  • Isolated secrets management (agenix in separate module)
+
+TOTAL CODEBASE: ~2,875 lines (modules only)
+LARGEST MODULE: modules/shared/home-manager.nix (502 lines)
+FLAKE INPUTS: 17 dependencies (nixpkgs, home-manager, darwin, agenix, etc.)
+
+================================================================================
+TOP 5 STRENGTHS TO ADOPT
+================================================================================
+
+1. AUTO-DISCOVERED OVERLAYS
+   ✓ Overlays loaded dynamically from filesystem
+   ✓ Host-aware exclusions (don't load gaming apps on servers)
+   ✓ No manual registration in flake.nix
+   → Reference: modules/shared/default.nix (lines 21-42)
+
+2. COMPOSITION-BASED HOME-MANAGER
+   ✓ Shared HM programs defined once, merged with // operator
+   ✓ Platform-specific additions are explicit
+   ✓ No inheritance complexity
+   → Reference: modules/nixos/home-manager.nix (lines 6-8)
+
+3. DUAL NIXOS CONFIGURATIONS
+   ✓ Support both platform-generic (x86_64-linux) + named hosts (garfield)
+   ✓ Both appear in `nix flake show`
+   ✓ Flexible for multi-machine setups
+   → Reference: flake.nix (lines 140-175)
+
+4. ISOLATED SECRETS MODULE
+   ✓ Agenix config in separate modules/*/secrets.nix
+   ✓ Secrets as separate git+ssh input
+   ✓ Easy to disable or swap for sops-nix
+   → Reference: modules/nixos/secrets.nix
+
+5. CLEAR PLATFORM SEPARATION
+   ✓ modules/shared/ (cross-platform)
+   ✓ modules/nixos/ (NixOS-only)
+   ✓ modules/darwin/ (macOS-only)
+   ✓ Easy to understand what runs where
+
+================================================================================
+TOP 5 WEAKNESSES TO AVOID
+================================================================================
+
+1. HARDCODED USER
+   ✗ User is hardcoded as "dustin" in multiple places
+   ✗ Not suitable for multi-user systems without refactoring
+   → Solution: Parameterize via specialArgs or module options
+
+2. MONOLITHIC MODULES
+   ✗ modules/shared/home-manager.nix: 502 lines
+   ✗ modules/nixos/kde-config.nix: 303 lines
+   ✗ No internal structure; hard to find specific settings
+   → Solution: Break into sub-modules at ~150 lines
+
+3. HOSTNAME-BASED FEATURE DETECTION
+   ✗ Overlay exclusions use config.networking.hostName
+   ✗ Fragile if hostname changes or is not set
+   → Solution: Use explicit feature flags (options.features.*.enable)
+
+4. NO FEATURE FLAGS
+   ✗ Everything is imported and enabled by default
+   ✗ Hard to selectively disable features
+   → Solution: Add options.features.*.enable pattern early
+
+5. SECRETS REPO REQUIRES SSH
+   ✗ Requires SSH key setup before first build
+   ✗ Complicates onboarding and CI/CD
+   → Solution: Make agenix optional; provide fallback for CI
+
+================================================================================
+ARCHITECTURE OVERVIEW
+================================================================================
+
+hosts/                          # OS-specific entry points
+├── darwin/default.nix         # macOS root config
+└── nixos/
+    ├── default.nix            # Generic NixOS config
+    └── garfield/              # Host-specific overrides
+
+modules/                        # Reusable feature modules
+├── shared/                     # Cross-platform (Darwin + NixOS)
+│   ├── default.nix           # Overlay auto-loader + nixpkgs config
+│   ├── home-manager.nix      # Shared HM programs (502 lines)
+│   ├── packages.nix          # Shared packages
+│   ├── emacs.nix, fonts.nix, files.nix
+│   └── config/               # Config files (p10k.zsh, etc.)
+├── nixos/                     # NixOS-only
+│   ├── home-manager.nix      # NixOS HM integration (262 lines)
+│   ├── kde-config.nix        # KDE Plasma (303 lines)
+│   ├── packages.nix, secrets.nix, systemd.nix
+│   └── github-runner.nix, home-assistant.nix, n8n.nix
+└── darwin/                    # macOS-only
+    ├── home-manager.nix      # Darwin HM integration (96 lines)
+    ├── packages.nix, secrets.nix, casks.nix
+    └── dock/default.nix      # macOS dock config
+
+overlays/                       # Custom package overlays (auto-discovered)
+├── cider-appimage.nix
+├── playwright.nix, phpstorm.nix
+└── README.md
+
+flake.nix                       # 184 lines, defines outputs + inputs
+
+================================================================================
+REFACTOR CHECKLIST FOR YOUR CONFIG
+================================================================================
+
+ADOPT THESE PATTERNS:
+  [ ] Auto-discover overlays using builtins.readDir + filter
+  [ ] Composition-based Home-Manager (use // merging)
+  [ ] Dual nixosConfigurations (platforms + named hosts)
+  [ ] Isolated secrets module (separate secrets.nix)
+  [ ] Clear platform separation (shared/ + nixos/ + darwin/)
+
+AVOID THESE ANTI-PATTERNS:
+  [ ] Hardcoded users (parameterize via specialArgs)
+  [ ] Monolithic modules (break at ~150 lines)
+  [ ] Hostname-based feature detection (use explicit options)
+  [ ] No feature flags (add options.features.*.enable early)
+  [ ] Mixing concerns in Home-Manager (separate by domain)
+
+================================================================================
+DOCUMENTATION FILES CREATED
+================================================================================
+
+1. REFACTOR_RESEARCH.md (444 lines)
+   → Full architectural analysis with code examples
+   → 10 sections covering layout, patterns, strengths, weaknesses
+   → Specific file references and line numbers
+   → Refactor-relevant insights
+
+2. REFACTOR_QUICK_REFERENCE.md (330 lines)
+   → Quick lookup guide for key patterns
+   → 5 patterns to adopt with code examples
+   → 4 anti-patterns to avoid
+   → GitHub permalinks for exact references
+   → Refactor checklist
+
+3. REFACTOR_SUMMARY.txt (this file)
+   → Executive summary
+   → Top 5 strengths and weaknesses
+   → Architecture overview
+   → Refactor checklist
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. Read REFACTOR_RESEARCH.md for full context
+2. Study the GitHub permalinks in REFACTOR_QUICK_REFERENCE.md
+3. Adopt patterns 1-5 incrementally in your own config
+4. Avoid anti-patterns 1-4
+5. Test each change with `nix flake check`
+6. Document your own patterns in CLAUDE.md
+
+================================================================================
+KEY GITHUB PERMALINKS
+================================================================================
+
+Auto-discovered overlays:
+  https://github.com/dustinlyons/nixos-config/blob/d2bc630/modules/shared/default.nix#L21-L42
+
+Composition-based Home-Manager:
+  https://github.com/dustinlyons/nixos-config/blob/d2bc630/modules/nixos/home-manager.nix#L6-L8
+
+Dual nixosConfigurations:
+  https://github.com/dustinlyons/nixos-config/blob/d2bc630/flake.nix#L140-L175
+
+Isolated secrets:
+  https://github.com/dustinlyons/nixos-config/blob/d2bc630/modules/nixos/secrets.nix#L1-L50
+
+Custom script overlay:
+  https://github.com/dustinlyons/nixos-config/blob/d2bc630/modules/nixos/packages.nix#L7-L20
+
+================================================================================
