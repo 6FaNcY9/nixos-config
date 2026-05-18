@@ -1,4 +1,7 @@
 # Feature: Secrets Management
+# Boundary: SYSTEM-SIDE secret ownership. Manages secrets that run as root or
+# system services (age key, SSH deploy key, cloudflare tunnel token).
+# User-side secrets (API keys, GPG key, PAT) live in home-modules/core/secrets.nix.
 # Provides: sops-nix integration for encrypted secrets
 # Dependencies: None
 {

@@ -1,5 +1,8 @@
 # sops-nix Home Manager secret management
-# sops-nix Home Manager secret management
+# Boundary: USER-SIDE secret ownership. Manages secrets that belong to the vino
+# user session (API keys, GPG signing key, PAT, tool credentials).
+# System-side secrets (age key, SSH deploy key, service tokens) live in
+# nixos-modules/features/security/secrets.nix.
 # Manages encrypted secrets for: GitHub MCP PAT, GPG signing key, Cachix auth, Exa API, Context7 API, Mistral API, Hermes env
 # GPG signing key is auto-imported via home.activation hook after decryption
 #
