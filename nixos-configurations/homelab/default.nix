@@ -206,6 +206,6 @@ in
   #   cat ~/.ssh/id_ed25519.pub
   # ================================================================
   users.users.${username}.openssh.authorizedKeys.keys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAoSDGCuesPlnsVjFMEYjOHE0gedGD2LUnpwKn/QjurC vino@bandit→homelab"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAoSDGCuesPlnsVjFMEYjOHE0gedGD2LUnpwKn/QjurC vino@bandit-homelab"
   ];
 }
