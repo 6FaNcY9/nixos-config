@@ -35,20 +35,19 @@ _: {
     };
     desktop = {
       # Home Manager keeps the user-layer pieces split out even though NixOS enables
-      # the combined system feature `features.desktop.i3-xfce` for this host.
+      # the combined system feature `features.desktop.i3` for this host.
       services.enable = true;
       lock.enable = true;
       qutebrowser.enable = true;
       firefox.enable = true;
-      xfce-session.enable = true;
       i3.enable = true;
       polybar.enable = true;
       rofi.enable = true;
-      vibe.enable = true;
+      #vibe.enable = true;
       filezilla.enable = true;
       notepad.enable = true;
     };
-    ai.hermes.enable = true;
+    #ai.hermes.enable = true;
   };
   # Workspaces use shared defaults from shared-modules/workspaces.nix
   # Override here only if host-specific icons are needed
