@@ -93,7 +93,7 @@
                 p.gopls
                 p.delve
                 p.go-tools
-                p.gotools
+                # p.gotools fails the action setup in github
               ]
             );
         };
