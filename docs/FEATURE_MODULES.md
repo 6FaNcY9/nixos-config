@@ -21,7 +21,7 @@ nix repl
 
 # Shows all available features:
 {
-  desktop.i3-xfce = { enable = ...; keyboardLayout = ...; };
+  desktop.i3 = { enable = ...; keyboardLayout = ...; };
   development.base = { enable = ...; virtualization = { ... }; };
   hardware.laptop = { enable = ...; cpu = { ... }; framework = { ... }; };
   security = {
@@ -54,7 +54,7 @@ nix repl
 nixos-option features
 
 # Get specific feature info
-nixos-option features.desktop.i3-xfce.enable
+nixos-option features.desktop.i3.enable
 # Shows: value, type, description, declared in file
 
 # Explore a feature's options
@@ -66,7 +66,7 @@ nixos-option features.hardware.laptop
 ```
 nixos-modules/features/
 ├── desktop/
-│   └── i3-xfce.nix              - i3 window manager + XFCE components
+│   └── i3.nix                   - i3 window manager with greetd+tuigreet login
 ├── development/
 │   └── base.nix                 - Development tools (Docker, Podman, direnv)
 ├── hardware/
@@ -208,7 +208,7 @@ In `nixos-configurations/<host>/default.nix`:
 {
   features = {
     # Desktop environment
-    desktop.i3-xfce = {
+    desktop.i3 = {
       enable = true;
       keyboardLayout = "at";
     };
@@ -309,7 +309,7 @@ desktop.hardening.enable = true;
 
 **New**:
 ```nix
-features.desktop.i3-xfce.enable = true;
+features.desktop.i3.enable = true;
 features.hardware.laptop.enable = true;
 features.security.desktop-hardening.enable = true;
 ```
@@ -331,7 +331,7 @@ home-modules/
     shell/     - shell.{git, fish, starship}
     editor/    - editor.nixvim
     terminal/  - terminal.{alacritty, tmux}
-    desktop/   - desktop.{services, clipboard, lock, qutebrowser, firefox, xfce-session, i3, polybar, rofi}
+    desktop/   - desktop.{services, lock, qutebrowser, firefox, i3, polybar, rofi, filezilla, notepad, vibe}
   profiles.nix - Package bundles (profiles.{core,dev,desktop,extras,ai})
 ```
 
@@ -354,7 +354,7 @@ In `home-configurations/vino/hosts/<host>.nix`:
   features.desktop.lock.enable = true;
   features.desktop.qutebrowser.enable = true;
   features.desktop.firefox.enable = false;
-  features.desktop.xfce-session.enable = true;
+  features.desktop.i3.enable = true;
   features.desktop.i3.enable = true;
   features.desktop.polybar.enable = true;
   features.desktop.rofi.enable = true;

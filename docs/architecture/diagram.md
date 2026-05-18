@@ -15,7 +15,7 @@ flowchart TB
     flakeModules[flake-modules/*<br/>cachix, deploy, devshell, etc]:::framework
     
     %% Discovery Layer
-    nixosConfigs[nixos-configurations/<br/>bandit/]:::discovery
+    nixosConfigs[nixos-configurations/<br/>bandit/ homelab/]:::discovery
     homeConfigs[home-configurations/<br/>vino/]:::discovery
     
     %% Aggregator Layer
@@ -23,14 +23,14 @@ flowchart TB
     homeModules[home-modules/default.nix<br/>Main HM Aggregator]:::aggregator
     
     %% NixOS Module Categories
-    nixosRoles[roles/*<br/>desktop, development, etc]:::module
+    nixosFeatures[features/*<br/>desktop, development, hardware, etc]:::module
     nixosCore[core/*<br/>boot, hardware, fonts, etc]:::module
-    nixosSecurity[security/*<br/>sops, system, user]:::module
-    nixosServices[services/*<br/>ssh, nix, virtualisation]:::module
+    nixosSecurity[features/security/*<br/>sops, system, user]:::module
+    nixosServices[features/services/*<br/>ssh, nix, virtualisation]:::module
     
     %% Home Manager Module Categories
-    hmDesktop[desktop/*<br/>hyprland, kitty, rofi, etc]:::module
-    hmEditor[editor/*<br/>helix, neovim]:::module
+    hmDesktop[desktop/*<br/>i3, polybar, rofi, kitty, etc]:::module
+    hmEditor[editor/*<br/>nixvim (neovim)]:::module
     hmShell[shell/*<br/>bash, starship, direnv]:::module
     hmTerminal[terminal/*<br/>tmux]:::module
     
@@ -41,7 +41,7 @@ flowchart TB
     
     %% Runtime Outputs
     nixosSystem[nixosConfigurations.bandit<br/>System Configuration]:::output
-    homeManager[homeConfigurations.vino@bandit<br/>User Configuration]:::output
+    homeManager[homeConfigurations.vino@bandit<br/>homeConfigurations.vino@homelab<br/>User Configuration]:::output
     runSecrets[/run/secrets<br/>System Secrets]:::output
     hmSecrets[~/.config/sops-nix<br/>User Secrets]:::output
     pkgsOverlay[pkgs with overlays<br/>Modified Package Set]:::output
@@ -56,7 +56,7 @@ flowchart TB
     %% NixOS Flow
     nixosConfigs --> nixosSystem
     nixosSystem --> nixosModules
-    nixosModules --> nixosRoles
+    nixosModules --> nixosFeatures
     nixosModules --> nixosCore
     nixosModules --> nixosSecurity
     nixosModules --> nixosServices
@@ -176,7 +176,7 @@ For terminals that don't support Mermaid rendering:
           ┌───────┬───────┼────────┐       │                  │
           ▼       ▼       ▼        ▼       │                  │
       ┌─────┐ ┌──────┐ ┌────┐ ┌─────┐     │                  │
-      │roles│ │core  │ │sec.│ │svcs │     │                  │
+      │feat.│ │core  │ │sec.│ │svcs │     │                  │
       │ /*  │ │ /*   │ │/*  │ │ /*  │     │                  │
       └─────┘ └──────┘ └────┘ └─────┘     │                  │
                                            │                  │
@@ -229,7 +229,9 @@ _module.args Injection:
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃ LAYER 3: DISCOVERY & OUTPUTS                                      ┃
 ┃   • nixos-configurations/bandit/ → nixosConfigurations.bandit     ┃
+┃   • nixos-configurations/homelab/ → nixosConfigurations.homelab   ┃
 ┃   • home-configurations/vino/ → homeConfigurations."vino@bandit"  ┃
+┃                               → homeConfigurations."vino@homelab" ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
                                  ▼
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -242,17 +244,17 @@ _module.args Injection:
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃ LAYER 5: MODULE CATEGORIES                                        ┃
 ┃   NixOS Side:                  Home Manager Side:                 ┃
-┃   • roles/* (desktop, dev)     • desktop/* (hyprland, rofi)       ┃
-┃   • core/* (boot, hardware)    • editor/* (helix, neovim)         ┃
-┃   • security/* (sops, user)    • shell/* (bash, starship)         ┃
-┃   • services/* (ssh, nix)      • terminal/* (tmux)                ┃
+┃   • features/* (desktop, dev, hw,      • desktop/* (i3, rofi, polybar)         ┃
+┃     security, services, storage,       • editor/* (nixvim)                    ┃
+┃     theme)                             • shell/* (bash, starship)         ┃
+┃   • core/* (boot, hardware)            • terminal/* (tmux)                ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
                                  ▼
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃ CROSS-CUTTING CONCERNS (Available to Layers 4-5)                  ┃
 ┃   • shared-modules/stylix-common.nix - Theme coordination         ┃
 ┃   • shared-modules/palette.nix - Color definitions                ┃
-┃   • overlays/default.nix - Package modifications                  ┃
+┃   • overlays/default.nix - Overlay aggregator (additions.nix + modifications.nix) ┃
 ┃   • .sops.yaml + secrets/*.yaml - Secret management               ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 ```
@@ -267,7 +269,7 @@ _module.args Injection:
 | 🔵 Blue | Framework | External frameworks and composition tools | `flake-parts`, `ez-configs` |
 | 🟢 Green | Discovery | Directory scanning and auto-discovery layers | `nixos-configurations/`, `home-configurations/` |
 | 🟡 Yellow | Aggregator | Main module aggregation points with thick borders | `nixos-modules/default.nix`, `home-modules/default.nix` |
-| 🟣 Purple | Module | Individual functional modules | `roles/desktop.nix`, `desktop/hyprland/` |
+|| 🟣 Purple | Module | Individual functional modules | `features/desktop/i3.nix`, `desktop/i3/` |
 | 🔶 Orange | Shared/Cross-Cutting | Modules imported by both NixOS and HM | `shared-modules/*`, `overlays/` |
 | 🟢 Teal | Output/Runtime | Final system outputs and runtime locations | `nixosConfigurations.bandit`, `/run/secrets` |
 
@@ -314,14 +316,14 @@ _module.args Injection:
 **Source:** `.sops.yaml` (config) + `secrets/*.yaml` (encrypted files)
 **NixOS Path:** sops-nix → `/run/secrets/*` (system-level secrets)
 **HM Path:** sops-nix → `~/.config/sops-nix/*` (user-level secrets)
-**Integration:** `nixos-modules/security/sops.nix` + `home-modules/shell/sops.nix`
+**Integration:** `nixos-modules/features/security/secrets.nix` + `home-modules/core/secrets.nix`
 
 #### Overlays
 **What:** Modifications to the Nixpkgs package set.
-**Where:** `overlays/default.nix`
+**Where:** `overlays/default.nix` — aggregator composing `additions.nix` + `modifications.nix`
 **Provides:**
-- `pkgs.stable` - Fallback to stable channel
-- Custom packages (qbpm, bdfextract, etc)
+- `pkgs.hermes-agent`, `pkgs.mistral-vibe`, `pkgs.opencode-bun` - Custom AI/dev tools
+- `pkgs.tree-sitter-cli` - Pinned version (0.26.5)
 **Applied:** Automatically via `nixpkgs.overlays` in both NixOS and HM contexts
 
 ## Understanding the Wiring
@@ -331,7 +333,7 @@ _module.args Injection:
 1. **Entry:** `nix build .#nixosConfigurations.bandit.config.system.build.toplevel`
 2. **Discovery:** ez-configs finds `nixos-configurations/bandit/default.nix`
 3. **Aggregation:** Imports `nixos-modules/default.nix`
-4. **Module Loading:** Aggregator imports roles, core, security, services
+4. **Module Loading:** Aggregator imports features, core, security, services
 5. **Cross-Cutting:** Shared modules (Stylix, palette) imported
 6. **Package Resolution:** Overlays applied to pkgs
 7. **Secrets:** sops-nix decrypts secrets → `/run/secrets`
@@ -359,8 +361,8 @@ _module.args Injection:
 | HM Bridge | `nixos-modules/home-manager.nix` | Passes NixOS args to HM via `extraSpecialArgs` |
 | HM Args Injection | `home-configurations/vino/default.nix` | Adds HM-specific args (palette, workspaces, etc) |
 | Shared Styling | `shared-modules/stylix-common.nix` | Single source for Stylix configuration |
-| Color Definitions | `shared-modules/palette.nix` | Kanagawa color scheme for entire system |
-| Package Modifications | `overlays/default.nix` | Custom packages and stable fallback |
+|| Color Definitions | `shared-modules/palette.nix` | Gruvbox Dark Pale semantic color aliases for entire system |
+| Package Modifications | `overlays/default.nix` | Overlay aggregator: composes additions.nix + modifications.nix; exports hermes-agent, mistral-vibe, opencode-bun, tree-sitter-cli (pinned 0.26.5) |
 
 ## Navigation Tips
 
@@ -375,6 +377,6 @@ _module.args Injection:
 
 ## Related Documentation
 
-- [Overview](overview.md) - High-level system understanding
-- [Conventions](conventions.md) - Coding standards and patterns
-- [User Guide](../user/quickstart.md) - Common operations
+- [README](README.md) - Architecture overview and component index
+- [Components](components.md) - Detailed component descriptions
+- [Patterns](patterns.md) - Architectural patterns and anti-patterns

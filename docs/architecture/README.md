@@ -9,8 +9,9 @@ Comprehensive architectural analysis of the nixos-config repository.
 | **[components.md](./components.md)** | Complete inventory of all .nix files organized by architectural layer | 289 | 18KB |
 | **[diagram.md](./diagram.md)** | Visual architecture diagram (Mermaid + ASCII) showing system wiring and data flow | 380 | 22KB |
 | **[patterns.md](./patterns.md)** | Documentation of 6 major architectural patterns with examples and anti-patterns | 521 | 17KB |
+| **[refactor-contract.md](./refactor-contract.md)** | Target-state architecture contract: preserved anchors, layer ownership, migration guardrails, and forbidden patterns for all refactor waves | 261 | ~12KB |
 
-**Total:** 1,190 lines, 57KB of comprehensive documentation
+**Total:** 4 documents covering all architectural layers (counts vary as docs are updated)
 
 ---
 
@@ -22,28 +23,32 @@ Comprehensive architectural analysis of the nixos-config repository.
 3. Consult **[components.md](./components.md)** when you need to find specific functionality
 
 ### For Maintainers
+1. Read **[refactor-contract.md](./refactor-contract.md)** before making any structural changes
+2. Check **[patterns.md](./patterns.md)** for established conventions
+3. Consult **[components.md](./components.md)** for the current file inventory
 
 ### For System Understanding
 1. **[diagram.md](./diagram.md)** → High-level system flow
 2. **[patterns.md](./patterns.md)** → Design decisions and conventions
 3. **[components.md](./components.md)** → Detailed file-by-file reference
+4. **[refactor-contract.md](./refactor-contract.md)** → Migration law and layer ownership
 
 ---
 
 ## 📊 Repository Overview
 
 ### Statistics
-- **Total Files:** All .nix files in the repository
+- **Total Files:** 128 .nix files
 - **Layers:** 7 architectural layers (Flake → NixOS → Home Manager)
-- **Modules:** 16 NixOS modules, 48 Home Manager modules, 3 shared modules
-- **Configurations:** 1 host (bandit), 1 user (vino)
+- **Modules:** 36 NixOS modules, 65 Home Manager modules, 4 shared modules
+- **Configurations:** 2 hosts (bandit, homelab), 1 user (vino)
 - **Patterns:** 6 major architectural patterns documented
-- **Issues:** Previously tracked issues have been resolved or are obsolete
+- **Issues:** No open issues in canonical architecture docs
 
 ### Architecture Highlights
 - **Flake-based** using flake-parts + ez-configs for auto-discovery
-- **Role system** for system capabilities (desktop/laptop/server/development)
-- **Profile system** for user package preferences (core/dev/desktop/extras/ai)
+- **Feature system** for system capabilities (desktop/laptop/server/development) via `features.*` options
+- **Profile system** for user package preferences (core/dev/desktop/extras/ai) via `profiles.*` options
 - **Theming** via Stylix with Gruvbox Dark Pale palette + semantic color layer
 - **Secrets** managed with sops-nix + validation helpers
 - **Modular structure** with clear separation: NixOS (system) / Home Manager (user) / Shared (both)
@@ -75,7 +80,7 @@ Comprehensive architectural analysis of the nixos-config repository.
                              ↓
 ┌──────────────────────┬──────────────────────────────────────┐
 │  nixos-modules/      │      home-modules/                   │
-│  (16 modules)        │      (48 modules)                    │
+│  (36 modules)        │      (65 modules)                    │
 └──────────────────────┴──────────────────────────────────────┘
                              ↓
                   shared-modules/
@@ -132,11 +137,11 @@ Hierarchical `default.nix` files import collections of modules by category.
 
 **See:** [patterns.md § Arg Injection](./patterns.md)
 
-### 4. Roles vs Profiles
-- **Roles** (NixOS): System capabilities (desktop/laptop/server/development)
-- **Profiles** (Home Manager): User package preferences (core/dev/desktop/extras/ai)
+### 4. Features vs Profiles
+- **Features** (NixOS): System capabilities (desktop/laptop/server/development) via `features.*` options
+- **Profiles** (Home Manager): User package preferences (core/dev/desktop/extras/ai) via `profiles.*` options
 
-**See:** [patterns.md § Roles vs Profiles](./patterns.md)
+**See:** [patterns.md § Features vs Profiles](./patterns.md)
 
 ### 5. Theming System
 Two-tier color system:
@@ -150,7 +155,7 @@ sops-nix + validation helpers ensure safe secret handling.
 
 **See:** [patterns.md § Secrets Management](./patterns.md)
 
-**Quick Wins:** 5 low-effort fixes (~3.5 hours total) available in [issues.md § Quick Wins](./issues.md)
+
 
 ---
 
@@ -176,29 +181,27 @@ sops-nix + validation helpers ensure safe secret handling.
 
 ## ✅ Verification Results
 
-**Analysis Date:** 2026-02-26
+**Last Verified:** 2026-05-14
 
 ### Coverage Verification
 - ✅ **All .nix files** documented in components.md
 - ✅ **Flake evaluation** successful (`nix flake show`)
 - ✅ **Outputs validated:**
-  - 1 nixosConfigurations (bandit)
-  - 1 homeConfigurations (vino@bandit)
-  - 13 nixosModules
-  - 7 apps
-  - 8 devShells
-  - 2 checks (pre-commit, treefmt)
+  - 2 nixosConfigurations (bandit, homelab)
+  - 2 homeConfigurations (vino@bandit, vino@homelab)
+  - nixosModules (via ez-configs)
+  - apps, devShells, checks
 
 ### Documentation Quality
-- ✅ All deliverables created with comprehensive content
+- ✅ Architecture documentation created and validated against actual repository
 - ✅ Cross-references between documents maintained
 - ✅ Code examples validated against actual repository
 - ✅ All issues backed by concrete evidence (file:line references)
 
 ### Statistics
-- **Total analysis:** 83 files, 7 layers, 6 patterns, 15 issues
-- **Documentation:** 1,858 lines, 79KB
-- **Completeness:** 100% file coverage
+- **Total:** 128 .nix files, 7 layers, 6 patterns
+- **Documentation:** components.md, diagram.md, patterns.md, refactor-contract.md
+- **Completeness:** All .nix files documented in components.md
 - **Evidence-based:** All claims verified with grep/read
 
 ---
@@ -206,26 +209,26 @@ sops-nix + validation helpers ensure safe secret handling.
 ## 🚀 Next Steps
 
 ### For Immediate Action
-1. Review [issues.md § Top 5](./issues.md) for critical fixes
-2. Consider "Quick Wins" section for low-effort improvements
-3. Share this documentation with team members
+1. Review [refactor-contract.md](./refactor-contract.md) before making structural changes
+2. Check [patterns.md](./patterns.md) for established conventions
+3. Consult [components.md](./components.md) for the current file inventory
 
 ### For Long-term Planning
-1. Implement Phase 1 fixes from [issues.md](./issues.md) roadmap
-2. Establish CI/CD based on best-practices checklist
-3. Consider architecture evolution as system grows
+1. Establish CI/CD based on `just qa` gate
+2. Consider architecture evolution as system grows
+3. Add new hosts by creating `nixos-configurations/<hostname>/default.nix`
 
 ### For Maintenance
 1. Update documentation when architectural changes are made
-2. Re-run verification checks periodically
+2. Re-run `just qa` after any structural changes
 
 ---
 
 ## 📝 Maintenance Notes
 
 ### How This Documentation Was Created
-- **Method:** Automated analysis using explore/librarian agents + structured plan
-- **Tools:** AST-grep, grep, file reading, flake evaluation
+- **Method:** Manual analysis + structured refactor plan (tasks 1-8)
+- **Tools:** grep, file reading, flake evaluation
 - **Validation:** Cross-referenced all findings with actual code
 - **Evidence:** All claims backed by file:line references
 
@@ -236,12 +239,11 @@ sops-nix + validation helpers ensure safe secret handling.
 
 ### Regeneration
 To regenerate this analysis:
-1. Use the plan agent workflow (documented in session logs)
-2. Validate against current flake structure
-3. Update statistics and verification results
+1. Update components.md when adding/removing .nix files
+2. Validate against current flake structure with `just qa`
 
 ---
 
-**Last Updated:** 2026-02-26
-**Repository State:** main branch
-**Documentation Completeness:** Comprehensive inline documentation added to all .nix files
+**Last Updated:** 2026-05-14
+**Repository State:** post-refactor (architecture docs current as of 2026-05-14)
+**Documentation Completeness:** All architectural layers documented

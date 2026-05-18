@@ -71,30 +71,30 @@ Each `default.nix` acts as an aggregator: it imports all module files in its dir
     inputs.stylix.nixosModules.stylix
     inputs.sops-nix.nixosModules.sops
     ../shared-modules/stylix-common.nix
-    ./core.nix
-    ./storage.nix
-    ./services.nix
-    ./secrets.nix
-    ./roles  # Subdirectory with its own default.nix
-    ./desktop.nix
-    ./home-manager.nix
+    ./core           # Subdirectory with its own default.nix
+    ./features       # Subdirectory with its own default.nix
+    ./home-manager.nix  # NOTE: NOT imported here — imported by host roots directly
   ];
 }
 
 # nixos-configurations/bandit/default.nix
+{ inputs, ... }:
 {
   imports = [
     inputs.nixos-hardware.nixosModules.framework-13-7040-amd
     ./hardware-configuration.nix
+    ./host-params.nix
+    inputs.nix-index-database.nixosModules.nix-index
+    ../../nixos-modules/home-manager.nix  # HM bridge: imported by host, not by nixos-modules/default.nix
   ];
-  # ALL nixos-modules are automatically imported via ez-configs
+  # ALL other nixos-modules are automatically imported via ez-configs
 }
 ```
 
 **Benefits:**
 - Single source of truth for module organization
 - Easy to see what's included at a glance
-- Subdirectories can nest their own aggregators (e.g. `roles/default.nix`)
+- Subdirectories can nest their own aggregators (e.g. `features/default.nix`)
 - Host configs remain focused on host-specific settings
 
 ---
@@ -141,7 +141,7 @@ _module.args = {
   inherit (config.theme) palette;
   c = config.theme.colors;
   inherit (config) workspaces;
-  inherit stylixFonts i3Pkg codexPkg opencodePkg;
+  inherit stylixFonts;
   hostname = hostName;
   cfgLib = import ../../lib { inherit lib; };
 };
@@ -161,52 +161,46 @@ _module.args = {
 
 ---
 
-## 4. Roles vs Profiles (system vs user feature flags)
+## 4. Features vs Profiles (system vs user feature flags)
 
-**Intent:** Separate system-level capabilities (roles) from user-level package collections (profiles).
+**Intent:** Separate system-level capabilities (features) from user-level package collections (profiles).
 
 **Why:** A system can have hardware-dependent features (bluetooth, power management) independent of what packages a user wants installed. This separation enables:
-- Reusing the same role across different users
+- Reusing the same feature across different users
 - Different users on the same host having different profiles
-- Clear boundary: roles = system services/drivers, profiles = user packages
+- Clear boundary: features = system services/drivers, profiles = user packages
 
 **Where:**
-- `nixos-modules/roles/default.nix` — role options (desktop, laptop, server, development)
-- `nixos-modules/roles/*.nix` — role implementations
+- `nixos-modules/features/` — feature modules (desktop/laptop/server/development/etc.)
+- `nixos-modules/features/*/default.nix` — per-category aggregators
 - `home-modules/profiles.nix` — profile options (core, dev, desktop, extras, ai)
 
 **How:**
-- **Roles:** Boolean options in NixOS modules. Enable services, drivers, or system configuration.
+- **Features:** `options.features.<category>.<name>.enable` in NixOS modules. Enable services, drivers, or system configuration.
 - **Profiles:** Boolean options in Home Manager. Control package installation via `lib.optionals`.
 
 **Example:**
 ```nix
-# nixos-modules/roles/default.nix
-options.roles = {
-  desktop = lib.mkOption {
-    type = lib.types.bool;
-    default = false;
-    description = "Enable the desktop/GUI role for this host.";
-  };
-  laptop = lib.mkOption {
-    type = lib.types.bool;
-    default = false;
-    description = "Enable laptop-specific behavior (bluetooth, power management).";
-  };
-  development = lib.mkOption {
-    type = lib.types.bool;
-    default = false;
-    description = "Enable development tools (docker, direnv, build tools).";
-  };
+# nixos-modules/features/desktop/i3.nix (typical feature module)
+options.features.desktop.i3 = {
+  enable = lib.mkEnableOption "i3 window manager with greetd + tuigreet";
+};
+config = lib.mkIf cfg.enable {
+  services.xserver.windowManager.i3.enable = true;
+  # ...
+};
+
+# nixos-modules/features/hardware/laptop.nix
+options.features.hardware.laptop = {
+  enable = lib.mkEnableOption "laptop hardware support";
 };
 
 # nixos-configurations/bandit/default.nix
-roles = {
-  desktop = true;
-  laptop = true;
-  development = true;
+features = {
+  desktop.i3.enable = true;
+  hardware.laptop.enable = true;
+  development.base.enable = true;
 };
-
 # home-modules/profiles.nix
 options.profiles = {
   core = cfgLib.mkProfile "core CLI tools" true;
@@ -236,7 +230,7 @@ profiles = {
 - Host definitions are declarative: "this is a laptop with a desktop environment"
 - Users control their own package sets without system rebuilds
 - Profile changes only affect Home Manager, not NixOS
-- Easy to add new roles/profiles without touching existing ones
+- Easy to add new features/profiles without touching existing ones
 
 ---
 
@@ -319,8 +313,8 @@ options.theme.palette = lib.mkOption {
 
 **Where:**
 - `secrets/` — encrypted YAML files (github.yaml, gpg-signing-key.yaml, etc.)
-- `nixos-modules/secrets.nix` — system-level secret definitions and validation
-- `home-modules/secrets.nix` — user-level secret definitions and validation
+- `nixos-modules/features/security/secrets.nix` — system-level secret definitions and validation
+- `home-modules/core/secrets.nix` — user-level secret definitions and validation
 - `lib/default.nix` — `validateSecretExists`, `validateSecretEncrypted`, `mkSecretValidation`
 
 **How:**
@@ -352,7 +346,7 @@ mkSecretValidation = { secrets, label }:
     }];
   };
 
-# nixos-modules/secrets.nix
+# nixos-modules/features/security/secrets.nix
 let
   githubSecretFile = "${inputs.self}/secrets/github.yaml";
   secretValidation = cfgLib.mkSecretValidation {
@@ -371,7 +365,7 @@ in
   };
 }
 
-# home-modules/secrets.nix
+# home-modules/core/secrets.nix
 sops.secrets.github_mcp_pat = {
   sopsFile = githubMcpSecretFile;
   format = "yaml";
@@ -419,7 +413,7 @@ background = palette.bg;
 
 ---
 
-### ❌ Mixing roles and profiles
+### ❌ Mixing features and profiles
 ```nix
 # BAD: putting user packages in NixOS role modules
 { pkgs, ... }:
@@ -427,7 +421,7 @@ background = palette.bg;
   environment.systemPackages = [ pkgs.alacritty pkgs.vscode ];
 }
 
-# GOOD: roles handle services, profiles handle packages
+# GOOD: features handle services, profiles handle packages
 ```
 **Problem:** Forces system rebuilds for user preference changes.
 
@@ -508,12 +502,12 @@ These patterns work together to create a maintainable, scalable NixOS configurat
 1. **Flake composition** auto-discovers hosts and users
 2. **Module aggregators** organize imports hierarchically
 3. **Arg injection** makes shared context available without prop-drilling
-4. **Roles and profiles** separate system concerns from user preferences
+4. **Features and profiles** separate system concerns from user preferences
 5. **Semantic theming** decouples color meaning from color values
 6. **Secret validation** enforces encrypted secrets with early failure
 
 When adding new features, ask:
-- Does this belong at the system level (role) or user level (profile)?
+- Does this belong at the system level (feature) or user level (profile)?
 - Should this value be injected via `_module.args` or passed explicitly?
 - Am I using semantic names (`palette.accent`) or hardcoded values?
 - Are my secrets validated at eval time?
