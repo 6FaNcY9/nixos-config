@@ -11,6 +11,8 @@ let
     "networkmanager"
     "audio"
     "video"
+    "storage"
+    "docker"
   ];
 in
 {

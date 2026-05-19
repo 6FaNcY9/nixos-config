@@ -58,33 +58,15 @@
     UV_CACHE_DIR = "${config.xdg.cacheHome}/uv";
 
     # ──────────────────────────────────────────────────────────────
-    # .NET
-    # ──────────────────────────────────────────────────────────────
-    DOTNET_CLI_HOME = "${config.xdg.dataHome}/dotnet";
-    NUGET_PACKAGES = "${config.xdg.cacheHome}/nuget";
-
-    # ──────────────────────────────────────────────────────────────
     # X11 / Display
     # ──────────────────────────────────────────────────────────────
     XCOMPOSECACHE = "${config.xdg.cacheHome}/X11/xcompose";
     ICEAUTHORITY = "${config.xdg.cacheHome}/ICEauthority";
 
     # ──────────────────────────────────────────────────────────────
-    # Build tools
-    # ──────────────────────────────────────────────────────────────
-    GRADLE_USER_HOME = "${config.xdg.dataHome}/gradle";
-    MAVEN_OPTS = "-Dmaven.repo.local=${config.xdg.cacheHome}/maven/repository";
-
-    # ──────────────────────────────────────────────────────────────
-    # Containers & Mobile
+    # Containers
     # ──────────────────────────────────────────────────────────────
     DOCKER_CONFIG = "${config.xdg.configHome}/docker";
-    ANDROID_HOME = "${config.xdg.dataHome}/android";
-
-    # ──────────────────────────────────────────────────────────────
-    # GPU / CUDA
-    # ──────────────────────────────────────────────────────────────
-    CUDA_CACHE_PATH = "${config.xdg.cacheHome}/nv";
   };
 
   # Add package manager bin directories to PATH

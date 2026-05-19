@@ -118,7 +118,7 @@
 
     development.base = {
       enable = true;
-      virtualization.docker.enable = true;
+      virtualization.docker.rootless.enable = true;
       wireshark.enable = true;
     };
 

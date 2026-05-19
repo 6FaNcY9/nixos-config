@@ -1,180 +1,83 @@
 # nixos-config
 
-Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager (`vino`). The system layers i3 on top of XFCE services, themed via Stylix (Gruvbox dark), and ships a Nixvim-based editor setup.
+Personal NixOS flake for a Framework 13 AMD laptop (`bandit`) with Home Manager (`vino`). Layers i3 on top of XFCE services, themed via Stylix (Gruvbox dark), with a Nixvim-based editor.
 
 ## Layout
-- `flake.nix` – uses flake-parts + ez-configs to wire inputs and exports `nixosConfigurations.bandit`, `homeConfigurations."vino@bandit"`, formatter, and optional dev shells.
-- `nixos-configurations/bandit/` – host entrypoint and hardware profile (`hardware-configuration.nix`).
-- `nixos-configurations/README.md` – quick guide for adding hosts.
-- `home-configurations/vino/default.nix` – Home Manager profile: Stylix targets (gtk, i3, xfce, rofi, qutebrowser, starship, nixvim, firefox), package set (CLIs, dev tools, desktop utilities), fish setup with abbreviations, Atuin/Zoxide/direnv/fzf, i3 config, XFCE session XML, detailed nixvim plugin stack, plus the retained Firefox userChrome override.
-- `home-configurations/vino/hosts/<name>.nix` – host-specific Home Manager overrides (profiles, device names, etc.).
-- `shared-modules/` – shared stylix palette/fonts + i3 workspace list.
-- `nixos-modules/` – NixOS modules organized as:
-  - `core/` – Core system (always enabled): nix, users, networking, programs, packages, fonts
-  - `features/` – Optional features (explicit enable): services, storage, desktop, hardware, security, theme, development
-  - `profiles/` – Feature bundles (future use)
-- `home-modules/` – Home Manager modules organized as:
-  - `core/` – Always-on infrastructure: devices, nixpkgs, package managers, secrets
-  - `features/` – Optional modules (explicit enable): shell, editor, terminal, desktop
-  - `profiles.nix` – Package bundles (toggle with `profiles.*` flags)
-- `overlays/` – overlays (custom package builds and version pins; available as `pkgs.<name>`).
-- `lib/` – helper functions shared across modules.
 
-## Conventions
-- Host entrypoints live under `nixos-configurations/<name>/default.nix` and import only hardware config + host overrides (ez-configs auto-imports `nixos-modules/default.nix`).
-- Shared NixOS tweaks go in `nixos-modules/` or `shared-modules/`; Home Manager modules live under `home-modules/`.
-- Home Manager modules should use `_module.args` from `home-configurations/vino/default.nix` for colors/fonts (`c`, `palette`, `stylixFonts`).
-- Avoid editing `hardware-configuration.nix` unless re-generated.
-- Run `nix fmt` (nixfmt-rfc-style) after changes.
+```
+flake.nix                    # flake-parts + ez-configs orchestration
+nixos-configurations/bandit/ # host entrypoint + hardware-configuration.nix
+home-configurations/vino/    # HM profile + hosts/<name>.nix overrides
+nixos-modules/core/          # always-on system config (nix, users, networking, fonts)
+nixos-modules/features/      # opt-in NixOS features (desktop, hardware, security, services, storage, theme)
+home-modules/core/           # always-on HM config (devices, nixpkgs, package-managers, secrets)
+home-modules/features/       # opt-in HM features (shell, editor, terminal, desktop, ai)
+shared-modules/              # imported by both layers (palette, workspaces, stylix-common)
+overlays/                    # custom package builds and version pins (available as pkgs.<name>)
+lib/                         # pure helper functions (cfgLib)
+secrets/                     # sops-encrypted secrets (see secrets/README.md)
+flake-modules/               # perSystem devshells, apps, checks, packages
+```
 
-## Host Matrix (intent)
-| Host | Features | Desktop | Notes |
-| --- | --- | --- | --- |
-| bandit | desktop, laptop, dev, storage | i3-xfce | Framework 13 AMD laptop |
-| server-<name> | server-hardening | (none) | Headless/server host example |
-| droid-<name> | (nix-on-droid) | (none) | Termux/nix-on-droid host example |
+## Commands
 
-## 🎯 Feature Modules
-
-This configuration uses explicit feature modules for discoverability and clear dependencies.
-
-**Discover features**:
 ```bash
-nix repl
-> :lf .
-> :t nixosConfigurations.bandit.config.features  # Shows all available features
+just qa           # format + lint + flake check — run before every commit
+just fmt          # format Nix files (nixfmt-rfc-style)
+just rebuild      # NixOS switch via nh
+just home-switch  # Home Manager switch via nh
+just rebuild-test # dry-run NixOS build
+just update       # update flake.lock
+just agents       # enter AI tools devshell
+just nix-debug    # enter Nix inspection devshell
+just services     # dev services TUI (PostgreSQL + Redis)
 ```
 
-**Enable features** in `nixos-configurations/<host>/default.nix`:
+## Adding Config
+
+| What | Where |
+|------|-------|
+| System packages | `nixos-modules/core/packages.nix` |
+| User packages | `home-configurations/vino/user.nix` → `home.packages` |
+| New NixOS feature | `nixos-modules/features/<category>/<name>.nix` + aggregator `default.nix` |
+| New HM feature | `home-modules/features/<category>/<name>.nix` + aggregator `default.nix` |
+| Enable a feature | `nixos-configurations/bandit/default.nix` → `features.<category>.<name>.enable = true` |
+| Workspaces | `shared-modules/workspaces.nix` |
+| Custom packages | `overlays/` or `flake-modules/packages.nix` |
+| Secrets | `secrets/README.md` |
+
+Feature module pattern:
 ```nix
-features = {
-  desktop.i3-xfce.enable = true;
-  hardware.laptop.enable = true;
-  security.desktop-hardening.enable = true;
-  storage.btrfs.enable = true;
-};
+options.features.<category>.<name>.enable = lib.mkEnableOption "...";
+config = lib.mkIf cfg.enable { ... };
 ```
 
-See **[docs/FEATURE_MODULES.md](docs/FEATURE_MODULES.md)** for full guide.
+## How ez-configs Works
 
-## Editing Guide
+`nixos-modules/default.nix` and `home-modules/default.nix` are auto-imported into every host/user by ez-configs — no manual `imports` needed. Add new modules to the relevant aggregator `default.nix`.
 
-Where to add new config:
-- **System packages**: `nixos-modules/core/packages.nix` → `environment.systemPackages`
-- **Desktop (i3/XFCE)**: `features.desktop.i3-xfce.*` in host config
-- **Development tools**: `features.development.base.*` in host config
-- **Laptop hardware**: `features.hardware.laptop.*` in host config
-- **Server hardening**: `features.security.server-hardening.*` in host config
-- **Desktop hardening**: `features.security.desktop-hardening.*` in host config
-- **Boot/storage**: `features.storage.{boot,swap,btrfs,snapper}.*` in host config
-- **Theme (system)**: `features.theme.stylix.*` + `shared-modules/stylix-common.nix`
-- **Services**: `features.services.{tailscale,backup,monitoring,auto-update,openssh,trezord}.*`
-- **User packages**: `home-configurations/vino/default.nix` → `home.packages`
-- **Package groups**: `home-modules/profiles.nix` (toggle with `profiles.*` flags)
-- **Device names**: `home-modules/core/devices.nix` (override via `devices.*` in host HM config)
-- **User programs**: `home-configurations/vino/default.nix` → `programs = { ... }`
-- **User features**: `home-modules/features/<category>/<name>.nix` (enable with `features.<category>.<name>.enable = true` in host HM config)
-- **Shared helpers**: `lib/default.nix`
-- **Workspaces list**: `shared-modules/workspaces.nix`
-- **Overlays**: `overlays/default.nix`
-- **Custom packages**: `flake-modules/packages.nix` (exposed via flake outputs)
+## Home Manager `_module.args`
 
-How imports work (ez-configs):
-- `nixos-modules/default.nix` and `home-modules/default.nix` are module aggregators that set `imports = [ ... ]`.
-- ez-configs auto-imports `nixos-modules/default.nix` for every host (unless `importDefault = false`).
-- ez-configs auto-imports `home-modules/default.nix` for every user (unless `importDefault = false`).
-- `homeConfigurations` are generated per host when a user is listed under `ezConfigs.nixos.hosts.<host>.userHomeModules`.
+Available in every HM module (injected by `home-configurations/vino/default.nix`):
 
-Home Manager shared args:
-- `home-configurations/vino/default.nix` injects `_module.args`:
-  - `c` – raw base16 colors (`c.base00`–`c.base0F`)
-  - `palette` – semantic aliases: `accent`, `accent2`, `warn`, `danger`, `muted`, `bg`, `bgAlt`, `text`, `cream`, `orange`, `aqua`, `purple`
-  - `stylixFonts` – active Stylix font names
-  - `workspaces` – shared workspace list
-  - `hostname` – current host name
-  - `cfgLib` – pure helper functions from `lib/`
-- Package groups are defined in `home-modules/profiles.nix` and controlled via `profiles` booleans (see below).
-- Prefer `palette.*` over `c.baseXX` for new work; raw `c.*` is an escape hatch for colors without a semantic alias.
+| Arg | Use |
+|-----|-----|
+| `palette.*` | Semantic colors — prefer this (`bg`, `text`, `accent`, `warn`, `danger`, …) |
+| `c.baseXX` | Raw base16 fallback when no semantic alias exists |
+| `cfgLib` | Helper functions from `lib/` (polybar icons, workspace bindings, etc.) |
+| `workspaces` | Shared i3/polybar workspace list |
+| `stylixFonts` | Active Stylix font names |
+| `hostname` | Current host name |
 
-Fish plugin src shorthand:
-- `inherit (fifc) src` == `src = fifc.src` (pulls the plugin source from `pkgs.fishPlugins.fifc`).
+## Secrets
 
-Tooling:
-- `treefmt` runs nixfmt-rfc-style for Nix formatting (configured via treefmt-nix in `flake-modules/treefmt.nix`).
-- `statix` lints Nix files (see `statix.toml`).
-- `deadnix` finds unused bindings.
-- Pre-commit hooks run via `nix flake check`.
-- `nh` provides a higher-level CLI for `nixos-rebuild` and Home Manager operations.
-- `nix-output-monitor` (`nom`) prettifies build output for long Nix operations.
-- `nvd` compares system closures after rebuilds.
-- `qa`/`commit` run pre-commit using the generated config from the Nix store (no local `.pre-commit-config.yaml` file needed).
-- If you previously installed git hooks, use `nix run .#commit` (it runs pre-commit manually and commits with `--no-verify`). If you prefer plain `git commit`, reinstall hooks or run `pre-commit uninstall`.
+sops-nix + Age. Keys at `~/.config/sops/age/keys.txt` (user) and `/var/lib/sops-nix/key.txt` (host). See `secrets/README.md` for the full workflow. Never edit `secrets/*.yaml` directly.
 
-## 📖 Documentation
+## Notes
 
-- **[Feature Modules Guide](docs/FEATURE_MODULES.md)** - How to use and create features
-- **[Architecture](docs/architecture/)** - System design decisions
-
-## Secrets (sops-nix)
-- Config lives in `features.security.secrets.*` and `home-modules/core/secrets.nix`.
-- Template config: `.sops.yaml` (replace the placeholder age key).
-- Secrets live under `secrets/` and should be encrypted with `sops`.
-- See `secrets/README.md` for the exact workflow.
-
-## Usage
-- System switch (classic): `sudo nixos-rebuild switch --flake .#bandit`
-- System switch (nh): `nh os switch -H bandit`
-- Home-only switch (classic): `home-manager switch --flake .#vino@bandit`
-- Home-only switch (nh): `nh home switch -c vino@bandit`
-- Convenience apps: `nix run .#update`, `nix run .#clean`, `nix run .#qa`, `nix run .#commit`
-- Formatter: `nix fmt` (uses `nixfmt-rfc-style`).
-- Dev shells: `nix develop` (default), `nix develop .#web`, `nix develop .#rust`, `nix develop .#go`, `nix develop .#agents`, `nix develop .#nix-debug`
-
-## Package Profiles
-Toggle package groups in `home-configurations/vino/default.nix` (or a host-specific HM override) by setting:
-- `profiles.core` (CLI baseline)
-- `profiles.dev` (compilers, language toolchains)
-- `profiles.desktop` (GUI apps + desktop utilities)
-- `profiles.extras` (nice-to-have tools like `neofetch`/`chafa`)
-- `profiles.ai` (Codex CLI when available)
-
-## Outputs
-- List flake outputs: `nix flake show .`
-- Reusable module exports: `nixosModules`, `homeModules`
-- Apps: `update`, `clean`, `qa`, `commit`
-
-## Maintenance
-- Enter maintenance shell: `nix develop` (default)
-- Format: `treefmt` (runs nixfmt-rfc-style for .nix)
-- Lint: `statix check .`
-- Dead code scan: `deadnix -f .`
-- Flake checks: `nix flake check` (includes pre-commit hooks)
-
-## Automation
-- Monthly systemd timer `nixos-config-update` runs `nix flake update` and `nixos-rebuild switch` for `bandit` (AC power only). Frequency is controlled by `features.services.auto-update.timer.calendar` (default: `"monthly"`).
-
-## Updates (Optional)
-- Update all inputs: `nix flake update`
-- Update one input: `nix flake update nixpkgs`
-
-Notes
-- `allowUnfree = true` is enabled for packages like VS Code.
-- Stylix auto-enables Gruvbox; Home Manager targets follow system theme (see `nixos-modules/features/theme/stylix.nix`).
-- Hibernate/suspend rely on the swap device/offset in `nixos-configurations/<host>/default.nix`—keep in sync if storage changes.
-- If you want to suppress the dirty-tree warning for QA/commit, use the fish abbreviations `qa` / `gcommit` (they pass `--option warn-dirty false`).
-- Bluetooth is only enabled when `features.hardware.laptop.bluetooth.enable = true` (defaults to off on new hosts).
-- XFCE is used as a session manager only (`noDesktop = true`, `enableXfwm = false`); i3 handles window management.
-- Features are opt-in per host; enable `features.hardware.laptop` / `features.desktop.i3-xfce` only where needed.
-- Polybar hides battery/backlight/power modules when no device is configured and shows IP instead.
-
-## Cheatsheet
-- System rebuild: `sudo nixos-rebuild switch --flake .#bandit`
-- Test rebuild: `sudo nixos-rebuild test --flake .#bandit`
-- Home switch: `home-manager switch --flake .#vino@bandit`
-- NH rebuild: `nh os switch -H bandit`
-- NH home: `nh home switch -c vino@bandit`
-- Flake check: `nix flake check`
-- Format: `treefmt`
-- Update inputs: `nix flake update`
-- Clean artifacts: `nix run .#clean`
-- Diff current vs booted system: `nvd diff /run/booted-system /run/current-system`
+- `homelab` host is a stub — do not build (placeholder UUIDs in hardware config).
+- Polybar FA6 icons must use `cfgLib.mkPolybarIcon <codepoint>` — editors strip PUA Unicode.
+- Polybar color refs use `\${colors.X}` syntax (escaped for Nix interpolation).
+- XFCE is session-manager only (`noDesktop = true`, `enableXfwm = false`); i3 handles windows.
+- Bluetooth defaults to off — enable via `features.hardware.laptop.bluetooth.enable = true`.
+- Hibernate/suspend depend on the swap device offset in `nixos-configurations/bandit/default.nix`.

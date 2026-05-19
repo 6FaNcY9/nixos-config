@@ -103,7 +103,6 @@ in
             showSidePanelButton = true;
             showDesktopNotification = false;
             disabledTrayIcon = false;
-            useX11LegacyScreenshot = true;
           };
           Shortcuts = {
             TYPE_COPY = "Return";

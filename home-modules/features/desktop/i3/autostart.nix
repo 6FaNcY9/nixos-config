@@ -13,11 +13,6 @@
 {
   xsession.windowManager.i3.config.startup = [
     {
-      command = "env XDG_CURRENT_DESKTOP=i3 XDG_SESSION_TYPE=x11 QT_QPA_PLATFORM=xcb ${pkgs.flameshot}/bin/flameshot";
-      always = false;
-      notification = false;
-    }
-    {
       command = "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator";
       always = false;
       notification = false;

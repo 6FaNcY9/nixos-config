@@ -24,7 +24,12 @@ in
 
     virtualization = {
       docker = {
-        enable = mkBool false "Enable Docker container runtime";
+        enable = mkBool false "Enable Docker container runtime (rootful)";
+
+        rootless = {
+          enable = mkBool false "Enable rootless Docker (runs as user, no docker group needed)";
+          setSocketVariable = mkBool true "Set DOCKER_HOST env var so docker CLI works without extra config";
+        };
 
         autoPrune = {
           enable = mkBool true "Enable automatic Docker resource cleanup";
@@ -84,10 +89,14 @@ in
   config = lib.mkIf cfg.enable {
     # Virtualization
     virtualisation = {
-      docker = lib.mkIf cfg.virtualization.docker.enable {
-        enable = true;
-        autoPrune = {
+      docker = {
+        enable = lib.mkIf cfg.virtualization.docker.enable true;
+        autoPrune = lib.mkIf cfg.virtualization.docker.enable {
           inherit (cfg.virtualization.docker.autoPrune) enable dates;
+        };
+        rootless = lib.mkIf cfg.virtualization.docker.rootless.enable {
+          enable = true;
+          inherit (cfg.virtualization.docker.rootless) setSocketVariable;
         };
       };
 
@@ -176,6 +185,9 @@ in
     # Warnings
     warnings =
       lib.optional (cfg.virtualization.docker.enable && cfg.virtualization.podman.enable)
-        "features.development.base: Both Docker and Podman are enabled. Consider using only one to avoid conflicts.";
+        "features.development.base: Both Docker and Podman are enabled. Consider using only one to avoid conflicts."
+      ++ lib.optional (
+        cfg.virtualization.docker.enable && cfg.virtualization.docker.rootless.enable
+      ) "features.development.base: Both rootful and rootless Docker are enabled. Use one or the other.";
   };
 }

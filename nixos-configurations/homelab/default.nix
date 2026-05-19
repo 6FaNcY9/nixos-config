@@ -26,33 +26,11 @@ in
 {
   imports = [
     inputs.nix-index-database.nixosModules.nix-index
-    inputs.arion.nixosModules.arion
     ./hardware-configuration.nix
   ];
 
   networking.hostName = "homelab";
   system.stateVersion = "25.11";
-
-  # arion backend = "podman-socket": the arion NixOS module auto-enables
-  # virtualisation.podman.dockerSocket so no explicit setting is needed here.
-  virtualisation.arion = {
-    backend = "podman-socket";
-    projects.web.settings = {
-      services.caddy.service = {
-        image = "caddy:2-alpine";
-        # Loopback only — cloudflared (host process) forwards here.
-        # No 0.0.0.0 or port 443: Cloudflare terminates TLS at the edge;
-        # ACME is never needed on this host.
-        ports = [ "127.0.0.1:80:80" ];
-        volumes = [
-          "/var/lib/caddy/data:/data"
-          "/var/lib/caddy/config:/config"
-          "/etc/caddy/Caddyfile:/etc/caddy/Caddyfile:ro"
-        ];
-        restart = "unless-stopped";
-      };
-    };
-  };
 
   # Phase 1 placeholder Caddyfile — replaced in Phase 2 with per-domain reverse_proxy blocks
   environment.etc."caddy/Caddyfile".text = ''
@@ -144,11 +122,7 @@ in
     development.base = {
       enable = true;
       # Podman for container-based web hosting (no Docker — avoids daemon conflict).
-      virtualization.podman = {
-        enable = true;
-        dockerCompat = true; # docker CLI alias points to podman
-      };
-      virtualization.docker.enable = false;
+      virtualization.docker.rootless.enable = true;
     };
 
     security = {

@@ -60,18 +60,6 @@ home-switch:
 
 # ── Dev Shells ───────────────────────────────────────────
 
-# Enter web development shell
-web:
-    nix develop .#web
-
-# Enter Rust development shell
-rust:
-    nix develop .#rust
-
-# Enter Go development shell
-go:
-    nix develop .#go
-
 # Enter AI agent tools shell
 agents:
     nix develop .#agents
@@ -95,11 +83,6 @@ cachix-push:
 # Commit all changes
 commit:
   nix run .#commit
-
-# Bootstrap local setup
-# Runs the repository bootstrap script to verify prerequisites and run flake checks
-bootstrap:
-  bash ./scripts/bootstrap.sh
 
 # ── Security ─────────────────────────────────────────────
 
