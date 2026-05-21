@@ -45,13 +45,13 @@ jobs:
       - name: Build NixOS configuration
         run: |
           echo "🔨 Building NixOS configuration..."
-          nix build .#nixosConfigurations.bandit --print-build-logs
+          nix build .#nixosConfigurations.bandit.config.system.build.toplevel --print-build-logs
           rm -f result
 
       - name: Build Home Manager configuration
         run: |
           echo "🏠 Building Home Manager configuration..."
-          nix build .#homeConfigurations.\"vino@bandit\" --print-build-logs
+          nix build .#homeConfigurations.\"vino@bandit\".activationPackage --print-build-logs
           rm -f result
 
       - name: Build devshells
