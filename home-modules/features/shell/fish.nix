@@ -50,12 +50,16 @@ in
           ${lib.optionalString (config.sops.secrets ? helicone_api_key) (
             loadSecret config.sops.secrets.helicone_api_key.path "HELICONE_API_KEY"
           )}
+
+          # gh CLI Configuration
+          gh completion -s fish | source
           # GITHUB_PERSONAL_ACCESS_TOKEN aliases GITHUB_MCP_PAT because the GitHub MCP
           # server expects the former name while the sops secret uses the latter.
           # Only set if the secret exists to avoid propagating an empty token.
           ${lib.optionalString (config.sops.secrets ? github_mcp_pat) ''
             set -gx GITHUB_PERSONAL_ACCESS_TOKEN $GITHUB_MCP_PAT
           ''}
+
           # Load Mistral API key into environment for CLI and shell access, but only if the secret is defined
           ${lib.optionalString (config.sops.secrets ? mistral_claude_api_key) (
             loadSecret config.sops.secrets.mistral_claude_api_key.path "MISTRAL_CLAUDE_API_KEY"
