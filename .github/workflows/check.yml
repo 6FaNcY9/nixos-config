@@ -53,7 +53,7 @@ jobs:
             sandbox = true
 
       - name: Magic Nix Cache
-        uses: DeterminateSystems/magic-nix-cache-action@main
+        uses: DeterminateSystems/magic-nix-cache-action@v13
 
       - name: Setup Cachix
         uses: cachix/cachix-action@v15
