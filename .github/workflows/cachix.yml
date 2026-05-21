@@ -33,7 +33,7 @@ jobs:
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
-            sandbox = true
+            sandbox = false
 
       - name: Setup Cachix
         uses: cachix/cachix-action@v15
@@ -45,23 +45,13 @@ jobs:
       - name: Build NixOS configuration
         run: |
           echo "🔨 Building NixOS configuration..."
-          nix build .#nixosConfigurations.bandit \ #
-            --print-build-logs \
-          # Clean up build artifacts to save space
-          rm -f result 
-
-          # nix build .#nixosConfigurations.bandit.config.system.build.toplevel \
-          #  --print-build-logs \
-          #  --fallback
-          ## Clean up build artifacts to save space
-          #rm -f result
+          nix build .#nixosConfigurations.bandit --print-build-logs
+          rm -f result
 
       - name: Build Home Manager configuration
         run: |
           echo "🏠 Building Home Manager configuration..."
-          nix build .#homeConfigurations.\"vino@bandit\" \ # - .activationPackage
-            --print-build-logs \
-          # --fallback
+          nix build .#homeConfigurations.\"vino@bandit\" --print-build-logs
           rm -f result
 
       - name: Build devshells
@@ -70,7 +60,7 @@ jobs:
           # Build one at a time to manage disk space
           for shell in default web rust go; do
             echo "Building $shell shell..."
-            nix build .#devShells.x86_64-linux.$shell --fallback
+            nix build .#devShells.x86_64-linux.$shell
             rm -f result
           done
 
