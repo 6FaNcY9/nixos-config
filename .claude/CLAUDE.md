@@ -1,47 +1,64 @@
-# nixos-config — Claude Code Context
+# nixos-config — engineering contract
+
+## Mission
+
+Make the smallest correct change that preserves this repository's architecture. Work like a senior NixOS engineer: inspect before editing, state assumptions, prefer existing helpers and patterns, and verify claims with commands or source references.
 
 ## Architecture
+
 - flake-parts + ez-configs auto-discovers hosts under `nixos-configurations/`
-- Home Manager users auto-discovered under `home-configurations/`
-- NixOS modules: `nixos-modules/core/` (always-on) + `nixos-modules/features/` (opt-in)
-- HM modules: `home-modules/core/` (always-on) + `home-modules/features/` (opt-in)
-- Shared: `shared-modules/` (stylix, palette, workspaces — imported by both layers)
+- Home Manager users auto-discover under `home-configurations/`
+- NixOS modules: `nixos-modules/core/` (always on) and `nixos-modules/features/` (opt in)
+- Home Manager modules: `home-modules/core/` (always on) and `home-modules/features/` (opt in)
+- Shared modules: `shared-modules/` (Stylix, palette, workspaces)
+- `bandit`: Framework 13 AMD, deployed, and the only host to build or test
+- `homelab`: stub with placeholder UUIDs; never build it
 
-## Active hosts
-- `bandit` — Framework 13 AMD, DEPLOYED. Only host to build/test against.
-- `homelab` — Headless server, STUB (placeholder UUIDs). DO NOT build.
+## Repository rules
 
-## Key conventions
-- Feature modules use `features.<category>.<name>.enable` — the ONLY option namespace
-- Old `roles.*` system is GONE — do not reference it
-- Colors: `palette.*` (semantic) preferred over `c.baseXX` (raw base16)
-- Theme: Gruvbox Dark Pale via Stylix
-- Shell: fish everywhere — use fish syntax, not bash patterns
-- Formatter: `nix fmt` (nixfmt-rfc-style) — run before committing
-- Task runner: `just` — see `justfile` for all recipes
+- Feature options use only `features.<category>.<name>.enable`; the old `roles.*` namespace is gone
+- Prefer semantic `palette.*` colors over raw `c.baseXX`
+- Shell examples must use fish syntax unless a script's shebang requires another shell
+- Reuse helpers in `lib/default.nix`, especially `mkWorkspaceBindings`, `mkPolybarTwoTone`, `mkPolybarTwoToneState`, `mkPolybarIcon`, `mkBtrfsOpts`, and `mkSecretValidation`
+- Format with `nix fmt` (nixfmt-rfc-style)
+- Use `just --list` to discover supported workflows instead of inventing commands
 
-## Critical helpers in `lib/default.nix`
-- `mkWorkspaceBindings` — i3 keybindings from workspace list
-- `mkPolybarTwoTone` / `mkPolybarTwoToneState` — polybar module style
-- `mkPolybarIcon` — FA6 glyph from codepoint (requires `pkgs`)
-- `mkBtrfsOpts` — BTRFS mount options for SSD
-- `mkSecretValidation` — sops-nix pre-build assertions
+## Engineering workflow
 
-## Secrets
-- All in `secrets/*.yaml` — sops-encrypted, NEVER edit directly
-- NixOS system secrets: `features.security.secrets.enable = true`
-- HM secrets: `home-modules/core/secrets.nix` (pathExists-gated per secret)
-- Age keys: user (`~/.config/sops/age/keys.txt`) + host (`/var/lib/sops-nix/key.txt`)
+1. Read the nearest modules, tests, `justfile`, and relevant history before proposing a change.
+2. For non-trivial work, present a short plan and identify risky assumptions.
+3. Implement one coherent change at a time. Avoid unrelated cleanup and new dependencies.
+4. Add or update the narrowest useful test or assertion.
+5. Run the cheapest targeted check first, then the full QA gate when warranted.
+6. Review `git diff` for accidental churn, secrets, generated files, and incomplete TODOs.
+7. Report what changed, what was verified, and any remaining risk. Never claim a command passed unless it ran.
 
-## Never do
-- `rm -rf` anything
-- Edit `secrets/*.yaml` directly
-- Push to `main` without QA passing
-- Run `nixos-rebuild switch` without explicit approval
-- Build `homelab` (placeholder UUIDs will fail)
+## Verification ladder
 
-## QA workflow
-```bash
-just qa          # format + lint + flake check
-just rebuild-test  # dry-run NixOS build for bandit
-```
+- Documentation-only: inspect the diff and validate referenced commands/paths
+- Local Nix change: `nix fmt`, then the narrowest relevant evaluation
+- Cross-module or host change: `just qa`
+- Boot/system-sensitive change: `just qa`, then `just rebuild-test`
+- If a check cannot run, explain why and provide the exact command for the user
+
+## Autonomy and cost discipline
+
+- Use the main model for architecture, debugging, implementation, and final review.
+- Delegate only independent, bounded searches or reviews; subagents use Haiku by default.
+- Do not duplicate exploration across agents. Summarize findings before spawning more work.
+- Keep context lean: use `rg`, targeted file reads, and diffs rather than dumping trees or logs.
+- Human mode is the default. Autonomous mode still obeys all safety rules and must stop for ambiguous requirements, secrets, destructive actions, deployment, or system activation.
+- Ralph loops require measurable completion criteria, automatic verification, and an explicit `--max-iterations` (normally 5–10 on Pro). Cancel a loop that repeats the same failure twice.
+
+## Security and change control
+
+Never:
+
+- read or edit `secrets/*.yaml`, `.env*`, age keys, or credential stores
+- expose secret values through output, subprocess environments, logs, or commits
+- use `rm -rf`, `git reset --hard`, or `git clean -f`
+- build `homelab`
+- run `nixos-rebuild switch`, `nh os switch`, or equivalent activation without explicit approval
+- push to `main`, force-push, merge, publish, or deploy without explicit approval
+
+Before committing, show the intended scope and ensure QA appropriate to the risk has passed.
