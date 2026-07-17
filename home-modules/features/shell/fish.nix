@@ -79,10 +79,11 @@ in
           set -Ux fifc_editor nvim
           fzf_configure_bindings --directory=\ct --git_log=\cg --git_status=\cs --history=\cr --processes=\cp --variables=\cv
 
-          # Claude Code CLI token optimization
-          set -gx DISABLE_NON_ESSENTIAL_MODEL_CALLS 1
-          set -gx MAX_THINKING_TOKENS 10000
-          set -gx CLAUDE_CODE_SUBAGENT_MODEL "claude-haiku-4-5"
+          # Claude Code: keep delegated work economical and protect provider
+          # credentials from commands, hooks, and local MCP subprocesses.
+          set -gx CLAUDE_CODE_SUBAGENT_MODEL haiku
+          set -gx CLAUDE_CODE_DISABLE_TERMINAL_TITLE 1
+          set -gx CLAUDE_CODE_SUBPROCESS_ENV_SCRUB 1
         '';
 
         # Abbreviations use the full repoRoot path (not `.#`) so they resolve
@@ -141,6 +142,13 @@ in
           ls = "eza -hl";
           lt = "eza --tree --level=2";
           lta = "eza --tree --level=3 --all";
+
+          # Claude Code modes
+          # Human-reviewed is the default; auto mode still obeys settings.json
+          # allow/ask/deny rules and is intentionally not permission bypass.
+          cplan = "claude --permission-mode plan";
+          chuman = "claude --permission-mode default";
+          cauto = "claude --permission-mode auto";
 
           # Common Tools
           lg = "lazygit";
