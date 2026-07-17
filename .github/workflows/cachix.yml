@@ -58,7 +58,7 @@ jobs:
         run: |
           echo "🔧 Building development shells..."
           # Build one at a time to manage disk space
-          for shell in default web rust go; do
+          for shell in default agents nix-debug; do
             echo "Building $shell shell..."
             nix build .#devShells.x86_64-linux.$shell
             rm -f result
